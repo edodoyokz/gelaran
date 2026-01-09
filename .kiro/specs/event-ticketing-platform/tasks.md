@@ -1,0 +1,588 @@
+# Implementation Plan: BSC Event Ticketing Platform
+
+## Overview
+
+Implementasi platform event ticketing multi-vendor menggunakan NestJS (backend), Next.js (frontend), PostgreSQL (database), dan Redis (cache/queue). Plan ini dibagi menjadi 8 fase utama dengan fokus pada core functionality terlebih dahulu.
+
+## Tasks
+
+- [ ] 1. Project Setup & Infrastructure
+  - [ ] 1.1 Initialize NestJS backend project with TypeScript strict mode
+    - Setup NestJS CLI project structure
+    - Configure ESLint, Prettier, and TypeScript
+    - Setup environment configuration (.env)
+    - _Requirements: Tech Stack from Design_
+  - [ ] 1.2 Setup PostgreSQL database with Prisma ORM
+    - Initialize Prisma with PostgreSQL connection
+    - Create initial schema based on ERD
+    - Setup database migrations workflow
+    - _Requirements: Data Models from Design_
+  - [ ] 1.3 Setup Redis for caching and session management
+    - Configure Redis connection
+    - Setup BullMQ for background jobs
+    - _Requirements: Architecture from Design_
+  - [ ] 1.4 Initialize Next.js frontend project
+    - Setup Next.js 14 with App Router
+    - Configure Tailwind CSS
+    - Setup shared types between frontend/backend
+    - _Requirements: Tech Stack from Design_
+
+- [ ] 2. Authentication Module
+  - [ ] 2.1 Implement user registration with role assignment
+    - Create User entity and Prisma schema
+    - Implement registration endpoint for customer/organizer
+    - Add email verification flow
+    - _Requirements: 1.1, 1.2_
+  - [ ]* 2.2 Write property test for user registration role assignment
+    - **Property 1: User Registration Role Assignment**
+    - **Validates: Requirements 1.1, 1.2**
+  - [ ] 2.3 Implement JWT authentication with refresh tokens
+    - Create login endpoint with JWT generation
+    - Implement refresh token rotation
+    - Setup token expiry (24h access, 7d refresh)
+    - _Requirements: 1.4, 1.8_
+  - [ ]* 2.4 Write property test for authentication token validity
+    - **Property 2: Authentication Token Validity**
+    - **Validates: Requirements 1.4, 1.8**
+  - [ ] 2.5 Implement account lockout after failed attempts
+    - Track failed login attempts in Redis
+    - Implement 15-minute lockout after 5 failures
+    - _Requirements: 1.5_
+  - [ ]* 2.6 Write property test for account lockout
+    - **Property 3: Account Lockout After Failed Attempts**
+    - **Validates: Requirements 1.5**
+  - [ ] 2.7 Implement password reset flow
+    - Create password reset request endpoint
+    - Generate time-limited reset tokens
+    - Implement password update endpoint
+    - _Requirements: 1.6_
+  - [ ]* 2.8 Write property test for password reset token
+    - **Property 4: Password Reset Token Generation**
+    - **Validates: Requirements 1.6**
+  - [ ] 2.9 Implement password hashing with bcrypt
+    - Configure bcrypt with 12 rounds
+    - _Requirements: 19.2_
+  - [ ]* 2.10 Write property test for password hashing
+    - **Property 56: Password Hashing**
+    - **Validates: Requirements 19.2**
+
+- [ ] 3. Checkpoint - Authentication Complete
+  - Ensure all authentication tests pass
+  - Ask the user if questions arise
+
+- [ ] 4. Organizer Profile Module
+  - [ ] 4.1 Implement organizer profile CRUD
+    - Create OrganizerProfile entity
+    - Implement profile creation on organizer registration
+    - Add profile update endpoint
+    - _Requirements: 2.1, 2.4_
+  - [ ] 4.2 Implement bank account encryption
+    - Setup AES-256 encryption for sensitive fields
+    - Encrypt bank_account_number before storage
+    - _Requirements: 2.2, 19.1_
+  - [ ]* 4.3 Write property test for bank account encryption round-trip
+    - **Property 5: Bank Account Encryption**
+    - **Validates: Requirements 2.2**
+  - [ ] 4.4 Implement profile validation
+    - Add validation for required banking fields
+    - Return specific validation errors
+    - _Requirements: 2.5_
+  - [ ]* 4.5 Write property test for profile validation
+    - **Property 6: Profile Validation**
+    - **Validates: Requirements 2.5**
+  - [ ] 4.6 Implement wallet balance tracking
+    - Add wallet_balance field to OrganizerProfile
+    - Create wallet transaction history
+    - _Requirements: 2.3, 11.3_
+
+- [ ] 5. Event Management Module
+  - [ ] 5.1 Implement event CRUD operations
+    - Create Event entity with all fields from ERD
+    - Implement create, read, update endpoints
+    - Add slug generation for SEO-friendly URLs
+    - _Requirements: 3.1, 3.2_
+  - [ ]* 5.2 Write property test for event required fields validation
+    - **Property 7: Event Required Fields Validation**
+    - **Validates: Requirements 3.1**
+  - [ ]* 5.3 Write property test for event type support
+    - **Property 8: Event Type Support**
+    - **Validates: Requirements 3.2**
+  - [ ] 5.4 Implement event status transitions
+    - Add status field with enum (draft, pending, published, cancelled, ended)
+    - Implement status transition validation
+    - _Requirements: 3.6_
+  - [ ]* 5.5 Write property test for event status transitions
+    - **Property 9: Event Status Transitions**
+    - **Validates: Requirements 3.6**
+  - [ ] 5.6 Implement event publication with validation
+    - Validate all required fields before publishing
+    - Support admin moderation flow
+    - _Requirements: 3.7, 3.8_
+  - [ ]* 5.7 Write property test for event publication validation
+    - **Property 10: Event Publication Validation**
+    - **Validates: Requirements 3.7**
+  - [ ] 5.8 Implement private event access control
+    - Add password protection for private events
+    - Validate password on event detail access
+    - _Requirements: 3.10_
+  - [ ]* 5.9 Write property test for private event access
+    - **Property 11: Private Event Access Control**
+    - **Validates: Requirements 3.10**
+  - [ ] 5.10 Implement event media upload
+    - Setup file upload to MinIO/S3
+    - Validate file size (max 5MB poster)
+    - Support gallery images (max 10)
+    - _Requirements: 3.3_
+  - [ ] 5.11 Implement automatic event status update
+    - Create scheduled job to mark ended events
+    - _Requirements: 3.9_
+
+- [ ] 6. Checkpoint - Event Management Complete
+  - Ensure all event tests pass
+  - Ask the user if questions arise
+
+- [ ] 7. Ticket Type Module
+  - [ ] 7.1 Implement ticket type CRUD
+    - Create TicketType entity
+    - Implement create, read, update endpoints
+    - _Requirements: 4.1_
+  - [ ]* 7.2 Write property test for ticket type required fields
+    - **Property 12: Ticket Type Required Fields**
+    - **Validates: Requirements 4.1**
+  - [ ] 7.3 Implement free ticket support
+    - Allow price = 0 for free tickets
+    - _Requirements: 4.2_
+  - [ ]* 7.4 Write property test for free ticket support
+    - **Property 13: Free Ticket Support**
+    - **Validates: Requirements 4.2**
+  - [ ] 7.5 Implement ticket availability calculation
+    - Track sold_quantity separately
+    - Calculate available = quantity - sold_quantity
+    - Implement sold out detection
+    - _Requirements: 4.4, 4.5, 4.6_
+  - [ ]* 7.6 Write property test for ticket availability calculation
+    - **Property 14: Ticket Availability Calculation**
+    - **Validates: Requirements 4.4, 4.5, 4.6**
+  - [ ] 7.7 Implement early bird pricing
+    - Add early_bird fields to TicketType
+    - Calculate effective price based on date
+    - _Requirements: 4.7_
+  - [ ]* 7.8 Write property test for early bird pricing
+    - **Property 15: Early Bird Pricing**
+    - **Validates: Requirements 4.7**
+  - [ ] 7.9 Implement quantity constraint validation
+    - Prevent reducing quantity below sold_quantity
+    - _Requirements: 4.9_
+  - [ ]* 7.10 Write property test for quantity constraint
+    - **Property 16: Ticket Quantity Constraint**
+    - **Validates: Requirements 4.9**
+
+- [ ] 8. Seating Chart Module
+  - [ ] 8.1 Implement seating chart structure
+    - Create SeatingChart, SeatRow, Seat entities
+    - Implement chart creation endpoint
+    - _Requirements: 5.1, 5.2_
+  - [ ]* 8.2 Write property test for seat row creation
+    - **Property 17: Seat Row Creation**
+    - **Validates: Requirements 5.2**
+  - [ ] 8.3 Implement automatic seat number generation
+    - Generate seat numbers in format 'RowLabel-Number'
+    - _Requirements: 5.3_
+  - [ ]* 8.4 Write property test for seat number generation
+    - **Property 18: Automatic Seat Number Generation**
+    - **Validates: Requirements 5.3**
+  - [ ] 8.5 Implement seat-ticket type association
+    - Link seats to ticket types for pricing
+    - _Requirements: 5.4_
+  - [ ]* 8.6 Write property test for seat-ticket type association
+    - **Property 19: Seat-Ticket Type Association**
+    - **Validates: Requirements 5.4**
+  - [ ] 8.7 Implement seat locking mechanism
+    - Use Redis for distributed seat locks
+    - Implement 10-minute lock timeout
+    - Auto-release expired locks
+    - _Requirements: 5.6, 5.7_
+  - [ ]* 8.8 Write property test for seat lock lifecycle
+    - **Property 20: Seat Lock Lifecycle**
+    - **Validates: Requirements 5.6, 5.7, 5.8**
+  - [ ] 8.9 Implement concurrent seat selection prevention
+    - Use database transactions with row locking
+    - Return conflict error on race condition
+    - _Requirements: 5.10, 20.2_
+  - [ ]* 8.10 Write property test for concurrent seat selection
+    - **Property 21: Concurrent Seat Selection Prevention**
+    - **Validates: Requirements 5.10, 20.2**
+
+- [ ] 9. Checkpoint - Ticket & Seating Complete
+  - Ensure all ticket and seating tests pass
+  - Ask the user if questions arise
+
+- [ ] 10. Event Discovery & Search Module
+  - [ ] 10.1 Implement event search with filters
+    - Create search endpoint with query parameters
+    - Support category, date, location, price, type filters
+    - _Requirements: 6.2_
+  - [ ]* 10.2 Write property test for search filter accuracy
+    - **Property 22: Search Filter Accuracy**
+    - **Validates: Requirements 6.2**
+  - [ ] 10.3 Implement location-based search
+    - Use PostGIS for geospatial queries
+    - Support radius-based search
+    - _Requirements: 6.3_
+  - [ ]* 10.4 Write property test for location-based search
+    - **Property 23: Location-Based Search**
+    - **Validates: Requirements 6.3**
+  - [ ] 10.5 Implement search result formatting
+    - Return required fields in response
+    - _Requirements: 6.4_
+  - [ ]* 10.6 Write property test for search result completeness
+    - **Property 24: Search Result Completeness**
+    - **Validates: Requirements 6.4**
+  - [ ] 10.7 Implement search result sorting
+    - Support date, relevance, popularity sorting
+    - _Requirements: 6.5_
+  - [ ]* 10.8 Write property test for search result sorting
+    - **Property 25: Search Result Sorting**
+    - **Validates: Requirements 6.5**
+  - [ ] 10.9 Implement low availability indicator
+    - Calculate 20% threshold
+    - Add selling_fast flag to response
+    - _Requirements: 6.8_
+  - [ ]* 10.10 Write property test for low availability indicator
+    - **Property 26: Low Availability Indicator**
+    - **Validates: Requirements 6.8**
+
+- [ ] 11. Booking Module
+  - [ ] 11.1 Implement cart and booking creation
+    - Create Booking and BookedTicket entities
+    - Implement cart item creation
+    - _Requirements: 7.1_
+  - [ ]* 11.2 Write property test for cart item creation
+    - **Property 27: Cart Item Creation**
+    - **Validates: Requirements 7.1**
+  - [ ] 11.3 Implement price breakdown calculation
+    - Calculate subtotal, tax, total
+    - _Requirements: 7.2_
+  - [ ]* 11.4 Write property test for price breakdown
+    - **Property 28: Price Breakdown Calculation**
+    - **Validates: Requirements 7.2**
+  - [ ] 11.5 Implement reservation with expiry
+    - Create pending booking with 15-minute expiry
+    - Setup background job to release expired reservations
+    - _Requirements: 7.3, 7.4_
+  - [ ]* 11.6 Write property test for reservation expiry
+    - **Property 29: Reservation Expiry**
+    - **Validates: Requirements 7.3, 7.4**
+  - [ ] 11.7 Implement guest checkout
+    - Allow booking without user_id
+    - Store guest_email and guest_name
+    - _Requirements: 7.5_
+  - [ ]* 11.8 Write property test for guest checkout
+    - **Property 30: Guest Checkout Support**
+    - **Validates: Requirements 7.5**
+  - [ ] 11.9 Implement booking code generation
+    - Generate unique booking codes
+    - _Requirements: 7.6_
+  - [ ]* 11.10 Write property test for booking code uniqueness
+    - **Property 31: Booking Code Uniqueness**
+    - **Validates: Requirements 7.6**
+  - [ ] 11.11 Implement financial calculations
+    - Calculate admin_commission and organizer_net_income
+    - Store snapshot at booking time
+    - _Requirements: 7.7, 11.1_
+  - [ ]* 11.12 Write property test for financial calculation integrity
+    - **Property 32: Financial Calculation Integrity**
+    - **Validates: Requirements 7.7, 11.1**
+  - [ ] 11.13 Implement QR code generation
+    - Generate unique codes for each ticket
+    - _Requirements: 7.8_
+  - [ ]* 11.14 Write property test for QR code uniqueness
+    - **Property 33: QR Code Uniqueness**
+    - **Validates: Requirements 7.8**
+
+- [ ] 12. Checkpoint - Booking Complete
+  - Ensure all booking tests pass
+  - Ask the user if questions arise
+
+- [ ] 13. Payment Module
+  - [ ] 13.1 Implement Midtrans integration
+    - Setup Midtrans SDK
+    - Create payment initiation endpoint
+    - _Requirements: 8.1, 8.3_
+  - [ ]* 13.2 Write property test for payment transaction creation
+    - **Property 34: Payment Transaction Creation**
+    - **Validates: Requirements 8.3**
+  - [ ] 13.3 Implement webhook handler
+    - Process Midtrans webhook notifications
+    - Update booking and transaction status
+    - _Requirements: 8.4_
+  - [ ]* 13.4 Write property test for payment status transitions
+    - **Property 35: Payment Status Transitions**
+    - **Validates: Requirements 8.4, 8.5**
+  - [ ] 13.5 Implement payment expiry handling
+    - Mark expired transactions after 24 hours
+    - Release inventory on expiry
+    - _Requirements: 8.6_
+  - [ ]* 13.6 Write property test for payment expiry
+    - **Property 36: Payment Expiry**
+    - **Validates: Requirements 8.6**
+  - [ ] 13.7 Implement refund processing
+    - Create refund endpoint
+    - Reverse wallet balance on refund
+    - _Requirements: 8.7_
+  - [ ]* 13.8 Write property test for refund wallet reversal
+    - **Property 37: Refund Wallet Reversal**
+    - **Validates: Requirements 8.7**
+
+- [ ] 14. Ticket Generation Module
+  - [ ] 14.1 Implement PDF ticket generation
+    - Setup PDF generation library (puppeteer/pdfkit)
+    - Create ticket template with all required fields
+    - _Requirements: 9.1, 9.2_
+  - [ ]* 14.2 Write property test for ticket content completeness
+    - **Property 38: Ticket Content Completeness**
+    - **Validates: Requirements 9.2**
+  - [ ] 14.3 Implement QR code encoding
+    - Encode unique_code into QR format
+    - _Requirements: 9.5_
+  - [ ]* 14.4 Write property test for QR code round-trip
+    - **Property 39: QR Code Round-Trip**
+    - **Validates: Requirements 9.5**
+  - [ ] 14.5 Implement email delivery
+    - Setup email service (SendGrid/SMTP)
+    - Send tickets on payment confirmation
+    - _Requirements: 9.3_
+
+- [ ] 15. Checkpoint - Payment & Tickets Complete
+  - Ensure all payment and ticket tests pass
+  - Ask the user if questions arise
+
+- [ ] 16. Scanner Module
+  - [ ] 16.1 Implement ticket validation endpoint
+    - Create scan endpoint accepting unique_code
+    - Return validation result
+    - _Requirements: 10.2_
+  - [ ]* 16.2 Write property test for check-in validation
+    - **Property 40: Check-in Validation**
+    - **Validates: Requirements 10.2, 10.4, 10.5**
+  - [ ] 16.3 Implement check-in statistics
+    - Calculate total, checked_in, remaining
+    - _Requirements: 10.8_
+  - [ ]* 16.4 Write property test for check-in statistics accuracy
+    - **Property 41: Check-in Statistics Accuracy**
+    - **Validates: Requirements 10.8**
+  - [ ] 16.5 Implement offline sync support
+    - Create batch sync endpoint
+    - Handle conflict resolution
+    - _Requirements: 10.7_
+
+- [ ] 17. Financial Module
+  - [ ] 17.1 Implement wallet balance management
+    - Credit wallet on paid booking
+    - Debit wallet on payout
+    - _Requirements: 11.2, 11.6_
+  - [ ]* 17.2 Write property test for wallet balance management
+    - **Property 42: Wallet Balance Management**
+    - **Validates: Requirements 11.2, 11.6, 11.7**
+  - [ ] 17.3 Implement payout request
+    - Create payout request endpoint
+    - Validate minimum amount
+    - _Requirements: 11.4, 11.5_
+  - [ ]* 17.4 Write property test for minimum payout validation
+    - **Property 43: Minimum Payout Validation**
+    - **Validates: Requirements 11.4**
+  - [ ] 17.5 Implement commission rate override
+    - Support per-organizer commission rates
+    - _Requirements: 12.2, 12.3_
+  - [ ]* 17.6 Write property test for commission rate override
+    - **Property 44: Commission Rate Override**
+    - **Validates: Requirements 12.2, 12.3**
+  - [ ] 17.7 Implement commission non-retroactivity
+    - Ensure rate changes don't affect existing bookings
+    - _Requirements: 12.6_
+  - [ ]* 17.8 Write property test for commission non-retroactivity
+    - **Property 45: Commission Rate Non-Retroactivity**
+    - **Validates: Requirements 12.6**
+
+- [ ] 18. Checkpoint - Scanner & Financial Complete
+  - Ensure all scanner and financial tests pass
+  - Ask the user if questions arise
+
+- [ ] 19. Admin Module
+  - [ ] 19.1 Implement user management
+    - Create user listing with filters
+    - Implement activate/deactivate/ban actions
+    - _Requirements: 13.1, 13.3_
+  - [ ]* 19.2 Write property test for user filtering
+    - **Property 46: User Filtering**
+    - **Validates: Requirements 13.1**
+  - [ ] 19.3 Implement session invalidation on ban
+    - Delete all refresh tokens on ban
+    - _Requirements: 13.4_
+  - [ ]* 19.4 Write property test for session invalidation
+    - **Property 47: Session Invalidation on Ban**
+    - **Validates: Requirements 13.4**
+  - [ ] 19.5 Implement event moderation
+    - Create event approval workflow
+    - Send notifications on approval/rejection
+    - _Requirements: 13.6, 13.7, 13.8_
+  - [ ] 19.6 Implement platform settings
+    - Create settings CRUD
+    - Support commission, tax, minimum payout settings
+    - _Requirements: 12.1, 12.4, 12.5_
+
+- [ ] 20. Review Module
+  - [ ] 20.1 Implement review submission
+    - Create Review entity
+    - Validate check-in requirement
+    - _Requirements: 14.1, 14.6_
+  - [ ]* 20.2 Write property test for review eligibility
+    - **Property 48: Review Eligibility**
+    - **Validates: Requirements 14.1, 14.6**
+  - [ ] 20.3 Implement rating validation
+    - Validate rating 1-5 range
+    - _Requirements: 14.2_
+  - [ ]* 20.4 Write property test for rating validation
+    - **Property 49: Rating Validation**
+    - **Validates: Requirements 14.2**
+  - [ ] 20.5 Implement single review per event
+    - Prevent duplicate reviews
+    - _Requirements: 14.5_
+  - [ ]* 20.6 Write property test for single review per event
+    - **Property 50: Single Review Per Event**
+    - **Validates: Requirements 14.5**
+  - [ ] 20.7 Implement average rating calculation
+    - Calculate and cache average rating
+    - _Requirements: 14.4_
+  - [ ]* 20.8 Write property test for average rating calculation
+    - **Property 51: Average Rating Calculation**
+    - **Validates: Requirements 14.4**
+
+- [ ] 21. Promo Code Module
+  - [ ] 21.1 Implement promo code CRUD
+    - Create PromoCode entity
+    - Support percentage and fixed discounts
+    - _Requirements: 16.1, 16.2_
+  - [ ] 21.2 Implement promo code application
+    - Validate code and calculate discount
+    - _Requirements: 16.3_
+  - [ ]* 21.3 Write property test for promo code application
+    - **Property 53: Promo Code Application**
+    - **Validates: Requirements 16.3, 16.4, 16.5**
+  - [ ] 21.4 Implement usage tracking
+    - Increment used_count on application
+    - Enforce usage limits
+    - _Requirements: 16.4_
+  - [ ]* 21.5 Write property test for promo code usage tracking
+    - **Property 54: Promo Code Usage Tracking**
+    - **Validates: Requirements 16.4**
+
+- [ ] 22. Checkpoint - Admin, Review & Promo Complete
+  - Ensure all admin, review, and promo tests pass
+  - Ask the user if questions arise
+
+- [ ] 23. Notification Module
+  - [ ] 23.1 Implement email notifications
+    - Setup email templates
+    - Send on registration, booking, payment
+    - _Requirements: 15.1_
+  - [ ] 23.2 Implement event reminder
+    - Schedule reminder 24 hours before event
+    - _Requirements: 15.2_
+  - [ ] 23.3 Implement event cancellation workflow
+    - Notify all ticket holders
+    - Initiate refund process
+    - _Requirements: 15.5_
+  - [ ]* 23.4 Write property test for event cancellation workflow
+    - **Property 52: Event Cancellation Workflow**
+    - **Validates: Requirements 15.5**
+
+- [ ] 24. Analytics Module
+  - [ ] 24.1 Implement organizer dashboard statistics
+    - Calculate total sales, revenue, check-in rate
+    - _Requirements: 17.1_
+  - [ ]* 24.2 Write property test for dashboard statistics accuracy
+    - **Property 55: Dashboard Statistics Accuracy**
+    - **Validates: Requirements 17.1**
+  - [ ] 24.3 Implement report export
+    - Generate CSV and PDF reports
+    - _Requirements: 17.4_
+
+- [ ] 25. Security Module
+  - [ ] 25.1 Implement input sanitization
+    - Sanitize all user inputs
+    - Prevent XSS and SQL injection
+    - _Requirements: 19.4_
+  - [ ]* 25.2 Write property test for input sanitization
+    - **Property 57: Input Sanitization**
+    - **Validates: Requirements 19.4**
+  - [ ] 25.3 Implement rate limiting
+    - Add rate limiting to auth endpoints
+    - _Requirements: 19.5_
+  - [ ]* 25.4 Write property test for rate limiting
+    - **Property 58: Rate Limiting**
+    - **Validates: Requirements 19.5**
+  - [ ] 25.5 Implement audit logging
+    - Log security-relevant events
+    - _Requirements: 19.6_
+  - [ ]* 25.6 Write property test for audit log creation
+    - **Property 59: Audit Log Creation**
+    - **Validates: Requirements 19.6**
+  - [ ] 25.7 Implement database retry logic
+    - Add exponential backoff on transient failures
+    - _Requirements: 20.7_
+  - [ ]* 25.8 Write property test for database retry logic
+    - **Property 60: Database Retry Logic**
+    - **Validates: Requirements 20.7**
+
+- [ ] 26. Final Checkpoint - All Modules Complete
+  - Ensure all tests pass
+  - Run full test suite
+  - Ask the user if questions arise
+
+- [ ] 27. Frontend Implementation
+  - [ ] 27.1 Implement authentication pages
+    - Login, Register, Forgot Password pages
+    - _Requirements: 1.1-1.7_
+  - [ ] 27.2 Implement event discovery pages
+    - Homepage, Search, Event Detail pages
+    - _Requirements: 6.1-6.8_
+  - [ ] 27.3 Implement booking flow
+    - Ticket selection, Seat selection, Checkout pages
+    - _Requirements: 7.1-7.10_
+  - [ ] 27.4 Implement user dashboard
+    - My Tickets, Profile pages
+    - _Requirements: 9.4_
+  - [ ] 27.5 Implement organizer dashboard
+    - Event management, Analytics, Financial pages
+    - _Requirements: 3.1-3.10, 17.1-17.6_
+  - [ ] 27.6 Implement admin dashboard
+    - User management, Event moderation, Settings pages
+    - _Requirements: 13.1-13.8_
+  - [ ] 27.7 Implement scanner interface
+    - QR scanning page with camera access
+    - _Requirements: 10.1-10.8_
+
+- [ ] 28. Final Integration & Testing
+  - [ ] 28.1 End-to-end integration testing
+    - Test complete booking flow
+    - Test payment integration
+    - Test check-in flow
+  - [ ] 28.2 Performance testing
+    - Load test concurrent seat selection
+    - Verify response times
+    - _Requirements: 20.1-20.6_
+  - [ ] 28.3 Security audit
+    - Run security scanning tools
+    - Verify all security requirements
+    - _Requirements: 19.1-19.8_
+
+## Notes
+
+- Tasks marked with `*` are property-based tests and are optional for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties
+- Unit tests validate specific examples and edge cases
+- Backend implementation should be completed before frontend
+- Payment gateway integration requires sandbox credentials from Midtrans
