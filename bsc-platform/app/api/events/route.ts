@@ -1,0 +1,148 @@
+import { type NextRequest } from "next/server";
+import prisma from "@/lib/prisma/client";
+import { successResponse, errorResponse, paginationMeta } from "@/lib/api/response";
+import { eventQuerySchema } from "@/lib/validators";
+
+export async function GET(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+
+        // Parse and validate query params
+        const params = eventQuerySchema.safeParse({
+            page: searchParams.get("page"),
+            limit: searchParams.get("limit"),
+            category: searchParams.get("category"),
+            city: searchParams.get("city"),
+            search: searchParams.get("search"),
+            eventType: searchParams.get("eventType"),
+            status: searchParams.get("status"),
+            isFeatured: searchParams.get("isFeatured"),
+            sortBy: searchParams.get("sortBy"),
+            sortOrder: searchParams.get("sortOrder"),
+        });
+
+        if (!params.success) {
+            return errorResponse("Invalid query parameters", 400, params.error.flatten().fieldErrors);
+        }
+
+        const { page, limit, category, city, search, eventType, status, isFeatured, sortBy, sortOrder } = params.data;
+        const skip = (page - 1) * limit;
+
+        // Build where clause
+        const where: Record<string, unknown> = {
+            status,
+            deletedAt: null,
+        };
+
+        if (category) {
+            where.category = { slug: category };
+        }
+
+        if (city) {
+            where.venue = { city: { contains: city, mode: "insensitive" } };
+        }
+
+        if (search) {
+            where.OR = [
+                { title: { contains: search, mode: "insensitive" } },
+                { shortDescription: { contains: search, mode: "insensitive" } },
+            ];
+        }
+
+        if (eventType) {
+            where.eventType = eventType;
+        }
+
+        if (isFeatured !== undefined) {
+            where.isFeatured = isFeatured;
+        }
+
+        // Get total count
+        const total = await prisma.event.count({ where });
+
+        // Get events with relations
+        const events = await prisma.event.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: { [sortBy]: sortOrder },
+            include: {
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        colorHex: true,
+                    },
+                },
+                venue: {
+                    select: {
+                        id: true,
+                        name: true,
+                        city: true,
+                        province: true,
+                    },
+                },
+                organizer: {
+                    select: {
+                        id: true,
+                        name: true,
+                        organizerProfile: {
+                            select: {
+                                organizationName: true,
+                                organizationSlug: true,
+                                organizationLogo: true,
+                            },
+                        },
+                    },
+                },
+                schedules: {
+                    where: { isActive: true },
+                    orderBy: { scheduleDate: "asc" },
+                    take: 1,
+                    select: {
+                        scheduleDate: true,
+                        startTime: true,
+                        endTime: true,
+                    },
+                },
+                ticketTypes: {
+                    where: { isActive: true, isHidden: false },
+                    orderBy: { basePrice: "asc" },
+                    take: 1,
+                    select: {
+                        basePrice: true,
+                        isFree: true,
+                    },
+                },
+            },
+        });
+
+        // Transform data
+        const transformedEvents = events.map((event) => ({
+            id: event.id,
+            slug: event.slug,
+            title: event.title,
+            shortDescription: event.shortDescription,
+            posterImage: event.posterImage,
+            eventType: event.eventType,
+            isFeatured: event.isFeatured,
+            category: event.category,
+            venue: event.venue,
+            organizer: {
+                id: event.organizer.id,
+                name: event.organizer.organizerProfile?.organizationName || event.organizer.name,
+                slug: event.organizer.organizerProfile?.organizationSlug,
+                logo: event.organizer.organizerProfile?.organizationLogo,
+            },
+            schedule: event.schedules[0] || null,
+            startingPrice: event.ticketTypes[0]?.isFree ? 0 : (event.ticketTypes[0]?.basePrice || null),
+            viewCount: event.viewCount,
+        }));
+
+        return successResponse(transformedEvents, paginationMeta(page, limit, total));
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        return errorResponse("Failed to fetch events", 500);
+    }
+}
