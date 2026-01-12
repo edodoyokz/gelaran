@@ -4,14 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Loader2,
     AlertCircle,
     User,
     Mail,
     Phone,
     Calendar,
-    MapPin,
     Building2,
     CreditCard,
     Ticket,
@@ -30,6 +28,7 @@ import {
     Facebook,
     ChevronRight,
 } from "lucide-react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface CustomerProfile {
     id: string;
@@ -301,59 +300,49 @@ export default function AdminUserDetailPage({
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin/users" className="text-gray-500 hover:text-gray-700">
-                                <ArrowLeft className="h-5 w-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">User Details</h1>
-                                <p className="text-sm text-gray-500">{userData.email}</p>
-                            </div>
-                        </div>
+            <AdminHeader 
+                title="User Details" 
+                subtitle={userData.email}
+                backHref="/admin/users"
+                actions={
+                    userData.role !== "SUPER_ADMIN" && (
                         <div className="flex items-center gap-2">
-                            {userData.role !== "SUPER_ADMIN" && (
-                                <>
-                                    {!userData.isVerified && !isSuspended && (
-                                        <button
-                                            type="button"
-                                            onClick={() => handleAction("verify")}
-                                            disabled={actionLoading}
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
-                                        >
-                                            <UserCheck className="h-4 w-4" />
-                                            Verify User
-                                        </button>
-                                    )}
-                                    {isSuspended ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => handleAction("activate")}
-                                            disabled={actionLoading}
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
-                                        >
-                                            <CheckCircle className="h-4 w-4" />
-                                            Activate
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => handleAction("suspend")}
-                                            disabled={actionLoading}
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50"
-                                        >
-                                            <Ban className="h-4 w-4" />
-                                            Suspend
-                                        </button>
-                                    )}
-                                </>
+                            {!userData.isVerified && !isSuspended && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleAction("verify")}
+                                    disabled={actionLoading}
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
+                                >
+                                    <UserCheck className="h-4 w-4" />
+                                    Verify User
+                                </button>
+                            )}
+                            {isSuspended ? (
+                                <button
+                                    type="button"
+                                    onClick={() => handleAction("activate")}
+                                    disabled={actionLoading}
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
+                                >
+                                    <CheckCircle className="h-4 w-4" />
+                                    Activate
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => handleAction("suspend")}
+                                    disabled={actionLoading}
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 disabled:opacity-50"
+                                >
+                                    <Ban className="h-4 w-4" />
+                                    Suspend
+                                </button>
                             )}
                         </div>
-                    </div>
-                </div>
-            </header>
+                    )
+                }
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -615,7 +604,7 @@ export default function AdminUserDetailPage({
                                                 {userData.bookings.map((booking) => (
                                                     <Link
                                                         key={booking.id}
-                                                        href={`/admin/bookings?code=${booking.bookingCode}`}
+                                                        href={`/admin/bookings/${booking.id}`}
                                                         className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                                                     >
                                                         <div>
@@ -654,7 +643,7 @@ export default function AdminUserDetailPage({
                                                 {userData.events.map((event) => (
                                                     <Link
                                                         key={event.id}
-                                                        href={`/admin/events?id=${event.id}`}
+                                                        href={`/admin/events/${event.id}`}
                                                         className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                                                     >
                                                         <div>

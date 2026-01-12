@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     TrendingUp,
     TrendingDown,
     DollarSign,
@@ -16,8 +15,10 @@ import {
     AlertCircle,
     ArrowUpRight,
     Calendar,
+    Download,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface FinanceOverview {
     totalRevenue: number;
@@ -84,6 +85,57 @@ export default function AdminFinancePage() {
     const [data, setData] = useState<FinanceData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
+
+    const handleExport = async () => {
+        if (!data) return;
+
+        setIsExporting(true);
+        try {
+            const csvRows = [
+                ["Finance Report", new Date().toLocaleDateString("id-ID")],
+                [],
+                ["Overview"],
+                ["Total Revenue", data.overview.totalRevenue],
+                ["Platform Revenue", data.overview.platformRevenue],
+                ["Organizer Revenue", data.overview.organizerRevenue],
+                ["Total Bookings", data.overview.totalBookings],
+                [],
+                ["This Month"],
+                ["Revenue", data.thisMonth.revenue],
+                ["Platform Revenue", data.thisMonth.platformRevenue],
+                ["Growth %", data.thisMonth.growthPercent],
+                [],
+                ["Bookings by Status"],
+                ["Status", "Count", "Amount"],
+                ...data.bookingsByStatus.map(s => [s.status, s.count, s.amount]),
+                [],
+                ["Recent Transactions"],
+                ["Booking Code", "Event", "Customer", "Amount", "Platform Revenue", "Date"],
+                ...data.recentTransactions.map(tx => [
+                    tx.bookingCode,
+                    tx.eventTitle,
+                    tx.customerName,
+                    tx.amount,
+                    tx.platformRevenue,
+                    tx.paidAt ? new Date(tx.paidAt).toLocaleDateString("id-ID") : "-"
+                ]),
+            ];
+
+            const csvContent = csvRows.map(row => row.join(",")).join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `finance-report-${new Date().toISOString().split("T")[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     const fetchData = useCallback(async () => {
         try {
@@ -147,16 +199,30 @@ export default function AdminFinancePage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Finance Dashboard</h1>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="Finance Dashboard" 
+                backHref="/admin"
+                actions={
+                    <button
+                        type="button"
+                        onClick={handleExport}
+                        disabled={isExporting || !data}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                        {isExporting ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Exporting...
+                            </>
+                        ) : (
+                            <>
+                                <Download className="h-4 w-4" />
+                                Export CSV
+                            </>
+                        )}
+                    </button>
+                }
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

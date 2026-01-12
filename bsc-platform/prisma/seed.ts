@@ -94,6 +94,44 @@ async function main() {
 
     console.log(`✅ Created organizer: ${organizer.email}`);
 
+    // Create admin user
+    const admin = await prisma.user.upsert({
+        where: { email: "admin@bsc.id" },
+        update: {},
+        create: {
+            name: "BSC Administrator",
+            email: "admin@bsc.id",
+            role: "SUPER_ADMIN",
+            isVerified: true,
+            isActive: true,
+        },
+    });
+
+    console.log(`✅ Created admin: ${admin.email}`);
+
+    // Create customer user
+    const customer = await prisma.user.upsert({
+        where: { email: "customer@bsc.id" },
+        update: {},
+        create: {
+            name: "Demo Customer",
+            email: "customer@bsc.id",
+            role: "CUSTOMER",
+            isVerified: true,
+            isActive: true,
+            customerProfile: {
+                create: {
+                    gender: "MALE",
+                    city: "Jakarta",
+                    province: "DKI Jakarta",
+                },
+            },
+        },
+        include: { customerProfile: true },
+    });
+
+    console.log(`✅ Created customer: ${customer.email}`);
+
     // Create venues
     const venues = await Promise.all([
         prisma.venue.upsert({
@@ -313,6 +351,82 @@ async function main() {
     ]);
 
     console.log(`✅ Created ${events.length} events`);
+
+    const firstEvent = await prisma.event.findUnique({
+        where: { slug: "sound-of-jakarta-festival-2026" },
+        include: { ticketTypes: true, schedules: true },
+    });
+
+    if (firstEvent && firstEvent.ticketTypes.length > 0) {
+        const ticketType = firstEvent.ticketTypes[0];
+        const schedule = firstEvent.schedules[0];
+
+        const existingBooking = await prisma.booking.findUnique({
+            where: { bookingCode: "BSC-DEMO-001" },
+        });
+
+        if (!existingBooking) {
+            const booking = await prisma.booking.create({
+                data: {
+                    bookingCode: "BSC-DEMO-001",
+                    userId: customer.id,
+                    eventId: firstEvent.id,
+                    eventScheduleId: schedule?.id,
+                    totalTickets: 2,
+                    subtotal: 700000,
+                    discountAmount: 0,
+                    taxAmount: 0,
+                    platformFee: 35000,
+                    paymentGatewayFee: 5000,
+                    totalAmount: 740000,
+                    organizerRevenue: 665000,
+                    platformRevenue: 75000,
+                    status: "CONFIRMED",
+                    paymentStatus: "PAID",
+                    paidAt: new Date(),
+                    confirmedAt: new Date(),
+                    bookedTickets: {
+                        create: [
+                            {
+                                ticketTypeId: ticketType.id,
+                                uniqueCode: "TKT-DEMO-001-A",
+                                unitPrice: 350000,
+                                taxAmount: 0,
+                                finalPrice: 350000,
+                                status: "ACTIVE",
+                            },
+                            {
+                                ticketTypeId: ticketType.id,
+                                uniqueCode: "TKT-DEMO-001-B",
+                                unitPrice: 350000,
+                                taxAmount: 0,
+                                finalPrice: 350000,
+                                status: "ACTIVE",
+                            },
+                        ],
+                    },
+                },
+            });
+
+            await prisma.transaction.create({
+                data: {
+                    bookingId: booking.id,
+                    transactionCode: "TRX-DEMO-001",
+                    paymentGateway: "midtrans",
+                    paymentMethod: "bank_transfer",
+                    paymentChannel: "bca",
+                    amount: 740000,
+                    status: "SUCCESS",
+                    paidAt: new Date(),
+                },
+            });
+
+            console.log(`✅ Created demo booking: ${booking.bookingCode}`);
+        } else {
+            console.log(`⏭️ Demo booking already exists: BSC-DEMO-001`);
+        }
+    }
+
     console.log("\n🎉 Seeding completed!");
 }
 

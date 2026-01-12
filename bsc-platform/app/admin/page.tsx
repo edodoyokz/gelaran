@@ -7,12 +7,14 @@ import {
     AlertCircle,
     TrendingUp,
     ArrowUpRight,
-    Shield,
-    Settings
+    MapPin,
+    Tag,
+    Settings,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 export default async function AdminDashboard() {
     const supabase = await createClient();
@@ -39,6 +41,8 @@ export default async function AdminDashboard() {
         publishedEvents,
         totalBookings,
         pendingPayouts,
+        totalCategories,
+        totalVenues,
     ] = await Promise.all([
         prisma.user.count({ where: { deletedAt: null } }),
         prisma.user.count({ where: { role: "ORGANIZER", deletedAt: null } }),
@@ -46,6 +50,8 @@ export default async function AdminDashboard() {
         prisma.event.count({ where: { status: "PUBLISHED", deletedAt: null } }),
         prisma.booking.count({ where: { status: { in: ["CONFIRMED", "PAID"] } } }),
         prisma.payout.count({ where: { status: "REQUESTED" } }),
+        prisma.category.count({ where: { isActive: true } }),
+        prisma.venue.count({ where: { isActive: true } }),
     ]);
 
     // Get total revenue (simplified)
@@ -100,28 +106,10 @@ export default async function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {/* Header */}
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
-                                <Shield className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
-                                <p className="text-sm text-gray-500">BSC Platform Management</p>
-                            </div>
-                        </div>
-                        <Link
-                            href="/admin/settings"
-                            className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100"
-                        >
-                            <Settings className="h-5 w-5" />
-                        </Link>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="Admin Panel" 
+                subtitle="BSC Platform Management"
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Alert for pending payouts */}
@@ -203,6 +191,42 @@ export default async function AdminDashboard() {
                             <p className="text-sm text-gray-500">{pendingPayouts} pending</p>
                         </div>
                     </Link>
+                    <Link
+                        href="/admin/categories"
+                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
+                    >
+                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <Tag className="h-6 w-6 text-orange-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-gray-900">Categories</h3>
+                            <p className="text-sm text-gray-500">{totalCategories} categories</p>
+                        </div>
+                    </Link>
+                    <Link
+                        href="/admin/venues"
+                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
+                    >
+                        <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+                            <MapPin className="h-6 w-6 text-teal-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-gray-900">Venues</h3>
+                            <p className="text-sm text-gray-500">{totalVenues} venues</p>
+                        </div>
+                    </Link>
+                    <Link
+                        href="/admin/settings"
+                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
+                    >
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <Settings className="h-6 w-6 text-gray-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-gray-900">Platform Settings</h3>
+                            <p className="text-sm text-gray-500">Configure platform</p>
+                        </div>
+                    </Link>
                 </div>
 
                 {/* Recent Activity */}
@@ -217,7 +241,11 @@ export default async function AdminDashboard() {
                             </div>
                         ) : (
                             recentBookings.map((booking) => (
-                                <div key={booking.id} className="px-6 py-4 flex items-center justify-between">
+                                <Link 
+                                    key={booking.id} 
+                                    href={`/admin/bookings/${booking.id}`}
+                                    className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                >
                                     <div>
                                         <p className="font-medium text-gray-900">{booking.event.title}</p>
                                         <p className="text-sm text-gray-500">
@@ -232,7 +260,7 @@ export default async function AdminDashboard() {
                                             {new Date(booking.createdAt).toLocaleDateString("id-ID")}
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             ))
                         )}
                     </div>

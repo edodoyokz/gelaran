@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Search,
     Eye,
     CheckCircle,
@@ -15,6 +14,7 @@ import {
     AlertCircle,
     Filter,
 } from "lucide-react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface EventSchedule {
     scheduleDate: string;
@@ -211,23 +211,11 @@ export default function AdminEventsPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Event Moderation</h1>
-                            {pendingCount > 0 && (
-                                <p className="text-sm text-yellow-600">
-                                    {pendingCount} event menunggu review
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="Event Moderation" 
+                subtitle={pendingCount > 0 ? `${pendingCount} event menunggu review` : undefined}
+                backHref="/admin"
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="bg-white rounded-xl p-4 mb-6 flex flex-wrap gap-4">
@@ -347,9 +335,9 @@ export default function AdminEventsPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-1">
                                                 <Link
-                                                    href={`/events/${event.slug}`}
+                                                    href={`/admin/events/${event.id}`}
                                                     className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-gray-100"
-                                                    title="View"
+                                                    title="View Details"
                                                 >
                                                     <Eye className="h-4 w-4" />
                                                 </Link>
@@ -420,7 +408,7 @@ export default function AdminEventsPage() {
                             <button
                                 type="button"
                                 onClick={handleReject}
-                                disabled={actionLoading !== null}
+                                disabled={actionLoading !== null || !rejectionReason.trim()}
                                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
                             >
                                 {actionLoading ? "Processing..." : "Tolak Event"}

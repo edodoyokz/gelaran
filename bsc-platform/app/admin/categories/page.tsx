@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Search,
     Plus,
     Edit2,
@@ -18,6 +17,7 @@ import {
     Hash,
     Palette,
 } from "lucide-react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface Category {
     id: string;
@@ -309,31 +309,21 @@ export default function AdminCategoriesPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                                <ArrowLeft className="h-5 w-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Category Management</h1>
-                                <p className="text-sm text-gray-500">
-                                    {categories.length} categories • {totalEvents} total events
-                                </p>
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={openAddModal}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                        >
-                            <Plus className="h-4 w-4" />
-                            Add Category
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="Category Management" 
+                subtitle={`${categories.length} categories • ${totalEvents} total events`}
+                backHref="/admin"
+                actions={
+                    <button
+                        type="button"
+                        onClick={openAddModal}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add Category
+                    </button>
+                }
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">

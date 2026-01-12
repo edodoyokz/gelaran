@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
-    ArrowLeft,
     Search,
     Ticket,
     Calendar,
@@ -17,6 +16,7 @@ import {
     Users,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface BookingUser {
     id: string;
@@ -85,12 +85,16 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function AdminBookingsPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const eventIdParam = searchParams.get("eventId");
+    
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [stats, setStats] = useState<BookingStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<string>("");
     const [search, setSearch] = useState("");
+    const [eventIdFilter, setEventIdFilter] = useState<string>(eventIdParam || "");
 
     const fetchBookings = useCallback(async () => {
         try {
@@ -128,6 +132,7 @@ export default function AdminBookingsPage() {
 
     const filteredBookings = bookings.filter((booking) => {
         const matchesStatus = !statusFilter || booking.status === statusFilter;
+        const matchesEventId = !eventIdFilter || booking.event.id === eventIdFilter;
         const searchLower = search.toLowerCase();
         const matchesSearch =
             !search ||
@@ -138,7 +143,7 @@ export default function AdminBookingsPage() {
             booking.guestName?.toLowerCase().includes(searchLower) ||
             booking.guestEmail?.toLowerCase().includes(searchLower);
 
-        return matchesStatus && matchesSearch;
+        return matchesStatus && matchesSearch && matchesEventId;
     });
 
     if (isLoading) {
@@ -168,18 +173,35 @@ export default function AdminBookingsPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">All Bookings</h1>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="All Bookings" 
+                backHref="/admin"
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {eventIdFilter && (
+                    <div className="mb-6 bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                            <p className="font-medium text-indigo-800">
+                                Filtering by event: {bookings.find(b => b.event.id === eventIdFilter)?.event.title || eventIdFilter}
+                            </p>
+                            <p className="text-sm text-indigo-600">
+                                Showing {filteredBookings.length} booking(s) for this event
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEventIdFilter("");
+                                router.replace("/admin/bookings");
+                            }}
+                            className="px-4 py-2 text-sm font-medium text-indigo-700 hover:text-indigo-800 hover:bg-indigo-100 rounded-lg"
+                        >
+                            Clear Filter
+                        </button>
+                    </div>
+                )}
+                
                 {stats && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         <div className="bg-white rounded-xl p-5 shadow-sm">

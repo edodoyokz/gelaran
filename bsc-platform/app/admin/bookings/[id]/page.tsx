@@ -1,0 +1,552 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { useRouter, useParams } from "next/navigation";
+import {
+    ArrowLeft,
+    Loader2,
+    AlertCircle,
+    Calendar,
+    MapPin,
+    User,
+    Mail,
+    Phone,
+    Ticket,
+    CreditCard,
+    Clock,
+    CheckCircle,
+    XCircle,
+    Ban,
+    QrCode,
+} from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { AdminHeader } from "@/components/admin/AdminHeader";
+
+interface BookedTicket {
+    id: string;
+    uniqueCode: string;
+    unitPrice: string;
+    finalPrice: string;
+    isCheckedIn: boolean;
+    checkedInAt: string | null;
+    status: string;
+    ticketType: {
+        name: string;
+    };
+}
+
+interface Transaction {
+    id: string;
+    transactionCode: string;
+    paymentGateway: string;
+    paymentMethod: string;
+    paymentChannel: string | null;
+    amount: string;
+    status: string;
+    paidAt: string | null;
+}
+
+interface Booking {
+    id: string;
+    bookingCode: string;
+    totalTickets: number;
+    subtotal: string;
+    discountAmount: string;
+    taxAmount: string;
+    platformFee: string;
+    totalAmount: string;
+    organizerRevenue: string;
+    platformRevenue: string;
+    status: string;
+    paymentStatus: string;
+    cancellationReason: string | null;
+    cancelledAt: string | null;
+    expiresAt: string | null;
+    paidAt: string | null;
+    confirmedAt: string | null;
+    createdAt: string;
+    guestEmail: string | null;
+    guestName: string | null;
+    guestPhone: string | null;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        phone: string | null;
+    } | null;
+    event: {
+        id: string;
+        title: string;
+        slug: string;
+        posterImage: string | null;
+        organizer: {
+            name: string;
+            organizerProfile: {
+                organizationName: string | null;
+            } | null;
+        };
+        venue: {
+            name: string;
+            address: string;
+            city: string;
+        } | null;
+        schedules: Array<{
+            scheduleDate: string;
+            startTime: string;
+            endTime: string;
+        }>;
+    };
+    bookedTickets: BookedTicket[];
+    transaction: Transaction | null;
+}
+
+const STATUS_COLORS: Record<string, string> = {
+    PENDING: "bg-gray-100 text-gray-700",
+    AWAITING_PAYMENT: "bg-yellow-100 text-yellow-700",
+    PAID: "bg-blue-100 text-blue-700",
+    CONFIRMED: "bg-green-100 text-green-700",
+    CANCELLED: "bg-red-100 text-red-700",
+    REFUNDED: "bg-purple-100 text-purple-700",
+    EXPIRED: "bg-gray-100 text-gray-500",
+};
+
+const TICKET_STATUS_COLORS: Record<string, string> = {
+    ACTIVE: "bg-green-100 text-green-700",
+    TRANSFERRED: "bg-blue-100 text-blue-700",
+    CANCELLED: "bg-red-100 text-red-700",
+    REFUNDED: "bg-purple-100 text-purple-700",
+};
+
+export default function AdminBookingDetailPage() {
+    const router = useRouter();
+    const params = useParams();
+    const bookingId = params.id as string;
+
+    const [booking, setBooking] = useState<Booking | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [cancelReason, setCancelReason] = useState("");
+    const [isCancelling, setIsCancelling] = useState(false);
+
+    const fetchBooking = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const res = await fetch(`/api/admin/bookings/${bookingId}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                if (res.status === 401) {
+                    router.push("/login?returnUrl=/admin/bookings");
+                    return;
+                }
+                if (res.status === 403) {
+                    router.push("/admin");
+                    return;
+                }
+                if (res.status === 404) {
+                    setError("Booking not found");
+                    return;
+                }
+                setError(data.error?.message || "Failed to load booking");
+                return;
+            }
+
+            if (data.success) {
+                setBooking(data.data);
+            }
+        } catch {
+            setError("Failed to load booking");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [bookingId, router]);
+
+    useEffect(() => {
+        if (bookingId) {
+            fetchBooking();
+        }
+    }, [bookingId, fetchBooking]);
+
+    const handleCancel = async () => {
+        if (!cancelReason.trim()) {
+            alert("Please provide a cancellation reason");
+            return;
+        }
+
+        try {
+            setIsCancelling(true);
+            const res = await fetch(`/api/admin/bookings/${bookingId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "cancel",
+                    reason: cancelReason.trim(),
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error?.message || "Failed to cancel booking");
+                return;
+            }
+
+            setShowCancelModal(false);
+            setCancelReason("");
+            fetchBooking();
+        } catch {
+            alert("Failed to cancel booking");
+        } finally {
+            setIsCancelling(false);
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <div className="text-center">
+                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
+                    <p className="text-gray-500">Loading booking...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !booking) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <div className="text-center">
+                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                    <p className="text-gray-900 font-medium mb-2">{error || "Booking not found"}</p>
+                    <Link href="/admin/bookings" className="text-indigo-600 hover:text-indigo-500">
+                        Back to Bookings
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    const canCancel = !["CANCELLED", "REFUNDED", "EXPIRED"].includes(booking.status);
+    const customerName = booking.user?.name || booking.guestName || "Guest";
+    const customerEmail = booking.user?.email || booking.guestEmail;
+    const customerPhone = booking.user?.phone || booking.guestPhone;
+
+    return (
+        <div className="min-h-screen bg-gray-100">
+            <AdminHeader
+                title={`Booking ${booking.bookingCode}`}
+                subtitle={booking.event.title}
+                backHref="/admin/bookings"
+                actions={
+                    canCancel ? (
+                        <button
+                            type="button"
+                            onClick={() => setShowCancelModal(true)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+                        >
+                            <Ban className="h-4 w-4" />
+                            Cancel Booking
+                        </button>
+                    ) : null
+                }
+            />
+
+            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <div className="flex items-start justify-between mb-6">
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">Booking Details</h2>
+                                    <p className="text-sm text-gray-500 font-mono">{booking.bookingCode}</p>
+                                </div>
+                                <span className={`px-3 py-1 text-sm font-medium rounded-full ${STATUS_COLORS[booking.status]}`}>
+                                    {booking.status}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg mb-6">
+                                <img
+                                    src={booking.event.posterImage || "/placeholder.jpg"}
+                                    alt=""
+                                    className="w-20 h-20 object-cover rounded-lg"
+                                />
+                                <div>
+                                    <Link
+                                        href={`/events/${booking.event.slug}`}
+                                        className="font-bold text-gray-900 hover:text-indigo-600"
+                                    >
+                                        {booking.event.title}
+                                    </Link>
+                                    <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                                        <Calendar className="h-4 w-4" />
+                                        {booking.event.schedules?.[0] 
+                                            ? new Date(booking.event.schedules[0].scheduleDate).toLocaleDateString("id-ID", {
+                                                weekday: "long",
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            })
+                                            : "Schedule TBD"
+                                        }
+                                    </div>
+                                    {booking.event.venue && (
+                                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                                            <MapPin className="h-4 w-4" />
+                                            {booking.event.venue.name}, {booking.event.venue.city}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <h3 className="font-semibold text-gray-900 mb-3">Tickets ({booking.totalTickets})</h3>
+                            <div className="space-y-3">
+                                {booking.bookedTickets.map((ticket) => (
+                                    <div key={ticket.id} className="flex items-center justify-between p-3 border rounded-lg">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                                <QrCode className="h-5 w-5 text-indigo-600" />
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-gray-900">{ticket.ticketType.name}</p>
+                                                <p className="text-xs text-gray-500 font-mono">{ticket.uniqueCode}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            {ticket.isCheckedIn && (
+                                                <div className="flex items-center gap-1 text-green-600 text-sm">
+                                                    <CheckCircle className="h-4 w-4" />
+                                                    Checked In
+                                                </div>
+                                            )}
+                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${TICKET_STATUS_COLORS[ticket.status]}`}>
+                                                {ticket.status}
+                                            </span>
+                                            <p className="font-medium text-gray-900">{formatCurrency(Number(ticket.finalPrice))}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {booking.transaction && (
+                            <div className="bg-white rounded-xl shadow-sm p-6">
+                                <h2 className="text-lg font-bold text-gray-900 mb-4">Payment Information</h2>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-sm text-gray-500">Transaction ID</p>
+                                        <p className="font-mono text-gray-900">{booking.transaction.transactionCode}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">Payment Gateway</p>
+                                        <p className="text-gray-900 capitalize">{booking.transaction.paymentGateway}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">Payment Method</p>
+                                        <p className="text-gray-900">{booking.transaction.paymentMethod}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">Status</p>
+                                        <p className="text-gray-900">{booking.transaction.status}</p>
+                                    </div>
+                                    {booking.transaction.paidAt && (
+                                        <div className="col-span-2">
+                                            <p className="text-sm text-gray-500">Paid At</p>
+                                            <p className="text-gray-900">
+                                                {new Date(booking.transaction.paidAt).toLocaleString("id-ID")}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {booking.cancellationReason && (
+                            <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+                                <div className="flex items-start gap-3">
+                                    <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                                    <div>
+                                        <h3 className="font-semibold text-red-800">Cancellation Reason</h3>
+                                        <p className="text-red-700 mt-1">{booking.cancellationReason}</p>
+                                        {booking.cancelledAt && (
+                                            <p className="text-sm text-red-600 mt-2">
+                                                Cancelled on {new Date(booking.cancelledAt).toLocaleString("id-ID")}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-gray-900 mb-4">Customer</h2>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <User className="h-5 w-5 text-gray-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-900">{customerName}</p>
+                                        <p className="text-sm text-gray-500">{booking.user ? "Registered User" : "Guest"}</p>
+                                    </div>
+                                </div>
+                                {customerEmail && (
+                                    <div className="flex items-center gap-3">
+                                        <Mail className="h-5 w-5 text-gray-400" />
+                                        <span className="text-gray-700">{customerEmail}</span>
+                                    </div>
+                                )}
+                                {customerPhone && (
+                                    <div className="flex items-center gap-3">
+                                        <Phone className="h-5 w-5 text-gray-400" />
+                                        <span className="text-gray-700">{customerPhone}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Subtotal</span>
+                                    <span>{formatCurrency(Number(booking.subtotal))}</span>
+                                </div>
+                                {Number(booking.discountAmount) > 0 && (
+                                    <div className="flex justify-between text-green-600">
+                                        <span>Discount</span>
+                                        <span>-{formatCurrency(Number(booking.discountAmount))}</span>
+                                    </div>
+                                )}
+                                {Number(booking.taxAmount) > 0 && (
+                                    <div className="flex justify-between text-gray-600">
+                                        <span>Tax</span>
+                                        <span>{formatCurrency(Number(booking.taxAmount))}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Platform Fee</span>
+                                    <span>{formatCurrency(Number(booking.platformFee))}</span>
+                                </div>
+                                <div className="border-t pt-2 mt-2">
+                                    <div className="flex justify-between font-bold text-gray-900">
+                                        <span>Total</span>
+                                        <span>{formatCurrency(Number(booking.totalAmount))}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-gray-900 mb-4">Timeline</h2>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <Clock className="h-5 w-5 text-gray-400" />
+                                    <div>
+                                        <p className="text-sm text-gray-500">Created</p>
+                                        <p className="text-gray-900">
+                                            {new Date(booking.createdAt).toLocaleString("id-ID")}
+                                        </p>
+                                    </div>
+                                </div>
+                                {booking.paidAt && (
+                                    <div className="flex items-center gap-3">
+                                        <CreditCard className="h-5 w-5 text-green-500" />
+                                        <div>
+                                            <p className="text-sm text-gray-500">Paid</p>
+                                            <p className="text-gray-900">
+                                                {new Date(booking.paidAt).toLocaleString("id-ID")}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                                {booking.confirmedAt && (
+                                    <div className="flex items-center gap-3">
+                                        <CheckCircle className="h-5 w-5 text-green-500" />
+                                        <div>
+                                            <p className="text-sm text-gray-500">Confirmed</p>
+                                            <p className="text-gray-900">
+                                                {new Date(booking.confirmedAt).toLocaleString("id-ID")}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                                {booking.expiresAt && booking.status === "PENDING" && (
+                                    <div className="flex items-center gap-3">
+                                        <AlertCircle className="h-5 w-5 text-yellow-500" />
+                                        <div>
+                                            <p className="text-sm text-gray-500">Expires</p>
+                                            <p className="text-gray-900">
+                                                {new Date(booking.expiresAt).toLocaleString("id-ID")}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            {showCancelModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
+                        <div className="p-6">
+                            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+                                <Ban className="h-6 w-6 text-red-600" />
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+                                Cancel Booking
+                            </h3>
+                            <p className="text-gray-500 text-center mb-4">
+                                This action cannot be undone. Please provide a reason for cancellation.
+                            </p>
+                            <textarea
+                                value={cancelReason}
+                                onChange={(e) => setCancelReason(e.target.value)}
+                                placeholder="Reason for cancellation..."
+                                rows={3}
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none mb-4"
+                            />
+                            <div className="flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowCancelModal(false);
+                                        setCancelReason("");
+                                    }}
+                                    disabled={isCancelling}
+                                    className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                >
+                                    Keep Booking
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCancel}
+                                    disabled={isCancelling || !cancelReason.trim()}
+                                    className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isCancelling ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            Cancelling...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Ban className="h-4 w-4" />
+                                            Cancel Booking
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}

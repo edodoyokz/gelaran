@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Search,
     UserCheck,
     UserX,
@@ -14,7 +13,9 @@ import {
     Filter,
     Ban,
     CheckCircle,
+    Eye,
 } from "lucide-react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface OrganizerProfile {
     organizationName: string | null;
@@ -189,16 +190,10 @@ export default function AdminUsersPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="User Management" 
+                backHref="/admin"
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -348,6 +343,13 @@ export default function AdminUsersPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-1">
+                                                <Link
+                                                    href={`/admin/users/${u.id}`}
+                                                    className="p-2 text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-indigo-50"
+                                                    title="View Details"
+                                                >
+                                                    <Eye className="h-4 w-4" />
+                                                </Link>
                                                 {u.role !== "SUPER_ADMIN" && (
                                                     <>
                                                         {!u.isVerified && !u.deletedAt && (

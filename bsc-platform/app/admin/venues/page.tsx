@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Search,
     MapPin,
     Loader2,
@@ -19,6 +18,7 @@ import {
     Globe,
     ExternalLink,
 } from "lucide-react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface Venue {
     id: string;
@@ -85,6 +85,8 @@ export default function AdminVenuesPage() {
     const [cityFilter, setCityFilter] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [showModal, setShowModal] = useState(false);
+    const [editingVenue, setEditingVenue] = useState<Venue | null>(null);
+    const [deletingVenue, setDeletingVenue] = useState<Venue | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
     const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
@@ -172,8 +174,13 @@ export default function AdminVenuesPage() {
                 imageUrl: formData.imageUrl.trim() || undefined,
             };
 
-            const res = await fetch("/api/admin/venues", {
-                method: "POST",
+            const url = editingVenue 
+                ? `/api/admin/venues/${editingVenue.id}` 
+                : "/api/admin/venues";
+            const method = editingVenue ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
@@ -181,15 +188,58 @@ export default function AdminVenuesPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to create venue");
+                alert(data.error?.message || `Failed to ${editingVenue ? "update" : "create"} venue`);
                 return;
             }
 
             setShowModal(false);
+            setEditingVenue(null);
             setFormData(INITIAL_FORM);
             fetchVenues();
         } catch {
-            alert("Failed to create venue");
+            alert(`Failed to ${editingVenue ? "update" : "create"} venue`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleEdit = (venue: Venue) => {
+        setEditingVenue(venue);
+        setFormData({
+            name: venue.name,
+            address: venue.address,
+            city: venue.city,
+            province: venue.province,
+            postalCode: venue.postalCode || "",
+            capacity: venue.capacity?.toString() || "",
+            description: venue.description || "",
+            googlePlaceId: venue.googlePlaceId || "",
+            imageUrl: venue.imageUrl || "",
+        });
+        setFormErrors({});
+        setShowModal(true);
+    };
+
+    const handleDelete = async () => {
+        if (!deletingVenue) return;
+
+        try {
+            setIsSubmitting(true);
+            const res = await fetch(`/api/admin/venues/${deletingVenue.id}`, {
+                method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error?.message || "Failed to delete venue");
+                return;
+            }
+
+            setDeletingVenue(null);
+            fetchVenues();
+        } catch {
+            alert("Failed to delete venue");
         } finally {
             setIsSubmitting(false);
         }
@@ -229,29 +279,21 @@ export default function AdminVenuesPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                                <ArrowLeft className="h-5 w-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Venue Management</h1>
-                                <p className="text-sm text-gray-500">{pagination?.total || 0} venues</p>
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => setShowModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
-                        >
-                            <Plus className="h-4 w-4" />
-                            Add Venue
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="Venue Management" 
+                subtitle={`${pagination?.total || 0} venues`}
+                backHref="/admin"
+                actions={
+                    <button
+                        type="button"
+                        onClick={() => setShowModal(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add Venue
+                    </button>
+                }
+            />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="bg-white rounded-xl p-4 mb-6 flex flex-wrap gap-4">
@@ -357,6 +399,7 @@ export default function AdminVenuesPage() {
                                             )}
                                             <button
                                                 type="button"
+                                                onClick={() => handleEdit(venue)}
                                                 className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50"
                                                 title="Edit venue"
                                             >
@@ -365,6 +408,7 @@ export default function AdminVenuesPage() {
                                             {venue._count.events === 0 && (
                                                 <button
                                                     type="button"
+                                                    onClick={() => setDeletingVenue(venue)}
                                                     className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50"
                                                     title="Delete venue"
                                                 >
@@ -435,11 +479,12 @@ export default function AdminVenuesPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
                     <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
                         <div className="p-6 border-b flex items-center justify-between sticky top-0 bg-white">
-                            <h2 className="text-xl font-bold text-gray-900">Add New Venue</h2>
+                            <h2 className="text-xl font-bold text-gray-900">{editingVenue ? "Edit Venue" : "Add New Venue"}</h2>
                             <button
                                 type="button"
                                 onClick={() => {
                                     setShowModal(false);
+                                    setEditingVenue(null);
                                     setFormData(INITIAL_FORM);
                                     setFormErrors({});
                                 }}
@@ -619,6 +664,7 @@ export default function AdminVenuesPage() {
                                     type="button"
                                     onClick={() => {
                                         setShowModal(false);
+                                        setEditingVenue(null);
                                         setFormData(INITIAL_FORM);
                                         setFormErrors({});
                                     }}
@@ -635,17 +681,73 @@ export default function AdminVenuesPage() {
                                     {isSubmitting ? (
                                         <>
                                             <Loader2 className="h-4 w-4 animate-spin" />
-                                            Creating...
+                                            {editingVenue ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <Plus className="h-4 w-4" />
-                                            Create Venue
+                                            {editingVenue ? (
+                                                <>
+                                                    <Edit className="h-4 w-4" />
+                                                    Update Venue
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Plus className="h-4 w-4" />
+                                                    Create Venue
+                                                </>
+                                            )}
                                         </>
                                     )}
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deletingVenue && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
+                        <div className="p-6">
+                            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+                                <Trash2 className="h-6 w-6 text-red-600" />
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+                                Delete Venue
+                            </h3>
+                            <p className="text-gray-500 text-center mb-6">
+                                Are you sure you want to delete <strong>{deletingVenue.name}</strong>? This action cannot be undone.
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setDeletingVenue(null)}
+                                    disabled={isSubmitting}
+                                    className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleDelete}
+                                    disabled={isSubmitting}
+                                    className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            Deleting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Trash2 className="h-4 w-4" />
+                                            Delete
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

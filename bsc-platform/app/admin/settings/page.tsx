@@ -4,10 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
-    Settings,
-    Loader2,
-    AlertCircle,
     Save,
     Bell,
     Mail,
@@ -18,7 +14,10 @@ import {
     Clock,
     CheckCircle,
     Building2,
+    Loader2,
+    AlertCircle,
 } from "lucide-react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface PlatformSettings {
     platformName: string;
@@ -66,7 +65,7 @@ export default function AdminSettingsPage() {
     const checkAuth = useCallback(async () => {
         try {
             setIsLoading(true);
-            const res = await fetch("/api/admin/users");
+            const res = await fetch("/api/admin/settings");
             
             if (!res.ok) {
                 if (res.status === 401) {
@@ -77,9 +76,14 @@ export default function AdminSettingsPage() {
                     router.push("/admin");
                     return;
                 }
+                setError("Failed to load settings");
+                return;
             }
 
-            setSettings(DEFAULT_SETTINGS);
+            const data = await res.json();
+            if (data.success) {
+                setSettings(data.data);
+            }
         } catch {
             setError("Failed to load settings");
         } finally {
@@ -96,7 +100,18 @@ export default function AdminSettingsPage() {
             setIsSaving(true);
             setSuccess(false);
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const res = await fetch("/api/admin/settings", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(settings),
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error?.message || "Failed to save settings");
+                return;
+            }
 
             setSuccess(true);
             setTimeout(() => setSuccess(false), 3000);
@@ -145,44 +160,36 @@ export default function AdminSettingsPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin" className="text-gray-500 hover:text-gray-700">
-                                <ArrowLeft className="h-5 w-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Platform Settings</h1>
-                                <p className="text-sm text-gray-500">Configure your platform preferences</p>
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleSave}
-                            disabled={isSaving}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
-                        >
-                            {isSaving ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                    Saving...
-                                </>
-                            ) : success ? (
-                                <>
-                                    <CheckCircle className="h-4 w-4" />
-                                    Saved!
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="h-4 w-4" />
-                                    Save Changes
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <AdminHeader 
+                title="Platform Settings" 
+                subtitle="Configure your platform preferences"
+                backHref="/admin"
+                actions={
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                        {isSaving ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Saving...
+                            </>
+                        ) : success ? (
+                            <>
+                                <CheckCircle className="h-4 w-4" />
+                                Saved!
+                            </>
+                        ) : (
+                            <>
+                                <Save className="h-4 w-4" />
+                                Save Changes
+                            </>
+                        )}
+                    </button>
+                }
+            />
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
