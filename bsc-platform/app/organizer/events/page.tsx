@@ -33,12 +33,14 @@ export default async function OrganizerEventsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            {/* Header */}
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <>
+            <header className="bg-white border-b sticky top-0 z-10">
+                <div className="px-6 py-4">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold text-gray-900">Events</h1>
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Event Saya</h1>
+                            <p className="text-gray-600">Kelola semua event Anda</p>
+                        </div>
                         <Link
                             href="/organizer/events/new"
                             className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
@@ -50,9 +52,8 @@ export default async function OrganizerEventsPage() {
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Search & Filters */}
-                <div className="bg-white rounded-xl p-4 mb-6 flex gap-4">
+            <main className="p-6 space-y-6">
+                <div className="bg-white rounded-xl p-4 flex gap-4 shadow-sm">
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input
@@ -69,9 +70,8 @@ export default async function OrganizerEventsPage() {
                     </select>
                 </div>
 
-                {/* Events Grid */}
                 {organizer.events.length === 0 ? (
-                    <div className="bg-white rounded-xl p-12 text-center">
+                    <div className="bg-white rounded-xl p-12 text-center shadow-sm">
                         <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                         <h2 className="text-xl font-semibold text-gray-900 mb-2">Belum ada event</h2>
                         <p className="text-gray-500 mb-6">Buat event pertama kamu sekarang!</p>
@@ -105,7 +105,7 @@ export default async function OrganizerEventsPage() {
                                 <div className="p-4">
                                     <div className="flex items-start justify-between mb-2">
                                         <h3 className="font-semibold text-gray-900 line-clamp-2">{event.title}</h3>
-                                        <button className="p-1 text-gray-400 hover:text-gray-600">
+                                        <button type="button" className="p-1 text-gray-400 hover:text-gray-600">
                                             <MoreVertical className="h-5 w-5" />
                                         </button>
                                     </div>
@@ -146,6 +146,6 @@ export default async function OrganizerEventsPage() {
                     </div>
                 )}
             </main>
-        </div>
+        </>
     );
 }

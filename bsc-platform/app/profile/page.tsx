@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -18,6 +18,7 @@ import {
     Globe,
     Clock,
 } from "lucide-react";
+import { uploadImage } from "@/lib/storage/upload";
 
 interface CustomerProfile {
     birthDate: string | null;
@@ -53,23 +54,53 @@ const GENDER_OPTIONS = [
 ];
 
 const PROVINCE_OPTIONS = [
+    "Aceh",
+    "Bali",
+    "Banten",
+    "Bengkulu",
+    "DI Yogyakarta",
     "DKI Jakarta",
+    "Gorontalo",
+    "Jambi",
     "Jawa Barat",
     "Jawa Tengah",
     "Jawa Timur",
-    "Banten",
-    "Bali",
-    "Sumatera Utara",
-    "Sumatera Selatan",
+    "Kalimantan Barat",
+    "Kalimantan Selatan",
+    "Kalimantan Tengah",
     "Kalimantan Timur",
+    "Kalimantan Utara",
+    "Kepulauan Bangka Belitung",
+    "Kepulauan Riau",
+    "Lampung",
+    "Maluku",
+    "Maluku Utara",
+    "Nusa Tenggara Barat",
+    "Nusa Tenggara Timur",
+    "Papua",
+    "Papua Barat",
+    "Papua Barat Daya",
+    "Papua Pegunungan",
+    "Papua Selatan",
+    "Papua Tengah",
+    "Riau",
+    "Sulawesi Barat",
     "Sulawesi Selatan",
+    "Sulawesi Tengah",
+    "Sulawesi Tenggara",
+    "Sulawesi Utara",
+    "Sumatera Barat",
+    "Sumatera Selatan",
+    "Sumatera Utara",
 ];
 
 export default function ProfilePage() {
     const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
@@ -174,6 +205,57 @@ export default function ProfilePage() {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const validTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!validTypes.includes(file.type)) {
+            setError("Please upload a valid image (JPEG, PNG, or WebP)");
+            return;
+        }
+
+        const maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
+            setError("Image size must be less than 2MB");
+            return;
+        }
+
+        setIsUploadingAvatar(true);
+        setError(null);
+
+        try {
+            const result = await uploadImage(file, "avatars", `user-${profile?.id}`);
+            
+            const res = await fetch("/api/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ avatarUrl: result.url }),
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setError(data.error?.message || "Failed to update avatar");
+                return;
+            }
+
+            setSuccess("Avatar updated successfully!");
+            await fetchProfile();
+        } catch {
+            setError("Failed to upload avatar");
+        } finally {
+            setIsUploadingAvatar(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+        }
+    };
+
     const formatDate = (dateStr: string | null): string => {
         if (!dateStr) return "-";
         return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -254,11 +336,24 @@ export default function ProfilePage() {
                                             </span>
                                         )}
                                     </div>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        onChange={handleAvatarChange}
+                                        className="hidden"
+                                    />
                                     <button
                                         type="button"
-                                        className="absolute bottom-0 right-0 p-2 bg-white border rounded-full shadow-sm hover:bg-gray-50"
+                                        onClick={handleAvatarClick}
+                                        disabled={isUploadingAvatar}
+                                        className="absolute bottom-0 right-0 p-2 bg-white border rounded-full shadow-sm hover:bg-gray-50 disabled:opacity-50"
                                     >
-                                        <Camera className="h-4 w-4 text-gray-600" />
+                                        {isUploadingAvatar ? (
+                                            <Loader2 className="h-4 w-4 text-gray-600 animate-spin" />
+                                        ) : (
+                                            <Camera className="h-4 w-4 text-gray-600" />
+                                        )}
                                     </button>
                                 </div>
 

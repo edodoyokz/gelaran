@@ -4,19 +4,23 @@ import { z } from "zod";
 // EVENT VALIDATORS
 // ===========================================
 
+// Helper to transform null to undefined (searchParams.get returns null for missing params)
+const nullToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
+    z.preprocess((val) => (val === null ? undefined : val), schema);
+
 export const eventQuerySchema = z.object({
-    page: z.coerce.number().min(1).default(1),
-    limit: z.coerce.number().min(1).max(50).default(12),
-    category: z.string().optional(),
-    city: z.string().optional(),
-    search: z.string().optional(),
-    eventType: z.enum(["OFFLINE", "ONLINE", "HYBRID"]).optional(),
-    status: z.enum(["PUBLISHED"]).default("PUBLISHED"),
-    startDate: z.string().datetime().optional(),
-    endDate: z.string().datetime().optional(),
-    isFeatured: z.coerce.boolean().optional(),
-    sortBy: z.enum(["createdAt", "scheduleDate", "title", "price"]).default("createdAt"),
-    sortOrder: z.enum(["asc", "desc"]).default("desc"),
+    page: nullToUndefined(z.coerce.number().min(1).default(1)),
+    limit: nullToUndefined(z.coerce.number().min(1).max(50).default(12)),
+    category: nullToUndefined(z.string().optional()),
+    city: nullToUndefined(z.string().optional()),
+    search: nullToUndefined(z.string().optional()),
+    eventType: nullToUndefined(z.enum(["OFFLINE", "ONLINE", "HYBRID"]).optional()),
+    status: nullToUndefined(z.enum(["PUBLISHED"]).default("PUBLISHED")),
+    startDate: nullToUndefined(z.string().datetime().optional()),
+    endDate: nullToUndefined(z.string().datetime().optional()),
+    isFeatured: nullToUndefined(z.coerce.boolean().optional()),
+    sortBy: nullToUndefined(z.enum(["createdAt", "scheduleDate", "title", "price", "viewCount"]).default("createdAt")),
+    sortOrder: nullToUndefined(z.enum(["asc", "desc"]).default("desc")),
 });
 
 export type EventQueryInput = z.infer<typeof eventQuerySchema>;

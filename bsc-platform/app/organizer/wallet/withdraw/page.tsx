@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-    ArrowLeft,
     Wallet,
     CreditCard,
     AlertCircle,
     CheckCircle,
     Loader2,
     ArrowUpRight,
+    ArrowLeft,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -21,11 +21,6 @@ interface BankAccount {
     accountHolderName: string;
     isPrimary: boolean;
     isVerified: boolean;
-}
-
-interface ProfileData {
-    walletBalance: number;
-    bankAccounts: BankAccount[];
 }
 
 export default function WithdrawPage() {
@@ -128,7 +123,7 @@ export default function WithdrawPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
                     <p className="text-gray-500">Memuat data...</p>
@@ -139,7 +134,7 @@ export default function WithdrawPage() {
 
     if (success) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+            <div className="flex items-center justify-center min-h-[60vh] p-4">
                 <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-8 text-center">
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle className="h-8 w-8 text-green-600" />
@@ -162,186 +157,184 @@ export default function WithdrawPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/organizer/wallet" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Tarik Dana</h1>
-                    </div>
+        <>
+            <header className="bg-white border-b sticky top-0 z-10">
+                <div className="px-6 py-4">
+                    <h1 className="text-2xl font-bold text-gray-900">Tarik Dana</h1>
+                    <p className="text-gray-600">Tarik saldo ke rekening bank Anda</p>
                 </div>
             </header>
 
-            <main className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white mb-6">
-                    <div className="flex items-center gap-3 mb-2">
-                        <Wallet className="h-6 w-6" />
-                        <span className="opacity-90">Saldo Tersedia</span>
-                    </div>
-                    <p className="text-3xl font-bold">{formatCurrency(balance)}</p>
-                </div>
-
-                {bankAccounts.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-                        <CreditCard className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-600 mb-4">
-                            Anda belum memiliki rekening bank. Tambahkan rekening terlebih dahulu untuk menarik dana.
-                        </p>
-                        <Link
-                            href="/organizer/wallet/bank-account"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
-                        >
-                            Tambah Rekening Bank
-                        </Link>
-                    </div>
-                ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {error && (
-                            <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-                                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                                <p className="text-red-700">{error}</p>
-                            </div>
-                        )}
-
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="px-6 py-4 border-b">
-                                <h2 className="font-semibold text-gray-900">Rekening Tujuan</h2>
-                            </div>
-                            <div className="p-4 space-y-3">
-                                {bankAccounts.map((account) => (
-                                    <label
-                                        key={account.id}
-                                        htmlFor={`bank-${account.id}`}
-                                        className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition-colors ${
-                                            bankAccountId === account.id
-                                                ? "border-indigo-500 bg-indigo-50"
-                                                : "border-gray-200 hover:border-gray-300"
-                                        }`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            id={`bank-${account.id}`}
-                                            name="bankAccount"
-                                            value={account.id}
-                                            checked={bankAccountId === account.id}
-                                            onChange={(e) => setBankAccountId(e.target.value)}
-                                            className="h-4 w-4 text-indigo-600"
-                                        />
-                                        <div className="flex-1">
-                                            <p className="font-medium text-gray-900">{account.bankName}</p>
-                                            <p className="text-sm text-gray-500">
-                                                {account.accountNumber} • {account.accountHolderName}
-                                            </p>
-                                        </div>
-                                        {account.isPrimary && (
-                                            <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full">
-                                                Utama
-                                            </span>
-                                        )}
-                                    </label>
-                                ))}
-                            </div>
+            <main className="p-6">
+                <div className="max-w-xl mx-auto space-y-6">
+                    <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white">
+                        <div className="flex items-center gap-3 mb-2">
+                            <Wallet className="h-6 w-6" />
+                            <span className="opacity-90">Saldo Tersedia</span>
                         </div>
+                        <p className="text-3xl font-bold">{formatCurrency(balance)}</p>
+                    </div>
 
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="px-6 py-4 border-b">
-                                <h2 className="font-semibold text-gray-900">Jumlah Penarikan</h2>
-                            </div>
-                            <div className="p-6 space-y-4">
-                                <div>
-                                    <label htmlFor="input-amount" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Jumlah (min. {formatCurrency(MIN_WITHDRAW)})
-                                    </label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Rp</span>
-                                        <input
-                                            type="number"
-                                            id="input-amount"
-                                            value={amount}
-                                            onChange={(e) => setAmount(e.target.value)}
-                                            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                            placeholder="0"
-                                            min={MIN_WITHDRAW}
-                                            max={balance}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-2">
-                                    {[100000, 250000, 500000].map((preset) => (
-                                        <button
-                                            key={preset}
-                                            type="button"
-                                            onClick={() => setAmount(String(Math.min(preset, balance)))}
-                                            disabled={balance < preset}
-                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            {formatCurrency(preset)}
-                                        </button>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => setAmount(String(balance))}
-                                        className="flex-1 px-3 py-2 border border-indigo-300 bg-indigo-50 rounded-lg text-sm font-medium text-indigo-700 hover:bg-indigo-100"
-                                    >
-                                        Semua
-                                    </button>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="input-notes" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Catatan (opsional)
-                                    </label>
-                                    <textarea
-                                        id="input-notes"
-                                        value={notes}
-                                        onChange={(e) => setNotes(e.target.value)}
-                                        rows={2}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-                                        placeholder="Catatan untuk penarikan ini..."
-                                        maxLength={500}
-                                    />
-                                </div>
-                            </div>
+                    {bankAccounts.length === 0 ? (
+                        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+                            <CreditCard className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                            <p className="text-gray-600 mb-4">
+                                Anda belum memiliki rekening bank. Tambahkan rekening terlebih dahulu untuk menarik dana.
+                            </p>
+                            <Link
+                                href="/organizer/wallet/bank-account"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                            >
+                                Tambah Rekening Bank
+                            </Link>
                         </div>
-
-                        {Number(amount) > 0 && (
-                            <div className="bg-white rounded-xl shadow-sm p-6">
-                                <h3 className="font-semibold text-gray-900 mb-4">Rincian</h3>
-                                <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">Jumlah penarikan</span>
-                                        <span className="text-gray-900">{formatCurrency(Number(amount))}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-500">Biaya admin</span>
-                                        <span className="text-gray-900">- {formatCurrency(FEE)}</span>
-                                    </div>
-                                    <div className="border-t pt-3 flex justify-between font-medium">
-                                        <span className="text-gray-700">Total diterima</span>
-                                        <span className="text-green-600">{formatCurrency(netAmount)}</span>
-                                    </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {error && (
+                                <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                    <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                    <p className="text-red-700">{error}</p>
                                 </div>
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={isSubmitting || Number(amount) < MIN_WITHDRAW || !bankAccountId}
-                            className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isSubmitting ? (
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                            ) : (
-                                <ArrowUpRight className="h-5 w-5" />
                             )}
-                            {isSubmitting ? "Memproses..." : "Tarik Dana"}
-                        </button>
-                    </form>
-                )}
+
+                            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                                <div className="px-6 py-4 border-b">
+                                    <h2 className="font-semibold text-gray-900">Rekening Tujuan</h2>
+                                </div>
+                                <div className="p-4 space-y-3">
+                                    {bankAccounts.map((account) => (
+                                        <label
+                                            key={account.id}
+                                            htmlFor={`bank-${account.id}`}
+                                            className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition-colors ${
+                                                bankAccountId === account.id
+                                                    ? "border-indigo-500 bg-indigo-50"
+                                                    : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                id={`bank-${account.id}`}
+                                                name="bankAccount"
+                                                value={account.id}
+                                                checked={bankAccountId === account.id}
+                                                onChange={(e) => setBankAccountId(e.target.value)}
+                                                className="h-4 w-4 text-indigo-600"
+                                            />
+                                            <div className="flex-1">
+                                                <p className="font-medium text-gray-900">{account.bankName}</p>
+                                                <p className="text-sm text-gray-500">
+                                                    {account.accountNumber} • {account.accountHolderName}
+                                                </p>
+                                            </div>
+                                            {account.isPrimary && (
+                                                <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full">
+                                                    Utama
+                                                </span>
+                                            )}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                                <div className="px-6 py-4 border-b">
+                                    <h2 className="font-semibold text-gray-900">Jumlah Penarikan</h2>
+                                </div>
+                                <div className="p-6 space-y-4">
+                                    <div>
+                                        <label htmlFor="input-amount" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Jumlah (min. {formatCurrency(MIN_WITHDRAW)})
+                                        </label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Rp</span>
+                                            <input
+                                                type="number"
+                                                id="input-amount"
+                                                value={amount}
+                                                onChange={(e) => setAmount(e.target.value)}
+                                                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                placeholder="0"
+                                                min={MIN_WITHDRAW}
+                                                max={balance}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        {[100000, 250000, 500000].map((preset) => (
+                                            <button
+                                                key={preset}
+                                                type="button"
+                                                onClick={() => setAmount(String(Math.min(preset, balance)))}
+                                                disabled={balance < preset}
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {formatCurrency(preset)}
+                                            </button>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => setAmount(String(balance))}
+                                            className="flex-1 px-3 py-2 border border-indigo-300 bg-indigo-50 rounded-lg text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+                                        >
+                                            Semua
+                                        </button>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="input-notes" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Catatan (opsional)
+                                        </label>
+                                        <textarea
+                                            id="input-notes"
+                                            value={notes}
+                                            onChange={(e) => setNotes(e.target.value)}
+                                            rows={2}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                            placeholder="Catatan untuk penarikan ini..."
+                                            maxLength={500}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {Number(amount) > 0 && (
+                                <div className="bg-white rounded-xl shadow-sm p-6">
+                                    <h3 className="font-semibold text-gray-900 mb-4">Rincian</h3>
+                                    <div className="space-y-3 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Jumlah penarikan</span>
+                                            <span className="text-gray-900">{formatCurrency(Number(amount))}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-500">Biaya admin</span>
+                                            <span className="text-gray-900">- {formatCurrency(FEE)}</span>
+                                        </div>
+                                        <div className="border-t pt-3 flex justify-between font-medium">
+                                            <span className="text-gray-700">Total diterima</span>
+                                            <span className="text-green-600">{formatCurrency(netAmount)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={isSubmitting || Number(amount) < MIN_WITHDRAW || !bankAccountId}
+                                className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting ? (
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                ) : (
+                                    <ArrowUpRight className="h-5 w-5" />
+                                )}
+                                {isSubmitting ? "Memproses..." : "Tarik Dana"}
+                            </button>
+                        </form>
+                    )}
+                </div>
             </main>
-        </div>
+        </>
     );
 }

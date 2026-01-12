@@ -10,6 +10,7 @@ import {
     MapPin,
     Tag,
     Settings,
+    LayoutTemplate,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
@@ -225,6 +226,18 @@ export default async function AdminDashboard() {
                         <div>
                             <h3 className="font-semibold text-gray-900">Platform Settings</h3>
                             <p className="text-sm text-gray-500">Configure platform</p>
+                        </div>
+                    </Link>
+                    <Link
+                        href="/admin/landing-page"
+                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
+                    >
+                        <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <LayoutTemplate className="h-6 w-6 text-indigo-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-gray-900">Landing Page</h3>
+                            <p className="text-sm text-gray-500">Hero, footer, SEO</p>
                         </div>
                     </Link>
                 </div>

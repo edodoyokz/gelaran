@@ -700,3 +700,25 @@ enum NotificationType {
   REVIEW_REPLY
   SYSTEM
 }
+
+// ===========================================
+// MODULE 8: SITE CONTENT MANAGEMENT
+// ===========================================
+
+model SiteContent {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key       String   @unique
+  value     Json
+  type      SiteContentType @default(JSON)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_contents")
+}
+
+enum SiteContentType {
+  TEXT
+  IMAGE
+  JSON
+  HTML
+}

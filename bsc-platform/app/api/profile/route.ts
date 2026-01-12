@@ -30,7 +30,7 @@ export async function GET() {
             return errorResponse("Unauthorized", 401);
         }
 
-        const dbUser = await prisma.user.findUnique({
+        let dbUser = await prisma.user.findUnique({
             where: { email: user.email },
             include: {
                 customerProfile: true,
@@ -38,7 +38,17 @@ export async function GET() {
         });
 
         if (!dbUser) {
-            return errorResponse("User not found", 404);
+            dbUser = await prisma.user.create({
+                data: {
+                    email: user.email,
+                    name: user.user_metadata?.name || user.email.split("@")[0],
+                    isVerified: !!user.email_confirmed_at,
+                    emailVerifiedAt: user.email_confirmed_at ? new Date(user.email_confirmed_at) : null,
+                },
+                include: {
+                    customerProfile: true,
+                },
+            });
         }
 
         return successResponse({

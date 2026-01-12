@@ -26,15 +26,19 @@ import {
     Copy,
     AlertCircle,
     Loader2,
+    Tag,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface EventSchedule {
     id: string;
-    title: string;
+    title: string | null;
     scheduleDate: string;
     startTime: string;
     endTime: string;
+    description: string | null;
+    locationOverride: string | null;
+    isActive: boolean;
 }
 
 interface TicketType {
@@ -43,12 +47,32 @@ interface TicketType {
     description: string | null;
     basePrice: number;
     totalQuantity: number;
+    minPerOrder: number;
+    maxPerOrder: number;
     isFree: boolean;
     isHidden: boolean;
+    isActive: boolean;
     saleStartAt: string | null;
     saleEndAt: string | null;
     _count: {
         bookedTickets: number;
+    };
+}
+
+interface PromoCode {
+    id: string;
+    code: string;
+    discountType: "PERCENTAGE" | "FIXED_AMOUNT";
+    discountValue: number;
+    maxDiscountAmount: number | null;
+    minOrderAmount: number | null;
+    usageLimitTotal: number | null;
+    usageLimitPerUser: number | null;
+    validFrom: string;
+    validUntil: string;
+    isActive: boolean;
+    _count: {
+        usages: number;
     };
 }
 
@@ -99,7 +123,7 @@ interface EventData {
     stats: EventStats;
 }
 
-type TabType = "overview" | "tickets" | "attendees" | "settings";
+type TabType = "overview" | "schedules" | "tickets" | "promo-codes" | "attendees" | "settings";
 
 const STATUS_COLORS: Record<string, string> = {
     DRAFT: "bg-gray-100 text-gray-700",
@@ -245,7 +269,9 @@ export default function EventDetailPage() {
 
     const tabs: { id: TabType; label: string; icon: React.ElementType }[] = [
         { id: "overview", label: "Overview", icon: Eye },
+        { id: "schedules", label: "Jadwal", icon: Calendar },
         { id: "tickets", label: "Tiket", icon: Ticket },
+        { id: "promo-codes", label: "Promo", icon: Tag },
         { id: "attendees", label: "Peserta", icon: Users },
         { id: "settings", label: "Pengaturan", icon: Edit2 },
     ];
@@ -350,8 +376,14 @@ export default function EventDetailPage() {
                 {activeTab === "overview" && (
                     <OverviewTab event={event} onRefresh={refetchEvent} />
                 )}
+                {activeTab === "schedules" && (
+                    <SchedulesTab event={event} onRefresh={refetchEvent} />
+                )}
                 {activeTab === "tickets" && (
                     <TicketsTab event={event} onRefresh={refetchEvent} />
+                )}
+                {activeTab === "promo-codes" && (
+                    <PromoCodesTab event={event} />
                 )}
                 {activeTab === "attendees" && (
                     <AttendeesTab event={event} />
@@ -587,6 +619,75 @@ function OverviewTab({ event, onRefresh }: { event: EventData; onRefresh: () => 
 }
 
 function TicketsTab({ event, onRefresh }: { event: EventData; onRefresh: () => void }) {
+    const [editingTicket, setEditingTicket] = useState<TicketType | null>(null);
+    const [isDeleting, setIsDeleting] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleDelete = async (ticketId: string) => {
+        if (!confirm("Apakah Anda yakin ingin menghapus tiket ini?")) return;
+
+        try {
+            setIsDeleting(ticketId);
+            const res = await fetch(`/api/organizer/events/${event.id}/tickets/${ticketId}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error || "Gagal menghapus tiket");
+                return;
+            }
+
+            onRefresh();
+        } catch (error) {
+            alert("Terjadi kesalahan saat menghapus tiket");
+        } finally {
+            setIsDeleting(null);
+        }
+    };
+
+    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!editingTicket) return;
+
+        const formData = new FormData(e.currentTarget);
+        const payload = {
+            name: formData.get("name"),
+            description: formData.get("description"),
+            basePrice: Number(formData.get("basePrice")),
+            totalQuantity: Number(formData.get("totalQuantity")),
+            minPerOrder: Number(formData.get("minPerOrder")),
+            maxPerOrder: Number(formData.get("maxPerOrder")),
+            isFree: formData.get("isFree") === "on",
+            isHidden: formData.get("isHidden") === "on",
+            isActive: formData.get("isActive") === "on",
+            saleStartAt: formData.get("saleStartAt") ? new Date(formData.get("saleStartAt") as string).toISOString() : null,
+            saleEndAt: formData.get("saleEndAt") ? new Date(formData.get("saleEndAt") as string).toISOString() : null,
+        };
+
+        try {
+            setIsLoading(true);
+            const res = await fetch(`/api/organizer/events/${event.id}/tickets/${editingTicket.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error || "Gagal menyimpan tiket");
+                return;
+            }
+
+            setEditingTicket(null);
+            onRefresh();
+        } catch (error) {
+            alert("Terjadi kesalahan saat menyimpan tiket");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -631,6 +732,9 @@ function TicketsTab({ event, onRefresh }: { event: EventData; onRefresh: () => v
                                             )}
                                             {ticket.isFree && (
                                                 <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">Gratis</span>
+                                            )}
+                                            {!ticket.isActive && (
+                                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">Non-aktif</span>
                                             )}
                                         </div>
                                         {ticket.description && (
@@ -682,9 +786,101 @@ function TicketsTab({ event, onRefresh }: { event: EventData; onRefresh: () => v
                                         )}
                                     </div>
                                 )}
+
+                                <div className="mt-4 flex gap-2 justify-end border-t pt-4">
+                                    <button
+                                        onClick={() => setEditingTicket(ticket)}
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50"
+                                    >
+                                        <Edit2 className="h-3.5 w-3.5" />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(ticket.id)}
+                                        disabled={isDeleting === ticket.id || ticket._count.bookedTickets > 0}
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-red-200 text-red-600 text-sm rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title={ticket._count.bookedTickets > 0 ? "Tidak dapat menghapus tiket yang sudah terjual" : "Hapus tiket"}
+                                    >
+                                        {isDeleting === ticket.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                                        Hapus
+                                    </button>
+                                </div>
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {editingTicket && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                            <h3 className="text-lg font-bold text-gray-900">Edit Tiket</h3>
+                            <button onClick={() => setEditingTicket(null)} className="text-gray-400 hover:text-gray-600">
+                                <XCircle className="h-6 w-6" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSave} className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Tiket</label>
+                                <input name="name" defaultValue={editingTicket.name} required className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                                <textarea name="description" defaultValue={editingTicket.description || ""} className="w-full px-3 py-2 border rounded-lg" rows={3} />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label>
+                                    <input name="basePrice" type="number" defaultValue={editingTicket.basePrice} min="0" required className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Total Kuota</label>
+                                    <input name="totalQuantity" type="number" defaultValue={editingTicket.totalQuantity} min="1" required className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Min. per Order</label>
+                                    <input name="minPerOrder" type="number" defaultValue={editingTicket.minPerOrder || 1} min="1" required className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Max. per Order</label>
+                                    <input name="maxPerOrder" type="number" defaultValue={editingTicket.maxPerOrder || 5} min="1" required className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Mulai Penjualan</label>
+                                    <input name="saleStartAt" type="datetime-local" defaultValue={editingTicket.saleStartAt ? new Date(editingTicket.saleStartAt).toISOString().slice(0, 16) : ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Akhir Penjualan</label>
+                                    <input name="saleEndAt" type="datetime-local" defaultValue={editingTicket.saleEndAt ? new Date(editingTicket.saleEndAt).toISOString().slice(0, 16) : ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="flex items-center gap-2">
+                                    <input name="isFree" type="checkbox" defaultChecked={editingTicket.isFree} className="rounded border-gray-300" />
+                                    <span className="text-sm text-gray-700">Tiket Gratis</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input name="isHidden" type="checkbox" defaultChecked={editingTicket.isHidden} className="rounded border-gray-300" />
+                                    <span className="text-sm text-gray-700">Sembunyikan Tiket</span>
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input name="isActive" type="checkbox" defaultChecked={editingTicket.isActive} className="rounded border-gray-300" />
+                                    <span className="text-sm text-gray-700">Aktif</span>
+                                </label>
+                            </div>
+                            <div className="pt-4 flex gap-3">
+                                <button type="button" onClick={() => setEditingTicket(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Batal</button>
+                                <button type="submit" disabled={isLoading} className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
+                                    {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>
@@ -836,6 +1032,433 @@ function SettingsTab({ event }: { event: EventData }) {
                     </Link>
                 </div>
             </div>
+        </div>
+    );
+}
+
+function SchedulesTab({ event, onRefresh }: { event: EventData; onRefresh: () => void }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingSchedule, setEditingSchedule] = useState<EventSchedule | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+    const handleEdit = (schedule: EventSchedule) => {
+        setEditingSchedule(schedule);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (scheduleId: string) => {
+        if (!confirm("Apakah Anda yakin ingin menghapus jadwal ini?")) return;
+
+        try {
+            setIsDeleting(scheduleId);
+            const res = await fetch(`/api/organizer/events/${event.id}/schedules/${scheduleId}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error || "Gagal menghapus jadwal");
+                return;
+            }
+
+            onRefresh();
+        } catch (error) {
+            alert("Terjadi kesalahan saat menghapus jadwal");
+        } finally {
+            setIsDeleting(null);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const payload = {
+            title: formData.get("title"),
+            scheduleDate: new Date(formData.get("scheduleDate") as string).toISOString(),
+            startTime: formData.get("startTime"),
+            endTime: formData.get("endTime"),
+            description: formData.get("description"),
+            locationOverride: formData.get("locationOverride"),
+        };
+
+        try {
+            setIsLoading(true);
+            const url = editingSchedule
+                ? `/api/organizer/events/${event.id}/schedules/${editingSchedule.id}`
+                : `/api/organizer/events/${event.id}/schedules`;
+            
+            const method = editingSchedule ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error || "Gagal menyimpan jadwal");
+                return;
+            }
+
+            setIsModalOpen(false);
+            setEditingSchedule(null);
+            onRefresh();
+        } catch (error) {
+            alert("Terjadi kesalahan saat menyimpan jadwal");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900">Jadwal Event</h2>
+                <button
+                    onClick={() => { setEditingSchedule(null); setIsModalOpen(true); }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                >
+                    <Plus className="h-4 w-4" />
+                    Tambah Jadwal
+                </button>
+            </div>
+
+            {event.schedules.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+                    <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 mb-4">Belum ada jadwal. Tambahkan jadwal untuk event ini.</p>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {event.schedules.map((schedule) => (
+                        <div key={schedule.id} className="bg-white rounded-xl shadow-sm p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <Calendar className="h-6 w-6 text-indigo-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900">{schedule.title || "Jadwal Event"}</h3>
+                                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-gray-600">
+                                        <div className="flex items-center gap-1.5">
+                                            <Calendar className="h-4 w-4" />
+                                            {new Date(schedule.scheduleDate).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Clock className="h-4 w-4" />
+                                            {schedule.startTime} - {schedule.endTime}
+                                        </div>
+                                    </div>
+                                    {schedule.locationOverride && (
+                                        <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-600">
+                                            <MapPin className="h-4 w-4" />
+                                            {schedule.locationOverride}
+                                        </div>
+                                    )}
+                                    {schedule.description && (
+                                        <p className="text-sm text-gray-500 mt-2">{schedule.description}</p>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 md:self-start">
+                                <button
+                                    onClick={() => handleEdit(schedule)}
+                                    className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                    title="Edit"
+                                >
+                                    <Edit2 className="h-5 w-5" />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(schedule.id)}
+                                    disabled={isDeleting === schedule.id}
+                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                                    title="Hapus"
+                                >
+                                    {isDeleting === schedule.id ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                            <h3 className="text-lg font-bold text-gray-900">{editingSchedule ? "Edit Jadwal" : "Tambah Jadwal"}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                                <XCircle className="h-6 w-6" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Judul (Opsional)</label>
+                                <input name="title" defaultValue={editingSchedule?.title || ""} placeholder="Contoh: Sesi 1, Main Stage, dll" className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                                <input name="scheduleDate" type="date" required defaultValue={editingSchedule?.scheduleDate ? new Date(editingSchedule.scheduleDate).toISOString().split('T')[0] : ""} className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Jam Mulai</label>
+                                    <input name="startTime" type="time" required defaultValue={editingSchedule?.startTime || ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Jam Selesai</label>
+                                    <input name="endTime" type="time" required defaultValue={editingSchedule?.endTime || ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi Khusus (Opsional)</label>
+                                <input name="locationOverride" defaultValue={editingSchedule?.locationOverride || ""} placeholder="Jika berbeda dengan lokasi utama" className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi (Opsional)</label>
+                                <textarea name="description" defaultValue={editingSchedule?.description || ""} rows={3} className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div className="pt-4 flex gap-3">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Batal</button>
+                                <button type="submit" disabled={isLoading} className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
+                                    {isLoading ? "Menyimpan..." : "Simpan"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function PromoCodesTab({ event }: { event: EventData }) {
+    const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingPromo, setEditingPromo] = useState<PromoCode | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+    const fetchPromoCodes = async () => {
+        try {
+            const res = await fetch(`/api/organizer/events/${event.id}/promo-codes`);
+            const data = await res.json();
+            if (data.success) {
+                setPromoCodes(data.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch promo codes");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPromoCodes();
+    }, [event.id]);
+
+    const handleDelete = async (promoId: string) => {
+        if (!confirm("Apakah Anda yakin ingin menghapus kode promo ini?")) return;
+        try {
+            setIsDeleting(promoId);
+            const res = await fetch(`/api/organizer/events/${event.id}/promo-codes/${promoId}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            if (data.success) {
+                fetchPromoCodes();
+            } else {
+                alert(data.error || "Gagal menghapus kode promo");
+            }
+        } catch {
+            alert("Terjadi kesalahan");
+        } finally {
+            setIsDeleting(null);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const payload = {
+            code: formData.get("code"),
+            discountType: formData.get("discountType"),
+            discountValue: Number(formData.get("discountValue")),
+            maxDiscountAmount: formData.get("maxDiscountAmount") ? Number(formData.get("maxDiscountAmount")) : null,
+            minOrderAmount: formData.get("minOrderAmount") ? Number(formData.get("minOrderAmount")) : null,
+            usageLimitTotal: formData.get("usageLimitTotal") ? Number(formData.get("usageLimitTotal")) : null,
+            usageLimitPerUser: formData.get("usageLimitPerUser") ? Number(formData.get("usageLimitPerUser")) : null,
+            validFrom: new Date(formData.get("validFrom") as string).toISOString(),
+            validUntil: new Date(formData.get("validUntil") as string).toISOString(),
+            isActive: formData.get("isActive") === "on",
+        };
+
+        try {
+            setIsSaving(true);
+            const url = editingPromo
+                ? `/api/organizer/events/${event.id}/promo-codes/${editingPromo.id}`
+                : `/api/organizer/events/${event.id}/promo-codes`;
+            
+            const method = editingPromo ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error || "Gagal menyimpan kode promo");
+                return;
+            }
+
+            setIsModalOpen(false);
+            setEditingPromo(null);
+            fetchPromoCodes();
+        } catch {
+            alert("Terjadi kesalahan");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    if (isLoading) return <div className="text-center py-12"><Loader2 className="h-8 w-8 animate-spin mx-auto text-indigo-600" /></div>;
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900">Kode Promo</h2>
+                <button
+                    onClick={() => { setEditingPromo(null); setIsModalOpen(true); }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                >
+                    <Plus className="h-4 w-4" />
+                    Tambah Promo
+                </button>
+            </div>
+
+            {promoCodes.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+                    <Tag className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 mb-4">Belum ada kode promo. Buat kode promo untuk event ini.</p>
+                </div>
+            ) : (
+                <div className="grid gap-4">
+                    {promoCodes.map((promo) => (
+                        <div key={promo.id} className="bg-white rounded-xl shadow-sm p-6">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="px-2.5 py-1 bg-indigo-100 text-indigo-700 font-mono font-bold rounded text-lg">
+                                            {promo.code}
+                                        </span>
+                                        {!promo.isActive && (
+                                            <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">Non-aktif</span>
+                                        )}
+                                    </div>
+                                    <p className="text-gray-900 font-medium mt-2">
+                                        Diskon {promo.discountType === "PERCENTAGE" ? `${promo.discountValue}%` : formatCurrency(promo.discountValue)}
+                                    </p>
+                                    <div className="text-sm text-gray-500 mt-1 space-y-1">
+                                        <p>Berlaku: {new Date(promo.validFrom).toLocaleDateString("id-ID")} - {new Date(promo.validUntil).toLocaleDateString("id-ID")}</p>
+                                        <p>Digunakan: {promo._count?.usages || 0} kali {promo.usageLimitTotal ? `/ ${promo.usageLimitTotal}` : ""}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => { setEditingPromo(promo); setIsModalOpen(true); }}
+                                        className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                    >
+                                        <Edit2 className="h-5 w-5" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(promo.id)}
+                                        disabled={isDeleting === promo.id}
+                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                                    >
+                                        {isDeleting === promo.id ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                            <h3 className="text-lg font-bold text-gray-900">{editingPromo ? "Edit Promo" : "Tambah Promo"}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                                <XCircle className="h-6 w-6" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Kode Promo</label>
+                                <input name="code" defaultValue={editingPromo?.code || ""} required pattern="[A-Za-z0-9]+" className="w-full px-3 py-2 border rounded-lg uppercase" placeholder="Contoh: MERDEKA45" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipe Diskon</label>
+                                    <select name="discountType" defaultValue={editingPromo?.discountType || "PERCENTAGE"} className="w-full px-3 py-2 border rounded-lg">
+                                        <option value="PERCENTAGE">Persentase (%)</option>
+                                        <option value="FIXED_AMOUNT">Nominal (Rp)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Nilai Diskon</label>
+                                    <input name="discountValue" type="number" defaultValue={editingPromo?.discountValue || ""} required min="1" className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Min. Belanja</label>
+                                    <input name="minOrderAmount" type="number" defaultValue={editingPromo?.minOrderAmount || ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Maks. Diskon</label>
+                                    <input name="maxDiscountAmount" type="number" defaultValue={editingPromo?.maxDiscountAmount || ""} className="w-full px-3 py-2 border rounded-lg" placeholder="Opsional" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Kuota Total</label>
+                                    <input name="usageLimitTotal" type="number" defaultValue={editingPromo?.usageLimitTotal || ""} className="w-full px-3 py-2 border rounded-lg" placeholder="Tak Terbatas" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Limit per User</label>
+                                    <input name="usageLimitPerUser" type="number" defaultValue={editingPromo?.usageLimitPerUser || 1} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Berlaku Dari</label>
+                                    <input name="validFrom" type="datetime-local" required defaultValue={editingPromo?.validFrom ? new Date(editingPromo.validFrom).toISOString().slice(0, 16) : ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Berlaku Sampai</label>
+                                    <input name="validUntil" type="datetime-local" required defaultValue={editingPromo?.validUntil ? new Date(editingPromo.validUntil).toISOString().slice(0, 16) : ""} className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <label className="flex items-center gap-2">
+                                <input name="isActive" type="checkbox" defaultChecked={editingPromo?.isActive ?? true} className="rounded border-gray-300" />
+                                <span className="text-sm text-gray-700">Aktif</span>
+                            </label>
+                            <div className="pt-4 flex gap-3">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Batal</button>
+                                <button type="submit" disabled={isSaving} className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
+                                    {isSaving ? "Menyimpan..." : "Simpan"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

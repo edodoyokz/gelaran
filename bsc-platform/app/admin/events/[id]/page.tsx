@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { ImageUploadField } from "@/components/ui/ImageUploadField";
 
 interface Schedule {
     id: string;
@@ -1771,29 +1772,23 @@ export default function AdminEventDetailPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="edit-event-poster" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Poster Image URL
-                                    </label>
-                                    <input
-                                        id="edit-event-poster"
-                                        type="text"
+                                    <ImageUploadField
+                                        label="Poster Image"
                                         value={editEventForm.posterImage}
-                                        onChange={(e) => setEditEventForm({ ...editEventForm, posterImage: e.target.value })}
-                                        placeholder="https://..."
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={(url) => setEditEventForm({ ...editEventForm, posterImage: url })}
+                                        bucket="events"
+                                        folder={eventId}
+                                        aspectRatio="2/3"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="edit-event-banner" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Banner Image URL
-                                    </label>
-                                    <input
-                                        id="edit-event-banner"
-                                        type="text"
+                                    <ImageUploadField
+                                        label="Banner Image"
                                         value={editEventForm.bannerImage}
-                                        onChange={(e) => setEditEventForm({ ...editEventForm, bannerImage: e.target.value })}
-                                        placeholder="https://..."
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={(url) => setEditEventForm({ ...editEventForm, bannerImage: url })}
+                                        bucket="events"
+                                        folder={eventId}
+                                        aspectRatio="16/9"
                                     />
                                 </div>
                             </div>
