@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Calendar,
@@ -13,10 +13,12 @@ import {
     ChevronDown,
     Building2,
     CreditCard,
+    Home,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 interface OrganizerSidebarProps {
     organizationName: string;
@@ -52,8 +54,18 @@ export function OrganizerSidebar({
     isVerified = false 
 }: OrganizerSidebarProps) {
     const pathname = usePathname();
+    const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+        const supabase = createClient();
+        await supabase.auth.signOut();
+        router.push("/");
+        router.refresh();
+    };
 
     useEffect(() => {
         menuItems.forEach((item) => {
@@ -211,14 +223,23 @@ export function OrganizerSidebar({
                 {menuItems.map((item) => renderMenuItem(item))}
             </nav>
 
-            <div className="p-3 border-t border-slate-700">
+            <div className="p-3 border-t border-slate-700 space-y-1">
                 <Link
                     href="/"
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-700/50 hover:text-white transition-colors"
                 >
-                    <LogOut className="h-5 w-5 flex-shrink-0" />
+                    <Home className="h-5 w-5 flex-shrink-0" />
                     {!collapsed && <span className="text-sm font-medium">Kembali ke Home</span>}
                 </Link>
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors disabled:opacity-50"
+                >
+                    <LogOut className="h-5 w-5 flex-shrink-0" />
+                    {!collapsed && <span className="text-sm font-medium">{isLoggingOut ? "Keluar..." : "Keluar"}</span>}
+                </button>
             </div>
 
             <button
