@@ -78,20 +78,20 @@ interface Pagination {
 }
 
 const STATUS_CONFIG: Record<string, { color: string; icon: typeof CheckCircle; label: string }> = {
-    PENDING: { color: "bg-yellow-100 text-yellow-700", icon: Clock, label: "Pending" },
-    AWAITING_PAYMENT: { color: "bg-orange-100 text-orange-700", icon: Clock, label: "Awaiting Payment" },
-    PAID: { color: "bg-blue-100 text-blue-700", icon: CheckCircle, label: "Paid" },
-    CONFIRMED: { color: "bg-green-100 text-green-700", icon: CheckCircle, label: "Confirmed" },
-    CANCELLED: { color: "bg-red-100 text-red-700", icon: XCircle, label: "Cancelled" },
-    REFUNDED: { color: "bg-purple-100 text-purple-700", icon: XCircle, label: "Refunded" },
-    EXPIRED: { color: "bg-gray-100 text-gray-700", icon: XCircle, label: "Expired" },
+    PENDING: { color: "bg-yellow-100 text-yellow-700", icon: Clock, label: "Menunggu" },
+    AWAITING_PAYMENT: { color: "bg-orange-100 text-orange-700", icon: Clock, label: "Menunggu Pembayaran" },
+    PAID: { color: "bg-blue-100 text-blue-700", icon: CheckCircle, label: "Dibayar" },
+    CONFIRMED: { color: "bg-green-100 text-green-700", icon: CheckCircle, label: "Dikonfirmasi" },
+    CANCELLED: { color: "bg-red-100 text-red-700", icon: XCircle, label: "Dibatalkan" },
+    REFUNDED: { color: "bg-purple-100 text-purple-700", icon: XCircle, label: "Dikembalikan" },
+    EXPIRED: { color: "bg-gray-100 text-gray-700", icon: XCircle, label: "Kadaluarsa" },
 };
 
 const FILTER_TABS = [
-    { value: "all", label: "All Bookings" },
-    { value: "confirmed", label: "Confirmed" },
-    { value: "awaiting_payment", label: "Pending Payment" },
-    { value: "cancelled", label: "Cancelled" },
+    { value: "all", label: "Semua Pesanan" },
+    { value: "confirmed", label: "Dikonfirmasi" },
+    { value: "awaiting_payment", label: "Menunggu Pembayaran" },
+    { value: "cancelled", label: "Dibatalkan" },
 ];
 
 export default function MyBookingsPage() {
@@ -121,7 +121,7 @@ export default function MyBookingsPage() {
                     router.push("/login?returnUrl=/my-bookings");
                     return;
                 }
-                setError(data.error?.message || "Failed to load bookings");
+                setError(data.error?.message || "Gagal memuat pesanan");
                 return;
             }
 
@@ -131,7 +131,7 @@ export default function MyBookingsPage() {
                 setPagination(data.data.pagination);
             }
         } catch {
-            setError("Failed to load bookings");
+            setError("Gagal memuat pesanan");
         } finally {
             setIsLoading(false);
         }
@@ -185,7 +185,7 @@ export default function MyBookingsPage() {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading your bookings...</p>
+                    <p className="text-gray-500">Memuat pesanan kamu...</p>
                 </div>
             </div>
         );
@@ -197,8 +197,8 @@ export default function MyBookingsPage() {
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
                     <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/" className="text-indigo-600 hover:text-indigo-500">
-                        Back to Home
+                    <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-500">
+                        Kembali ke Dashboard
                     </Link>
                 </div>
             </div>
@@ -210,14 +210,14 @@ export default function MyBookingsPage() {
             <header className="bg-white border-b sticky top-0 z-10">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center gap-4">
-                        <Link href="/" className="text-gray-500 hover:text-gray-700">
+                        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
                             <ArrowLeft className="h-5 w-5" />
                         </Link>
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">My Bookings</h1>
+                            <h1 className="text-2xl font-bold text-gray-900">Pesanan Saya</h1>
                             {stats && (
                                 <p className="text-sm text-gray-500">
-                                    {stats.total} total bookings
+                                    {stats.total} total pesanan
                                 </p>
                             )}
                         </div>
@@ -246,7 +246,7 @@ export default function MyBookingsPage() {
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold text-gray-900">{stats.confirmed}</p>
-                                    <p className="text-sm text-gray-500">Confirmed</p>
+                                    <p className="text-sm text-gray-500">Dikonfirmasi</p>
                                 </div>
                             </div>
                         </div>
@@ -257,7 +257,7 @@ export default function MyBookingsPage() {
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
-                                    <p className="text-sm text-gray-500">Pending</p>
+                                    <p className="text-sm text-gray-500">Menunggu</p>
                                 </div>
                             </div>
                         </div>
@@ -268,7 +268,7 @@ export default function MyBookingsPage() {
                                 </div>
                                 <div>
                                     <p className="text-2xl font-bold text-gray-900">{stats.cancelled}</p>
-                                    <p className="text-sm text-gray-500">Cancelled</p>
+                                    <p className="text-sm text-gray-500">Dibatalkan</p>
                                 </div>
                             </div>
                         </div>
@@ -300,7 +300,7 @@ export default function MyBookingsPage() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search by booking code or event..."
+                                placeholder="Cari berdasarkan kode pesanan atau event..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -318,17 +318,17 @@ export default function MyBookingsPage() {
                 {filteredBookings.length === 0 ? (
                     <div className="bg-white rounded-xl shadow-sm p-12 text-center">
                         <Ticket className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings found</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Tidak ada pesanan ditemukan</h3>
                         <p className="text-gray-500 mb-6">
                             {activeTab === "all"
-                                ? "You haven't made any bookings yet."
-                                : `No ${activeTab} bookings found.`}
+                                ? "Kamu belum memiliki pesanan."
+                                : `Tidak ada pesanan ${activeTab === "confirmed" ? "dikonfirmasi" : activeTab === "awaiting_payment" ? "menunggu pembayaran" : "dibatalkan"}.`}
                         </p>
                         <Link
                             href="/events"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
                         >
-                            Browse Events
+                            Jelajahi Event
                             <ChevronRight className="h-4 w-4" />
                         </Link>
                     </div>
@@ -412,12 +412,12 @@ export default function MyBookingsPage() {
                                                             >
                                                                 <Ticket className="h-3 w-3" />
                                                                 {ticket.ticketType.name}
-                                                                {ticket.isCheckedIn && " (Checked In)"}
+                                                                {ticket.isCheckedIn && " (Sudah Check-In)"}
                                                             </span>
                                                         ))}
                                                         {booking.bookedTickets.length > 3 && (
                                                             <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                                                                +{booking.bookedTickets.length - 3} more
+                                                                +{booking.bookedTickets.length - 3} lainnya
                                                             </span>
                                                         )}
                                                     </div>
@@ -430,18 +430,18 @@ export default function MyBookingsPage() {
                                                             {formatCurrency(booking.totalAmount)}
                                                         </p>
                                                         <p className="text-xs text-gray-500">
-                                                            {booking.totalTickets} ticket{booking.totalTickets > 1 ? "s" : ""}
+                                                            {booking.totalTickets} tiket
                                                         </p>
                                                     </div>
 
                                                     <div className="flex gap-2">
                                                         {booking.status === "CONFIRMED" && (
                                                             <Link
-                                                                href={`/my-bookings/${booking.id}`}
+                                                                href={`/my-bookings/${booking.bookingCode}`}
                                                                 className="inline-flex items-center gap-1 px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                                                             >
                                                                 <QrCode className="h-4 w-4" />
-                                                                View Tickets
+                                                                Lihat Tiket
                                                             </Link>
                                                         )}
                                                         {booking.status === "AWAITING_PAYMENT" && (
@@ -449,7 +449,7 @@ export default function MyBookingsPage() {
                                                                 href={`/checkout/payment/${booking.id}`}
                                                                 className="inline-flex items-center gap-1 px-3 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors"
                                                             >
-                                                                Pay Now
+                                                                Bayar Sekarang
                                                             </Link>
                                                         )}
                                                         {(booking.status === "CONFIRMED" || booking.status === "PAID") && (
@@ -469,7 +469,7 @@ export default function MyBookingsPage() {
                                                 <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
                                                     <p className="text-sm text-orange-700">
                                                         <Clock className="inline-block h-4 w-4 mr-1" />
-                                                        Payment expires on {formatDate(booking.expiresAt)} at{" "}
+                                                        Pembayaran berakhir pada {formatDate(booking.expiresAt)} pukul{" "}
                                                         {new Date(booking.expiresAt).toLocaleTimeString("id-ID", {
                                                             hour: "2-digit",
                                                             minute: "2-digit",
@@ -493,7 +493,7 @@ export default function MyBookingsPage() {
                             disabled={currentPage === 1}
                             className="px-4 py-2 border rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                         >
-                            Previous
+                            Sebelumnya
                         </button>
                         <div className="flex items-center gap-1">
                             {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
@@ -531,7 +531,7 @@ export default function MyBookingsPage() {
                             disabled={currentPage === pagination.totalPages}
                             className="px-4 py-2 border rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                         >
-                            Next
+                            Selanjutnya
                         </button>
                     </div>
                 )}

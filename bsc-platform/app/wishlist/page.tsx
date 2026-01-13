@@ -60,7 +60,7 @@ export default function WishlistPage() {
                     router.push("/login?returnUrl=/wishlist");
                     return;
                 }
-                setError(data.error?.message || "Failed to load wishlist");
+                setError(data.error?.message || "Gagal memuat wishlist");
                 return;
             }
 
@@ -68,7 +68,7 @@ export default function WishlistPage() {
                 setWishlists(data.data.wishlists);
             }
         } catch {
-            setError("Failed to load wishlist");
+            setError("Gagal memuat wishlist");
         } finally {
             setIsLoading(false);
         }
@@ -88,13 +88,13 @@ export default function WishlistPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to remove from wishlist");
+                alert(data.error?.message || "Gagal menghapus dari wishlist");
                 return;
             }
 
             setWishlists((prev) => prev.filter((w) => w.event.id !== eventId));
         } catch {
-            alert("Failed to remove from wishlist");
+            alert("Gagal menghapus dari wishlist");
         } finally {
             setRemovingId(null);
         }
@@ -130,7 +130,7 @@ export default function WishlistPage() {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading wishlist...</p>
+                    <p className="text-gray-500">Memuat wishlist...</p>
                 </div>
             </div>
         );
@@ -142,8 +142,8 @@ export default function WishlistPage() {
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
                     <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/" className="text-indigo-600 hover:text-indigo-500">
-                        Back to Home
+                    <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-500">
+                        Kembali ke Dashboard
                     </Link>
                 </div>
             </div>
@@ -155,13 +155,13 @@ export default function WishlistPage() {
             <header className="bg-white border-b sticky top-0 z-10">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center gap-4">
-                        <Link href="/" className="text-gray-500 hover:text-gray-700">
+                        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
                             <ArrowLeft className="h-5 w-5" />
                         </Link>
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">My Wishlist</h1>
+                            <h1 className="text-2xl font-bold text-gray-900">Wishlist Saya</h1>
                             <p className="text-sm text-gray-500">
-                                {wishlists.length} saved event{wishlists.length !== 1 ? "s" : ""}
+                                {wishlists.length} event tersimpan
                             </p>
                         </div>
                     </div>
@@ -173,16 +173,16 @@ export default function WishlistPage() {
                     <div className="bg-white rounded-xl shadow-sm p-12 text-center">
                         <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
-                            Your wishlist is empty
+                            Wishlist kamu kosong
                         </h3>
                         <p className="text-gray-500 mb-6">
-                            Save events you&apos;re interested in to find them easily later.
+                            Simpan event yang kamu minati untuk ditemukan dengan mudah nanti.
                         </p>
                         <Link
                             href="/events"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
                         >
-                            Browse Events
+                            Jelajahi Event
                             <ExternalLink className="h-4 w-4" />
                         </Link>
                     </div>
@@ -204,7 +204,7 @@ export default function WishlistPage() {
                                     {item.event.status !== "PUBLISHED" && (
                                         <div className="absolute top-3 left-3">
                                             <span className="inline-flex px-2 py-1 bg-red-500 text-white rounded text-xs font-medium">
-                                                {item.event.status === "ENDED" ? "Ended" : "Unavailable"}
+                                                {item.event.status === "ENDED" ? "Berakhir" : "Tidak Tersedia"}
                                             </span>
                                         </div>
                                     )}
@@ -214,7 +214,7 @@ export default function WishlistPage() {
                                         onClick={() => handleRemove(item.event.id)}
                                         disabled={removingId === item.event.id}
                                         className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-                                        title="Remove from wishlist"
+                                        title="Hapus dari wishlist"
                                     >
                                         {removingId === item.event.id ? (
                                             <Loader2 className="h-5 w-5 animate-spin" />
@@ -227,10 +227,10 @@ export default function WishlistPage() {
                                         {item.event.price && (
                                             <div className="text-white font-bold">
                                                 {item.event.price.isFree ? (
-                                                    <span className="text-green-400">FREE</span>
+                                                    <span className="text-green-400">GRATIS</span>
                                                 ) : (
                                                     <span>
-                                                        From {formatCurrency(item.event.price.startingFrom)}
+                                                        Mulai {formatCurrency(item.event.price.startingFrom)}
                                                     </span>
                                                 )}
                                             </div>
@@ -279,7 +279,7 @@ export default function WishlistPage() {
                                             href={`/events/${item.event.slug}`}
                                             className="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                                         >
-                                            View Event
+                                            Lihat Event
                                         </Link>
                                         <button
                                             type="button"

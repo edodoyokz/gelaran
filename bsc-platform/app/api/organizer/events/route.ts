@@ -171,14 +171,29 @@ export async function GET(request: NextRequest) {
         }
 
         const searchParams = request.nextUrl.searchParams;
-        const status = searchParams.get("status") || undefined;
+        const statusParam = searchParams.get("status") || undefined;
         const search = searchParams.get("search") || undefined;
+
+        const validStatuses = ["DRAFT", "PENDING_REVIEW", "PUBLISHED", "CANCELLED", "ENDED"] as const;
+        type EventStatusType = typeof validStatuses[number];
+
+        let statusFilter: { status?: EventStatusType | { in: EventStatusType[] } } = {};
+        if (statusParam) {
+            const statuses = statusParam.split(",").filter((s): s is EventStatusType => 
+                validStatuses.includes(s as EventStatusType)
+            );
+            if (statuses.length === 1) {
+                statusFilter = { status: statuses[0] };
+            } else if (statuses.length > 1) {
+                statusFilter = { status: { in: statuses } };
+            }
+        }
 
         const events = await prisma.event.findMany({
             where: {
                 organizerId: organizer.id,
                 deletedAt: null,
-                ...(status && { status: status as "DRAFT" | "PUBLISHED" | "PENDING_REVIEW" | "CANCELLED" | "ENDED" }),
+                ...statusFilter,
                 ...(search && {
                     OR: [
                         { title: { contains: search, mode: "insensitive" } },

@@ -150,20 +150,20 @@ interface BookingActions {
 }
 
 const STATUS_CONFIG: Record<string, { color: string; bgColor: string; icon: typeof CheckCircle; label: string }> = {
-    PENDING: { color: "text-yellow-700", bgColor: "bg-yellow-100", icon: Clock, label: "Pending" },
-    AWAITING_PAYMENT: { color: "text-orange-700", bgColor: "bg-orange-100", icon: Clock, label: "Awaiting Payment" },
-    PAID: { color: "text-blue-700", bgColor: "bg-blue-100", icon: CheckCircle, label: "Paid" },
-    CONFIRMED: { color: "text-green-700", bgColor: "bg-green-100", icon: CheckCircle, label: "Confirmed" },
-    CANCELLED: { color: "text-red-700", bgColor: "bg-red-100", icon: XCircle, label: "Cancelled" },
-    REFUNDED: { color: "text-purple-700", bgColor: "bg-purple-100", icon: XCircle, label: "Refunded" },
-    EXPIRED: { color: "text-gray-700", bgColor: "bg-gray-100", icon: XCircle, label: "Expired" },
+    PENDING: { color: "text-yellow-700", bgColor: "bg-yellow-100", icon: Clock, label: "Menunggu" },
+    AWAITING_PAYMENT: { color: "text-orange-700", bgColor: "bg-orange-100", icon: Clock, label: "Menunggu Pembayaran" },
+    PAID: { color: "text-blue-700", bgColor: "bg-blue-100", icon: CheckCircle, label: "Dibayar" },
+    CONFIRMED: { color: "text-green-700", bgColor: "bg-green-100", icon: CheckCircle, label: "Dikonfirmasi" },
+    CANCELLED: { color: "text-red-700", bgColor: "bg-red-100", icon: XCircle, label: "Dibatalkan" },
+    REFUNDED: { color: "text-purple-700", bgColor: "bg-purple-100", icon: XCircle, label: "Dikembalikan" },
+    EXPIRED: { color: "text-gray-700", bgColor: "bg-gray-100", icon: XCircle, label: "Kadaluarsa" },
 };
 
 const TICKET_STATUS_CONFIG: Record<string, { color: string; label: string }> = {
-    ACTIVE: { color: "text-green-700 bg-green-100", label: "Active" },
-    TRANSFERRED: { color: "text-blue-700 bg-blue-100", label: "Transferred" },
-    CANCELLED: { color: "text-red-700 bg-red-100", label: "Cancelled" },
-    REFUNDED: { color: "text-purple-700 bg-purple-100", label: "Refunded" },
+    ACTIVE: { color: "text-green-700 bg-green-100", label: "Aktif" },
+    TRANSFERRED: { color: "text-blue-700 bg-blue-100", label: "Ditransfer" },
+    CANCELLED: { color: "text-red-700 bg-red-100", label: "Dibatalkan" },
+    REFUNDED: { color: "text-purple-700 bg-purple-100", label: "Dikembalikan" },
 };
 
 export default function BookingDetailPage({
@@ -202,7 +202,7 @@ export default function BookingDetailPage({
                     router.push(`/login?returnUrl=/my-bookings/${bookingCode}`);
                     return;
                 }
-                setError(data.error?.message || "Failed to load booking");
+                setError(data.error?.message || "Gagal memuat pesanan");
                 return;
             }
 
@@ -211,7 +211,7 @@ export default function BookingDetailPage({
                 setActions(data.data.actions);
             }
         } catch {
-            setError("Failed to load booking");
+            setError("Gagal memuat pesanan");
         } finally {
             setIsLoading(false);
         }
@@ -229,20 +229,20 @@ export default function BookingDetailPage({
             const res = await fetch(`/api/my-bookings/${bookingCode}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ reason: cancelReason || "Cancelled by customer" }),
+                body: JSON.stringify({ reason: cancelReason || "Dibatalkan oleh pelanggan" }),
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                alert(data.error?.message || "Failed to cancel booking");
+                alert(data.error?.message || "Gagal membatalkan pesanan");
                 return;
             }
 
             setShowCancelModal(false);
             fetchBooking();
         } catch {
-            alert("Failed to cancel booking");
+            alert("Gagal membatalkan pesanan");
         } finally {
             setIsCancelling(false);
         }
@@ -298,7 +298,7 @@ export default function BookingDetailPage({
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading booking details...</p>
+                    <p className="text-gray-500">Memuat detail pesanan...</p>
                 </div>
             </div>
         );
@@ -309,14 +309,14 @@ export default function BookingDetailPage({
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center max-w-md px-4">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">Booking Not Found</h2>
-                    <p className="text-gray-500 mb-6">{error || "The booking you're looking for doesn't exist or you don't have access to it."}</p>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Pesanan Tidak Ditemukan</h2>
+                    <p className="text-gray-500 mb-6">{error || "Pesanan yang kamu cari tidak ada atau kamu tidak memiliki akses."}</p>
                     <Link
                         href="/my-bookings"
                         className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Back to My Bookings
+                        Kembali ke Pesanan Saya
                     </Link>
                 </div>
             </div>
@@ -337,7 +337,7 @@ export default function BookingDetailPage({
                                 <ArrowLeft className="h-5 w-5" />
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-gray-900">Booking Details</h1>
+                                <h1 className="text-xl font-bold text-gray-900">Detail Pesanan</h1>
                                 <p className="text-sm text-gray-500 font-mono">{booking.bookingCode}</p>
                             </div>
                         </div>
@@ -346,7 +346,7 @@ export default function BookingDetailPage({
                                 type="button"
                                 onClick={() => copyToClipboard(booking.bookingCode, "booking")}
                                 className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Copy booking code"
+                                title="Salin kode pesanan"
                             >
                                 {copiedCode === "booking" ? <CheckCircle className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
                             </button>
@@ -354,14 +354,14 @@ export default function BookingDetailPage({
                                 type="button"
                                 onClick={() => window.print()}
                                 className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Print"
+                                title="Cetak"
                             >
                                 <Printer className="h-5 w-5" />
                             </button>
                             <button
                                 type="button"
                                 className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Share"
+                                title="Bagikan"
                             >
                                 <Share2 className="h-5 w-5" />
                             </button>
@@ -381,17 +381,17 @@ export default function BookingDetailPage({
                                 <p className={`font-bold text-lg ${statusConfig.color}`}>{statusConfig.label}</p>
                                 {booking.status === "AWAITING_PAYMENT" && booking.expiresAt && (
                                     <p className="text-sm text-orange-600">
-                                        Payment expires on {formatDateTime(booking.expiresAt)}
+                                        Pembayaran berakhir pada {formatDateTime(booking.expiresAt)}
                                     </p>
                                 )}
                                 {booking.status === "CANCELLED" && booking.cancellationReason && (
                                     <p className="text-sm text-red-600">
-                                        Reason: {booking.cancellationReason}
+                                        Alasan: {booking.cancellationReason}
                                     </p>
                                 )}
                                 {booking.status === "CONFIRMED" && booking.confirmedAt && (
                                     <p className="text-sm text-green-600">
-                                        Confirmed on {formatDateTime(booking.confirmedAt)}
+                                        Dikonfirmasi pada {formatDateTime(booking.confirmedAt)}
                                     </p>
                                 )}
                             </div>
@@ -400,7 +400,7 @@ export default function BookingDetailPage({
                                     href={`/checkout/payment/${booking.id}`}
                                     className="px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
                                 >
-                                    Pay Now
+                                    Bayar Sekarang
                                 </Link>
                             )}
                         </div>
@@ -442,7 +442,7 @@ export default function BookingDetailPage({
                                         <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                                             <Video className="h-5 w-5 text-indigo-600 mt-0.5" />
                                             <div>
-                                                <p className="font-medium text-gray-900">Online Event</p>
+                                                <p className="font-medium text-gray-900">Event Online</p>
                                                 {(booking.status === "CONFIRMED" || booking.status === "PAID") && booking.event.onlineMeetingUrl && (
                                                     <a
                                                         href={booking.event.onlineMeetingUrl}
@@ -450,7 +450,7 @@ export default function BookingDetailPage({
                                                         rel="noopener noreferrer"
                                                         className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
                                                     >
-                                                        Join Meeting <ExternalLink className="h-3 w-3" />
+                                                        Gabung Meeting <ExternalLink className="h-3 w-3" />
                                                     </a>
                                                 )}
                                             </div>
@@ -470,7 +470,7 @@ export default function BookingDetailPage({
                                                         rel="noopener noreferrer"
                                                         className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 mt-1"
                                                     >
-                                                        View on Maps <ExternalLink className="h-3 w-3" />
+                                                        Lihat di Maps <ExternalLink className="h-3 w-3" />
                                                     </a>
                                                 )}
                                             </div>
@@ -491,7 +491,7 @@ export default function BookingDetailPage({
                                         </div>
                                     )}
                                     <div>
-                                        <p className="text-sm text-gray-500">Organized by</p>
+                                        <p className="text-sm text-gray-500">Diselenggarakan oleh</p>
                                         <p className="font-medium text-gray-900">
                                             {booking.event.organizer.organizerProfile?.organizationName || booking.event.organizer.name}
                                         </p>
@@ -504,7 +504,7 @@ export default function BookingDetailPage({
                             <div className="p-4 border-b flex items-center justify-between">
                                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                     <QrCode className="h-5 w-5 text-indigo-600" />
-                                    Your Tickets ({booking.bookedTickets.length})
+                                    Tiket Kamu ({booking.bookedTickets.length})
                                 </h3>
                                 {hasValidTickets && (
                                     <button
@@ -512,7 +512,7 @@ export default function BookingDetailPage({
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                                     >
                                         <Download className="h-4 w-4" />
-                                        Download All
+                                        Unduh Semua
                                     </button>
                                 )}
                             </div>
@@ -543,7 +543,7 @@ export default function BookingDetailPage({
                                                                 {ticket.isCheckedIn && (
                                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
                                                                         <CheckCircle className="h-3 w-3" />
-                                                                        Checked In
+                                                                        Sudah Check-In
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -579,14 +579,14 @@ export default function BookingDetailPage({
                                                             </div>
                                                             {ticket.isCheckedIn && ticket.checkedInAt && (
                                                                 <p className="text-sm text-gray-500 mt-3">
-                                                                    Checked in at {formatDateTime(ticket.checkedInAt)}
+                                                                    Check-in pada {formatDateTime(ticket.checkedInAt)}
                                                                 </p>
                                                             )}
                                                         </div>
 
                                                         <div className="space-y-4">
                                                             <div>
-                                                                <p className="text-sm text-gray-500 mb-1">Ticket Type</p>
+                                                                <p className="text-sm text-gray-500 mb-1">Tipe Tiket</p>
                                                                 <p className="font-medium text-gray-900">{ticket.ticketType.name}</p>
                                                                 {ticket.ticketType.description && (
                                                                     <p className="text-sm text-gray-600 mt-1">{ticket.ticketType.description}</p>
@@ -594,11 +594,11 @@ export default function BookingDetailPage({
                                                             </div>
                                                             <div className="grid grid-cols-2 gap-4">
                                                                 <div>
-                                                                    <p className="text-sm text-gray-500 mb-1">Unit Price</p>
+                                                                    <p className="text-sm text-gray-500 mb-1">Harga Satuan</p>
                                                                     <p className="font-medium text-gray-900">{formatCurrency(ticket.unitPrice)}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-sm text-gray-500 mb-1">Final Price</p>
+                                                                    <p className="text-sm text-gray-500 mb-1">Harga Akhir</p>
                                                                     <p className="font-medium text-gray-900">{formatCurrency(ticket.finalPrice)}</p>
                                                                 </div>
                                                             </div>
@@ -608,7 +608,7 @@ export default function BookingDetailPage({
                                                                     className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                                                                 >
                                                                     <Download className="h-4 w-4" />
-                                                                    Download E-Ticket
+                                                                    Unduh E-Tiket
                                                                 </button>
                                                             )}
                                                         </div>
@@ -624,7 +624,7 @@ export default function BookingDetailPage({
                         {(booking.event.termsAndConditions || booking.event.refundPolicy) && (
                             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                                 <div className="p-4 border-b">
-                                    <h3 className="text-lg font-bold text-gray-900">Important Information</h3>
+                                    <h3 className="text-lg font-bold text-gray-900">Informasi Penting</h3>
                                 </div>
                                 <div className="divide-y">
                                     {booking.event.termsAndConditions && (
@@ -634,7 +634,7 @@ export default function BookingDetailPage({
                                                 onClick={() => setShowTerms(!showTerms)}
                                                 className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
                                             >
-                                                <span className="font-medium text-gray-900">Terms & Conditions</span>
+                                                <span className="font-medium text-gray-900">Syarat & Ketentuan</span>
                                                 {showTerms ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
                                             </button>
                                             {showTerms && (
@@ -653,7 +653,7 @@ export default function BookingDetailPage({
                                                 onClick={() => setShowRefundPolicy(!showRefundPolicy)}
                                                 className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
                                             >
-                                                <span className="font-medium text-gray-900">Refund Policy</span>
+                                                <span className="font-medium text-gray-900">Kebijakan Pengembalian</span>
                                                 {showRefundPolicy ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
                                             </button>
                                             {showRefundPolicy && (
@@ -673,28 +673,28 @@ export default function BookingDetailPage({
                     <div className="space-y-6">
                         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                             <div className="p-4 border-b">
-                                <h3 className="text-lg font-bold text-gray-900">Order Summary</h3>
+                                <h3 className="text-lg font-bold text-gray-900">Ringkasan Pesanan</h3>
                             </div>
                             <div className="p-4 space-y-3">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Subtotal ({booking.totalTickets} tickets)</span>
+                                    <span className="text-gray-500">Subtotal ({booking.totalTickets} tiket)</span>
                                     <span className="font-medium">{formatCurrency(booking.subtotal)}</span>
                                 </div>
                                 {Number(booking.discountAmount) > 0 && (
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Discount</span>
+                                        <span className="text-gray-500">Diskon</span>
                                         <span className="font-medium text-green-600">-{formatCurrency(booking.discountAmount)}</span>
                                     </div>
                                 )}
                                 {Number(booking.taxAmount) > 0 && (
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Tax</span>
+                                        <span className="text-gray-500">Pajak</span>
                                         <span className="font-medium">{formatCurrency(booking.taxAmount)}</span>
                                     </div>
                                 )}
                                 {Number(booking.platformFee) > 0 && (
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Service Fee</span>
+                                        <span className="text-gray-500">Biaya Layanan</span>
                                         <span className="font-medium">{formatCurrency(booking.platformFee)}</span>
                                     </div>
                                 )}
@@ -710,21 +710,21 @@ export default function BookingDetailPage({
                                 <div className="p-4 border-b">
                                     <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                         <CreditCard className="h-5 w-5 text-indigo-600" />
-                                        Payment Info
+                                        Info Pembayaran
                                     </h3>
                                 </div>
                                 <div className="p-4 space-y-3">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Transaction ID</span>
+                                        <span className="text-gray-500">ID Transaksi</span>
                                         <span className="font-mono text-xs">{booking.transaction.transactionCode}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Payment Method</span>
+                                        <span className="text-gray-500">Metode Pembayaran</span>
                                         <span className="font-medium capitalize">{booking.transaction.paymentMethod.replace(/_/g, " ")}</span>
                                     </div>
                                     {booking.transaction.paymentChannel && (
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Channel</span>
+                                            <span className="text-gray-500">Kanal</span>
                                             <span className="font-medium">{booking.transaction.paymentChannel}</span>
                                         </div>
                                     )}
@@ -736,7 +736,7 @@ export default function BookingDetailPage({
                                     </div>
                                     {booking.transaction.paidAt && (
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Paid At</span>
+                                            <span className="text-gray-500">Dibayar Pada</span>
                                             <span className="font-medium">{formatDateTime(booking.transaction.paidAt)}</span>
                                         </div>
                                     )}
@@ -749,7 +749,7 @@ export default function BookingDetailPage({
                                 <div className="p-4 border-b">
                                     <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                         <RefreshCw className="h-5 w-5 text-purple-600" />
-                                        Refund History
+                                        Riwayat Pengembalian
                                     </h3>
                                 </div>
                                 <div className="divide-y">
@@ -765,12 +765,12 @@ export default function BookingDetailPage({
                                                 </span>
                                                 <span className="font-bold text-gray-900">{formatCurrency(refund.refundAmount)}</span>
                                             </div>
-                                            <p className="text-sm text-gray-500">{refund.refundType} refund</p>
+                                            <p className="text-sm text-gray-500">Pengembalian {refund.refundType}</p>
                                             {refund.reason && (
                                                 <p className="text-sm text-gray-600 mt-1">{refund.reason}</p>
                                             )}
                                             <p className="text-xs text-gray-400 mt-2">
-                                                Requested {formatDateTime(refund.requestedAt)}
+                                                Diminta {formatDateTime(refund.requestedAt)}
                                             </p>
                                         </div>
                                     ))}
@@ -780,7 +780,7 @@ export default function BookingDetailPage({
 
                         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                             <div className="p-4 border-b">
-                                <h3 className="text-lg font-bold text-gray-900">Need Help?</h3>
+                                <h3 className="text-lg font-bold text-gray-900">Butuh Bantuan?</h3>
                             </div>
                             <div className="p-4 space-y-3">
                                 <a
@@ -788,14 +788,14 @@ export default function BookingDetailPage({
                                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                     <Mail className="h-5 w-5 text-gray-400" />
-                                    <span className="text-sm text-gray-700">Contact Organizer</span>
+                                    <span className="text-sm text-gray-700">Hubungi Penyelenggara</span>
                                 </a>
                                 <Link
                                     href="/contact"
                                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                     <Phone className="h-5 w-5 text-gray-400" />
-                                    <span className="text-sm text-gray-700">Contact Support</span>
+                                    <span className="text-sm text-gray-700">Hubungi Dukungan</span>
                                 </Link>
                             </div>
                         </div>
@@ -807,7 +807,7 @@ export default function BookingDetailPage({
                                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
                             >
                                 <Ban className="h-5 w-5" />
-                                Cancel Booking
+                                Batalkan Pesanan
                             </button>
                         )}
                     </div>
@@ -822,25 +822,25 @@ export default function BookingDetailPage({
                                 <AlertTriangle className="h-6 w-6 text-red-600" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900">Cancel Booking?</h3>
-                                <p className="text-sm text-gray-500">This action cannot be undone</p>
+                                <h3 className="text-lg font-bold text-gray-900">Batalkan Pesanan?</h3>
+                                <p className="text-sm text-gray-500">Tindakan ini tidak dapat dibatalkan</p>
                             </div>
                         </div>
 
                         <p className="text-gray-600 mb-4">
-                            Are you sure you want to cancel this booking? You will need to book again if you change your mind.
+                            Apakah kamu yakin ingin membatalkan pesanan ini? Kamu perlu memesan lagi jika berubah pikiran.
                         </p>
 
                         <div className="mb-6">
                             <label htmlFor="cancelReason" className="block text-sm font-medium text-gray-700 mb-2">
-                                Reason for cancellation (optional)
+                                Alasan pembatalan (opsional)
                             </label>
                             <textarea
                                 id="cancelReason"
                                 rows={3}
                                 value={cancelReason}
                                 onChange={(e) => setCancelReason(e.target.value)}
-                                placeholder="Tell us why you're cancelling..."
+                                placeholder="Beritahu kami mengapa kamu membatalkan..."
                                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
                             />
                         </div>
@@ -852,7 +852,7 @@ export default function BookingDetailPage({
                                 disabled={isCancelling}
                                 className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
                             >
-                                Keep Booking
+                                Pertahankan Pesanan
                             </button>
                             <button
                                 type="button"
@@ -863,10 +863,10 @@ export default function BookingDetailPage({
                                 {isCancelling ? (
                                     <>
                                         <Loader2 className="h-4 w-4 animate-spin" />
-                                        Cancelling...
+                                        Membatalkan...
                                     </>
                                 ) : (
-                                    "Yes, Cancel"
+                                    "Ya, Batalkan"
                                 )}
                             </button>
                         </div>

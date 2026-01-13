@@ -46,11 +46,11 @@ interface UserProfile {
 }
 
 const GENDER_OPTIONS = [
-    { value: "", label: "Select Gender" },
-    { value: "MALE", label: "Male" },
-    { value: "FEMALE", label: "Female" },
-    { value: "OTHER", label: "Other" },
-    { value: "PREFER_NOT_TO_SAY", label: "Prefer not to say" },
+    { value: "", label: "Pilih Jenis Kelamin" },
+    { value: "MALE", label: "Laki-laki" },
+    { value: "FEMALE", label: "Perempuan" },
+    { value: "OTHER", label: "Lainnya" },
+    { value: "PREFER_NOT_TO_SAY", label: "Tidak ingin menyebutkan" },
 ];
 
 const PROVINCE_OPTIONS = [
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                     router.push("/login?returnUrl=/profile");
                     return;
                 }
-                setError(data.error?.message || "Failed to load profile");
+                setError(data.error?.message || "Gagal memuat profil");
                 return;
             }
 
@@ -151,7 +151,7 @@ export default function ProfilePage() {
                 });
             }
         } catch {
-            setError("Failed to load profile");
+            setError("Gagal memuat profil");
         } finally {
             setIsLoading(false);
         }
@@ -188,14 +188,14 @@ export default function ProfilePage() {
             const data = await res.json();
 
             if (!data.success) {
-                setError(data.error?.message || "Failed to update profile");
+                setError(data.error?.message || "Gagal memperbarui profil");
                 return;
             }
 
-            setSuccess("Profile updated successfully!");
+            setSuccess("Profil berhasil diperbarui!");
             await fetchProfile();
         } catch {
-            setError("Failed to update profile");
+            setError("Gagal memperbarui profil");
         } finally {
             setIsSaving(false);
         }
@@ -215,13 +215,13 @@ export default function ProfilePage() {
 
         const validTypes = ["image/jpeg", "image/png", "image/webp"];
         if (!validTypes.includes(file.type)) {
-            setError("Please upload a valid image (JPEG, PNG, or WebP)");
+            setError("Silakan unggah gambar yang valid (JPEG, PNG, atau WebP)");
             return;
         }
 
         const maxSize = 2 * 1024 * 1024;
         if (file.size > maxSize) {
-            setError("Image size must be less than 2MB");
+            setError("Ukuran gambar harus kurang dari 2MB");
             return;
         }
 
@@ -240,14 +240,14 @@ export default function ProfilePage() {
             const data = await res.json();
 
             if (!data.success) {
-                setError(data.error?.message || "Failed to update avatar");
+                setError(data.error?.message || "Gagal memperbarui avatar");
                 return;
             }
 
-            setSuccess("Avatar updated successfully!");
+            setSuccess("Avatar berhasil diperbarui!");
             await fetchProfile();
         } catch {
-            setError("Failed to upload avatar");
+            setError("Gagal mengunggah avatar");
         } finally {
             setIsUploadingAvatar(false);
             if (fileInputRef.current) {
@@ -270,7 +270,7 @@ export default function ProfilePage() {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading profile...</p>
+                    <p className="text-gray-500">Memuat profil...</p>
                 </div>
             </div>
         );
@@ -282,8 +282,8 @@ export default function ProfilePage() {
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
                     <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/" className="text-indigo-600 hover:text-indigo-500">
-                        Back to Home
+                    <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-500">
+                        Kembali ke Dashboard
                     </Link>
                 </div>
             </div>
@@ -295,10 +295,10 @@ export default function ProfilePage() {
             <header className="bg-white border-b sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center gap-4">
-                        <Link href="/" className="text-gray-500 hover:text-gray-700">
+                        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
                             <ArrowLeft className="h-5 w-5" />
                         </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+                        <h1 className="text-2xl font-bold text-gray-900">Profil Saya</h1>
                     </div>
                 </div>
             </header>
@@ -364,12 +364,12 @@ export default function ProfilePage() {
                                     {profile?.isVerified ? (
                                         <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
                                             <Shield className="h-4 w-4" />
-                                            Verified
+Terverifikasi
                                         </span>
                                     ) : (
                                         <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
                                             <AlertCircle className="h-4 w-4" />
-                                            Unverified
+                                            Belum Terverifikasi
                                         </span>
                                     )}
                                     <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium capitalize">
@@ -381,12 +381,12 @@ export default function ProfilePage() {
                             <div className="mt-6 pt-6 border-t space-y-3">
                                 <div className="flex items-center gap-3 text-sm">
                                     <Calendar className="h-4 w-4 text-gray-400" />
-                                    <span className="text-gray-500">Member since</span>
+                                    <span className="text-gray-500">Anggota sejak</span>
                                     <span className="ml-auto text-gray-900">{formatDate(profile?.createdAt || null)}</span>
                                 </div>
                                 <div className="flex items-center gap-3 text-sm">
                                     <Clock className="h-4 w-4 text-gray-400" />
-                                    <span className="text-gray-500">Last login</span>
+                                    <span className="text-gray-500">Login terakhir</span>
                                     <span className="ml-auto text-gray-900">{formatDate(profile?.lastLoginAt || null)}</span>
                                 </div>
                             </div>
@@ -396,7 +396,7 @@ export default function ProfilePage() {
                                     href="/my-bookings"
                                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                                 >
-                                    <span className="font-medium text-gray-900">My Bookings</span>
+                                    <span className="font-medium text-gray-900">Pesanan Saya</span>
                                     <ArrowLeft className="h-4 w-4 text-gray-400 rotate-180" />
                                 </Link>
                                 <Link
@@ -415,13 +415,13 @@ export default function ProfilePage() {
                             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
                                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                                     <User className="h-5 w-5 text-indigo-600" />
-                                    Personal Information
+                                    Informasi Pribadi
                                 </h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Full Name *
+                                            Nama Lengkap *
                                         </label>
                                         <input
                                             id="name"
@@ -435,7 +435,7 @@ export default function ProfilePage() {
 
                                     <div>
                                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Email Address
+                                            Alamat Email
                                         </label>
                                         <div className="relative">
                                             <input
@@ -447,12 +447,12 @@ export default function ProfilePage() {
                                             />
                                             <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                                         </div>
-                                        <p className="mt-1 text-xs text-gray-500">Email cannot be changed</p>
+                                        <p className="mt-1 text-xs text-gray-500">Email tidak dapat diubah</p>
                                     </div>
 
                                     <div>
                                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Phone Number
+                                            Nomor Telepon
                                         </label>
                                         <div className="relative">
                                             <input
@@ -469,7 +469,7 @@ export default function ProfilePage() {
 
                                     <div>
                                         <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Date of Birth
+                                            Tanggal Lahir
                                         </label>
                                         <input
                                             id="birthDate"
@@ -482,7 +482,7 @@ export default function ProfilePage() {
 
                                     <div>
                                         <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Gender
+                                            Jenis Kelamin
                                         </label>
                                         <select
                                             id="gender"
@@ -503,13 +503,13 @@ export default function ProfilePage() {
                             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
                                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                                     <MapPin className="h-5 w-5 text-indigo-600" />
-                                    Address
+                                    Alamat
                                 </h3>
 
                                 <div className="space-y-4">
                                     <div>
                                         <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Street Address
+                                            Alamat Jalan
                                         </label>
                                         <textarea
                                             id="address"
@@ -517,14 +517,14 @@ export default function ProfilePage() {
                                             onChange={(e) => handleInputChange("address", e.target.value)}
                                             rows={2}
                                             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                                            placeholder="Enter your street address"
+                                            placeholder="Masukkan alamat jalan kamu"
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div>
                                             <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                                                City
+Kota
                                             </label>
                                             <input
                                                 id="city"
@@ -532,13 +532,13 @@ export default function ProfilePage() {
                                                 value={formData.city}
                                                 onChange={(e) => handleInputChange("city", e.target.value)}
                                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                placeholder="City"
+                                                placeholder="Kota"
                                             />
                                         </div>
 
                                         <div>
                                             <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
-                                                Province
+Provinsi
                                             </label>
                                             <select
                                                 id="province"
@@ -546,7 +546,7 @@ export default function ProfilePage() {
                                                 onChange={(e) => handleInputChange("province", e.target.value)}
                                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             >
-                                                <option value="">Select Province</option>
+                                                <option value="">Pilih Provinsi</option>
                                                 {PROVINCE_OPTIONS.map((p) => (
                                                     <option key={p} value={p}>
                                                         {p}
@@ -557,7 +557,7 @@ export default function ProfilePage() {
 
                                         <div>
                                             <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
-                                                Postal Code
+                                                Kode Pos
                                             </label>
                                             <input
                                                 id="postalCode"
@@ -575,13 +575,13 @@ export default function ProfilePage() {
                             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
                                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                                     <Globe className="h-5 w-5 text-indigo-600" />
-                                    Preferences
+                                    Preferensi
                                 </h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label htmlFor="locale" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Language
+                                            Bahasa
                                         </label>
                                         <select
                                             id="locale"
@@ -596,7 +596,7 @@ export default function ProfilePage() {
 
                                     <div>
                                         <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Timezone
+                                            Zona Waktu
                                         </label>
                                         <select
                                             id="timezone"
@@ -614,10 +614,10 @@ export default function ProfilePage() {
 
                             <div className="flex justify-end gap-4">
                                 <Link
-                                    href="/"
+                                    href="/dashboard"
                                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                                 >
-                                    Cancel
+                                    Batal
                                 </Link>
                                 <button
                                     type="submit"
@@ -625,7 +625,7 @@ export default function ProfilePage() {
                                     className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
                                 >
                                     {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                                    Save Changes
+                                    Simpan Perubahan
                                 </button>
                             </div>
                         </form>

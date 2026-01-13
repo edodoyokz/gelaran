@@ -14,6 +14,7 @@ import {
     Building2,
     CreditCard,
     Home,
+    ScanLine,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -36,6 +37,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
     { href: "/organizer", label: "Dashboard", icon: LayoutDashboard },
     { href: "/organizer/events", label: "Event Saya", icon: Calendar },
+    { href: "/organizer/gate", label: "Gate & POS", icon: ScanLine },
     { 
         href: "/organizer/wallet", 
         label: "Wallet", 

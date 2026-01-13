@@ -66,6 +66,8 @@ export async function POST(request: NextRequest) {
 
         // Update booking if paid
         if (isPaid) {
+            const isOnSiteSale = transaction.booking.salesChannel === "ON_SITE";
+            
             await prisma.$transaction(async (tx) => {
                 // Update booking status
                 await tx.booking.update({
@@ -78,7 +80,7 @@ export async function POST(request: NextRequest) {
                     },
                 });
 
-                // Update ticket types sold count
+                // Update ticket types sold count and auto check-in for POS sales
                 for (const ticket of transaction.booking.bookedTickets) {
                     await tx.ticketType.update({
                         where: { id: ticket.ticketTypeId },
@@ -87,14 +89,26 @@ export async function POST(request: NextRequest) {
                             reservedQuantity: { decrement: 1 },
                         },
                     });
+                    
+                    if (isOnSiteSale) {
+                        await tx.bookedTicket.update({
+                            where: { id: ticket.id },
+                            data: {
+                                isCheckedIn: true,
+                                checkedInAt: new Date(),
+                            },
+                        });
+                    }
                 }
             });
 
-            // Send confirmation email with tickets
-            sendBookingConfirmationEmail(transaction.bookingId).catch((err) => {
-                console.error("Failed to send confirmation email:", err);
-            });
-            console.log(`Payment confirmed for booking: ${transaction.booking.bookingCode}`);
+            // Send confirmation email with tickets (skip for on-site sales without email)
+            if (transaction.booking.guestEmail || transaction.booking.userId) {
+                sendBookingConfirmationEmail(transaction.bookingId).catch((err) => {
+                    console.error("Failed to send confirmation email:", err);
+                });
+            }
+            console.log(`Payment confirmed for booking: ${transaction.booking.bookingCode}${isOnSiteSale ? " (POS - auto checked-in)" : ""}`);
         }
 
         // Handle failed/expired

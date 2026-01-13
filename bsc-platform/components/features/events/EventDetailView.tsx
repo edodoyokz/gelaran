@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
     ArrowLeft,
     Share2,
+    Heart,
     Calendar,
     MapPin,
     Clock,
@@ -16,6 +17,7 @@ import {
     CheckCircle,
     Globe,
     Video,
+    Loader2,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -110,6 +112,58 @@ export function EventDetailView({ event }: EventDetailViewProps) {
     const [quantities, setQuantities] = useState<Record<string, number>>({});
     const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
     const [showTerms, setShowTerms] = useState(false);
+    const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+
+    const checkWishlistStatus = useCallback(async () => {
+        try {
+            const res = await fetch(`/api/wishlist/${event.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    setIsWishlisted(data.data.isWishlisted);
+                }
+            }
+        } catch {
+        }
+    }, [event.id]);
+
+    useEffect(() => {
+        checkWishlistStatus();
+    }, [checkWishlistStatus]);
+
+    const handleWishlistToggle = async () => {
+        setIsWishlistLoading(true);
+        try {
+            if (isWishlisted) {
+                const res = await fetch(`/api/wishlist/${event.id}`, {
+                    method: "DELETE",
+                });
+                if (res.ok) {
+                    setIsWishlisted(false);
+                } else if (res.status === 401) {
+                    router.push("/auth/login");
+                    return;
+                }
+            } else {
+                const res = await fetch("/api/wishlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ eventId: event.id }),
+                });
+                if (res.ok) {
+                    setIsWishlisted(true);
+                } else if (res.status === 401) {
+                    router.push("/auth/login");
+                    return;
+                }
+            }
+        } catch {
+            console.error("Failed to toggle wishlist");
+        } finally {
+            setIsWishlistLoading(false);
+        }
+    };
 
     const schedule = event.schedules[0];
     const eventDate = schedule ? formatDate(schedule.scheduleDate) : "Tanggal akan diumumkan";
@@ -181,12 +235,30 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                     <h1 className="font-bold text-sm sm:text-base truncate max-w-[200px] sm:max-w-none">
                         {event.title}
                     </h1>
-                    <button
-                        onClick={handleShare}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
-                        <Share2 size={20} />
-                    </button>
+                    <div className="flex items-center gap-1">
+                        <button
+                            onClick={handleWishlistToggle}
+                            disabled={isWishlistLoading}
+                            className={`p-2 rounded-full transition-colors ${
+                                isWishlisted
+                                    ? "text-rose-500 hover:bg-rose-50"
+                                    : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                            aria-label={isWishlisted ? "Hapus dari wishlist" : "Tambah ke wishlist"}
+                        >
+                            {isWishlistLoading ? (
+                                <Loader2 size={20} className="animate-spin" />
+                            ) : (
+                                <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
+                            )}
+                        </button>
+                        <button
+                            onClick={handleShare}
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                            <Share2 size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
