@@ -58,6 +58,34 @@ function CheckoutContent() {
     const [guestEmail, setGuestEmail] = useState("");
     const [guestName, setGuestName] = useState("");
     const [guestPhone, setGuestPhone] = useState("");
+    const [isUserLoaded, setIsUserLoaded] = useState(false);
+
+    useEffect(() => {
+        async function fetchUserProfile() {
+            try {
+                const res = await fetch("/api/profile");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.data) {
+                        if (!guestName && data.data.name) {
+                            setGuestName(data.data.name);
+                        }
+                        if (!guestEmail && data.data.email) {
+                            setGuestEmail(data.data.email);
+                        }
+                        if (!guestPhone && data.data.phone) {
+                            setGuestPhone(data.data.phone);
+                        }
+                    }
+                }
+            } catch {
+            } finally {
+                setIsUserLoaded(true);
+            }
+        }
+
+        fetchUserProfile();
+    }, []);
 
     useEffect(() => {
         if (!eventSlug) {

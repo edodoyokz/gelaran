@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
 import {
     ArrowLeft,
     Ticket,
@@ -560,10 +561,19 @@ export default function BookingDetailPage({
                                                 <div className="mt-4 pt-4 border-t">
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                         <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
-                                                            <div className="w-48 h-48 bg-white rounded-lg p-2 shadow-inner mb-3">
-                                                                <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded flex items-center justify-center">
-                                                                    <QrCode className="h-24 w-24 text-gray-400" />
-                                                                </div>
+                                                            <div className="w-48 h-48 bg-white rounded-lg p-3 shadow-inner mb-3 flex items-center justify-center">
+                                                                {ticket.status === "ACTIVE" ? (
+                                                                    <QRCodeSVG
+                                                                        value={ticket.uniqueCode}
+                                                                        size={168}
+                                                                        level="H"
+                                                                        includeMargin={false}
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded flex items-center justify-center">
+                                                                        <QrCode className="h-24 w-24 text-gray-400" />
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div className="flex items-center gap-2">
                                                                 <code className="text-sm font-mono text-gray-700 bg-white px-3 py-1 rounded border">
