@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -83,7 +83,7 @@ const STATUS_COLORS: Record<string, string> = {
     EXPIRED: "bg-gray-100 text-gray-500",
 };
 
-export default function AdminBookingsPage() {
+function AdminBookingsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const eventIdParam = searchParams.get("eventId");
@@ -392,5 +392,24 @@ export default function AdminBookingsPage() {
                 </div>
             </main>
         </div>
+    );
+}
+
+function AdminBookingsLoading() {
+    return (
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="text-center">
+                <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
+                <p className="text-gray-500">Loading bookings...</p>
+            </div>
+        </div>
+    );
+}
+
+export default function AdminBookingsPage() {
+    return (
+        <Suspense fallback={<AdminBookingsLoading />}>
+            <AdminBookingsContent />
+        </Suspense>
     );
 }

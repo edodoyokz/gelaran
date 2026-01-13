@@ -29,32 +29,45 @@ export async function middleware(request: NextRequest) {
         }
     );
 
-    // Refresh session if expired - required for Server Components
     const {
         data: { user },
     } = await supabase.auth.getUser();
 
-    // Protected routes
-    const protectedPaths = ["/account", "/checkout", "/organizer", "/admin", "/scanner"];
+    const pathname = request.nextUrl.pathname;
+
+    const protectedPaths = ["/account", "/checkout", "/my-bookings", "/profile", "/wishlist", "/dashboard"];
     const isProtectedPath = protectedPaths.some((path) =>
-        request.nextUrl.pathname.startsWith(path)
+        pathname.startsWith(path)
     );
 
-    // Auth routes (redirect if already logged in)
-    const authPaths = ["/login", "/register", "/forgot-password"];
-    const isAuthPath = authPaths.some((path) =>
-        request.nextUrl.pathname.startsWith(path)
-    );
+    const adminPaths = ["/admin"];
+    const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
 
-    if (isProtectedPath && !user) {
-        // Redirect to login with return URL
+    const organizerPaths = ["/organizer"];
+    const isOrganizerPath = organizerPaths.some((path) => pathname.startsWith(path));
+
+    const authPaths = ["/login", "/register", "/forgot-password", "/reset-password"];
+    const isAuthPath = authPaths.some((path) => pathname.startsWith(path));
+
+    if ((isProtectedPath || isAdminPath || isOrganizerPath) && !user) {
         const redirectUrl = new URL("/login", request.url);
-        redirectUrl.searchParams.set("returnUrl", request.nextUrl.pathname);
+        redirectUrl.searchParams.set("returnUrl", pathname);
         return NextResponse.redirect(redirectUrl);
     }
 
+    if (user && (isAdminPath || isOrganizerPath)) {
+        const userRole = user.user_metadata?.role as string | undefined;
+        
+        if (isAdminPath && userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+        
+        if (isOrganizerPath && userRole !== "ORGANIZER" && userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
+            return NextResponse.redirect(new URL("/become-organizer", request.url));
+        }
+    }
+
     if (isAuthPath && user) {
-        // Already logged in, redirect to home or returnUrl
         const returnUrl = request.nextUrl.searchParams.get("returnUrl") || "/";
         return NextResponse.redirect(new URL(returnUrl, request.url));
     }
@@ -64,14 +77,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public folder
-         * - api routes
-         */
-        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api).*)",
+        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api|auth).*)",
     ],
 };

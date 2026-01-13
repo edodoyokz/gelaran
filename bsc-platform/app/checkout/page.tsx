@@ -47,6 +47,7 @@ function CheckoutContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const eventSlug = searchParams.get("event");
+    const ticketsParam = searchParams.get("tickets");
 
     const [event, setEvent] = useState<EventData | null>(null);
     const [tickets, setTickets] = useState<TicketSelection[]>([]);
@@ -54,7 +55,6 @@ function CheckoutContent() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Guest checkout fields
     const [guestEmail, setGuestEmail] = useState("");
     const [guestName, setGuestName] = useState("");
     const [guestPhone, setGuestPhone] = useState("");
@@ -65,18 +65,27 @@ function CheckoutContent() {
             return;
         }
 
+        const preselectedTickets = new Map<string, number>();
+        if (ticketsParam) {
+            ticketsParam.split(",").forEach((pair) => {
+                const [id, qty] = pair.split(":");
+                if (id && qty) {
+                    preselectedTickets.set(id, parseInt(qty, 10) || 0);
+                }
+            });
+        }
+
         async function fetchEvent() {
             try {
                 const res = await fetch(`/api/events/${eventSlug}`);
                 const data = await res.json();
                 if (data.success) {
                     setEvent(data.data);
-                    // Initialize ticket selections
                     const initialTickets = data.data.ticketTypes.map((t: EventData["ticketTypes"][0]) => ({
                         ticketTypeId: t.id,
                         name: t.name,
                         price: t.isFree ? 0 : t.basePrice,
-                        quantity: 0,
+                        quantity: preselectedTickets.get(t.id) || 0,
                         maxPerOrder: t.maxPerOrder,
                     }));
                     setTickets(initialTickets);
@@ -89,7 +98,7 @@ function CheckoutContent() {
         }
 
         fetchEvent();
-    }, [eventSlug, router]);
+    }, [eventSlug, ticketsParam, router]);
 
     const updateQuantity = (ticketTypeId: string, delta: number) => {
         setTickets((prev) =>
