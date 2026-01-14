@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import type { User } from "@prisma/client";
+import type { User } from "@/types/prisma";
 
 type AdminResult = { admin: User } | { error: string; status: number };
 

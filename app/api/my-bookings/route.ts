@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
-import type { BookingStatus, Prisma } from "@prisma/client";
+import type { BookingStatus, Prisma } from "@/types/prisma";
 
 const VALID_STATUSES: BookingStatus[] = [
     "PENDING", "AWAITING_PAYMENT", "PAID", "CONFIRMED", "CANCELLED", "REFUNDED", "EXPIRED"

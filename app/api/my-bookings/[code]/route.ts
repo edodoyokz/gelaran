@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
-import type { BookingStatus } from "@prisma/client";
+import type { BookingStatus } from "@/types/prisma";
 
 const CANCELLABLE_STATUSES: BookingStatus[] = ["PENDING", "AWAITING_PAYMENT"];
 

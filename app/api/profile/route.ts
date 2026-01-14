@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import type { Gender } from "@prisma/client";
+import type { Gender } from "@/types/prisma";
 
 const VALID_GENDERS: Gender[] = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"];
 
