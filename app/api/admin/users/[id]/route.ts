@@ -4,6 +4,24 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import type { User } from "@/types/prisma";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface PayoutRecord {
+  id: string;
+  amount: Decimal;
+  status: string;
+  payoutCode: string;
+  createdAt: Date;
+}
+
+interface BookingRecord {
+  id: string;
+  bookingCode: string;
+  status: string;
+  subtotal: Decimal;
+  totalAmount: Decimal;
+  createdAt: Date;
+}
 
 type AdminResult = { admin: User } | { error: string; status: number };
 
@@ -116,12 +134,12 @@ export async function GET(
                 walletBalance: targetUser.organizerProfile.walletBalance.toString(),
                 totalEarned: targetUser.organizerProfile.totalEarned.toString(),
                 totalWithdrawn: targetUser.organizerProfile.totalWithdrawn.toString(),
-                payouts: targetUser.organizerProfile.payouts.map(p => ({
+                payouts: targetUser.organizerProfile.payouts.map((p: PayoutRecord) => ({
                     ...p,
                     amount: p.amount.toString(),
                 })),
             } : null,
-            bookings: targetUser.bookings.map(b => ({
+            bookings: targetUser.bookings.map((b: BookingRecord) => ({
                 ...b,
                 subtotal: b.subtotal.toString(),
                 totalAmount: b.totalAmount.toString(),
