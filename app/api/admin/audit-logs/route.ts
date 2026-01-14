@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
-import type { AuditLog } from "@prisma/client";
+
+interface AuditLogRecord {
+  id: string;
+  userId: string | null;
+  action: string;
+  entityType: string;
+  entityId: string;
+  oldValues: unknown;
+  newValues: unknown;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: Date;
+}
 
 async function isAdmin(userId: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
@@ -90,7 +102,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     const enrichedLogs = await Promise.all(
-      logs.map(async (log: AuditLog) => {
+      logs.map(async (log: AuditLogRecord) => {
         let userName = null;
         let userEmail = null;
 
