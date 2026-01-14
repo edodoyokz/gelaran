@@ -59,7 +59,7 @@ async function notifyFollowers(event: PublishedEventData): Promise<void> {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://bsc.id";
     const eventUrl = `${baseUrl}/events/${event.slug}`;
 
-    const emailPromises = users.map((user) =>
+    const emailPromises = users.map((user: { email: string; name: string | null }) =>
         resend.emails.send({
             from: FROM_EMAIL,
             to: user.email,
