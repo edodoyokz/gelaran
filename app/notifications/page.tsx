@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
     Bell,
     Check,
-    X,
     Trash2,
     Loader2,
     AlertCircle,
@@ -14,6 +13,7 @@ import {
     Users,
     CheckCircle,
     XCircle,
+    Sparkles,
 } from "lucide-react";
 
 interface Notification {
@@ -30,13 +30,13 @@ interface Notification {
     };
 }
 
-const NOTIFICATION_ICONS: Record<string, { icon: React.ElementType; bg: string; iconColor: string }> = {
-    BOOKING_CONFIRMED: { icon: CheckCircle, bg: "bg-green-100", iconColor: "text-green-600" },
-    BOOKING_CANCELLED: { icon: XCircle, bg: "bg-red-100", iconColor: "text-red-600" },
-    EVENT_REMINDER: { icon: Calendar, bg: "bg-blue-100", iconColor: "text-blue-600" },
-    EVENT_UPDATE: { icon: Ticket, bg: "bg-purple-100", iconColor: "text-purple-600" },
-    PAYOUT: { icon: Users, bg: "bg-indigo-100", iconColor: "text-indigo-600" },
-    SYSTEM: { icon: Bell, bg: "bg-gray-100", iconColor: "text-gray-600" },
+const NOTIFICATION_ICONS: Record<string, { icon: React.ElementType; bgColor: string; iconColor: string }> = {
+    BOOKING_CONFIRMED: { icon: CheckCircle, bgColor: "bg-[var(--success-bg)]", iconColor: "text-[var(--success)]" },
+    BOOKING_CANCELLED: { icon: XCircle, bgColor: "bg-[var(--error-bg)]", iconColor: "text-[var(--error)]" },
+    EVENT_REMINDER: { icon: Calendar, bgColor: "bg-[var(--info-bg)]", iconColor: "text-[var(--info)]" },
+    EVENT_UPDATE: { icon: Ticket, bgColor: "bg-purple-100 dark:bg-purple-900/30", iconColor: "text-purple-600 dark:text-purple-400" },
+    PAYOUT: { icon: Users, bgColor: "bg-[var(--accent-primary)]/10", iconColor: "text-[var(--accent-primary)]" },
+    SYSTEM: { icon: Bell, bgColor: "bg-[var(--bg-tertiary)]", iconColor: "text-[var(--text-muted)]" },
 };
 
 const NOTIFICATION_LABELS: Record<string, string> = {
@@ -125,181 +125,204 @@ export default function NotificationsPage() {
 
     const unreadCount = notifications.filter((n) => !n.isRead).length;
 
+    const groupNotificationsByDate = (notifs: Notification[]) => {
+        const groups: Record<string, Notification[]> = {};
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        for (const notif of notifs) {
+            const date = new Date(notif.createdAt);
+            let label: string;
+
+            if (date.toDateString() === today.toDateString()) {
+                label = "Hari Ini";
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                label = "Kemarin";
+            } else {
+                label = date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+            }
+
+            if (!groups[label]) {
+                groups[label] = [];
+            }
+            groups[label].push(notif);
+        }
+
+        return groups;
+    };
+
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat notifikasi...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat notifikasi...</p>
                 </div>
             </div>
         );
     }
 
+    const groupedNotifications = groupNotificationsByDate(filteredNotifications);
+
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="relative">
-                                <Bell className="h-6 w-6 text-gray-600" />
-                                {unreadCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
-                                        {unreadCount > 9 ? "9+" : unreadCount}
-                                    </span>
-                                )}
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Notifikasi</h1>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    {unreadCount} belum dibaca
-                                </p>
-                            </div>
-                        </div>
+        <div className="space-y-6">
+            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="relative">
+                        <Bell className="h-7 w-7 text-[var(--accent-primary)]" />
                         {unreadCount > 0 && (
-                            <button
-                                type="button"
-                                onClick={handleMarkAllAsRead}
-                                className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
-                            >
-                                <Check className="h-4 w-4" />
-                                Tandai Semua Dibaca
-                            </button>
+                            <span className="absolute -top-1 -right-1 h-5 w-5 bg-[var(--error)] rounded-full text-white text-xs font-bold flex items-center justify-center">
+                                {unreadCount > 9 ? "9+" : unreadCount}
+                            </span>
                         )}
                     </div>
-
-                    <div className="flex gap-2 mt-6">
-                        <button
-                            type="button"
-                            onClick={() => setFilter("all")}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                filter === "all"
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                            }`}
-                        >
-                            Semua ({notifications.length})
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setFilter("unread")}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                filter === "unread"
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                            }`}
-                        >
-                            Belum Dibaca ({unreadCount})
-                        </button>
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">Notifikasi</h1>
+                        <p className="text-[var(--text-muted)] text-sm">{unreadCount} belum dibaca</p>
                     </div>
                 </div>
-            </header>
-
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                        <div className="flex items-center gap-2 text-red-800">
-                            <AlertCircle className="h-5 w-5" />
-                            <span>{error}</span>
-                        </div>
-                    </div>
+                {unreadCount > 0 && (
+                    <button
+                        type="button"
+                        onClick={handleMarkAllAsRead}
+                        className="btn-secondary self-start sm:self-auto"
+                    >
+                        <Check className="h-4 w-4" />
+                        Tandai Semua Dibaca
+                    </button>
                 )}
+            </section>
 
-                {filteredNotifications.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                        <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
-                            {filter === "unread" ? "Tidak ada notifikasi belum dibaca" : "Tidak ada notifikasi"}
-                        </h3>
-                        <p className="text-gray-500 mb-6">
-                            {filter === "unread"
-                                ? "Semua notifikasi Anda sudah dibaca."
-                                : "Anda belum memiliki notifikasi."}
-                        </p>
-                        <Link
-                            href="/"
-                            className="inline-flex items-center gap-2 text-indigo-600 font-medium"
-                        >
-                            Kembali ke Beranda
-                        </Link>
+            <section className="flex gap-2">
+                <button
+                    type="button"
+                    onClick={() => setFilter("all")}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                        filter === "all"
+                            ? "bg-[var(--accent-primary)] text-white"
+                            : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+                    }`}
+                >
+                    Semua ({notifications.length})
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setFilter("unread")}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                        filter === "unread"
+                            ? "bg-[var(--accent-primary)] text-white"
+                            : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+                    }`}
+                >
+                    Belum Dibaca ({unreadCount})
+                </button>
+            </section>
+
+            {error && (
+                <div className="bg-[var(--error-bg)] border border-[var(--error)]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-[var(--error-text)]">
+                        <AlertCircle className="h-5 w-5" />
+                        <span>{error}</span>
                     </div>
-                ) : (
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                        <div className="divide-y">
-                            {filteredNotifications.map((notification) => {
-                                const iconConfig = NOTIFICATION_ICONS[notification.type] || NOTIFICATION_ICONS.SYSTEM;
-                                const Icon = iconConfig.icon;
+                </div>
+            )}
 
-                                return (
-                                    <div
-                                        key={notification.id}
-                                        className={`p-6 hover:bg-gray-50 transition-colors ${
-                                            !notification.isRead ? "bg-indigo-50/50" : ""
-                                        }`}
-                                        onClick={() => !notification.isRead && handleMarkAsRead(notification.id)}
-                                    >
-                                        <div className="flex items-start gap-4">
-                                            <div
-                                                className={`w-12 h-12 ${iconConfig.bg} rounded-lg flex items-center justify-center flex-shrink-0`}
-                                            >
-                                                <Icon className={`h-6 w-6 ${iconConfig.iconColor}`} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <div>
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                                                {NOTIFICATION_LABELS[notification.type] || notification.type}
-                                                            </span>
-                                                            {!notification.isRead && (
-                                                                <span className="h-2 w-2 bg-indigo-600 rounded-full" />
-                                                            )}
+            {filteredNotifications.length === 0 ? (
+                <div className="card p-12 text-center">
+                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Bell className="h-10 w-10 text-[var(--accent-primary)]" />
+                    </div>
+                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+                        {filter === "unread" ? "Tidak ada notifikasi belum dibaca" : "Tidak ada notifikasi"}
+                    </h3>
+                    <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
+                        {filter === "unread"
+                            ? "Semua notifikasi Anda sudah dibaca."
+                            : "Anda belum memiliki notifikasi."}
+                    </p>
+                    <Link href="/" className="btn-primary inline-flex">
+                        <Sparkles className="h-4 w-4" />
+                        Kembali ke Beranda
+                    </Link>
+                </div>
+            ) : (
+                <div className="space-y-6">
+                    {Object.entries(groupedNotifications).map(([date, notifs]) => (
+                        <div key={date}>
+                            <h3 className="text-sm font-semibold text-[var(--text-muted)] mb-3 px-1">{date}</h3>
+                            <div className="card overflow-hidden divide-y divide-[var(--border)]">
+                                {notifs.map((notification) => {
+                                    const iconConfig = NOTIFICATION_ICONS[notification.type] || NOTIFICATION_ICONS.SYSTEM;
+                                    const Icon = iconConfig.icon;
+
+                                    return (
+                                        <button
+                                            key={notification.id}
+                                            type="button"
+                                            className={`w-full text-left p-4 sm:p-5 hover:bg-[var(--surface-hover)] transition-colors ${
+                                                !notification.isRead ? "bg-[var(--accent-primary)]/5" : ""
+                                            }`}
+                                            onClick={() => !notification.isRead && handleMarkAsRead(notification.id)}
+                                        >
+                                            <div className="flex items-start gap-4">
+                                                <div className={`w-11 h-11 ${iconConfig.bgColor} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                    <Icon className={`h-5 w-5 ${iconConfig.iconColor}`} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-start justify-between gap-2 mb-1">
+                                                        <div>
+                                                            <div className="flex items-center gap-2 mb-0.5">
+                                                                <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                                                                    {NOTIFICATION_LABELS[notification.type] || notification.type}
+                                                                </span>
+                                                                {!notification.isRead && (
+                                                                    <span className="h-2 w-2 bg-[var(--accent-primary)] rounded-full" />
+                                                                )}
+                                                            </div>
+                                                            <h4 className="font-semibold text-[var(--text-primary)]">
+                                                                {notification.title}
+                                                            </h4>
                                                         </div>
-                                                        <h3 className="font-semibold text-gray-900">
-                                                            {notification.title}
-                                                        </h3>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDelete(notification.id);
-                                                        }}
-                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </button>
-                                                </div>
-                                                <p className="text-gray-600 mb-2">{notification.message}</p>
-                                                <div className="flex items-center gap-4 text-sm">
-                                                    <span className="text-gray-500">
-                                                        {new Date(notification.createdAt).toLocaleDateString("id-ID", {
-                                                            day: "numeric",
-                                                            month: "long",
-                                                            year: "numeric",
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                        })}
-                                                    </span>
-                                                    {notification.metadata.eventId && (
-                                                        <Link
-                                                            href={`/events/${notification.metadata.eventId}`}
-                                                            className="text-indigo-600 hover:text-indigo-500"
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDelete(notification.id);
+                                                            }}
+                                                            className="p-2 text-[var(--text-muted)] hover:text-[var(--error)] hover:bg-[var(--error-bg)] rounded-lg transition-colors"
                                                         >
-                                                            Lihat Event
-                                                        </Link>
-                                                    )}
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-[var(--text-secondary)] text-sm mb-2 line-clamp-2">{notification.message}</p>
+                                                    <div className="flex items-center gap-4 text-xs">
+                                                        <span className="text-[var(--text-muted)]">
+                                                            {new Date(notification.createdAt).toLocaleTimeString("id-ID", {
+                                                                hour: "2-digit",
+                                                                minute: "2-digit",
+                                                            })}
+                                                        </span>
+                                                        {notification.metadata.eventId && (
+                                                            <Link
+                                                                href={`/events/${notification.metadata.eventId}`}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                className="text-[var(--accent-primary)] hover:underline"
+                                                            >
+                                                                Lihat Event
+                                                            </Link>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                )}
-            </main>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

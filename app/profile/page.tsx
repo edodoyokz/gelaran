@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     User,
     Mail,
     Phone,
@@ -17,6 +17,10 @@ import {
     Shield,
     Globe,
     Clock,
+    Settings,
+    Ticket,
+    Heart,
+    ChevronRight,
 } from "lucide-react";
 import { uploadImage } from "@/lib/storage/upload";
 
@@ -54,45 +58,18 @@ const GENDER_OPTIONS = [
 ];
 
 const PROVINCE_OPTIONS = [
-    "Aceh",
-    "Bali",
-    "Banten",
-    "Bengkulu",
-    "DI Yogyakarta",
-    "DKI Jakarta",
-    "Gorontalo",
-    "Jambi",
-    "Jawa Barat",
-    "Jawa Tengah",
-    "Jawa Timur",
-    "Kalimantan Barat",
-    "Kalimantan Selatan",
-    "Kalimantan Tengah",
-    "Kalimantan Timur",
-    "Kalimantan Utara",
-    "Kepulauan Bangka Belitung",
-    "Kepulauan Riau",
-    "Lampung",
-    "Maluku",
-    "Maluku Utara",
-    "Nusa Tenggara Barat",
-    "Nusa Tenggara Timur",
-    "Papua",
-    "Papua Barat",
-    "Papua Barat Daya",
-    "Papua Pegunungan",
-    "Papua Selatan",
-    "Papua Tengah",
-    "Riau",
-    "Sulawesi Barat",
-    "Sulawesi Selatan",
-    "Sulawesi Tengah",
-    "Sulawesi Tenggara",
-    "Sulawesi Utara",
-    "Sumatera Barat",
-    "Sumatera Selatan",
-    "Sumatera Utara",
+    "Aceh", "Bali", "Banten", "Bengkulu", "DI Yogyakarta", "DKI Jakarta",
+    "Gorontalo", "Jambi", "Jawa Barat", "Jawa Tengah", "Jawa Timur",
+    "Kalimantan Barat", "Kalimantan Selatan", "Kalimantan Tengah",
+    "Kalimantan Timur", "Kalimantan Utara", "Kepulauan Bangka Belitung",
+    "Kepulauan Riau", "Lampung", "Maluku", "Maluku Utara",
+    "Nusa Tenggara Barat", "Nusa Tenggara Timur", "Papua", "Papua Barat",
+    "Riau", "Sulawesi Barat", "Sulawesi Selatan", "Sulawesi Tengah",
+    "Sulawesi Tenggara", "Sulawesi Utara", "Sumatera Barat",
+    "Sumatera Selatan", "Sumatera Utara",
 ];
+
+type TabKey = "personal" | "address" | "preferences";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -103,6 +80,7 @@ export default function ProfilePage() {
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<TabKey>("personal");
 
     const [formData, setFormData] = useState({
         name: "",
@@ -194,6 +172,7 @@ export default function ProfilePage() {
 
             setSuccess("Profil berhasil diperbarui!");
             await fetchProfile();
+            setTimeout(() => setSuccess(null), 3000);
         } catch {
             setError("Gagal memperbarui profil");
         } finally {
@@ -230,7 +209,7 @@ export default function ProfilePage() {
 
         try {
             const result = await uploadImage(file, "avatars", `user-${profile?.id}`);
-            
+
             const res = await fetch("/api/profile", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -246,6 +225,7 @@ export default function ProfilePage() {
 
             setSuccess("Avatar berhasil diperbarui!");
             await fetchProfile();
+            setTimeout(() => setSuccess(null), 3000);
         } catch {
             setError("Gagal mengunggah avatar");
         } finally {
@@ -265,12 +245,18 @@ export default function ProfilePage() {
         });
     };
 
+    const tabs: { key: TabKey; label: string; icon: typeof User }[] = [
+        { key: "personal", label: "Pribadi", icon: User },
+        { key: "address", label: "Alamat", icon: MapPin },
+        { key: "preferences", label: "Preferensi", icon: Settings },
+    ];
+
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat profil...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat profil...</p>
                 </div>
             </div>
         );
@@ -278,11 +264,13 @@ export default function ProfilePage() {
 
     if (error && !profile) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-500">
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <div className="text-center card p-8 max-w-md">
+                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
+                    </div>
+                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
+                    <Link href="/dashboard" className="text-[var(--accent-primary)] hover:underline">
                         Kembali ke Dashboard
                     </Link>
                 </div>
@@ -291,347 +279,346 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-gray-900">Profil Saya</h1>
-                    </div>
+        <div className="space-y-6">
+            {success && (
+                <div className="p-4 bg-[var(--success-bg)] border border-[var(--success)]/20 rounded-xl flex items-center gap-3 animate-fade-in-down">
+                    <CheckCircle className="h-5 w-5 text-[var(--success)] flex-shrink-0" />
+                    <p className="text-[var(--success-text)]">{success}</p>
                 </div>
-            </header>
+            )}
 
-            <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {success && (
-                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                        <p className="text-green-700">{success}</p>
-                    </div>
-                )}
+            {error && profile && (
+                <div className="p-4 bg-[var(--error-bg)] border border-[var(--error)]/20 rounded-xl flex items-center gap-3 animate-fade-in-down">
+                    <AlertCircle className="h-5 w-5 text-[var(--error)] flex-shrink-0" />
+                    <p className="text-[var(--error-text)]">{error}</p>
+                </div>
+            )}
 
-                {error && profile && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-                        <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                        <p className="text-red-700">{error}</p>
-                    </div>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-sm p-6">
-                            <div className="text-center">
-                                <div className="relative inline-block">
-                                    <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
-                                        {profile?.avatarUrl ? (
-                                            <img
-                                                src={profile.avatarUrl}
-                                                alt={profile.name}
-                                                className="w-24 h-24 rounded-full object-cover"
-                                            />
-                                        ) : (
-                                            <span className="text-3xl font-bold text-white">
-                                                {profile?.name.charAt(0).toUpperCase()}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept="image/jpeg,image/png,image/webp"
-                                        onChange={handleAvatarChange}
-                                        className="hidden"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleAvatarClick}
-                                        disabled={isUploadingAvatar}
-                                        className="absolute bottom-0 right-0 p-2 bg-white border rounded-full shadow-sm hover:bg-gray-50 disabled:opacity-50"
-                                    >
-                                        {isUploadingAvatar ? (
-                                            <Loader2 className="h-4 w-4 text-gray-600 animate-spin" />
-                                        ) : (
-                                            <Camera className="h-4 w-4 text-gray-600" />
-                                        )}
-                                    </button>
-                                </div>
-
-                                <h2 className="mt-4 text-xl font-bold text-gray-900">{profile?.name}</h2>
-                                <p className="text-gray-500">{profile?.email}</p>
-
-                                <div className="mt-4 flex justify-center gap-2">
-                                    {profile?.isVerified ? (
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                                            <Shield className="h-4 w-4" />
-Terverifikasi
-                                        </span>
-                                    ) : (
-                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
-                                            <AlertCircle className="h-4 w-4" />
-                                            Belum Terverifikasi
-                                        </span>
-                                    )}
-                                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium capitalize">
-                                        {profile?.role.toLowerCase().replace("_", " ")}
+            <div className="card p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                    <div className="relative group">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl">
+                            {profile?.avatarUrl ? (
+                                <Image
+                                    src={profile.avatarUrl}
+                                    alt={profile.name}
+                                    fill
+                                    className="object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <span className="text-4xl font-bold text-white">
+                                        {profile?.name.charAt(0).toUpperCase()}
                                     </span>
                                 </div>
-                            </div>
+                            )}
+                        </div>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={handleAvatarChange}
+                            className="hidden"
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAvatarClick}
+                            disabled={isUploadingAvatar}
+                            className="absolute -bottom-2 -right-2 p-2.5 bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-lg hover:bg-[var(--surface-hover)] transition-colors disabled:opacity-50"
+                        >
+                            {isUploadingAvatar ? (
+                                <Loader2 className="h-4 w-4 text-[var(--text-muted)] animate-spin" />
+                            ) : (
+                                <Camera className="h-4 w-4 text-[var(--text-muted)]" />
+                            )}
+                        </button>
+                    </div>
 
-                            <div className="mt-6 pt-6 border-t space-y-3">
-                                <div className="flex items-center gap-3 text-sm">
-                                    <Calendar className="h-4 w-4 text-gray-400" />
-                                    <span className="text-gray-500">Anggota sejak</span>
-                                    <span className="ml-auto text-gray-900">{formatDate(profile?.createdAt || null)}</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm">
-                                    <Clock className="h-4 w-4 text-gray-400" />
-                                    <span className="text-gray-500">Login terakhir</span>
-                                    <span className="ml-auto text-gray-900">{formatDate(profile?.lastLoginAt || null)}</span>
-                                </div>
-                            </div>
+                    <div className="text-center sm:text-left flex-1">
+                        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{profile?.name}</h1>
+                        <p className="text-[var(--text-muted)]">{profile?.email}</p>
 
-                            <div className="mt-6 pt-6 border-t space-y-2">
-                                <Link
-                                    href="/my-bookings"
-                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                >
-                                    <span className="font-medium text-gray-900">Pesanan Saya</span>
-                                    <ArrowLeft className="h-4 w-4 text-gray-400 rotate-180" />
-                                </Link>
-                                <Link
-                                    href="/wishlist"
-                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                >
-                                    <span className="font-medium text-gray-900">Wishlist</span>
-                                    <ArrowLeft className="h-4 w-4 text-gray-400 rotate-180" />
-                                </Link>
-                            </div>
+                        <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-2">
+                            {profile?.isVerified ? (
+                                <span className="badge badge-success">
+                                    <Shield className="h-3.5 w-3.5" />
+                                    Terverifikasi
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--warning-bg)] text-[var(--warning-text)] rounded-full text-xs font-medium">
+                                    <AlertCircle className="h-3.5 w-3.5" />
+                                    Belum Terverifikasi
+                                </span>
+                            )}
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] rounded-full text-xs font-medium capitalize">
+                                {profile?.role.toLowerCase().replace("_", " ")}
+                            </span>
                         </div>
                     </div>
 
-                    <div className="lg:col-span-2">
-                        <form onSubmit={handleSubmit}>
-                            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                    <User className="h-5 w-5 text-indigo-600" />
-                                    Informasi Pribadi
-                                </h3>
+                    <div className="hidden lg:flex flex-col gap-2">
+                        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+                            <Calendar className="h-4 w-4" />
+                            <span>Anggota sejak {formatDate(profile?.createdAt || null)}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+                            <Clock className="h-4 w-4" />
+                            <span>Login terakhir {formatDate(profile?.lastLoginAt || null)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 lg:hidden">
+                <Link href="/my-bookings" className="card card-hover p-4 flex items-center gap-3">
+                    <div className="p-2 bg-indigo-500/10 rounded-xl">
+                        <Ticket className="h-5 w-5 text-indigo-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <span className="font-medium text-[var(--text-primary)] text-sm">Pesanan</span>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" />
+                </Link>
+                <Link href="/wishlist" className="card card-hover p-4 flex items-center gap-3">
+                    <div className="p-2 bg-rose-500/10 rounded-xl">
+                        <Heart className="h-5 w-5 text-rose-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <span className="font-medium text-[var(--text-primary)] text-sm">Wishlist</span>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" />
+                </Link>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="card overflow-hidden">
+                    <div className="border-b border-[var(--border)] overflow-x-auto">
+                        <div className="flex min-w-max">
+                            {tabs.map((tab) => {
+                                const Icon = tab.icon;
+                                return (
+                                    <button
+                                        key={tab.key}
+                                        type="button"
+                                        onClick={() => setActiveTab(tab.key)}
+                                        className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
+                                            activeTab === tab.key
+                                                ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
+                                                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+                                        }`}
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        {tab.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="p-5 sm:p-6">
+                        {activeTab === "personal" && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        Nama Lengkap *
+                                    </label>
+                                    <input
+                                        id="name"
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => handleInputChange("name", e.target.value)}
+                                        className="input"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        Alamat Email
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            value={profile?.email || ""}
+                                            disabled
+                                            className="input bg-[var(--bg-tertiary)] text-[var(--text-muted)] pr-10"
+                                        />
+                                        <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+                                    </div>
+                                    <p className="mt-1 text-xs text-[var(--text-muted)]">Email tidak dapat diubah</p>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="phone" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        Nomor Telepon
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            id="phone"
+                                            type="tel"
+                                            value={formData.phone}
+                                            onChange={(e) => handleInputChange("phone", e.target.value)}
+                                            className="input pr-10"
+                                            placeholder="+62 812 3456 7890"
+                                        />
+                                        <Phone className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="birthDate" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        Tanggal Lahir
+                                    </label>
+                                    <input
+                                        id="birthDate"
+                                        type="date"
+                                        value={formData.birthDate}
+                                        onChange={(e) => handleInputChange("birthDate", e.target.value)}
+                                        className="input"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="gender" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        Jenis Kelamin
+                                    </label>
+                                    <select
+                                        id="gender"
+                                        value={formData.gender}
+                                        onChange={(e) => handleInputChange("gender", e.target.value)}
+                                        className="input"
+                                    >
+                                        {GENDER_OPTIONS.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === "address" && (
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="address" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        Alamat Jalan
+                                    </label>
+                                    <textarea
+                                        id="address"
+                                        value={formData.address}
+                                        onChange={(e) => handleInputChange("address", e.target.value)}
+                                        rows={2}
+                                        className="input resize-none"
+                                        placeholder="Masukkan alamat jalan kamu"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Nama Lengkap *
+                                        <label htmlFor="city" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                            Kota
                                         </label>
                                         <input
-                                            id="name"
+                                            id="city"
                                             type="text"
-                                            value={formData.name}
-                                            onChange={(e) => handleInputChange("name", e.target.value)}
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                            required
+                                            value={formData.city}
+                                            onChange={(e) => handleInputChange("city", e.target.value)}
+                                            className="input"
+                                            placeholder="Kota"
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Alamat Email
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                id="email"
-                                                type="email"
-                                                value={profile?.email || ""}
-                                                disabled
-                                                className="w-full px-4 py-2 border rounded-lg bg-gray-50 text-gray-500"
-                                            />
-                                            <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                        </div>
-                                        <p className="mt-1 text-xs text-gray-500">Email tidak dapat diubah</p>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Nomor Telepon
-                                        </label>
-                                        <div className="relative">
-                                            <input
-                                                id="phone"
-                                                type="tel"
-                                                value={formData.phone}
-                                                onChange={(e) => handleInputChange("phone", e.target.value)}
-                                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                placeholder="+62 812 3456 7890"
-                                            />
-                                            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Tanggal Lahir
-                                        </label>
-                                        <input
-                                            id="birthDate"
-                                            type="date"
-                                            value={formData.birthDate}
-                                            onChange={(e) => handleInputChange("birthDate", e.target.value)}
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Jenis Kelamin
+                                        <label htmlFor="province" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                            Provinsi
                                         </label>
                                         <select
-                                            id="gender"
-                                            value={formData.gender}
-                                            onChange={(e) => handleInputChange("gender", e.target.value)}
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            id="province"
+                                            value={formData.province}
+                                            onChange={(e) => handleInputChange("province", e.target.value)}
+                                            className="input"
                                         >
-                                            {GENDER_OPTIONS.map((opt) => (
-                                                <option key={opt.value} value={opt.value}>
-                                                    {opt.label}
+                                            <option value="">Pilih Provinsi</option>
+                                            {PROVINCE_OPTIONS.map((p) => (
+                                                <option key={p} value={p}>
+                                                    {p}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                    <MapPin className="h-5 w-5 text-indigo-600" />
-                                    Alamat
-                                </h3>
-
-                                <div className="space-y-4">
                                     <div>
-                                        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Alamat Jalan
+                                        <label htmlFor="postalCode" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                            Kode Pos
                                         </label>
-                                        <textarea
-                                            id="address"
-                                            value={formData.address}
-                                            onChange={(e) => handleInputChange("address", e.target.value)}
-                                            rows={2}
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                                            placeholder="Masukkan alamat jalan kamu"
+                                        <input
+                                            id="postalCode"
+                                            type="text"
+                                            value={formData.postalCode}
+                                            onChange={(e) => handleInputChange("postalCode", e.target.value)}
+                                            className="input"
+                                            placeholder="12345"
                                         />
                                     </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div>
-                                            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-Kota
-                                            </label>
-                                            <input
-                                                id="city"
-                                                type="text"
-                                                value={formData.city}
-                                                onChange={(e) => handleInputChange("city", e.target.value)}
-                                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                placeholder="Kota"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
-Provinsi
-                                            </label>
-                                            <select
-                                                id="province"
-                                                value={formData.province}
-                                                onChange={(e) => handleInputChange("province", e.target.value)}
-                                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                            >
-                                                <option value="">Pilih Provinsi</option>
-                                                {PROVINCE_OPTIONS.map((p) => (
-                                                    <option key={p} value={p}>
-                                                        {p}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
-                                                Kode Pos
-                                            </label>
-                                            <input
-                                                id="postalCode"
-                                                type="text"
-                                                value={formData.postalCode}
-                                                onChange={(e) => handleInputChange("postalCode", e.target.value)}
-                                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                placeholder="12345"
-                                            />
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
+                        )}
 
-                            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                    <Globe className="h-5 w-5 text-indigo-600" />
-                                    Preferensi
-                                </h3>
+                        {activeTab === "preferences" && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="locale" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        <Globe className="inline h-4 w-4 mr-1" />
+                                        Bahasa
+                                    </label>
+                                    <select
+                                        id="locale"
+                                        value={formData.locale}
+                                        onChange={(e) => handleInputChange("locale", e.target.value)}
+                                        className="input"
+                                    >
+                                        <option value="id">Bahasa Indonesia</option>
+                                        <option value="en">English</option>
+                                    </select>
+                                </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label htmlFor="locale" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Bahasa
-                                        </label>
-                                        <select
-                                            id="locale"
-                                            value={formData.locale}
-                                            onChange={(e) => handleInputChange("locale", e.target.value)}
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        >
-                                            <option value="id">Bahasa Indonesia</option>
-                                            <option value="en">English</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
-                                            Zona Waktu
-                                        </label>
-                                        <select
-                                            id="timezone"
-                                            value={formData.timezone}
-                                            onChange={(e) => handleInputChange("timezone", e.target.value)}
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        >
-                                            <option value="Asia/Jakarta">WIB (Jakarta)</option>
-                                            <option value="Asia/Makassar">WITA (Makassar)</option>
-                                            <option value="Asia/Jayapura">WIT (Jayapura)</option>
-                                        </select>
-                                    </div>
+                                <div>
+                                    <label htmlFor="timezone" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
+                                        <Clock className="inline h-4 w-4 mr-1" />
+                                        Zona Waktu
+                                    </label>
+                                    <select
+                                        id="timezone"
+                                        value={formData.timezone}
+                                        onChange={(e) => handleInputChange("timezone", e.target.value)}
+                                        className="input"
+                                    >
+                                        <option value="Asia/Jakarta">WIB (Jakarta)</option>
+                                        <option value="Asia/Makassar">WITA (Makassar)</option>
+                                        <option value="Asia/Jayapura">WIT (Jayapura)</option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <div className="flex justify-end gap-4">
-                                <Link
-                                    href="/dashboard"
-                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                                >
-                                    Batal
-                                </Link>
-                                <button
-                                    type="submit"
-                                    disabled={isSaving}
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
-                                >
-                                    {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                                    Simpan Perubahan
-                                </button>
-                            </div>
-                        </form>
+                        )}
                     </div>
                 </div>
-            </main>
+
+                <div className="flex justify-end gap-3">
+                    <Link href="/dashboard" className="btn-secondary">
+                        Batal
+                    </Link>
+                    <button
+                        type="submit"
+                        disabled={isSaving}
+                        className="btn-primary"
+                    >
+                        {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

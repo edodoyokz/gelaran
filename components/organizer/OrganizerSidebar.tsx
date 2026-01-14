@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
@@ -15,16 +16,21 @@ import {
     CreditCard,
     Home,
     ScanLine,
+    Sun,
+    Moon,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { useTheme } from "@/lib/hooks/useTheme";
 
 interface OrganizerSidebarProps {
     organizationName: string;
     organizationLogo?: string | null;
     isVerified?: boolean;
+    isCollapsed?: boolean;
+    onToggleCollapse?: () => void;
 }
 
 interface MenuItem {
@@ -53,13 +59,19 @@ const menuItems: MenuItem[] = [
 export function OrganizerSidebar({ 
     organizationName, 
     organizationLogo,
-    isVerified = false 
+    isVerified = false,
+    isCollapsed,
+    onToggleCollapse,
 }: OrganizerSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const [collapsed, setCollapsed] = useState(false);
+    const { theme, toggleTheme } = useTheme();
+    const [internalCollapsed, setInternalCollapsed] = useState(false);
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const collapsed = isCollapsed ?? internalCollapsed;
+    const toggleCollapse = onToggleCollapse ?? (() => setInternalCollapsed(!internalCollapsed));
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
@@ -79,7 +91,7 @@ export function OrganizerSidebar({
                 }
             }
         });
-    }, [pathname]);
+    }, [pathname, expandedItems]);
 
     const isActive = (href: string) => {
         if (href === "/organizer") {
@@ -116,8 +128,8 @@ export function OrganizerSidebar({
                             className={cn(
                                 "flex-1 flex items-center gap-3 px-3 py-2.5 rounded-l-lg transition-all duration-200",
                                 parentActive
-                                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
-                                    : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
+                                    ? "bg-[var(--accent-primary)] text-white shadow-[var(--shadow-md)]"
+                                    : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
                                 collapsed && "rounded-lg"
                             )}
                         >
@@ -133,8 +145,8 @@ export function OrganizerSidebar({
                                 className={cn(
                                     "px-2 py-2.5 rounded-r-lg transition-all duration-200",
                                     parentActive
-                                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
-                                        : "text-slate-300 hover:bg-slate-700/50 hover:text-white"
+                                        ? "bg-[var(--accent-primary)] text-white shadow-[var(--shadow-md)]"
+                                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]"
                                 )}
                             >
                                 {isExpanded ? (
@@ -146,7 +158,7 @@ export function OrganizerSidebar({
                         )}
                     </div>
                     {!collapsed && isExpanded && item.children && (
-                        <div className="mt-1 ml-4 pl-3 border-l border-slate-700 space-y-1">
+                        <div className="mt-1 ml-4 pl-3 border-l border-[var(--border)] space-y-1">
                             {item.children.map((child) => renderMenuItem(child, true))}
                         </div>
                     )}
@@ -161,8 +173,8 @@ export function OrganizerSidebar({
                 className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                     active
-                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30"
-                        : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
+                        ? "bg-[var(--accent-primary)] text-white shadow-[var(--shadow-md)]"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
                     isChild && "py-2 text-sm"
                 )}
             >
@@ -181,37 +193,39 @@ export function OrganizerSidebar({
     return (
         <aside
             className={cn(
-                "fixed left-0 top-0 h-full bg-gradient-to-b from-slate-900 to-slate-800 text-white transition-all duration-300 z-40 flex flex-col",
+                "fixed left-0 top-0 h-full transition-all duration-300 z-40 flex flex-col bg-[var(--surface)] border-r border-[var(--border)]",
                 collapsed ? "w-20" : "w-64"
             )}
         >
-            <div className="p-4 border-b border-slate-700">
+            <div className="p-4 border-b border-[var(--border)]">
                 <div className="flex items-center gap-3">
                     {organizationLogo ? (
-                        <img
+                        <Image
                             src={organizationLogo}
                             alt={organizationName}
+                            width={40}
+                            height={40}
                             className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
                         />
                     ) : (
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[var(--shadow-glow)]">
                             <Building2 className="h-5 w-5 text-white" />
                         </div>
                     )}
                     {!collapsed && (
                         <div className="flex-1 min-w-0">
-                            <h2 className="font-semibold text-white truncate text-sm">
+                            <h2 className="font-semibold truncate text-sm text-[var(--text-primary)]">
                                 {organizationName}
                             </h2>
                             <div className="flex items-center gap-1.5">
                                 {isVerified ? (
-                                    <span className="text-xs text-green-400 flex items-center gap-1">
-                                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
+                                    <span className="text-xs text-[var(--success)] flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 bg-[var(--success)] rounded-full" />
                                         Terverifikasi
                                     </span>
                                 ) : (
-                                    <span className="text-xs text-yellow-400 flex items-center gap-1">
-                                        <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full" />
+                                    <span className="text-xs text-[var(--warning)] flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 bg-[var(--warning)] rounded-full" />
                                         Pending
                                     </span>
                                 )}
@@ -221,14 +235,31 @@ export function OrganizerSidebar({
                 </div>
             </div>
 
-            <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+            <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--border)] scrollbar-track-transparent">
                 {menuItems.map((item) => renderMenuItem(item))}
             </nav>
 
-            <div className="p-3 border-t border-slate-700 space-y-1">
+            <div className="p-3 space-y-1 border-t border-[var(--border)]">
+                <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className="hidden lg:flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                    {theme === 'dark' ? (
+                        <>
+                            <Sun className="h-5 w-5 flex-shrink-0" />
+                            {!collapsed && <span className="text-sm font-medium">Mode Terang</span>}
+                        </>
+                    ) : (
+                        <>
+                            <Moon className="h-5 w-5 flex-shrink-0" />
+                            {!collapsed && <span className="text-sm font-medium">Mode Gelap</span>}
+                        </>
+                    )}
+                </button>
                 <Link
                     href="/"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-700/50 hover:text-white transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
                 >
                     <Home className="h-5 w-5 flex-shrink-0" />
                     {!collapsed && <span className="text-sm font-medium">Kembali ke Home</span>}
@@ -237,7 +268,7 @@ export function OrganizerSidebar({
                     type="button"
                     onClick={handleLogout}
                     disabled={isLoggingOut}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors disabled:opacity-50"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--error)] hover:bg-[var(--error-bg)] transition-colors disabled:opacity-50"
                 >
                     <LogOut className="h-5 w-5 flex-shrink-0" />
                     {!collapsed && <span className="text-sm font-medium">{isLoggingOut ? "Keluar..." : "Keluar"}</span>}
@@ -246,8 +277,8 @@ export function OrganizerSidebar({
 
             <button
                 type="button"
-                onClick={() => setCollapsed(!collapsed)}
-                className="absolute -right-3 top-20 w-6 h-6 bg-slate-700 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-600 hover:text-white transition-colors shadow-lg"
+                onClick={toggleCollapse}
+                className="absolute -right-3 top-20 w-6 h-6 rounded-full flex items-center justify-center shadow-lg z-50 bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
                 {collapsed ? (
                     <ChevronRight className="h-4 w-4" />

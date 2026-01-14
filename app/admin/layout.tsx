@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminLayoutWrapper } from "@/components/admin/AdminLayoutWrapper";
 import { AdminProfileProvider } from "@/components/admin/AdminProfileProvider";
 import { AdminProviders } from "@/components/admin/AdminProviders";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export default async function AdminLayout({
     children,
@@ -26,23 +27,24 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <AdminSidebar />
-            <div className="pl-64 transition-all duration-300">
-                <AdminProviders>
-                    <AdminProfileProvider
-                        profile={{
-                            id: adminUser.id,
-                            name: adminUser.name,
-                            email: adminUser.email,
-                            role: adminUser.role,
-                            avatarUrl: adminUser.avatarUrl,
-                        }}
-                    >
-                        {children}
-                    </AdminProfileProvider>
-                </AdminProviders>
+        <ThemeProvider>
+            <div className="min-h-screen" style={{ background: 'var(--bg-secondary)' }}>
+                <AdminLayoutWrapper>
+                    <AdminProviders>
+                        <AdminProfileProvider
+                            profile={{
+                                id: adminUser.id,
+                                name: adminUser.name,
+                                email: adminUser.email,
+                                role: adminUser.role,
+                                avatarUrl: adminUser.avatarUrl,
+                            }}
+                        >
+                            {children}
+                        </AdminProfileProvider>
+                    </AdminProviders>
+                </AdminLayoutWrapper>
             </div>
-        </div>
+        </ThemeProvider>
     );
 }

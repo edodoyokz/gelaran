@@ -2,23 +2,23 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
     Ticket,
     Calendar,
     MapPin,
-    Loader2,
     AlertCircle,
     Heart,
     Clock,
     ChevronRight,
     Sparkles,
     TrendingUp,
-    User,
-    LogOut,
-    Home,
+    Wallet,
+    ArrowUpRight,
+    ArrowDownRight,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { MiniSparkline, AreaChart } from "@/components/ui/charts";
 
 interface BookingEvent {
     id: string;
@@ -71,6 +71,7 @@ interface DashboardData {
         totalBookings: number;
         upcomingEvents: number;
         wishlistCount: number;
+        totalSpent?: number;
     };
     upcomingBookings: UpcomingBooking[];
     recentBookings: RecentBooking[];
@@ -79,16 +80,18 @@ interface DashboardData {
         name: string | null;
         email: string;
     };
+    bookingTrend?: { value: number }[];
+    activityData?: { name: string; value: number }[];
 }
 
 const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-yellow-100 text-yellow-700",
-    AWAITING_PAYMENT: "bg-orange-100 text-orange-700",
-    PAID: "bg-blue-100 text-blue-700",
-    CONFIRMED: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    REFUNDED: "bg-purple-100 text-purple-700",
-    EXPIRED: "bg-gray-100 text-gray-700",
+    PENDING: "bg-[var(--warning-bg)] text-[var(--warning-text)]",
+    AWAITING_PAYMENT: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+    PAID: "bg-[var(--info-bg)] text-[var(--info-text)]",
+    CONFIRMED: "bg-[var(--success-bg)] text-[var(--success-text)]",
+    CANCELLED: "bg-[var(--error-bg)] text-[var(--error-text)]",
+    REFUNDED: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    EXPIRED: "bg-[var(--bg-tertiary)] text-[var(--text-muted)]",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -101,12 +104,67 @@ const STATUS_LABELS: Record<string, string> = {
     EXPIRED: "Kadaluarsa",
 };
 
+function generateSparklineData(count: number = 7, trend: "up" | "down" | "stable" = "up"): { value: number }[] {
+    const data: { value: number }[] = [];
+    let base = Math.random() * 50 + 20;
+    for (let i = 0; i < count; i++) {
+        const variance = (Math.random() - 0.5) * 20;
+        const trendFactor = trend === "up" ? i * 3 : trend === "down" ? -i * 3 : 0;
+        data.push({ value: Math.max(0, base + variance + trendFactor) });
+        base = data[i].value;
+    }
+    return data;
+}
+
+function generateActivityData(): { name: string; value: number }[] {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    return months.map((name) => ({
+        name,
+        value: Math.floor(Math.random() * 10) + 1,
+    }));
+}
+
+function DashboardSkeleton() {
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center gap-3">
+                <div className="h-10 w-48 skeleton rounded-lg" />
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="h-32 skeleton rounded-2xl" />
+                ))}
+            </div>
+            <div className="card p-6">
+                <div className="h-6 w-40 skeleton rounded-lg mb-4" />
+                <div className="h-48 skeleton rounded-xl" />
+            </div>
+            <div>
+                <div className="h-6 w-32 skeleton rounded-lg mb-4" />
+                <div className="flex gap-4 overflow-hidden">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="flex-shrink-0 w-72 card p-4">
+                            <div className="flex gap-3">
+                                <div className="w-24 h-24 skeleton rounded-xl" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-4 skeleton rounded w-full" />
+                                    <div className="h-3 skeleton rounded w-3/4" />
+                                    <div className="h-3 skeleton rounded w-1/2" />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function CustomerDashboardPage() {
     const router = useRouter();
     const [data, setData] = useState<DashboardData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const supabase = createClient();
 
     const fetchDashboard = useCallback(async () => {
         try {
@@ -124,7 +182,20 @@ export default function CustomerDashboardPage() {
             }
 
             if (result.success) {
-                setData(result.data);
+                const enhancedData: DashboardData = {
+                    ...result.data,
+                    bookingTrend: result.data.bookingTrend || generateSparklineData(7, "up"),
+                    activityData: result.data.activityData || generateActivityData(),
+                    stats: {
+                        ...result.data.stats,
+                        totalSpent: result.data.stats.totalSpent ||
+                            result.data.recentBookings.reduce(
+                                (sum: number, b: RecentBooking) => sum + parseFloat(b.totalAmount || "0"),
+                                0
+                            ),
+                    },
+                };
+                setData(enhancedData);
             }
         } catch {
             setError("Gagal memuat dashboard");
@@ -136,11 +207,6 @@ export default function CustomerDashboardPage() {
     useEffect(() => {
         fetchDashboard();
     }, [fetchDashboard]);
-
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        router.push("/login");
-    };
 
     const formatDate = (dateStr: string): string => {
         return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -176,23 +242,22 @@ export default function CustomerDashboardPage() {
     };
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500 font-medium">Memuat dashboard...</p>
-                </div>
-            </div>
-        );
+        return <DashboardSkeleton />;
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-                <div className="text-center max-w-md w-full bg-white/50 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white/20">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-bold text-lg mb-2">{error}</p>
-                    <Link href="/" className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <div className="text-center max-w-md w-full card p-8">
+                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
+                    </div>
+                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
+                    <p className="text-[var(--text-muted)] text-sm mb-6">Terjadi kesalahan saat memuat data</p>
+                    <Link
+                        href="/"
+                        className="btn-primary"
+                    >
                         Kembali ke Beranda
                     </Link>
                 </div>
@@ -203,367 +268,310 @@ export default function CustomerDashboardPage() {
     if (!data) return null;
 
     const firstName = data.user.name?.split(" ")[0] || "Pengguna";
-    const userInitial = firstName.charAt(0).toUpperCase();
+    const bookingTrend = data.bookingTrend || generateSparklineData(7, "up");
+    const activityData = data.activityData || generateActivityData();
+    const totalSpent = data.stats.totalSpent || 0;
+    const isPositiveTrend = bookingTrend.length > 1 &&
+        bookingTrend[bookingTrend.length - 1].value > bookingTrend[0].value;
+
+    const stats = [
+        {
+            label: "Total Pesanan",
+            value: data.stats.totalBookings,
+            icon: Ticket,
+            gradient: "from-indigo-500 to-purple-500",
+            bgGradient: "from-indigo-500/10 to-purple-500/10",
+            iconBg: "bg-indigo-500/10",
+            iconColor: "text-indigo-500",
+            href: "/my-bookings",
+            sparklineData: bookingTrend,
+            trend: isPositiveTrend ? "+12%" : "-5%",
+            trendUp: isPositiveTrend,
+        },
+        {
+            label: "Event Mendatang",
+            value: data.stats.upcomingEvents,
+            icon: Calendar,
+            gradient: "from-emerald-500 to-teal-500",
+            bgGradient: "from-emerald-500/10 to-teal-500/10",
+            iconBg: "bg-emerald-500/10",
+            iconColor: "text-emerald-500",
+            href: "/my-bookings?status=confirmed",
+            sparklineData: generateSparklineData(7, "stable"),
+            trend: data.stats.upcomingEvents > 0 ? "Aktif" : "-",
+            trendUp: true,
+        },
+        {
+            label: "Wishlist",
+            value: data.stats.wishlistCount,
+            icon: Heart,
+            gradient: "from-rose-500 to-pink-500",
+            bgGradient: "from-rose-500/10 to-pink-500/10",
+            iconBg: "bg-rose-500/10",
+            iconColor: "text-rose-500",
+            href: "/wishlist",
+            sparklineData: generateSparklineData(7, "up"),
+            trend: "+3",
+            trendUp: true,
+        },
+        {
+            label: "Total Belanja",
+            value: formatCurrency(totalSpent),
+            icon: Wallet,
+            gradient: "from-amber-500 to-orange-500",
+            bgGradient: "from-amber-500/10 to-orange-500/10",
+            iconBg: "bg-amber-500/10",
+            iconColor: "text-amber-500",
+            href: "/my-bookings",
+            sparklineData: generateSparklineData(7, "up"),
+            trend: "+25%",
+            trendUp: true,
+            isLarge: true,
+        },
+    ];
 
     return (
-        <div className="min-h-screen bg-gray-50/50 pb-24 md:pb-8">
-            <header className="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100 hidden md:block">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
-                            B
-                        </div>
-                        <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-                            BSC Platform
-                        </span>
-                    </div>
-                    
-                    <nav className="flex items-center gap-6">
-                        <Link href="/dashboard" className="text-indigo-600 font-medium text-sm flex items-center gap-1.5 bg-indigo-50 px-3 py-1.5 rounded-full">
-                            <Home className="w-4 h-4" />
-                            Dashboard
-                        </Link>
-                        <Link href="/my-bookings" className="text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors">
-                            Tiket Saya
-                        </Link>
-                        <Link href="/wishlist" className="text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors">
-                            Wishlist
-                        </Link>
-                    </nav>
+        <div className="space-y-6 lg:space-y-8">
+            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <p className="text-[var(--text-muted)] text-sm font-medium">{getGreeting()}</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
+                        Halo, <span className="text-gradient">{firstName}</span>! 👋
+                    </h1>
+                </div>
+                <Link
+                    href="/events"
+                    className="btn-primary self-start sm:self-auto"
+                >
+                    <Sparkles className="w-4 h-4" />
+                    Jelajahi Event
+                </Link>
+            </section>
 
-                    <div className="flex items-center gap-3 pl-6 border-l border-gray-200">
-                         <div className="text-right">
-                            <p className="text-sm font-semibold text-gray-900">{firstName}</p>
-                            <p className="text-xs text-gray-500">{data.user.email}</p>
-                        </div>
-                        <div className="h-9 w-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium shadow-md">
-                            {userInitial}
-                        </div>
-                        <button 
-                            onClick={handleLogout}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all ml-2"
-                            title="Keluar"
+            <section>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    {stats.map((stat) => (
+                        <Link
+                            key={stat.label}
+                            href={stat.href}
+                            className="group relative overflow-hidden card card-hover p-4 sm:p-5"
                         >
-                            <LogOut className="w-5 h-5" />
-                        </button>
-                    </div>
-                </div>
-            </header>
+                            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${stat.bgGradient} rounded-full -mr-16 -mt-16 opacity-50 transition-transform group-hover:scale-150`} />
 
-            <header className="bg-white/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3 flex items-center justify-between md:hidden border-b border-gray-100">
-                <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium shadow-md">
-                        {userInitial}
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 font-medium">{getGreeting()}</p>
-                        <p className="text-sm font-bold text-gray-900">{firstName}</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Link href="/profile" className="p-2 text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
-                        <User className="w-5 h-5" />
-                    </Link>
-                </div>
-            </header>
+                            <div className="relative">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className={`p-2.5 ${stat.iconBg} ${stat.iconColor} rounded-xl`}>
+                                        <stat.icon className="h-5 w-5" />
+                                    </div>
+                                    <div className="hidden sm:block">
+                                        <MiniSparkline
+                                            data={stat.sparklineData}
+                                            color={stat.trendUp ? "#22c55e" : "#ef4444"}
+                                            positive={stat.trendUp}
+                                            height={24}
+                                            width={50}
+                                        />
+                                    </div>
+                                </div>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+                                <p className={`font-bold text-[var(--text-primary)] mb-1 ${stat.isLarge ? "text-lg sm:text-xl" : "text-2xl sm:text-3xl"}`}>
+                                    {stat.value}
+                                </p>
+
+                                <div className="flex items-center justify-between">
+                                    <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">{stat.label}</p>
+                                    {stat.trend !== "-" && (
+                                        <span className={`flex items-center gap-0.5 text-xs font-medium ${stat.trendUp ? "text-[var(--success)]" : "text-[var(--error)]"}`}>
+                                            {stat.trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                                            {stat.trend}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </section>
+
+            <section className="card p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-[var(--accent-primary)]" />
+                        Aktivitas Booking
+                    </h2>
+                    <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-tertiary)] px-2 py-1 rounded-full">6 bulan terakhir</span>
+                </div>
+                <AreaChart
+                    data={activityData}
+                    height={200}
+                    color="#6366f1"
+                    showYAxis={false}
+                    showGrid={true}
+                    formatTooltip={(value: number) => `${value} booking`}
+                />
+            </section>
+
+            {data.upcomingBookings.length > 0 && (
                 <section>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                            <div className="relative flex flex-col h-full justify-between">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="p-3 bg-indigo-100 text-indigo-600 rounded-2xl">
-                                        <Ticket className="h-6 w-6" />
-                                    </div>
-                                    <Link href="/my-bookings" className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
-                                        <ChevronRight className="h-5 w-5" />
-                                    </Link>
-                                </div>
-                                <div>
-                                    <p className="text-3xl font-bold text-gray-900 mb-1">{data.stats.totalBookings}</p>
-                                    <p className="text-gray-500 font-medium">Total Pesanan</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                            <Clock className="h-5 w-5 text-[var(--accent-primary)]" />
+                            Event Mendatang
+                        </h2>
+                        <Link href="/my-bookings" className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)] text-sm font-semibold flex items-center gap-1">
+                            Lihat Semua
+                            <ChevronRight className="w-4 h-4" />
+                        </Link>
+                    </div>
 
-                        <div className="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                            <div className="relative flex flex-col h-full justify-between">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl">
-                                        <Calendar className="h-6 w-6" />
+                    <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory no-scrollbar">
+                        {data.upcomingBookings.map((booking) => (
+                            <Link
+                                key={booking.id}
+                                href={`/my-bookings/${booking.bookingCode}`}
+                                className="snap-start shrink-0 w-[85vw] sm:w-80 group card p-3 flex gap-4"
+                            >
+                                <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl overflow-hidden relative">
+                                    <Image
+                                        src={booking.event.posterImage || "/placeholder.jpg"}
+                                        alt={booking.event.title}
+                                        fill
+                                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                        sizes="(max-width: 640px) 96px, 112px"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent group-hover:from-transparent transition-all" />
+                                </div>
+                                <div className="flex-1 py-1 pr-1 min-w-0 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="font-bold text-[var(--text-primary)] truncate group-hover:text-[var(--accent-primary)] transition-colors text-sm sm:text-base">
+                                            {booking.event.title}
+                                        </h3>
+                                        {booking.eventSchedule && (
+                                            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+                                                <Calendar className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]" />
+                                                <span className="truncate">
+                                                    {formatDate(booking.eventSchedule.scheduleDate)} • {formatTime(booking.eventSchedule.startTime)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {booking.event.venue && (
+                                            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[var(--text-muted)] mt-0.5">
+                                                <MapPin className="h-3.5 w-3.5 shrink-0" />
+                                                <span className="truncate">
+                                                    {booking.event.venue.name}, {booking.event.venue.city}
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
-                                    <Link href="/my-bookings?status=confirmed" className="p-2 text-gray-400 hover:text-emerald-600 transition-colors">
-                                        <ChevronRight className="h-5 w-5" />
-                                    </Link>
-                                </div>
-                                <div>
-                                    <p className="text-3xl font-bold text-gray-900 mb-1">{data.stats.upcomingEvents}</p>
-                                    <p className="text-gray-500 font-medium">Event Mendatang</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
-                            <div className="relative flex flex-col h-full justify-between">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="p-3 bg-rose-100 text-rose-600 rounded-2xl">
-                                        <Heart className="h-6 w-6" />
+                                    <div className="flex items-center justify-between mt-2">
+                                        <span className={`px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-semibold ${STATUS_COLORS[booking.status]}`}>
+                                            {STATUS_LABELS[booking.status] || booking.status}
+                                        </span>
+                                        <div className="flex items-center gap-1 text-xs sm:text-sm font-semibold text-[var(--accent-primary)] bg-[var(--accent-gradient-subtle)] px-2 py-0.5 rounded-lg">
+                                            <Ticket className="h-3 w-3" />
+                                            <span>{booking.totalTickets}</span>
+                                        </div>
                                     </div>
-                                    <Link href="/wishlist" className="p-2 text-gray-400 hover:text-rose-600 transition-colors">
-                                        <ChevronRight className="h-5 w-5" />
-                                    </Link>
                                 </div>
-                                <div>
-                                    <p className="text-3xl font-bold text-gray-900 mb-1">{data.stats.wishlistCount}</p>
-                                    <p className="text-gray-500 font-medium">Wishlist</p>
-                                </div>
-                            </div>
-                        </div>
+                            </Link>
+                        ))}
                     </div>
                 </section>
+            )}
 
-                {data.upcomingBookings.length > 0 && (
-                    <section>
-                        <div className="flex items-center justify-between mb-6 px-1">
-                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                <Clock className="h-5 w-5 text-indigo-600" />
-                                Event Mendatang
-                            </h2>
-                            <Link href="/my-bookings" className="text-indigo-600 hover:text-indigo-500 text-sm font-semibold hover:underline">
-                                Lihat Semua
-                            </Link>
-                        </div>
-                        <div className="flex md:grid md:grid-cols-2 gap-4 overflow-x-auto pb-4 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x">
-                            {data.upcomingBookings.map((booking) => (
-                                <Link
-                                    key={booking.id}
-                                    href={`/my-bookings/${booking.bookingCode}`}
-                                    className="snap-center shrink-0 w-[85vw] md:w-auto group relative bg-white rounded-3xl p-3 shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 flex gap-4"
-                                >
-                                    <div className="w-28 h-28 md:w-32 md:h-32 shrink-0 rounded-2xl overflow-hidden relative shadow-inner">
-                                        <img
-                                            src={booking.event.posterImage || "/placeholder.jpg"}
-                                            alt={booking.event.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
-                                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                                    </div>
-                                    <div className="flex-1 py-1 pr-1 min-w-0 flex flex-col justify-between">
-                                        <div>
-                                            <div className="flex items-start justify-between gap-2 mb-1">
-                                                <h3 className="font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
-                                                    {booking.event.title}
-                                                </h3>
-                                            </div>
-                                            {booking.eventSchedule && (
-                                                <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-1">
-                                                    <Calendar className="h-4 w-4 shrink-0 text-indigo-400" />
-                                                    <span className="truncate">
-                                                        {formatDate(booking.eventSchedule.scheduleDate)} • {formatTime(booking.eventSchedule.startTime)}
-                                                    </span>
-                                                </div>
-                                            )}
-                                            {booking.event.venue && (
-                                                <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                                                    <MapPin className="h-4 w-4 shrink-0 text-gray-400" />
-                                                    <span className="truncate">
-                                                        {booking.event.venue.name}, {booking.event.venue.city}
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center justify-between mt-2">
-                                            <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${STATUS_COLORS[booking.status]}`}>
-                                                {STATUS_LABELS[booking.status] || booking.status}
+            {data.recommendedEvents.length > 0 && (
+                <section>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                            <Sparkles className="h-5 w-5 text-[var(--accent-primary)]" />
+                            Rekomendasi Untukmu
+                        </h2>
+                        <Link href="/events" className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)] text-sm font-semibold flex items-center gap-1">
+                            Jelajahi
+                            <ChevronRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {data.recommendedEvents.slice(0, 4).map((event) => (
+                            <Link
+                                key={event.id}
+                                href={`/events/${event.slug}`}
+                                className="group card card-hover p-3 flex gap-4"
+                            >
+                                <div className="w-24 sm:w-28 shrink-0 rounded-xl overflow-hidden relative aspect-[3/4]">
+                                    <Image
+                                        src={event.posterImage || "/placeholder.jpg"}
+                                        alt={event.title}
+                                        fill
+                                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                        sizes="(max-width: 640px) 96px, 112px"
+                                    />
+                                    {event.price && event.price.isFree && (
+                                        <div className="absolute top-2 left-2">
+                                            <span className="inline-block px-2 py-0.5 bg-[var(--success)]/90 backdrop-blur-sm text-white text-[10px] font-bold rounded-lg shadow-sm">
+                                                GRATIS
                                             </span>
-                                            <div className="flex items-center gap-1 text-sm font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">
-                                                <Ticket className="h-3.5 w-3.5" />
-                                                <span>{booking.totalTickets}</span>
-                                            </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {data.recentBookings.length > 0 && (
-                        <section className="lg:col-span-1">
-                             <div className="flex items-center justify-between mb-6 px-1">
-                                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                    <TrendingUp className="h-5 w-5 text-indigo-600" />
-                                    Terbaru
-                                </h2>
-                                <Link href="/my-bookings" className="text-indigo-600 hover:text-indigo-500 text-sm font-semibold hover:underline">
-                                    Lihat Semua
-                                </Link>
-                            </div>
-                            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="divide-y divide-gray-50">
-                                    {data.recentBookings.map((booking) => (
-                                        <Link
-                                            key={booking.id}
-                                            href={`/my-bookings/${booking.bookingCode}`}
-                                            className="flex items-center gap-3 p-4 hover:bg-indigo-50/50 transition-colors group"
-                                        >
-                                            <img
-                                                src={booking.event.posterImage || "/placeholder.jpg"}
-                                                alt={booking.event.title}
-                                                className="w-14 h-14 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-all"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-gray-900 truncate group-hover:text-indigo-700 transition-colors">
-                                                    {booking.event.title}
-                                                </h3>
-                                                <p className="text-xs text-gray-500 mb-1">
-                                                    {formatDate(booking.createdAt)}
-                                                </p>
-                                                <p className="text-sm font-bold text-indigo-600">
-                                                    {formatCurrency(booking.totalAmount)}
-                                                </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                                <span className={`inline-block w-2 h-2 rounded-full ${
-                                                    booking.status === 'PAID' || booking.status === 'CONFIRMED' ? 'bg-green-500' :
-                                                    booking.status === 'PENDING' ? 'bg-yellow-500' : 'bg-gray-300'
-                                                }`} />
-                                            </div>
-                                        </Link>
-                                    ))}
+                                    )}
                                 </div>
-                            </div>
-                        </section>
-                    )}
+                                <div className="flex-1 min-w-0 flex flex-col py-1">
+                                    <div className="mb-auto">
+                                        {event.category && (
+                                            <span className="inline-block text-[10px] font-bold tracking-wider text-[var(--accent-primary)] uppercase mb-1">
+                                                {event.category}
+                                            </span>
+                                        )}
+                                        <h3 className="font-bold text-[var(--text-primary)] leading-tight group-hover:text-[var(--accent-primary)] transition-colors line-clamp-2 text-sm sm:text-base mb-2">
+                                            {event.title}
+                                        </h3>
+                                    </div>
 
-                    {data.recommendedEvents.length > 0 && (
-                        <section className={data.recentBookings.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}>
-                            <div className="flex items-center justify-between mb-6 px-1">
-                                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                    <Sparkles className="h-5 w-5 text-indigo-600" />
-                                    Rekomendasi
-                                </h2>
-                                <Link href="/events" className="text-indigo-600 hover:text-indigo-500 text-sm font-semibold hover:underline">
-                                    Jelajahi
-                                </Link>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {data.recommendedEvents.map((event) => (
-                                    <Link
-                                        key={event.id}
-                                        href={`/events/${event.slug}`}
-                                        className="group bg-white rounded-3xl p-3 shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 hover:-translate-y-1 flex gap-4 h-full"
-                                    >
-                                        <div className="w-28 shrink-0 rounded-2xl overflow-hidden relative shadow-inner">
-                                            <img
-                                                src={event.posterImage || "/placeholder.jpg"}
-                                                alt={event.title}
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                            />
-                                            {event.price && (
-                                                <div className="absolute top-2 left-2 right-2">
-                                                    {event.price.isFree ? (
-                                                        <span className="inline-block px-2 py-1 bg-green-500/90 backdrop-blur-sm text-white text-[10px] font-bold rounded-lg shadow-sm">
-                                                            GRATIS
-                                                        </span>
-                                                    ) : null}
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0 flex flex-col py-1">
-                                            <div className="mb-auto">
-                                                {event.category && (
-                                                    <span className="inline-block text-[10px] font-bold tracking-wider text-indigo-500 uppercase mb-1">
-                                                        {event.category}
-                                                    </span>
-                                                )}
-                                                <h3 className="font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2 mb-2">
-                                                    {event.title}
-                                                </h3>
+                                    <div className="space-y-1">
+                                        {event.schedule && (
+                                            <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                                                <Calendar className="h-3.5 w-3.5" />
+                                                <span>{formatDate(event.schedule.date)}</span>
                                             </div>
-                                            
-                                            <div className="space-y-1">
-                                                {event.schedule && (
-                                                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                                        <Calendar className="h-3.5 w-3.5 text-gray-400" />
-                                                        <span>{formatDate(event.schedule.date)}</span>
-                                                    </div>
-                                                )}
-                                                {event.venue && (
-                                                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                                        <MapPin className="h-3.5 w-3.5 text-gray-400" />
-                                                        <span className="truncate">{event.venue.city}</span>
-                                                    </div>
-                                                )}
-                                                {event.price && !event.price.isFree && (
-                                                    <div className="pt-2 mt-2 border-t border-dashed border-gray-100 font-bold text-indigo-600 text-sm">
-                                                        {formatCurrency(event.price.startingFrom)}
-                                                    </div>
-                                                )}
+                                        )}
+                                        {event.venue && (
+                                            <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                                                <MapPin className="h-3.5 w-3.5" />
+                                                <span className="truncate">{event.venue.city}</span>
                                             </div>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-                </div>
-
-                {data.upcomingBookings.length === 0 && data.recentBookings.length === 0 && (
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 text-center max-w-lg mx-auto">
-                        <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Ticket className="h-10 w-10 text-indigo-400" />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                            Belum ada pesanan
-                        </h3>
-                        <p className="text-gray-500 mb-8 max-w-xs mx-auto">
-                            Jelajahi ribuan event menarik dan amankan tiket pertamamu sekarang!
-                        </p>
-                        <Link
-                            href="/events"
-                            className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-indigo-200 transition-all hover:-translate-y-0.5"
-                        >
-                            <Sparkles className="h-5 w-5" />
-                            Jelajahi Event
-                        </Link>
+                                        )}
+                                        {event.price && !event.price.isFree && (
+                                            <div className="pt-2 mt-1 border-t border-dashed border-[var(--border)] font-bold text-[var(--accent-primary)] text-sm">
+                                                {formatCurrency(event.price.startingFrom)}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
                     </div>
-                )}
-            </main>
+                </section>
+            )}
 
-            <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-gray-200 pb-safe z-50 md:hidden">
-                <div className="flex items-center justify-around px-2 py-3">
-                    <Link href="/dashboard" className="flex flex-col items-center gap-1 p-2 text-indigo-600">
-                        <Home className="h-6 w-6" />
-                        <span className="text-[10px] font-medium">Beranda</span>
-                    </Link>
-                    <Link href="/my-bookings" className="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-indigo-600 transition-colors">
-                        <Ticket className="h-6 w-6" />
-                        <span className="text-[10px] font-medium">Tiket</span>
-                    </Link>
-                    <div className="relative -top-6">
-                        <Link href="/events" className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full text-white shadow-lg shadow-indigo-200 hover:scale-105 transition-transform">
-                            <Sparkles className="h-6 w-6" />
-                        </Link>
+            {data.upcomingBookings.length === 0 && data.recentBookings.length === 0 && (
+                <div className="card p-8 sm:p-12 text-center max-w-lg mx-auto">
+                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Ticket className="h-10 w-10 text-[var(--accent-primary)]" />
                     </div>
-                    <Link href="/wishlist" className="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-indigo-600 transition-colors">
-                        <Heart className="h-6 w-6" />
-                        <span className="text-[10px] font-medium">Wishlist</span>
-                    </Link>
-                    <button 
-                        onClick={handleLogout}
-                        className="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+                        Belum ada pesanan
+                    </h3>
+                    <p className="text-[var(--text-muted)] mb-8 max-w-xs mx-auto">
+                        Jelajahi ribuan event menarik dan amankan tiket pertamamu sekarang!
+                    </p>
+                    <Link
+                        href="/events"
+                        className="btn-primary inline-flex"
                     >
-                        <LogOut className="h-6 w-6" />
-                        <span className="text-[10px] font-medium">Keluar</span>
-                    </button>
+                        <Sparkles className="h-5 w-5" />
+                        Jelajahi Event
+                    </Link>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

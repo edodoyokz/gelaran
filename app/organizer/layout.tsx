@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
-import { OrganizerSidebar } from "@/components/organizer/OrganizerSidebar";
+import { OrganizerLayoutWrapper } from "@/components/organizer/OrganizerLayoutWrapper";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export default async function OrganizerLayout({
     children,
@@ -27,15 +28,16 @@ export default async function OrganizerLayout({
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <OrganizerSidebar
-                organizationName={organizer.organizerProfile?.organizationName || organizer.name}
-                organizationLogo={organizer.organizerProfile?.organizationLogo}
-                isVerified={organizer.organizerProfile?.isVerified || false}
-            />
-            <div className="pl-64 transition-all duration-300">
-                {children}
+        <ThemeProvider>
+            <div className="min-h-screen" style={{ background: 'var(--bg-secondary)' }}>
+                <OrganizerLayoutWrapper
+                    organizationName={organizer.organizerProfile?.organizationName || organizer.name}
+                    organizationLogo={organizer.organizerProfile?.organizationLogo}
+                    isVerified={organizer.organizerProfile?.isVerified || false}
+                >
+                    {children}
+                </OrganizerLayoutWrapper>
             </div>
-        </div>
+        </ThemeProvider>
     );
 }

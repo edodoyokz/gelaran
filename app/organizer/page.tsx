@@ -21,13 +21,14 @@ import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import { OrganizerHeader } from "@/components/organizer/OrganizerHeader";
 
 const STATUS_COLORS: Record<string, string> = {
-    DRAFT: "bg-gray-100 text-gray-700",
-    PENDING_REVIEW: "bg-yellow-100 text-yellow-700",
-    PUBLISHED: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    COMPLETED: "bg-blue-100 text-blue-700",
+    DRAFT: "bg-gray-500/10 text-gray-500",
+    PENDING_REVIEW: "bg-[var(--warning-bg)] text-[var(--warning-text)]",
+    PUBLISHED: "bg-[var(--success-bg)] text-[var(--success-text)]",
+    CANCELLED: "bg-[var(--error-bg)] text-[var(--error-text)]",
+    COMPLETED: "bg-[var(--info-bg)] text-[var(--info-text)]",
 };
 
 export default async function OrganizerDashboard() {
@@ -158,43 +159,28 @@ export default async function OrganizerDashboard() {
     ];
 
     const colorMap: Record<string, { bg: string; icon: string; hover: string }> = {
-        indigo: { bg: "bg-indigo-100", icon: "text-indigo-600", hover: "hover:bg-indigo-50" },
-        purple: { bg: "bg-purple-100", icon: "text-purple-600", hover: "hover:bg-purple-50" },
-        green: { bg: "bg-green-100", icon: "text-green-600", hover: "hover:bg-green-50" },
-        blue: { bg: "bg-blue-100", icon: "text-blue-600", hover: "hover:bg-blue-50" },
-        gray: { bg: "bg-gray-100", icon: "text-gray-600", hover: "hover:bg-gray-50" },
+        indigo: { bg: "bg-indigo-500/10", icon: "text-indigo-500", hover: "hover:bg-indigo-500/5" },
+        purple: { bg: "bg-purple-500/10", icon: "text-purple-500", hover: "hover:bg-purple-500/5" },
+        green: { bg: "bg-emerald-500/10", icon: "text-emerald-500", hover: "hover:bg-emerald-500/5" },
+        blue: { bg: "bg-blue-500/10", icon: "text-blue-500", hover: "hover:bg-blue-500/5" },
+        gray: { bg: "bg-gray-500/10", icon: "text-gray-500", hover: "hover:bg-gray-500/5" },
     };
 
     return (
         <div className="min-h-screen">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                            <p className="text-gray-500">
-                                Selamat datang, {organizer.organizerProfile?.organizationName || organizer.name}
-                            </p>
-                        </div>
-                        <Link
-                            href="/organizer/events/new"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-sm"
-                        >
-                            <Plus className="h-5 w-5" />
-                            Buat Event
-                        </Link>
-                    </div>
-                </div>
-            </header>
+            <OrganizerHeader 
+                title="Dashboard"
+                subtitle={`Selamat datang, ${organizer.organizerProfile?.organizationName || organizer.name}`}
+            />
 
             <main className="p-6 space-y-6">
                 {pendingWithdrawals > 0 && (
-                    <div className="flex items-center gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-                        <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
-                        <p className="text-yellow-800 text-sm">
+                    <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--warning-bg)] border border-[var(--warning)]/20">
+                        <AlertCircle className="h-5 w-5 text-[var(--warning)] flex-shrink-0" />
+                        <p className="text-[var(--warning-text)] text-sm">
                             Anda memiliki <strong>{pendingWithdrawals} permintaan penarikan</strong> yang sedang diproses.
                         </p>
-                        <Link href="/organizer/wallet" className="ml-auto text-yellow-700 text-sm font-medium hover:underline">
+                        <Link href="/organizer/wallet" className="ml-auto text-[var(--warning-text)] text-sm font-medium hover:underline">
                             Lihat Status
                         </Link>
                     </div>
@@ -209,15 +195,15 @@ export default async function OrganizerDashboard() {
                                 <Link
                                     key={stat.label}
                                     href={stat.href}
-                                    className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+                                    className="rounded-xl p-5 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow cursor-pointer bg-[var(--surface)] border border-[var(--border)]"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className={`w-12 h-12 ${colors.bg} rounded-xl flex items-center justify-center`}>
                                             <stat.icon className={`h-6 w-6 ${colors.icon}`} />
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                                            <p className="text-sm text-gray-500">{stat.label}</p>
+                                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stat.value}</p>
+                                            <p className="text-sm text-[var(--text-muted)]">{stat.label}</p>
                                         </div>
                                     </div>
                                 </Link>
@@ -227,15 +213,15 @@ export default async function OrganizerDashboard() {
                         return (
                             <div
                                 key={stat.label}
-                                className="bg-white rounded-xl p-5 shadow-sm border border-gray-100"
+                                className="rounded-xl p-5 shadow-[var(--shadow-sm)] bg-[var(--surface)] border border-[var(--border)]"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className={`w-12 h-12 ${colors.bg} rounded-xl flex items-center justify-center`}>
                                         <stat.icon className={`h-6 w-6 ${colors.icon}`} />
                                     </div>
                                     <div>
-                                        <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                                        <p className="text-sm text-gray-500">{stat.label}</p>
+                                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stat.value}</p>
+                                        <p className="text-sm text-[var(--text-muted)]">{stat.label}</p>
                                     </div>
                                 </div>
                             </div>
@@ -243,8 +229,8 @@ export default async function OrganizerDashboard() {
                     })}
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                    <h2 className="text-sm font-semibold text-gray-900 mb-4">Aksi Cepat</h2>
+                <div className="rounded-xl shadow-[var(--shadow-sm)] p-5 bg-[var(--surface)] border border-[var(--border)]">
+                    <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Aksi Cepat</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {quickActions.map((action) => {
                             const colors = colorMap[action.color];
@@ -252,12 +238,12 @@ export default async function OrganizerDashboard() {
                                 <Link
                                     key={action.label}
                                     href={action.href}
-                                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-100 ${colors.hover} transition-colors`}
+                                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border border-[var(--border)] ${colors.hover} transition-colors`}
                                 >
                                     <div className={`w-10 h-10 ${colors.bg} rounded-lg flex items-center justify-center`}>
                                         <action.icon className={`h-5 w-5 ${colors.icon}`} />
                                     </div>
-                                    <span className="text-sm font-medium text-gray-700">{action.label}</span>
+                                    <span className="text-sm font-medium text-[var(--text-secondary)]">{action.label}</span>
                                 </Link>
                             );
                         })}
@@ -312,21 +298,21 @@ export default async function OrganizerDashboard() {
                         </div>
                     )}
 
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                        <div className="px-5 py-4 border-b flex items-center justify-between">
-                            <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                                <Ticket className="h-5 w-5 text-gray-500" />
+                    <div className="rounded-xl shadow-[var(--shadow-sm)] bg-[var(--surface)] border border-[var(--border)]">
+                        <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
+                            <h2 className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
+                                <Ticket className="h-5 w-5 text-[var(--text-muted)]" />
                                 Booking Terbaru
                             </h2>
-                            <Link href="/organizer/events" className="text-indigo-600 text-sm font-medium hover:text-indigo-500">
+                            <Link href="/organizer/events" className="text-[var(--accent-primary)] text-sm font-medium hover:opacity-80">
                                 Lihat Semua
                             </Link>
                         </div>
-                        <div className="divide-y">
+                        <div className="divide-y divide-[var(--border)]">
                             {recentBookings.length === 0 ? (
                                 <div className="p-8 text-center">
-                                    <Ticket className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-                                    <p className="text-gray-500 text-sm">Belum ada booking</p>
+                                    <Ticket className="h-10 w-10 text-[var(--text-muted)] mx-auto mb-3" />
+                                    <p className="text-[var(--text-muted)] text-sm">Belum ada booking</p>
                                 </div>
                             ) : (
                                 recentBookings.map((booking) => (
@@ -334,27 +320,27 @@ export default async function OrganizerDashboard() {
                                         {booking.user?.avatarUrl ? (
                                             <img
                                                 src={booking.user.avatarUrl}
-                                                alt={booking.user.name}
+                                                alt={booking.user.name ?? 'User'}
                                                 className="w-9 h-9 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-                                                <Users className="h-4 w-4 text-gray-400" />
+                                            <div className="w-9 h-9 rounded-full bg-[var(--surface-hover)] flex items-center justify-center">
+                                                <Users className="h-4 w-4 text-[var(--text-muted)]" />
                                             </div>
                                         )}
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-gray-900 truncate">
+                                            <p className="text-sm font-medium text-[var(--text-primary)] truncate">
                                                 {booking.user?.name || "Guest"}
                                             </p>
-                                            <p className="text-xs text-gray-500 truncate">
+                                            <p className="text-xs text-[var(--text-muted)] truncate">
                                                 {booking.event.title} • {booking.bookedTickets.length} tiket
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-sm font-medium text-gray-900">
+                                            <p className="text-sm font-medium text-[var(--text-primary)]">
                                                 {formatCurrency(Number(booking.totalAmount))}
                                             </p>
-                                            <p className="text-xs text-gray-400">
+                                            <p className="text-xs text-[var(--text-muted)]">
                                                 {new Date(booking.createdAt).toLocaleDateString("id-ID")}
                                             </p>
                                         </div>
@@ -365,25 +351,25 @@ export default async function OrganizerDashboard() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                    <div className="px-5 py-4 border-b flex items-center justify-between">
-                        <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                            <BarChart3 className="h-5 w-5 text-gray-500" />
+                <div className="rounded-xl shadow-[var(--shadow-sm)] bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between">
+                        <h2 className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
+                            <BarChart3 className="h-5 w-5 text-[var(--text-muted)]" />
                             Event Terbaru
                         </h2>
-                        <Link href="/organizer/events" className="text-indigo-600 text-sm font-medium hover:text-indigo-500 flex items-center gap-1">
+                        <Link href="/organizer/events" className="text-[var(--accent-primary)] text-sm font-medium hover:opacity-80 flex items-center gap-1">
                             Lihat Semua
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>
-                    <div className="divide-y">
+                    <div className="divide-y divide-[var(--border)]">
                         {recentEvents.length === 0 ? (
                             <div className="p-12 text-center">
-                                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-500 mb-4">Belum ada event. Buat event pertama kamu!</p>
+                                <Calendar className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                                <p className="text-[var(--text-muted)] mb-4">Belum ada event. Buat event pertama kamu!</p>
                                 <Link
                                     href="/organizer/events/new"
-                                    className="inline-flex items-center gap-2 text-indigo-600 font-medium"
+                                    className="inline-flex items-center gap-2 text-[var(--accent-primary)] font-medium"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Buat Event
@@ -394,7 +380,7 @@ export default async function OrganizerDashboard() {
                                 <Link
                                     key={event.id}
                                     href={`/organizer/events/${event.id}`}
-                                    className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors"
+                                    className="flex items-center gap-4 px-5 py-4 hover:bg-[var(--surface-hover)] transition-colors"
                                 >
                                     <img
                                         src={event.posterImage || "/placeholder.jpg"}
@@ -402,8 +388,8 @@ export default async function OrganizerDashboard() {
                                         className="w-14 h-14 object-cover rounded-lg flex-shrink-0"
                                     />
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="font-medium text-gray-900 truncate">{event.title}</h3>
-                                        <p className="text-sm text-gray-500">
+                                        <h3 className="font-medium text-[var(--text-primary)] truncate">{event.title}</h3>
+                                        <p className="text-sm text-[var(--text-muted)]">
                                             {event.schedules[0]
                                                 ? new Date(event.schedules[0].scheduleDate).toLocaleDateString("id-ID", {
                                                     weekday: "short",
@@ -419,7 +405,7 @@ export default async function OrganizerDashboard() {
                                         <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[event.status]}`}>
                                             {event.status === "PUBLISHED" ? "Aktif" : event.status === "DRAFT" ? "Draft" : event.status}
                                         </span>
-                                        <p className="text-sm text-gray-500 mt-1">
+                                        <p className="text-sm text-[var(--text-muted)] mt-1">
                                             {event._count.bookings} peserta
                                         </p>
                                     </div>

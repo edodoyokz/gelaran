@@ -71,12 +71,20 @@ const menuItems: MenuItem[] = [
     { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+    isCollapsed?: boolean;
+    onToggleCollapse?: () => void;
+}
+
+export function AdminSidebar({ isCollapsed, onToggleCollapse }: AdminSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const [collapsed, setCollapsed] = useState(false);
+    const [internalCollapsed, setInternalCollapsed] = useState(false);
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const collapsed = isCollapsed ?? internalCollapsed;
+    const toggleCollapse = onToggleCollapse ?? (() => setInternalCollapsed(!internalCollapsed));
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
@@ -96,7 +104,7 @@ export function AdminSidebar() {
                 }
             }
         });
-    }, [pathname]);
+    }, [pathname, expandedItems]);
 
     const isActive = (href: string) => {
         if (href === "/admin") {
@@ -133,13 +141,13 @@ export function AdminSidebar() {
                             className={cn(
                                 "flex-1 flex items-center gap-3 px-3 py-2.5 rounded-l-lg transition-all duration-200 cursor-pointer text-left w-full border-0 focus:outline-none",
                                 parentActive
-                                    ? "bg-slate-800 text-white"
-                                    : "text-slate-300 hover:bg-slate-800/50 hover:text-white",
+                                    ? "bg-[var(--surface-active)] text-[var(--text-primary)]"
+                                    : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
                                 collapsed && "rounded-lg"
                             )}
                             onClick={() => toggleExpanded(item.href)}
                         >
-                            <item.icon className={cn("h-5 w-5 flex-shrink-0", parentActive && "text-indigo-400")} />
+                            <item.icon className={cn("h-5 w-5 flex-shrink-0", parentActive && "text-[var(--accent-primary)]")} />
                             {!collapsed && (
                                 <span className="text-sm font-medium">{item.label}</span>
                             )}
@@ -154,8 +162,8 @@ export function AdminSidebar() {
                                 className={cn(
                                     "px-2 py-2.5 rounded-r-lg transition-all duration-200",
                                     parentActive
-                                        ? "bg-slate-800 text-white"
-                                        : "text-slate-300 hover:bg-slate-800/50 hover:text-white"
+                                        ? "bg-[var(--surface-active)] text-[var(--text-primary)]"
+                                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]"
                                 )}
                             >
                                 {isExpanded ? (
@@ -167,7 +175,7 @@ export function AdminSidebar() {
                         )}
                     </div>
                     {!collapsed && isExpanded && item.children && (
-                        <div className="mt-1 ml-4 pl-3 border-l border-slate-700 space-y-1">
+                        <div className="mt-1 ml-4 pl-3 space-y-1 border-l border-[var(--border)]">
                             {item.children.map((child) => renderMenuItem(child, true))}
                         </div>
                     )}
@@ -182,14 +190,13 @@ export function AdminSidebar() {
                 className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                     active
-                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/20"
-                        : "text-slate-300 hover:bg-slate-800/50 hover:text-white",
+                        ? "bg-[var(--accent-primary)] text-white shadow-[var(--shadow-md)]"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
                     isChild && "py-2 text-sm"
                 )}
             >
                 <item.icon className={cn(
                     "flex-shrink-0",
-                    active && "text-white",
                     isChild ? "h-4 w-4" : "h-5 w-5"
                 )} />
                 {!collapsed && (
@@ -202,34 +209,36 @@ export function AdminSidebar() {
     return (
         <aside
             className={cn(
-                "fixed left-0 top-0 h-full bg-slate-900 text-white transition-all duration-300 z-40 flex flex-col border-r border-slate-800",
+                "fixed left-0 top-0 h-full transition-all duration-300 z-40 flex flex-col bg-[var(--surface)] border-r border-[var(--border)]",
                 collapsed ? "w-20" : "w-64"
             )}
         >
-            <div className="p-4 border-b border-slate-800">
+            <div className="p-4 border-b border-[var(--border)]">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-900/20">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--accent-primary)] shadow-[var(--shadow-glow)]">
                         <Shield className="h-6 w-6 text-white" />
                     </div>
                     {!collapsed && (
                         <div className="flex-1 min-w-0">
-                            <h2 className="font-bold text-white truncate text-base">
+                            <h2 className="font-bold truncate text-base text-[var(--text-primary)]">
                                 BSC Admin
                             </h2>
-                            <p className="text-xs text-slate-400">Platform Management</p>
+                            <p className="text-xs text-[var(--text-muted)]">
+                                Platform Management
+                            </p>
                         </div>
                     )}
                 </div>
             </div>
 
-            <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+            <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--border)] scrollbar-track-transparent">
                 {menuItems.map((item) => renderMenuItem(item))}
             </nav>
 
-            <div className="p-3 border-t border-slate-800 space-y-1">
+            <div className="p-3 space-y-1 border-t border-[var(--border)]">
                 <Link
                     href="/"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/50 hover:text-white transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
                 >
                     <Home className="h-5 w-5 flex-shrink-0" />
                     {!collapsed && <span className="text-sm font-medium">Back to Home</span>}
@@ -238,7 +247,7 @@ export function AdminSidebar() {
                     type="button"
                     onClick={handleLogout}
                     disabled={isLoggingOut}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors disabled:opacity-50"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--error)] hover:bg-[var(--error-bg)] transition-colors disabled:opacity-50"
                 >
                     <LogOut className="h-5 w-5 flex-shrink-0" />
                     {!collapsed && <span className="text-sm font-medium">{isLoggingOut ? "Logging out..." : "Logout"}</span>}
@@ -247,8 +256,8 @@ export function AdminSidebar() {
 
             <button
                 type="button"
-                onClick={() => setCollapsed(!collapsed)}
-                className="absolute -right-3 top-20 w-6 h-6 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center text-slate-300 hover:text-white transition-colors shadow-lg z-50"
+                onClick={toggleCollapse}
+                className="absolute -right-3 top-20 w-6 h-6 rounded-full flex items-center justify-center shadow-lg z-50 bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
                 {collapsed ? (
                     <ChevronRight className="h-3 w-3" />

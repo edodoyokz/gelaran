@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
     Heart,
     Calendar,
     MapPin,
@@ -13,6 +13,7 @@ import {
     Trash2,
     ExternalLink,
     Tag,
+    Sparkles,
 } from "lucide-react";
 
 interface WishlistEvent {
@@ -127,10 +128,10 @@ export default function WishlistPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat wishlist...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat wishlist...</p>
                 </div>
             </div>
         );
@@ -138,11 +139,13 @@ export default function WishlistPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-500">
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <div className="text-center card p-8 max-w-md">
+                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
+                    </div>
+                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
+                    <Link href="/dashboard" className="text-[var(--accent-primary)] hover:underline">
                         Kembali ke Dashboard
                     </Link>
                 </div>
@@ -151,151 +154,147 @@ export default function WishlistPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Wishlist Saya</h1>
-                            <p className="text-sm text-gray-500">
-                                {wishlists.length} event tersimpan
-                            </p>
-                        </div>
-                    </div>
+        <div className="space-y-6">
+            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
+                        Wishlist Saya
+                    </h1>
+                    <p className="text-[var(--text-muted)] text-sm mt-1">
+                        {wishlists.length} event tersimpan
+                    </p>
                 </div>
-            </header>
+            </section>
 
-            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {wishlists.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                        <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
-                            Wishlist kamu kosong
-                        </h3>
-                        <p className="text-gray-500 mb-6">
-                            Simpan event yang kamu minati untuk ditemukan dengan mudah nanti.
-                        </p>
-                        <Link
-                            href="/events"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                        >
-                            Jelajahi Event
-                            <ExternalLink className="h-4 w-4" />
-                        </Link>
+            {wishlists.length === 0 ? (
+                <div className="card p-12 text-center">
+                    <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Heart className="h-10 w-10 text-rose-500" />
                     </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {wishlists.map((item) => (
-                            <div
-                                key={item.id}
-                                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group"
-                            >
-                                <div className="relative aspect-[16/9]">
-                                    <img
-                                        src={item.event.posterImage || "/placeholder.jpg"}
-                                        alt={item.event.title}
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+                        Wishlist kamu kosong
+                    </h3>
+                    <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
+                        Simpan event yang kamu minati untuk ditemukan dengan mudah nanti.
+                    </p>
+                    <Link href="/events" className="btn-primary inline-flex">
+                        <Sparkles className="h-4 w-4" />
+                        Jelajahi Event
+                        <ExternalLink className="h-4 w-4" />
+                    </Link>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {wishlists.map((item, index) => (
+                        <div
+                            key={item.id}
+                            className="card card-hover overflow-hidden group animate-fade-in-up"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                            <div className="relative aspect-[16/10]">
+                                <Image
+                                    src={item.event.posterImage || "/placeholder.jpg"}
+                                    alt={item.event.title}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                                    {item.event.status !== "PUBLISHED" && (
-                                        <div className="absolute top-3 left-3">
-                                            <span className="inline-flex px-2 py-1 bg-red-500 text-white rounded text-xs font-medium">
-                                                {item.event.status === "ENDED" ? "Berakhir" : "Tidak Tersedia"}
+                                {item.event.status !== "PUBLISHED" && (
+                                    <div className="absolute top-3 left-3">
+                                        <span className="inline-flex px-2.5 py-1 bg-[var(--error)] text-white rounded-lg text-xs font-bold">
+                                            {item.event.status === "ENDED" ? "Berakhir" : "Tidak Tersedia"}
+                                        </span>
+                                    </div>
+                                )}
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemove(item.event.id)}
+                                    disabled={removingId === item.event.id}
+                                    className="absolute top-3 right-3 p-2.5 bg-white/90 dark:bg-black/50 backdrop-blur-sm rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-colors disabled:opacity-50 shadow-lg"
+                                    title="Hapus dari wishlist"
+                                >
+                                    {removingId === item.event.id ? (
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                    ) : (
+                                        <Heart className="h-5 w-5 fill-current" />
+                                    )}
+                                </button>
+
+                                <div className="absolute bottom-3 left-3 right-3">
+                                    {item.event.price && (
+                                        <div className="text-white font-bold text-lg drop-shadow-lg">
+                                            {item.event.price.isFree ? (
+                                                <span className="text-emerald-400">GRATIS</span>
+                                            ) : (
+                                                <span>
+                                                    Mulai {formatCurrency(item.event.price.startingFrom)}
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="p-4">
+                                {item.event.category && (
+                                    <div className="flex items-center gap-1 text-xs text-[var(--accent-primary)] font-semibold mb-2">
+                                        <Tag className="h-3 w-3" />
+                                        {item.event.category}
+                                    </div>
+                                )}
+
+                                <h3 className="font-bold text-[var(--text-primary)] mb-2 line-clamp-2 group-hover:text-[var(--accent-primary)] transition-colors">
+                                    <Link href={`/events/${item.event.slug}`}>
+                                        {item.event.title}
+                                    </Link>
+                                </h3>
+
+                                <div className="space-y-1.5 text-sm text-[var(--text-muted)]">
+                                    {item.event.schedule && (
+                                        <div className="flex items-center gap-2">
+                                            <Calendar className="h-4 w-4 flex-shrink-0 text-[var(--accent-primary)]" />
+                                            <span>
+                                                {formatDate(item.event.schedule.date)}
+                                                <span className="mx-1 text-[var(--border)]">•</span>
+                                                {formatTime(item.event.schedule.time)}
                                             </span>
                                         </div>
                                     )}
 
+                                    {item.event.venue && (
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4 flex-shrink-0" />
+                                            <span className="truncate">
+                                                {item.event.venue.name}, {item.event.venue.city}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mt-4 flex gap-2">
+                                    <Link
+                                        href={`/events/${item.event.slug}`}
+                                        className="btn-primary flex-1 py-2.5 text-sm"
+                                    >
+                                        Lihat Event
+                                    </Link>
                                     <button
                                         type="button"
                                         onClick={() => handleRemove(item.event.id)}
                                         disabled={removingId === item.event.id}
-                                        className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-                                        title="Hapus dari wishlist"
+                                        className="btn-secondary py-2.5 px-3"
                                     >
-                                        {removingId === item.event.id ? (
-                                            <Loader2 className="h-5 w-5 animate-spin" />
-                                        ) : (
-                                            <Heart className="h-5 w-5 fill-current" />
-                                        )}
+                                        <Trash2 className="h-4 w-4" />
                                     </button>
-
-                                    <div className="absolute bottom-3 left-3 right-3">
-                                        {item.event.price && (
-                                            <div className="text-white font-bold">
-                                                {item.event.price.isFree ? (
-                                                    <span className="text-green-400">GRATIS</span>
-                                                ) : (
-                                                    <span>
-                                                        Mulai {formatCurrency(item.event.price.startingFrom)}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="p-4">
-                                    {item.event.category && (
-                                        <div className="flex items-center gap-1 text-xs text-indigo-600 font-medium mb-2">
-                                            <Tag className="h-3 w-3" />
-                                            {item.event.category}
-                                        </div>
-                                    )}
-
-                                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                                        <Link href={`/events/${item.event.slug}`}>
-                                            {item.event.title}
-                                        </Link>
-                                    </h3>
-
-                                    <div className="space-y-2 text-sm text-gray-500">
-                                        {item.event.schedule && (
-                                            <div className="flex items-center gap-2">
-                                                <Calendar className="h-4 w-4 flex-shrink-0" />
-                                                <span>
-                                                    {formatDate(item.event.schedule.date)}
-                                                    <span className="mx-1">•</span>
-                                                    {formatTime(item.event.schedule.time)}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        {item.event.venue && (
-                                            <div className="flex items-center gap-2">
-                                                <MapPin className="h-4 w-4 flex-shrink-0" />
-                                                <span className="truncate">
-                                                    {item.event.venue.name}, {item.event.venue.city}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="mt-4 flex gap-2">
-                                        <Link
-                                            href={`/events/${item.event.slug}`}
-                                            className="flex-1 text-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
-                                        >
-                                            Lihat Event
-                                        </Link>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemove(item.event.id)}
-                                            disabled={removingId === item.event.id}
-                                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                )}
-            </main>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

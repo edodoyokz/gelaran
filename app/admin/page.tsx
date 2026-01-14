@@ -17,6 +17,7 @@ import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminDashboardCharts } from "@/components/admin/AdminDashboardCharts";
 
 interface RecentBooking {
     id: string;
@@ -36,7 +37,6 @@ export default async function AdminDashboard() {
         redirect("/login?returnUrl=/admin");
     }
 
-    // Check if user is admin
     const adminUser = await prisma.user.findUnique({
         where: { email: user.email! },
     });
@@ -45,7 +45,6 @@ export default async function AdminDashboard() {
         redirect("/");
     }
 
-    // Get platform stats
     const [
         totalUsers,
         totalOrganizers,
@@ -66,14 +65,12 @@ export default async function AdminDashboard() {
         prisma.venue.count({ where: { isActive: true } }),
     ]);
 
-    // Get total revenue (simplified)
     const transactions = await prisma.transaction.aggregate({
         where: { status: "SUCCESS" },
         _sum: { amount: true },
     });
     const totalRevenue = Number(transactions._sum.amount || 0);
 
-    // Recent activities
     const recentBookings = await prisma.booking.findMany({
         take: 5,
         orderBy: { createdAt: "desc" },
@@ -91,6 +88,8 @@ export default async function AdminDashboard() {
             icon: Users,
             href: "/admin/users",
             color: "bg-blue-500",
+            iconColor: "text-blue-500",
+            bgColor: "bg-blue-500/10",
         },
         {
             label: "Total Events",
@@ -98,7 +97,9 @@ export default async function AdminDashboard() {
             subLabel: "Published/Total",
             icon: Calendar,
             href: "/admin/events",
-            color: "bg-green-500",
+            color: "bg-emerald-500",
+            iconColor: "text-emerald-500",
+            bgColor: "bg-emerald-500/10",
         },
         {
             label: "Total Bookings",
@@ -106,6 +107,8 @@ export default async function AdminDashboard() {
             icon: CreditCard,
             href: "/admin/bookings",
             color: "bg-purple-500",
+            iconColor: "text-purple-500",
+            bgColor: "bg-purple-500/10",
         },
         {
             label: "Platform Revenue",
@@ -113,7 +116,19 @@ export default async function AdminDashboard() {
             icon: TrendingUp,
             href: "/admin/finance",
             color: "bg-indigo-500",
+            iconColor: "text-indigo-500",
+            bgColor: "bg-indigo-500/10",
         },
+    ];
+
+    const quickLinks = [
+        { href: "/admin/users", icon: Users, label: "User Management", sublabel: `${totalOrganizers} organizers`, iconColor: "text-blue-500", bgColor: "bg-blue-500/10" },
+        { href: "/admin/events", icon: Calendar, label: "Event Moderation", sublabel: `${publishedEvents} published`, iconColor: "text-emerald-500", bgColor: "bg-emerald-500/10" },
+        { href: "/admin/payouts", icon: CreditCard, label: "Payout Processing", sublabel: `${pendingPayouts} pending`, iconColor: "text-purple-500", bgColor: "bg-purple-500/10" },
+        { href: "/admin/categories", icon: Tag, label: "Categories", sublabel: `${totalCategories} categories`, iconColor: "text-orange-500", bgColor: "bg-orange-500/10" },
+        { href: "/admin/venues", icon: MapPin, label: "Venues", sublabel: `${totalVenues} venues`, iconColor: "text-teal-500", bgColor: "bg-teal-500/10" },
+        { href: "/admin/settings", icon: Settings, label: "Platform Settings", sublabel: "Configure platform", iconColor: "text-gray-500", bgColor: "bg-gray-500/10" },
+        { href: "/admin/landing-page", icon: LayoutTemplate, label: "Landing Page", sublabel: "Hero, footer, SEO", iconColor: "text-indigo-500", bgColor: "bg-indigo-500/10" },
     ];
 
     return (
@@ -124,143 +139,72 @@ export default async function AdminDashboard() {
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Alert for pending payouts */}
                 {pendingPayouts > 0 && (
-                    <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center justify-between">
+                    <div className="mb-6 rounded-xl p-4 flex items-center justify-between bg-[var(--warning-bg)] border border-[var(--warning)]/20">
                         <div className="flex items-center gap-3">
-                            <AlertCircle className="h-5 w-5 text-yellow-600" />
+                            <AlertCircle className="h-5 w-5 text-[var(--warning)]" />
                             <div>
-                                <p className="font-medium text-yellow-800">
+                                <p className="font-medium text-[var(--warning-text)]">
                                     {pendingPayouts} payout request{pendingPayouts > 1 ? "s" : ""} pending
                                 </p>
-                                <p className="text-sm text-yellow-600">Review and process organizer payouts</p>
+                                <p className="text-sm text-[var(--warning-text)]/70">Review and process organizer payouts</p>
                             </div>
                         </div>
                         <Link
                             href="/admin/payouts"
-                            className="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700"
+                            className="px-4 py-2 bg-[var(--warning)] text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
                         >
                             Review
                         </Link>
                     </div>
                 )}
 
-                {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     {stats.map((stat) => (
                         <Link
                             key={stat.label}
                             href={stat.href}
-                            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow group"
+                            className="rounded-xl p-6 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all group bg-[var(--surface)] border border-[var(--border)]"
                         >
                             <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center`}>
-                                    <stat.icon className="h-6 w-6 text-white" />
+                                <div className={`w-12 h-12 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
+                                    <stat.icon className={`h-6 w-6 ${stat.iconColor}`} />
                                 </div>
-                                <ArrowUpRight className="h-5 w-5 text-gray-400 group-hover:text-indigo-600" />
+                                <ArrowUpRight className="h-5 w-5 text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors" />
                             </div>
-                            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                            <p className="text-sm text-gray-500">{stat.subLabel || stat.label}</p>
+                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stat.value}</p>
+                            <p className="text-sm text-[var(--text-muted)]">{stat.subLabel || stat.label}</p>
                         </Link>
                     ))}
                 </div>
 
-                {/* Quick Links */}
-                <div className="grid md:grid-cols-3 gap-6 mb-8">
-                    <Link
-                        href="/admin/users"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Users className="h-6 w-6 text-blue-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">User Management</h3>
-                            <p className="text-sm text-gray-500">{totalOrganizers} organizers</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/admin/events"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <Calendar className="h-6 w-6 text-green-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">Event Moderation</h3>
-                            <p className="text-sm text-gray-500">{publishedEvents} published</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/admin/payouts"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <CreditCard className="h-6 w-6 text-purple-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">Payout Processing</h3>
-                            <p className="text-sm text-gray-500">{pendingPayouts} pending</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/admin/categories"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <Tag className="h-6 w-6 text-orange-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">Categories</h3>
-                            <p className="text-sm text-gray-500">{totalCategories} categories</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/admin/venues"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                            <MapPin className="h-6 w-6 text-teal-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">Venues</h3>
-                            <p className="text-sm text-gray-500">{totalVenues} venues</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/admin/settings"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <Settings className="h-6 w-6 text-gray-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">Platform Settings</h3>
-                            <p className="text-sm text-gray-500">Configure platform</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/admin/landing-page"
-                        className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md flex items-center gap-4"
-                    >
-                        <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                            <LayoutTemplate className="h-6 w-6 text-indigo-600" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">Landing Page</h3>
-                            <p className="text-sm text-gray-500">Hero, footer, SEO</p>
-                        </div>
-                    </Link>
+                <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                    {quickLinks.map((link) => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className="rounded-xl p-4 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] flex items-center gap-4 transition-all bg-[var(--surface)] border border-[var(--border)]"
+                        >
+                            <div className={`w-10 h-10 ${link.bgColor} rounded-lg flex items-center justify-center`}>
+                                <link.icon className={`h-5 w-5 ${link.iconColor}`} />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-[var(--text-primary)] text-sm">{link.label}</h3>
+                                <p className="text-xs text-[var(--text-muted)]">{link.sublabel}</p>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
 
-                {/* Recent Activity */}
-                <div className="bg-white rounded-xl shadow-sm">
-                    <div className="px-6 py-4 border-b">
-                        <h2 className="text-lg font-semibold">Recent Bookings</h2>
+                <AdminDashboardCharts />
+
+                <div className="rounded-xl shadow-[var(--shadow-sm)] bg-[var(--surface)] border border-[var(--border)] mt-8">
+                    <div className="px-6 py-4 border-b border-[var(--border)]">
+                        <h2 className="text-lg font-semibold text-[var(--text-primary)]">Recent Bookings</h2>
                     </div>
-                    <div className="divide-y">
+                    <div className="divide-y divide-[var(--border)]">
                         {recentBookings.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500">
+                            <div className="p-8 text-center text-[var(--text-muted)]">
                                 No recent bookings
                             </div>
                         ) : (
@@ -268,19 +212,19 @@ export default async function AdminDashboard() {
                                 <Link 
                                     key={booking.id} 
                                     href={`/admin/bookings/${booking.id}`}
-                                    className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                    className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
                                 >
                                     <div>
-                                        <p className="font-medium text-gray-900">{booking.event.title}</p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="font-medium text-[var(--text-primary)]">{booking.event.title}</p>
+                                        <p className="text-sm text-[var(--text-muted)]">
                                             {booking.user?.name || booking.guestName || "Guest"} • {booking.bookingCode}
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-medium text-indigo-600">
+                                        <p className="font-medium text-[var(--accent-primary)]">
                                             {formatCurrency(Number(booking.totalAmount))}
                                         </p>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-xs text-[var(--text-muted)]">
                                             {new Date(booking.createdAt).toLocaleDateString("id-ID")}
                                         </p>
                                     </div>
