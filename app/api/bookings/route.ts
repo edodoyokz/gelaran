@@ -4,6 +4,19 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createBookingSchema } from "@/lib/validators";
 import { createClient } from "@/lib/supabase/server";
 import { generateBookingCode } from "@/lib/utils";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface TicketTypeRecord {
+    id: string;
+    name: string;
+    basePrice: Decimal;
+    isFree: boolean;
+    minPerOrder: number;
+    maxPerOrder: number;
+    totalQuantity: number;
+    soldQuantity: number;
+    reservedQuantity: number;
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -145,7 +158,7 @@ export async function POST(request: NextRequest) {
             }
 
             for (const ticketTypeId of seatTicketKeys) {
-                const ticketType = event.ticketTypes.find((t) => t.id === ticketTypeId);
+                const ticketType = event.ticketTypes.find((t: TicketTypeRecord) => t.id === ticketTypeId);
                 if (!ticketType) {
                     return errorResponse(`Ticket type ${ticketTypeId} not found`, 400);
                 }
@@ -168,7 +181,7 @@ export async function POST(request: NextRequest) {
             }
         } else {
             for (const ticketRequest of tickets) {
-                const ticketType = event.ticketTypes.find((t) => t.id === ticketRequest.ticketTypeId);
+                const ticketType = event.ticketTypes.find((t: TicketTypeRecord) => t.id === ticketRequest.ticketTypeId);
 
                 if (!ticketType) {
                     return errorResponse(`Ticket type ${ticketRequest.ticketTypeId} not found`, 400);

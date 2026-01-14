@@ -83,8 +83,8 @@ export async function GET(request: NextRequest) {
       }
 
       const seatIds = ticketsToRelease
-        .filter((t) => t.seatId)
-        .map((t) => t.seatId as string);
+        .filter((t: TicketToRelease) => t.seatId)
+        .map((t: TicketToRelease) => t.seatId as string);
 
       if (seatIds.length > 0) {
         await tx.seat.updateMany({

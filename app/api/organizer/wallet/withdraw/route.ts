@@ -4,6 +4,14 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
+interface BankAccountRecord {
+    id: string;
+    bankName: string;
+    accountNumber: string;
+    accountHolderName: string;
+    isPrimary: boolean;
+}
+
 function generatePayoutCode(): string {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let result = "PAY-";
@@ -59,7 +67,7 @@ export async function POST(request: NextRequest) {
             return errorResponse("Saldo tidak mencukupi", 400);
         }
 
-        const bankAccount = profile.bankAccounts.find((b) => b.id === bankAccountId);
+        const bankAccount = profile.bankAccounts.find((b: BankAccountRecord) => b.id === bankAccountId);
         if (!bankAccount) {
             return errorResponse("Rekening bank tidak ditemukan", 404);
         }

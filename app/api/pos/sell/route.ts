@@ -3,10 +3,22 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { snap, generateOrderId } from "@/lib/midtrans/client";
 import { generateBookingCode } from "@/lib/utils";
+import type { Decimal } from "@prisma/client/runtime/library";
 
 interface TicketRequest {
     ticketTypeId: string;
     quantity: number;
+}
+
+interface TicketTypeForSale {
+    id: string;
+    name: string;
+    basePrice: Decimal;
+    isFree: boolean;
+    maxPerOrder: number;
+    totalQuantity: number;
+    soldQuantity: number;
+    reservedQuantity: number;
 }
 
 export async function POST(request: NextRequest) {
@@ -74,7 +86,7 @@ export async function POST(request: NextRequest) {
         for (const ticketRequest of tickets) {
             if (ticketRequest.quantity <= 0) continue;
 
-            const ticketType = event.ticketTypes.find((t) => t.id === ticketRequest.ticketTypeId);
+            const ticketType = event.ticketTypes.find((t: TicketTypeForSale) => t.id === ticketRequest.ticketTypeId);
 
             if (!ticketType) {
                 return errorResponse(`Tipe tiket tidak ditemukan`, 400);
