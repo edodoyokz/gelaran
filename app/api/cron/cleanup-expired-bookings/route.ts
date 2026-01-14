@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
+import type { PrismaTransactionClient } from "@/types/prisma";
 
 interface ExpiredBooking {
   id: string;
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
       {} as Record<string, number>
     );
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: PrismaTransactionClient) => {
       await tx.booking.updateMany({
         where: { id: { in: bookingIds } },
         data: {

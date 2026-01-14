@@ -4,6 +4,7 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { snap, generateOrderId } from "@/lib/midtrans/client";
 import { generateBookingCode } from "@/lib/utils";
 import type { Decimal } from "@prisma/client/runtime/library";
+import type { PrismaTransactionClient } from "@/types/prisma";
 
 interface TicketRequest {
     ticketTypeId: string;
@@ -128,7 +129,7 @@ export async function POST(request: NextRequest) {
 
         const bookingCode = generateBookingCode();
 
-        const booking = await prisma.$transaction(async (tx) => {
+        const booking = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
             const newBooking = await tx.booking.create({
                 data: {
                     bookingCode,

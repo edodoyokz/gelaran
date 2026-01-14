@@ -5,6 +5,7 @@ import { createBookingSchema } from "@/lib/validators";
 import { createClient } from "@/lib/supabase/server";
 import { generateBookingCode } from "@/lib/utils";
 import type { Decimal } from "@prisma/client/runtime/library";
+import type { PrismaTransactionClient } from "@/types/prisma";
 
 interface TicketTypeRecord {
     id: string;
@@ -268,7 +269,7 @@ export async function POST(request: NextRequest) {
         const bookingCode = generateBookingCode();
 
         // Create booking with transaction
-        const booking = await prisma.$transaction(async (tx) => {
+        const booking = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
             // Create booking
             const newBooking = await tx.booking.create({
                 data: {

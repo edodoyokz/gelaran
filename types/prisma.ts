@@ -57,3 +57,7 @@ export namespace Prisma {
   export type BookingWhereInput = Record<string, unknown>;
   export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 }
+
+// Transaction client type - used for prisma.$transaction(async (tx) => {...})
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PrismaTransactionClient = Omit<typeof import("@/lib/prisma/client").default, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;

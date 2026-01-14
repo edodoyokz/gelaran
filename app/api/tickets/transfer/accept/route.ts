@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
+import type { PrismaTransactionClient } from "@/types/prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: PrismaTransactionClient) => {
       await tx.bookedTicket.update({
         where: { id: ticket.id },
         data: {

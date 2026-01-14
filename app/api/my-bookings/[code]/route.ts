@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
-import type { BookingStatus } from "@/types/prisma";
+import type { BookingStatus, PrismaTransactionClient } from "@/types/prisma";
 import type { Decimal } from "@prisma/client/runtime/library";
 
 interface BookedTicketForDisplay {
@@ -258,7 +258,7 @@ export async function DELETE(
         const body = await request.json().catch(() => ({}));
         const reason = body.reason || "Cancelled by customer";
 
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: PrismaTransactionClient) => {
             await tx.booking.update({
                 where: { id: booking.id },
                 data: {

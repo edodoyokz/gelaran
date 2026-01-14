@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma/client";
 import { mapTransactionStatus } from "@/lib/midtrans/client";
 import { sendBookingConfirmationEmail } from "@/lib/email/send";
 import crypto from "crypto";
+import type { PrismaTransactionClient } from "@/types/prisma";
 
 export async function POST(request: NextRequest) {
     try {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
         if (isPaid) {
             const isOnSiteSale = transaction.booking.salesChannel === "ON_SITE";
             
-            await prisma.$transaction(async (tx) => {
+            await prisma.$transaction(async (tx: PrismaTransactionClient) => {
                 // Update booking status
                 await tx.booking.update({
                     where: { id: transaction.bookingId },
@@ -113,7 +114,7 @@ export async function POST(request: NextRequest) {
 
         // Handle failed/expired
         if (["FAILED", "EXPIRED"].includes(newStatus)) {
-            await prisma.$transaction(async (tx) => {
+            await prisma.$transaction(async (tx: PrismaTransactionClient) => {
                 // Update booking status
                 await tx.booking.update({
                     where: { id: transaction.bookingId },

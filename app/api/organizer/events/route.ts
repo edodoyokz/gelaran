@@ -4,6 +4,7 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { createEventSchema } from "@/lib/validators";
 import { generateSlug } from "@/lib/storage/upload";
+import type { PrismaTransactionClient } from "@/types/prisma";
 
 export async function POST(request: NextRequest) {
     try {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
             venueId = newVenue.id;
         }
 
-        const event = await prisma.$transaction(async (tx) => {
+        const event = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
             const createdEvent = await tx.event.create({
                 data: {
                     organizerId: organizer.id,

@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import type { Gender } from "@/types/prisma";
+import type { Gender, PrismaTransactionClient } from "@/types/prisma";
 
 const VALID_GENDERS: Gender[] = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"];
 
@@ -123,7 +123,7 @@ export async function PUT(request: NextRequest) {
             }
         }
 
-        const updatedUser = await prisma.$transaction(async (tx) => {
+        const updatedUser = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
             const userUpdate = await tx.user.update({
                 where: { id: dbUser.id },
                 data: {
