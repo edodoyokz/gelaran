@@ -23,8 +23,8 @@ interface RecentBooking {
     event: { title: string };
     user: { name: string | null; email: string | null } | null;
     guestName: string | null;
-    totalAmount: Decimal;
-    createdAt: DateTime;
+    totalAmount: number;
+    createdAt: Date;
 }
 
 export default async function AdminDashboard() {
