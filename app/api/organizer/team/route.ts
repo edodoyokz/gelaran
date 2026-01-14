@@ -5,6 +5,17 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+interface TeamMember {
+  id: string;
+  organizerProfileId: string;
+  userId: string;
+  role: string;
+  permissions: unknown;
+  isActive: boolean;
+  invitedAt: Date;
+  acceptedAt: Date | null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -36,7 +47,7 @@ export async function GET(request: NextRequest) {
     });
 
     const membersWithUsers = await Promise.all(
-      teamMembers.map(async (member) => {
+      teamMembers.map(async (member: TeamMember) => {
         const memberUser = await prisma.user.findUnique({
           where: { id: member.userId },
           select: { id: true, name: true, email: true, avatarUrl: true },

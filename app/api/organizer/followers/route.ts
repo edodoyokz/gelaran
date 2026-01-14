@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 
+interface FollowerRecord {
+  id: string;
+  organizerProfileId: string;
+  userId: string;
+  notifyNewEvents: boolean;
+  createdAt: Date;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -55,7 +63,7 @@ export async function GET(request: NextRequest) {
     });
 
     const enrichedFollowing = await Promise.all(
-      following.map(async (f) => {
+      following.map(async (f: FollowerRecord) => {
         const organizer = await prisma.organizerProfile.findUnique({
           where: { id: f.organizerProfileId },
           select: {

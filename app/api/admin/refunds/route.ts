@@ -2,8 +2,33 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
+import type { Decimal } from "@prisma/client/runtime/library";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+interface RefundRecord {
+  id: string;
+  bookingId: string;
+  transactionId: string | null;
+  requestedBy: string;
+  processedBy: string | null;
+  refundAmount: Decimal;
+  reason: string | null;
+  status: string;
+  adminNotes: string | null;
+  requestedAt: Date;
+  processedAt: Date | null;
+  booking: {
+    bookingCode: string;
+    guestName: string | null;
+    guestEmail: string | null;
+    event: { title: string };
+  };
+  transaction: {
+    transactionCode: string;
+    paymentMethod: string;
+  } | null;
+}
 
 async function isAdmin(userId: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
@@ -67,7 +92,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     const enrichedRefunds = await Promise.all(
-      refunds.map(async (refund) => {
+      refunds.map(async (refund: RefundRecord) => {
         let requesterName = null;
         let processorName = null;
 
