@@ -145,6 +145,8 @@ export default function ProfilePage() {
         setError(null);
         setSuccess(null);
 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
         try {
             const res = await fetch("/api/profile", {
                 method: "PUT",
@@ -163,18 +165,19 @@ export default function ProfilePage() {
                 }),
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => null);
 
-            if (!data.success) {
-                setError(data.error?.message || "Gagal memperbarui profil");
-                return;
+            if (!res.ok || !data?.success) {
+                throw new Error(data?.error?.message || "Gagal memperbarui profil");
             }
 
             setSuccess("Profil berhasil diperbarui!");
             await fetchProfile();
+            
             setTimeout(() => setSuccess(null), 3000);
-        } catch {
-            setError("Gagal memperbarui profil");
+        } catch (err: any) {
+            setError(err.message || "Gagal memperbarui profil");
+            window.scrollTo({ top: 0, behavior: "smooth" });
         } finally {
             setIsSaving(false);
         }
@@ -612,10 +615,19 @@ export default function ProfilePage() {
                     <button
                         type="submit"
                         disabled={isSaving}
-                        className="btn-primary"
+                        className="btn-primary min-w-[160px] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300"
                     >
-                        {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                        Simpan Perubahan
+                        {isSaving ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Menyimpan...
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle className="h-4 w-4" />
+                                Simpan Perubahan
+                            </>
+                        )}
                     </button>
                 </div>
             </form>

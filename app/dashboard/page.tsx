@@ -341,10 +341,11 @@ export default function CustomerDashboardPage() {
                 </div>
                 <Link
                     href="/events"
-                    className="btn-primary self-start sm:self-auto"
+                    className="btn-primary self-start sm:self-auto shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
                 >
-                    <Sparkles className="w-4 h-4" />
-                    Jelajahi Event
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <Sparkles className="w-4 h-4 relative z-10" />
+                    <span className="relative z-10">Jelajahi Event</span>
                 </Link>
             </section>
 
