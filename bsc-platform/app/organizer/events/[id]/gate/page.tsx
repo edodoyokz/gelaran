@@ -6,7 +6,7 @@ import Link from "next/link";
 import { 
     ArrowLeft, QrCode, Users, ShieldCheck, Copy, Eye, EyeOff, 
     RefreshCw, Loader2, Smartphone, Clock, AlertTriangle, 
-    CheckCircle, XCircle, DoorOpen, Settings, X, ExternalLink, Ticket
+    CheckCircle, XCircle, DoorOpen, Settings, X, ExternalLink, Ticket, ShoppingCart, Camera,
 } from "lucide-react";
 
 interface EventData {
@@ -24,8 +24,9 @@ interface ActiveDevice {
     userAgent: string;
 }
 
-interface GateSession {
+interface DeviceSession {
     id: string;
+    sessionType: "GATE" | "POS";
     deviceLimit: number;
     isActive: boolean;
     activeDevices: ActiveDevice[];
@@ -42,7 +43,8 @@ interface Stats {
 
 interface PageData {
     event: EventData;
-    gateSession: GateSession | null;
+    gateSession: DeviceSession | null;
+    posSession: DeviceSession | null;
     stats: Stats;
 }
 
@@ -55,13 +57,15 @@ export default function GateManagementPage() {
     const [data, setData] = useState<PageData | null>(null);
     const [error, setError] = useState<string | null>(null);
     
-    const [deviceLimit, setDeviceLimit] = useState(5);
+    const [gateDeviceLimit, setGateDeviceLimit] = useState(3);
+    const [posDeviceLimit, setPosDeviceLimit] = useState(2);
     const [generatedPin, setGeneratedPin] = useState<string | null>(null);
+    const [generatedSessionType, setGeneratedSessionType] = useState<"GATE" | "POS" | null>(null);
     const [eventSlug, setEventSlug] = useState<string | null>(null);
     const [showPin, setShowPin] = useState(false);
     const [showStaffModal, setShowStaffModal] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [isRevoking, setIsRevoking] = useState(false);
+    const [isRevoking, setIsRevoking] = useState<"GATE" | "POS" | null>(null);
     const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
 
     const showToast = (message: string, type: 'success' | 'error') => {
@@ -77,10 +81,13 @@ export default function GateManagementPage() {
             if (json.success) {
                 setData(json.data);
                 if (json.data.gateSession) {
-                    setDeviceLimit(json.data.gateSession.deviceLimit);
+                    setGateDeviceLimit(json.data.gateSession.deviceLimit);
+                }
+                if (json.data.posSession) {
+                    setPosDeviceLimit(json.data.posSession.deviceLimit);
                 }
             } else {
-                setError(json.error || "Gagal memuat data gate");
+                setError(json.error || "Gagal memuat data");
             }
         } catch (err) {
             setError("Terjadi kesalahan jaringan");
@@ -93,22 +100,24 @@ export default function GateManagementPage() {
         fetchGateData();
     }, [fetchGateData]);
 
-    const handleGeneratePin = async () => {
+    const handleGeneratePin = async (sessionType: "GATE" | "POS") => {
         setIsGenerating(true);
         try {
+            const limit = sessionType === "GATE" ? gateDeviceLimit : posDeviceLimit;
             const res = await fetch(`/api/organizer/events/${eventId}/gate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ deviceLimit })
+                body: JSON.stringify({ sessionType, deviceLimit: limit })
             });
             const json = await res.json();
 
             if (json.success) {
                 setGeneratedPin(json.data.pin);
+                setGeneratedSessionType(sessionType);
                 setEventSlug(json.data.eventSlug);
                 setShowPin(true);
                 setShowStaffModal(true);
-                showToast("PIN berhasil dibuat", "success");
+                showToast(`PIN ${sessionType === "GATE" ? "Gate Scanner" : "POS Kasir"} berhasil dibuat`, "success");
                 fetchGateData();
             } else {
                 showToast(json.error?.message || "Gagal membuat PIN", "error");
@@ -120,12 +129,12 @@ export default function GateManagementPage() {
         }
     };
 
-    const handleRevoke = async () => {
-        if (!confirm("Apakah Anda yakin ingin mencabut semua akses? Semua staff akan logout otomatis.")) return;
+    const handleRevoke = async (sessionType: "GATE" | "POS") => {
+        if (!confirm(`Apakah Anda yakin ingin mencabut akses ${sessionType === "GATE" ? "Gate Scanner" : "POS Kasir"}? Semua staff akan logout.`)) return;
         
-        setIsRevoking(true);
+        setIsRevoking(sessionType);
         try {
-            const res = await fetch(`/api/organizer/events/${eventId}/gate`, {
+            const res = await fetch(`/api/organizer/events/${eventId}/gate?sessionType=${sessionType}`, {
                 method: 'DELETE'
             });
             const json = await res.json();
@@ -140,7 +149,7 @@ export default function GateManagementPage() {
         } catch (err) {
             showToast("Terjadi kesalahan jaringan", "error");
         } finally {
-            setIsRevoking(false);
+            setIsRevoking(null);
         }
     };
 
@@ -158,13 +167,16 @@ export default function GateManagementPage() {
         }
     };
 
-    const copyAllCredentials = () => {
-        if (generatedPin && eventSlug) {
-            const gateUrl = `${window.location.origin}/gate/access`;
-            const text = `🎫 Akses Gate & POS\n\nEvent: ${event.title}\nKode Event: ${eventSlug}\nPIN: ${generatedPin}\n\nURL Akses: ${gateUrl}`;
-            navigator.clipboard.writeText(text);
-            showToast("Semua kredensial disalin", "success");
-        }
+    const copyCredentials = (type: "GATE" | "POS") => {
+        if (!eventSlug || !generatedPin || !data) return;
+        
+        const url = type === "GATE" ? `/gate/access` : `/pos/access`;
+        const icon = type === "GATE" ? "📷" : "🛒";
+        const name = type === "GATE" ? "Gate Scanner" : "POS Kasir";
+        const text = `🎫 Akses Staff - ${name}\n\nEvent: ${data.event.title}\nKode Event: ${eventSlug}\nPIN: ${generatedPin}\n\n${icon} ${name}: ${window.location.origin}${url}`;
+        
+        navigator.clipboard.writeText(text);
+        showToast("Kredensial disalin", "success");
     };
 
     const formatPin = (pin: string) => {
@@ -195,7 +207,7 @@ export default function GateManagementPage() {
         );
     }
 
-    const { event, gateSession, stats } = data;
+    const { event, gateSession, posSession, stats } = data;
     const formatDate = (dateStr: string) => {
         return new Date(dateStr).toLocaleDateString("id-ID", {
             day: 'numeric', month: 'long', year: 'numeric',
@@ -240,10 +252,6 @@ export default function GateManagementPage() {
                                 <Clock className="w-4 h-4 text-indigo-500" />
                                 {event.schedules[0] ? formatDate(event.schedules[0].scheduleDate) : 'Jadwal belum ditentukan'}
                             </p>
-                            <p className="flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                {gateSession?.isActive ? "Sistem Gate Aktif" : "Sistem Gate Non-aktif"}
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -282,140 +290,170 @@ export default function GateManagementPage() {
                     </div>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
-                    <div className="md:col-span-2 space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                                    <Settings className="w-5 h-5 text-gray-500" />
-                                    Konfigurasi Akses Staff
-                                </h3>
-                                {gateSession?.isActive && (
-                                    <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
-                                        Aktif
-                                    </span>
-                                )}
-                            </div>
-                            <div className="p-6 space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">PIN Akses</label>
-                                    <div className="flex gap-2">
-                                        <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-lg text-center tracking-widest relative">
-                                            {generatedPin ? (
-                                                showPin ? formatPin(generatedPin) : "••••-••••"
-                                            ) : gateSession?.isActive ? (
-                                                <span className="text-gray-500 text-sm tracking-normal">PIN sudah dibuat (tersembunyi)</span>
-                                            ) : (
-                                                <span className="text-gray-400 text-sm tracking-normal">Belum ada PIN yang dibuat</span>
-                                            )}
-                                        </div>
-                                        {generatedPin && (
-                                            <>
-                                                <button 
-                                                    onClick={() => setShowPin(!showPin)}
-                                                    className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors"
-                                                >
-                                                    {showPin ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                                </button>
-                                                <button 
-                                                    onClick={copyPin}
-                                                    className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors"
-                                                >
-                                                    <Copy className="w-5 h-5" />
-                                                </button>
-                                                <button 
-                                                    onClick={() => setShowStaffModal(true)}
-                                                    className="p-3 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg border border-indigo-200 bg-indigo-50 transition-colors"
-                                                    title="Lihat semua kredensial"
-                                                >
-                                                    <ExternalLink className="w-5 h-5" />
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-                                    <p className="text-xs text-gray-500">
-                                        {generatedPin 
-                                            ? "PIN baru saja dibuat. Pastikan dicatat karena tidak akan tampil lagi setelah refresh." 
-                                            : gateSession?.isActive 
-                                                ? "PIN sudah pernah dibuat. Klik 'Regenerate PIN' untuk membuat PIN baru (PIN lama akan tidak berlaku)."
-                                                : "PIN ini digunakan staff untuk login ke halaman Gate / POS."}
-                                    </p>
+                <div className="grid md:grid-cols-2 gap-6">
+                    {/* Gate Scanner Session */}
+                    <div className="bg-white rounded-xl shadow-sm border border-indigo-100 overflow-hidden">
+                        <div className="p-4 border-b border-indigo-100 bg-indigo-50/50 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                    <Camera className="w-5 h-5 text-indigo-600" />
                                 </div>
-
-                                <div className="grid md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Batas Perangkat</label>
-                                        <input 
-                                            type="number" 
-                                            min="1" 
-                                            max="50"
-                                            value={deviceLimit}
-                                            onChange={(e) => setDeviceLimit(parseInt(e.target.value) || 0)}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                        />
-                                    </div>
-                                    <div className="flex items-end">
-                                        <button
-                                            onClick={handleGeneratePin}
-                                            disabled={isGenerating}
-                                            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
-                                        >
-                                            {isGenerating ? (
-                                                <Loader2 className="w-4 h-4 animate-spin" />
-                                            ) : (
-                                                <RefreshCw className="w-4 h-4" />
-                                            )}
-                                            {gateSession ? "Regenerate PIN" : "Generate PIN Baru"}
-                                        </button>
-                                    </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900">Gate Scanner</h3>
+                                    <p className="text-xs text-gray-500">Akses untuk check-in peserta</p>
                                 </div>
-
-                                {gateSession?.isActive && (
-                                    <div className="pt-4 border-t border-gray-100">
-                                        <button
-                                            onClick={handleRevoke}
-                                            disabled={isRevoking}
-                                            className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center gap-2 transition-colors"
-                                        >
-                                            {isRevoking ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
-                                            Cabut Semua Akses (Log out semua staff)
-                                        </button>
-                                    </div>
-                                )}
                             </div>
+                            {gateSession?.isActive && (
+                                <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
+                                    Aktif
+                                </span>
+                            )}
                         </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col">
-                            <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                                <h3 className="font-semibold text-gray-900 text-sm">Perangkat Aktif</h3>
+                        <div className="p-6 space-y-4">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-sm font-medium text-gray-700">Batas Perangkat</label>
+                                    <span className="text-sm text-gray-500">
+                                        {gateSession?.activeDevices.length || 0}/{gateDeviceLimit}
+                                    </span>
+                                </div>
+                                <input 
+                                    type="number" 
+                                    min="1" 
+                                    max="20"
+                                    value={gateDeviceLimit}
+                                    onChange={(e) => setGateDeviceLimit(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                />
                             </div>
-                            <div className="p-4 flex-1 overflow-y-auto max-h-[400px]">
-                                {gateSession?.activeDevices && gateSession.activeDevices.length > 0 ? (
-                                    <div className="space-y-4">
+
+                            <button
+                                type="button"
+                                onClick={() => handleGeneratePin("GATE")}
+                                disabled={isGenerating}
+                                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                            >
+                                {isGenerating ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <RefreshCw className="w-4 h-4" />
+                                )}
+                                {gateSession ? "Regenerate PIN" : "Generate PIN"}
+                            </button>
+
+                            {gateSession?.isActive && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleRevoke("GATE")}
+                                    disabled={isRevoking === "GATE"}
+                                    className="w-full text-red-600 hover:text-red-700 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    {isRevoking === "GATE" ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                                    Cabut Akses
+                                </button>
+                            )}
+
+                            {gateSession?.activeDevices && gateSession.activeDevices.length > 0 && (
+                                <div className="pt-4 border-t border-gray-100">
+                                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Perangkat Aktif</p>
+                                    <div className="space-y-2">
                                         {gateSession.activeDevices.map((device) => (
-                                            <div key={device.id} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-                                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                                            <div key={device.id} className="flex items-center gap-3 p-2 rounded-lg bg-indigo-50">
+                                                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
                                                     <Smartphone className="w-4 h-4 text-indigo-600" />
                                                 </div>
-                                                <div className="min-w-0">
+                                                <div className="flex-1 min-w-0">
                                                     <p className="text-sm font-medium text-gray-900 truncate">{device.staffName}</p>
                                                     <p className="text-xs text-gray-500 truncate">{device.userAgent}</p>
-                                                    <p className="text-[10px] text-gray-400 mt-1">
-                                                        Aktif: {new Date(device.lastActiveAt).toLocaleTimeString()}
-                                                    </p>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
-                                ) : (
-                                    <div className="text-center py-8 text-gray-400">
-                                        <Smartphone className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                        <p className="text-sm">Belum ada perangkat aktif</p>
-                                    </div>
-                                )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* POS Kasir Session */}
+                    <div className="bg-white rounded-xl shadow-sm border border-emerald-100 overflow-hidden">
+                        <div className="p-4 border-b border-emerald-100 bg-emerald-50/50 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                    <ShoppingCart className="w-5 h-5 text-emerald-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900">POS Kasir</h3>
+                                    <p className="text-xs text-gray-500">Akses untuk penjualan on-site</p>
+                                </div>
                             </div>
+                            {posSession?.isActive && (
+                                <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
+                                    Aktif
+                                </span>
+                            )}
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-sm font-medium text-gray-700">Batas Perangkat</label>
+                                    <span className="text-sm text-gray-500">
+                                        {posSession?.activeDevices.length || 0}/{posDeviceLimit}
+                                    </span>
+                                </div>
+                                <input 
+                                    type="number" 
+                                    min="1" 
+                                    max="20"
+                                    value={posDeviceLimit}
+                                    onChange={(e) => setPosDeviceLimit(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => handleGeneratePin("POS")}
+                                disabled={isGenerating}
+                                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm shadow-emerald-200 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                            >
+                                {isGenerating ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <RefreshCw className="w-4 h-4" />
+                                )}
+                                {posSession ? "Regenerate PIN" : "Generate PIN"}
+                            </button>
+
+                            {posSession?.isActive && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleRevoke("POS")}
+                                    disabled={isRevoking === "POS"}
+                                    className="w-full text-red-600 hover:text-red-700 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    {isRevoking === "POS" ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                                    Cabut Akses
+                                </button>
+                            )}
+
+                            {posSession?.activeDevices && posSession.activeDevices.length > 0 && (
+                                <div className="pt-4 border-t border-gray-100">
+                                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Perangkat Aktif</p>
+                                    <div className="space-y-2">
+                                        {posSession.activeDevices.map((device) => (
+                                            <div key={device.id} className="flex items-center gap-3 p-2 rounded-lg bg-emerald-50">
+                                                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                                    <Smartphone className="w-4 h-4 text-emerald-600" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-gray-900 truncate">{device.staffName}</p>
+                                                    <p className="text-xs text-gray-500 truncate">{device.userAgent}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -424,16 +462,25 @@ export default function GateManagementPage() {
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-20">
                 <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
                     <div className="hidden md:block">
-                        <p className="text-sm font-medium text-gray-900">Mode Gate Organizer</p>
-                        <p className="text-xs text-gray-500">Buka gate tanpa login PIN (hanya untuk organizer)</p>
+                        <p className="text-sm font-medium text-gray-900">Mode Organizer</p>
+                        <p className="text-xs text-gray-500">Buka Gate/POS tanpa login PIN</p>
                     </div>
-                    <Link
-                        href={`/gate?direct=true&eventId=${eventId}`}
-                        className="flex-1 md:flex-none md:w-auto px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-xl shadow-lg shadow-gray-200 transition-all flex items-center justify-center gap-2"
-                    >
-                        <DoorOpen className="w-5 h-5" />
-                        Buka Mode Gate Sekarang
-                    </Link>
+                    <div className="flex-1 md:flex-none flex gap-3">
+                        <Link
+                            href={`/gate?direct=true&eventId=${eventId}`}
+                            className="flex-1 md:flex-none md:w-auto px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                        >
+                            <Camera className="w-5 h-5" />
+                            <span className="hidden sm:inline">Gate Scanner</span>
+                        </Link>
+                        <Link
+                            href={`/pos?direct=true&eventId=${eventId}`}
+                            className="flex-1 md:flex-none md:w-auto px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl shadow-lg shadow-emerald-200 transition-all flex items-center justify-center gap-2"
+                        >
+                            <ShoppingCart className="w-5 h-5" />
+                            <span className="hidden sm:inline">POS Kasir</span>
+                        </Link>
+                    </div>
                 </div>
             </div>
 
@@ -446,18 +493,18 @@ export default function GateManagementPage() {
                 </div>
             )}
 
-            {showStaffModal && generatedPin && eventSlug && (
+            {showStaffModal && generatedPin && eventSlug && generatedSessionType && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-                        <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-6 text-white">
+                        <div className={`p-6 text-white ${generatedSessionType === "GATE" ? "bg-gradient-to-br from-indigo-600 to-purple-600" : "bg-gradient-to-br from-emerald-600 to-teal-600"}`}>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                                        <Ticket className="w-6 h-6" />
+                                        {generatedSessionType === "GATE" ? <Camera className="w-6 h-6" /> : <ShoppingCart className="w-6 h-6" />}
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg">Kredensial Staff</h3>
-                                        <p className="text-indigo-200 text-sm">Bagikan ke tim gate & POS</p>
+                                        <h3 className="font-bold text-lg">Kredensial {generatedSessionType === "GATE" ? "Gate Scanner" : "POS Kasir"}</h3>
+                                        <p className="text-white/80 text-sm">Bagikan ke staff yang bertugas</p>
                                     </div>
                                 </div>
                                 <button 
@@ -467,7 +514,7 @@ export default function GateManagementPage() {
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <p className="text-sm text-indigo-100 truncate">{event.title}</p>
+                            <p className="text-white/90 truncate">{event.title}</p>
                         </div>
                         
                         <div className="p-6 space-y-4">
@@ -477,10 +524,7 @@ export default function GateManagementPage() {
                                     <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-gray-900">
                                         {eventSlug}
                                     </div>
-                                    <button 
-                                        onClick={copyEventSlug}
-                                        className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors"
-                                    >
+                                    <button onClick={copyEventSlug} className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors">
                                         <Copy className="w-5 h-5" />
                                     </button>
                                 </div>
@@ -492,16 +536,10 @@ export default function GateManagementPage() {
                                     <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[0.3em] text-gray-900">
                                         {showPin ? formatPin(generatedPin) : "••••-••••"}
                                     </div>
-                                    <button 
-                                        onClick={() => setShowPin(!showPin)}
-                                        className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors"
-                                    >
+                                    <button onClick={() => setShowPin(!showPin)} className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors">
                                         {showPin ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
-                                    <button 
-                                        onClick={copyPin}
-                                        className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors"
-                                    >
+                                    <button onClick={copyPin} className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors">
                                         <Copy className="w-5 h-5" />
                                     </button>
                                 </div>
@@ -510,13 +548,15 @@ export default function GateManagementPage() {
                             <div className="space-y-2">
                                 <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">URL Akses</label>
                                 <div className="flex items-center gap-2">
-                                    <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600 truncate">
-                                        {typeof window !== 'undefined' ? `${window.location.origin}/gate/access` : '/gate/access'}
+                                    <div className={`flex-1 border rounded-lg px-4 py-3 text-sm truncate flex items-center gap-2 ${generatedSessionType === "GATE" ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-emerald-50 border-emerald-200 text-emerald-700"}`}>
+                                        {generatedSessionType === "GATE" ? <Camera className="w-4 h-4 flex-shrink-0" /> : <ShoppingCart className="w-4 h-4 flex-shrink-0" />}
+                                        {typeof window !== 'undefined' ? `${window.location.origin}/${generatedSessionType === "GATE" ? "gate" : "pos"}/access` : ''}
                                     </div>
                                     <a 
-                                        href="/gate/access"
+                                        href={`/${generatedSessionType === "GATE" ? "gate" : "pos"}/access`}
                                         target="_blank"
-                                        className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors"
+                                        rel="noopener noreferrer"
+                                        className={`p-3 rounded-lg border transition-colors ${generatedSessionType === "GATE" ? "text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 border-indigo-200" : "text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 border-emerald-200"}`}
                                     >
                                         <ExternalLink className="w-5 h-5" />
                                     </a>
@@ -525,11 +565,11 @@ export default function GateManagementPage() {
 
                             <div className="pt-4 border-t border-gray-100 space-y-3">
                                 <button
-                                    onClick={copyAllCredentials}
-                                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
+                                    onClick={() => copyCredentials(generatedSessionType)}
+                                    className={`w-full py-3 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2 ${generatedSessionType === "GATE" ? "bg-indigo-600 hover:bg-indigo-700" : "bg-emerald-600 hover:bg-emerald-700"}`}
                                 >
                                     <Copy className="w-4 h-4" />
-                                    Salin Semua Kredensial
+                                    Salin Kredensial
                                 </button>
                                 <p className="text-xs text-center text-gray-500">
                                     ⚠️ PIN hanya ditampilkan sekali. Pastikan sudah disalin.

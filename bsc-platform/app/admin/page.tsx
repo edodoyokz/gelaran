@@ -106,7 +106,7 @@ export default async function AdminDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Admin Panel" 
                 subtitle="BSC Platform Management"
@@ -279,6 +279,6 @@ export default async function AdminDashboard() {
                     </div>
                 </div>
             </main>
-        </div>
+        </>
     );
 }

@@ -16,6 +16,7 @@ import {
     Eye,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface OrganizerProfile {
     organizationName: string | null;
@@ -48,6 +49,7 @@ const ROLE_COLORS: Record<string, string> = {
 
 export default function AdminUsersPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const [users, setUsers] = useState<AdminUser[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export default function AdminUsersPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to update user");
+                showToast(data.error?.message || "Failed to update user", "error");
                 return;
             }
 
@@ -109,8 +111,9 @@ export default function AdminUsersPage() {
                     u.id === userId ? { ...u, isVerified: verify } : u
                 )
             );
+            showToast("User updated", "success");
         } catch {
-            alert("Failed to update user");
+            showToast("Failed to update user", "error");
         } finally {
             setActionLoading(null);
         }
@@ -128,7 +131,7 @@ export default function AdminUsersPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to update user");
+                showToast(data.error?.message || "Failed to update user", "error");
                 return;
             }
 
@@ -139,8 +142,9 @@ export default function AdminUsersPage() {
                         : u
                 )
             );
+            showToast("User updated", "success");
         } catch {
-            alert("Failed to update user");
+            showToast("Failed to update user", "error");
         } finally {
             setActionLoading(null);
         }
@@ -189,7 +193,7 @@ export default function AdminUsersPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="User Management" 
                 backHref="/admin"
@@ -399,6 +403,6 @@ export default function AdminUsersPage() {
                     </table>
                 </div>
             </main>
-        </div>
+        </>
     );
 }

@@ -219,17 +219,22 @@ model Event {
   deletedAt           DateTime?       @map("deleted_at")
 
   // Relations
-  organizer     User           @relation(fields: [organizerId], references: [id])
-  category      Category       @relation(fields: [categoryId], references: [id])
-  venue         Venue?         @relation(fields: [venueId], references: [id])
-  schedules     EventSchedule[]
-  ticketTypes   TicketType[]
-  bookings      Booking[]
-  promoCodes    PromoCode[]
-  reviews       Review[]
-  wishlists     Wishlist[]
-  faqs          EventFaq[]
-  gateSession   EventGateSession?
+  organizer       User              @relation(fields: [organizerId], references: [id])
+  category        Category          @relation(fields: [categoryId], references: [id])
+  venue           Venue?            @relation(fields: [venueId], references: [id])
+  schedules       EventSchedule[]
+  ticketTypes     TicketType[]
+  bookings        Booking[]
+  promoCodes      PromoCode[]
+  reviews         Review[]
+  wishlists       Wishlist[]
+  faqs            EventFaq[]
+  deviceSessions  EventDeviceSession[]
+  eventTags       EventTag[]
+  eventMedia      EventMedia[]
+  eventPerformers EventPerformer[]
+  eventSponsors   EventSponsor[]
+  venueSections   VenueSection[]
 
   @@map("events")
 }
@@ -320,6 +325,7 @@ model TicketType {
   event         Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
   priceTiers    TicketPriceTier[]
   bookedTickets BookedTicket[]
+  seats         Seat[]
 
   @@map("ticket_types")
 }
@@ -714,41 +720,52 @@ enum NotificationType {
 // MODULE 8: GATE & POS SYSTEM
 // ===========================================
 
-model EventGateSession {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  eventId       String    @map("event_id") @db.Uuid
-  pinHash       String    @map("pin_hash")
-  deviceLimit   Int       @default(5) @map("device_limit")
-  createdBy     String    @map("created_by") @db.Uuid
-  isActive      Boolean   @default(true) @map("is_active")
-  expiresAt     DateTime? @map("expires_at")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+model EventDeviceSession {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId       String       @map("event_id") @db.Uuid
+  sessionType   SessionType  @map("session_type")
+  pinHash       String       @map("pin_hash")
+  deviceLimit   Int          @default(5) @map("device_limit")
+  createdBy     String       @map("created_by") @db.Uuid
+  isActive      Boolean      @default(true) @map("is_active")
+  expiresAt     DateTime?    @map("expires_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
 
   // Relations
-  event   Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  devices GateDeviceAccess[]
+  event   Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  devices DeviceAccess[]
 
-  @@unique([eventId])
-  @@map("event_gate_sessions")
+  @@unique([eventId, sessionType])
+  @@map("event_device_sessions")
 }
 
-model GateDeviceAccess {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  gateSessionId   String   @map("gate_session_id") @db.Uuid
-  deviceToken     String   @unique @map("device_token")
-  deviceFingerprint String @map("device_fingerprint")
-  staffName       String   @map("staff_name")
-  userAgent       String?  @map("user_agent")
-  ipAddress       String?  @map("ip_address")
-  isActive        Boolean  @default(true) @map("is_active")
-  lastActiveAt    DateTime @default(now()) @map("last_active_at")
-  createdAt       DateTime @default(now()) @map("created_at")
+model DeviceAccess {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sessionId       String       @map("session_id") @db.Uuid
+  deviceToken     String       @unique @map("device_token")
+  deviceFingerprint String     @map("device_fingerprint")
+  staffName       String       @map("staff_name")
+  userAgent       String?      @map("user_agent")
+  ipAddress       String?      @map("ip_address")
+  isActive        Boolean      @default(true) @map("is_active")
+  lastActiveAt    DateTime     @default(now()) @map("last_active_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
 
   // Relations
-  gateSession EventGateSession @relation(fields: [gateSessionId], references: [id], onDelete: Cascade)
+  session EventDeviceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
-  @@map("gate_device_accesses")
+  @@map("device_accesses")
+}
+
+enum SessionType {
+  GATE
+  POS
+}
+
+enum DeviceType {
+  GATE_SCANNER
+  POS_CASHIER
 }
 
 // ===========================================
@@ -771,4 +788,463 @@ enum SiteContentType {
   IMAGE
   JSON
   HTML
+}
+
+// ===========================================
+// MODULE 10: ORGANIZER TEAM MANAGEMENT
+// ===========================================
+
+model OrganizerTeamMember {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizerProfileId String   @map("organizer_profile_id") @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  role               TeamMemberRole
+  permissions        Json?
+  isActive           Boolean  @default(true) @map("is_active")
+  invitedAt          DateTime @default(now()) @map("invited_at")
+  acceptedAt         DateTime? @map("accepted_at")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@unique([organizerProfileId, userId])
+  @@map("organizer_team_members")
+}
+
+enum TeamMemberRole {
+  MANAGER
+  SCANNER
+  FINANCE
+}
+
+// ===========================================
+// MODULE 11: TICKET TRANSFER
+// ===========================================
+
+model TicketTransfer {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookedTicketId  String               @map("booked_ticket_id") @db.Uuid
+  fromUserId      String               @map("from_user_id") @db.Uuid
+  toUserId        String?              @map("to_user_id") @db.Uuid
+  recipientEmail  String               @map("recipient_email")
+  recipientName   String?              @map("recipient_name")
+  status          TicketTransferStatus @default(PENDING)
+  oldUniqueCode   String               @map("old_unique_code")
+  newUniqueCode   String?              @map("new_unique_code")
+  initiatedAt     DateTime             @default(now()) @map("initiated_at")
+  acceptedAt      DateTime?            @map("accepted_at")
+  expiresAt       DateTime             @map("expires_at")
+
+  @@map("ticket_transfers")
+}
+
+enum TicketTransferStatus {
+  PENDING
+  ACCEPTED
+  CANCELLED
+  EXPIRED
+}
+
+// ===========================================
+// MODULE 12: WAITLIST
+// ===========================================
+
+model WaitlistEntry {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ticketTypeId      String          @map("ticket_type_id") @db.Uuid
+  userId            String?         @map("user_id") @db.Uuid
+  email             String
+  name              String?
+  quantityRequested Int             @default(1) @map("quantity_requested")
+  status            WaitlistStatus  @default(WAITING)
+  notifiedAt        DateTime?       @map("notified_at")
+  expiresAt         DateTime?       @map("expires_at")
+  createdAt         DateTime        @default(now()) @map("created_at")
+
+  @@map("waitlist_entries")
+}
+
+enum WaitlistStatus {
+  WAITING
+  NOTIFIED
+  CONVERTED
+  EXPIRED
+}
+
+// ===========================================
+// MODULE 13: TAGS & MEDIA
+// ===========================================
+
+model Tag {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  eventTags EventTag[]
+
+  @@map("tags")
+}
+
+model EventTag {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId  String @map("event_id") @db.Uuid
+  tagId    String @map("tag_id") @db.Uuid
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tag   Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, tagId])
+  @@map("event_tags")
+}
+
+model EventMedia {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId      String         @map("event_id") @db.Uuid
+  mediaType    EventMediaType @map("media_type")
+  fileUrl      String         @map("file_url")
+  thumbnailUrl String?        @map("thumbnail_url")
+  title        String?
+  altText      String?        @map("alt_text")
+  sortOrder    Int            @default(0) @map("sort_order")
+  createdAt    DateTime       @default(now()) @map("created_at")
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("event_media")
+}
+
+enum EventMediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+// ===========================================
+// MODULE 14: PERFORMERS & SPONSORS
+// ===========================================
+
+model Performer {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizerId     String   @map("organizer_id") @db.Uuid
+  name            String
+  slug            String   @unique
+  title           String?
+  bio             String?
+  photoUrl        String?  @map("photo_url")
+  websiteUrl      String?  @map("website_url")
+  socialInstagram String?  @map("social_instagram")
+  socialTwitter   String?  @map("social_twitter")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  eventPerformers EventPerformer[]
+
+  @@map("performers")
+}
+
+model EventPerformer {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId         String            @map("event_id") @db.Uuid
+  performerId     String            @map("performer_id") @db.Uuid
+  role            PerformerRole     @default(SUPPORTING)
+  performanceTime DateTime?         @map("performance_time") @db.Time()
+  sortOrder       Int               @default(0) @map("sort_order")
+
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  performer Performer @relation(fields: [performerId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, performerId])
+  @@map("event_performers")
+}
+
+enum PerformerRole {
+  HEADLINER
+  SUPPORTING
+  GUEST
+  SPEAKER
+  HOST
+}
+
+model Sponsor {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizerId String   @map("organizer_id") @db.Uuid
+  name        String
+  logoUrl     String?  @map("logo_url")
+  websiteUrl  String?  @map("website_url")
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  eventSponsors EventSponsor[]
+
+  @@map("sponsors")
+}
+
+model EventSponsor {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId   String      @map("event_id") @db.Uuid
+  sponsorId String      @map("sponsor_id") @db.Uuid
+  tier      SponsorTier @default(BRONZE)
+  sortOrder Int         @default(0) @map("sort_order")
+
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  sponsor Sponsor @relation(fields: [sponsorId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, sponsorId])
+  @@map("event_sponsors")
+}
+
+enum SponsorTier {
+  PLATINUM
+  GOLD
+  SILVER
+  BRONZE
+  MEDIA_PARTNER
+}
+
+// ===========================================
+// MODULE 15: RECURRING EVENTS
+// ===========================================
+
+model RecurringPattern {
+  id             String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  frequency      RecurringFrequency
+  intervalValue  Int                 @default(1) @map("interval_value")
+  daysOfWeek     Json?               @map("days_of_week")
+  dayOfMonth     Int?                @map("day_of_month")
+  startDate      DateTime            @map("start_date") @db.Date
+  endDate        DateTime?           @map("end_date") @db.Date
+  maxOccurrences Int?                @map("max_occurrences")
+  skipDates      Json?               @map("skip_dates")
+  createdAt      DateTime            @default(now()) @map("created_at")
+
+  @@map("recurring_patterns")
+}
+
+enum RecurringFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+// ===========================================
+// MODULE 16: ATTENDEE QUESTIONS
+// ===========================================
+
+model AttendeeQuestion {
+  id           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId      String              @map("event_id") @db.Uuid
+  ticketTypeId String?             @map("ticket_type_id") @db.Uuid
+  question     String
+  inputType    AttendeeInputType   @map("input_type")
+  options      Json?
+  isRequired   Boolean             @default(false) @map("is_required")
+  sortOrder    Int                 @default(0) @map("sort_order")
+  isActive     Boolean             @default(true) @map("is_active")
+  createdAt    DateTime            @default(now()) @map("created_at")
+
+  answers AttendeeAnswer[]
+
+  @@map("attendee_questions")
+}
+
+enum AttendeeInputType {
+  TEXT
+  TEXTAREA
+  SELECT
+  RADIO
+  CHECKBOX
+  DATE
+  EMAIL
+  PHONE
+}
+
+model AttendeeAnswer {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookedTicketId  String   @map("booked_ticket_id") @db.Uuid
+  questionId      String   @map("question_id") @db.Uuid
+  answer          String
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  question AttendeeQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([bookedTicketId, questionId])
+  @@map("attendee_answers")
+}
+
+// ===========================================
+// MODULE 17: TAX & COMMISSION SETTINGS
+// ===========================================
+
+model TaxRate {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  code        String   @unique
+  taxType     TaxType  @default(PERCENTAGE) @map("tax_type")
+  rate        Decimal  @db.Decimal(5, 2)
+  isInclusive Boolean  @default(false) @map("is_inclusive")
+  isDefault   Boolean  @default(false) @map("is_default")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("tax_rates")
+}
+
+enum TaxType {
+  PERCENTAGE
+  FIXED
+}
+
+model CommissionSetting {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizerId     String?         @map("organizer_id") @db.Uuid
+  eventId         String?         @map("event_id") @db.Uuid
+  commissionType  CommissionType  @default(PERCENTAGE) @map("commission_type")
+  commissionValue Decimal         @map("commission_value") @db.Decimal(5, 2)
+  minCommission   Decimal?        @map("min_commission") @db.Decimal(15, 2)
+  maxCommission   Decimal?        @map("max_commission") @db.Decimal(15, 2)
+  isActive        Boolean         @default(true) @map("is_active")
+  validFrom       DateTime?       @map("valid_from")
+  validUntil      DateTime?       @map("valid_until")
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  @@map("commission_settings")
+}
+
+enum CommissionType {
+  PERCENTAGE
+  FIXED
+}
+
+// ===========================================
+// MODULE 18: AUDIT LOGS
+// ===========================================
+
+model AuditLog {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String?  @map("user_id") @db.Uuid
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id") @db.Uuid
+  oldValues  Json?    @map("old_values")
+  newValues  Json?    @map("new_values")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}
+
+// ===========================================
+// MODULE 19: CHECK-IN POINTS & SESSIONS
+// ===========================================
+
+model CheckInPoint {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId             String   @map("event_id") @db.Uuid
+  name                String
+  locationDescription String?  @map("location_description")
+  isActive            Boolean  @default(true) @map("is_active")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  scannerSessions ScannerSession[]
+
+  @@map("check_in_points")
+}
+
+model ScannerSession {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  eventId         String    @map("event_id") @db.Uuid
+  checkInPointId  String    @map("check_in_point_id") @db.Uuid
+  deviceInfo      String?   @map("device_info")
+  startedAt       DateTime  @default(now()) @map("started_at")
+  endedAt         DateTime? @map("ended_at")
+  totalScans      Int       @default(0) @map("total_scans")
+  successfulScans Int       @default(0) @map("successful_scans")
+  failedScans     Int       @default(0) @map("failed_scans")
+
+  checkInPoint CheckInPoint @relation(fields: [checkInPointId], references: [id], onDelete: Cascade)
+
+  @@map("scanner_sessions")
+}
+
+// ===========================================
+// MODULE 20: SEATING CHART SYSTEM
+// ===========================================
+
+model VenueSection {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId     String   @map("event_id") @db.Uuid
+  name        String
+  colorHex    String?  @map("color_hex")
+  sortOrder   Int      @default(0) @map("sort_order")
+  capacity    Int?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  event Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  rows  VenueRow[]
+
+  @@map("venue_sections")
+}
+
+model VenueRow {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sectionId   String   @map("section_id") @db.Uuid
+  rowLabel    String   @map("row_label")
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  section VenueSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  seats   Seat[]
+
+  @@map("venue_rows")
+}
+
+model Seat {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rowId           String     @map("row_id") @db.Uuid
+  ticketTypeId    String?    @map("ticket_type_id") @db.Uuid
+  seatLabel       String     @map("seat_label")
+  seatNumber      Int        @map("seat_number")
+  status          SeatStatus @default(AVAILABLE)
+  priceOverride   Decimal?   @map("price_override") @db.Decimal(15, 2)
+  isAccessible    Boolean    @default(false) @map("is_accessible")
+  lockedByUserId  String?    @map("locked_by_user_id") @db.Uuid
+  lockedUntil     DateTime?  @map("locked_until")
+  bookedTicketId  String?    @map("booked_ticket_id") @db.Uuid
+  sortOrder       Int        @default(0) @map("sort_order")
+  isActive        Boolean    @default(true) @map("is_active")
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  row         VenueRow     @relation(fields: [rowId], references: [id], onDelete: Cascade)
+  ticketType  TicketType?  @relation(fields: [ticketTypeId], references: [id])
+
+  @@unique([rowId, seatNumber])
+  @@map("seats")
+}
+
+enum SeatStatus {
+  AVAILABLE
+  LOCKED
+  BOOKED
+  BLOCKED
+  RESERVED
+}
+
+// ===========================================
+// MODULE 21: ORGANIZER FOLLOWERS
+// ===========================================
+
+model OrganizerFollower {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizerProfileId String   @map("organizer_profile_id") @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  notifyNewEvents    Boolean  @default(true) @map("notify_new_events")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@unique([organizerProfileId, userId])
+  @@map("organizer_followers")
 }

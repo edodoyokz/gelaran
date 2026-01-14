@@ -1,19 +1,79 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle, Download, Ticket, ArrowRight, Loader2 } from "lucide-react";
 
+interface BookingTicket {
+    id: string;
+    uniqueCode: string;
+}
+
+interface BookingData {
+    id: string;
+    bookingCode: string;
+    bookedTickets: BookingTicket[];
+}
+
 function SuccessContent() {
     const searchParams = useSearchParams();
     const bookingCode = searchParams.get("booking");
+    const [isDownloading, setIsDownloading] = useState(false);
+    const [bookingData, setBookingData] = useState<BookingData | null>(null);
+    const [downloadError, setDownloadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!bookingCode) return;
+        
+        fetch(`/api/my-bookings/${bookingCode}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setBookingData(data.data);
+                }
+            })
+            .catch(() => {});
+    }, [bookingCode]);
+
+    const handleDownloadTickets = useCallback(async () => {
+        if (!bookingData?.bookedTickets?.length) {
+            setDownloadError("Tidak ada tiket untuk didownload");
+            return;
+        }
+
+        setIsDownloading(true);
+        setDownloadError(null);
+
+        try {
+            for (const ticket of bookingData.bookedTickets) {
+                const response = await fetch(`/api/tickets/${ticket.id}/pdf`);
+                
+                if (!response.ok) {
+                    throw new Error("Gagal mengunduh tiket");
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `ticket-${ticket.uniqueCode.substring(0, 8)}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }
+        } catch {
+            setDownloadError("Gagal mengunduh tiket. Silakan coba lagi.");
+        } finally {
+            setIsDownloading(false);
+        }
+    }, [bookingData]);
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
             <div className="max-w-md w-full text-center">
                 <div className="bg-white rounded-2xl p-8 shadow-lg">
-                    {/* Success Icon */}
                     <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
                         <CheckCircle className="h-12 w-12 text-green-500" />
                     </div>
@@ -46,10 +106,30 @@ function SuccessContent() {
                         </div>
                     </div>
 
+                    {downloadError && (
+                        <div className="bg-red-50 text-red-600 text-sm rounded-lg p-3 mb-4">
+                            {downloadError}
+                        </div>
+                    )}
+
                     <div className="space-y-3">
-                        <button className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 flex items-center justify-center gap-2">
-                            <Download className="h-5 w-5" />
-                            Download E-Ticket
+                        <button 
+                            type="button"
+                            onClick={handleDownloadTickets}
+                            disabled={isDownloading || !bookingData}
+                            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isDownloading ? (
+                                <>
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                    Mengunduh...
+                                </>
+                            ) : (
+                                <>
+                                    <Download className="h-5 w-5" />
+                                    Download E-Ticket
+                                </>
+                            )}
                         </button>
                         <Link
                             href="/"

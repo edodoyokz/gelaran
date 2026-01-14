@@ -29,6 +29,7 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface CustomerProfile {
     id: string;
@@ -156,6 +157,7 @@ export default function AdminUserDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const router = useRouter();
+    const { showToast } = useToast();
     const [userId, setUserId] = useState<string>("");
     const [userData, setUserData] = useState<UserData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -233,13 +235,14 @@ export default function AdminUserDetailPage({
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Action failed");
+                showToast(data.error?.message || "Action failed", "error");
                 return;
             }
 
+            showToast("Action completed", "success");
             fetchUser();
         } catch {
-            alert("Action failed");
+            showToast("Action failed", "error");
         } finally {
             setActionLoading(false);
         }
@@ -299,7 +302,7 @@ export default function AdminUserDetailPage({
     const isSuspended = !!userData.deletedAt;
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="User Details" 
                 subtitle={userData.email}
@@ -827,6 +830,6 @@ export default function AdminUserDetailPage({
                     </div>
                 </div>
             </main>
-        </div>
+        </>
     );
 }

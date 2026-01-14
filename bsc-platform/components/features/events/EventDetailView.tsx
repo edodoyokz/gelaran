@@ -18,8 +18,12 @@ import {
     Globe,
     Video,
     Loader2,
+    Bell,
+    AlertCircle,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import SeatSelector, { SelectedSeat } from "@/components/seating/SeatSelector";
+import { ReviewSection } from "@/components/features/reviews";
 
 interface TicketType {
     id: string;
@@ -52,6 +56,9 @@ interface EventData {
     eventType: "OFFLINE" | "ONLINE" | "HYBRID";
     status: string;
     isFeatured: boolean;
+    hasSeatingChart: boolean;
+    minTicketsPerOrder?: number;
+    maxTicketsPerOrder?: number;
     termsAndConditions: string | null;
     refundPolicy: string | null;
     viewCount: number;
@@ -110,10 +117,18 @@ function formatTime(timeStr: string): string {
 export function EventDetailView({ event }: EventDetailViewProps) {
     const router = useRouter();
     const [quantities, setQuantities] = useState<Record<string, number>>({});
+    const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
     const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
     const [showTerms, setShowTerms] = useState(false);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+    const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+    const [waitlistTicket, setWaitlistTicket] = useState<TicketType | null>(null);
+    const [waitlistEmail, setWaitlistEmail] = useState("");
+    const [waitlistName, setWaitlistName] = useState("");
+    const [isJoiningWaitlist, setIsJoiningWaitlist] = useState(false);
+    const [waitlistError, setWaitlistError] = useState<string | null>(null);
+    const [waitlistSuccess, setWaitlistSuccess] = useState(false);
 
     const checkWishlistStatus = useCallback(async () => {
         try {
@@ -190,21 +205,45 @@ export function EventDetailView({ event }: EventDetailViewProps) {
         });
     };
 
-    const total = event.ticketTypes.reduce((acc, ticket) => {
-        return acc + ticket.basePrice * (quantities[ticket.id] || 0);
-    }, 0);
+    const total = event.hasSeatingChart
+        ? selectedSeats.reduce((acc, seat) => acc + seat.price, 0)
+        : event.ticketTypes.reduce((acc, ticket) => {
+              return acc + ticket.basePrice * (quantities[ticket.id] || 0);
+          }, 0);
 
-    const totalTickets = Object.values(quantities).reduce((a, b) => a + b, 0);
+    const totalTickets = event.hasSeatingChart
+        ? selectedSeats.length
+        : Object.values(quantities).reduce((a, b) => a + b, 0);
 
     const handleCheckout = () => {
         if (totalTickets === 0) return;
 
-        const ticketParams = event.ticketTypes
-            .filter((t) => quantities[t.id] > 0)
-            .map((t) => `${t.id}:${quantities[t.id]}`)
-            .join(",");
+        if (event.hasSeatingChart) {
+            const ticketCounts = selectedSeats.reduce((acc, seat) => {
+                const ticketId = seat.ticketTypeId;
+                if (ticketId) {
+                    acc[ticketId] = (acc[ticketId] || 0) + 1;
+                }
+                return acc;
+            }, {} as Record<string, number>);
 
-        router.push(`/checkout?event=${event.id}&tickets=${ticketParams}`);
+            const ticketParams = Object.entries(ticketCounts)
+                .map(([id, qty]) => `${id}:${qty}`)
+                .join(",");
+
+            const seatIds = selectedSeats.map((s) => s.id).join(",");
+
+            router.push(
+                `/checkout?event=${event.id}&tickets=${ticketParams}&seats=${seatIds}`
+            );
+        } else {
+            const ticketParams = event.ticketTypes
+                .filter((t) => quantities[t.id] > 0)
+                .map((t) => `${t.id}:${quantities[t.id]}`)
+                .join(",");
+
+            router.push(`/checkout?event=${event.id}&tickets=${ticketParams}`);
+        }
     };
 
     const handleShare = async () => {
@@ -217,6 +256,48 @@ export function EventDetailView({ event }: EventDetailViewProps) {
         } else {
             await navigator.clipboard.writeText(window.location.href);
             alert("Link berhasil disalin!");
+        }
+    };
+
+    const openWaitlistModal = (ticket: TicketType) => {
+        setWaitlistTicket(ticket);
+        setWaitlistEmail("");
+        setWaitlistName("");
+        setWaitlistError(null);
+        setWaitlistSuccess(false);
+        setShowWaitlistModal(true);
+    };
+
+    const handleJoinWaitlist = async () => {
+        if (!waitlistTicket || !waitlistEmail) return;
+
+        setIsJoiningWaitlist(true);
+        setWaitlistError(null);
+
+        try {
+            const res = await fetch(`/api/events/${event.slug}/waitlist`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ticketTypeId: waitlistTicket.id,
+                    email: waitlistEmail,
+                    name: waitlistName || null,
+                    quantity: 1,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setWaitlistError(data.error?.message || "Gagal bergabung waitlist");
+                return;
+            }
+
+            setWaitlistSuccess(true);
+        } catch {
+            setWaitlistError("Gagal bergabung waitlist. Coba lagi.");
+        } finally {
+            setIsJoiningWaitlist(false);
         }
     };
 
@@ -237,6 +318,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                     </h1>
                     <div className="flex items-center gap-1">
                         <button
+                            type="button"
                             onClick={handleWishlistToggle}
                             disabled={isWishlistLoading}
                             className={`p-2 rounded-full transition-colors ${
@@ -253,6 +335,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                             )}
                         </button>
                         <button
+                            type="button"
                             onClick={handleShare}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                         >
@@ -394,6 +477,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                             className="border border-gray-100 rounded-lg overflow-hidden"
                                         >
                                             <button
+                                                type="button"
                                                 onClick={() =>
                                                     setExpandedFaq(expandedFaq === faq.id ? null : faq.id)
                                                 }
@@ -419,6 +503,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                         {(event.termsAndConditions || event.refundPolicy) && (
                             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                                 <button
+                                    type="button"
                                     onClick={() => setShowTerms(!showTerms)}
                                     className="w-full flex items-center justify-between"
                                 >
@@ -447,6 +532,12 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                 )}
                             </div>
                         )}
+
+                        {/* Reviews Section */}
+                        <ReviewSection
+                            eventId={event.id}
+                            eventSlug={event.slug}
+                        />
                     </div>
 
                     {/* Sidebar - Ticket Selection */}
@@ -456,70 +547,109 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                 <div className="p-6 border-b border-gray-100">
                                     <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2">
                                         <Ticket className="h-5 w-5 text-indigo-600" />
-                                        Pilih Tiket
+                                        {event.hasSeatingChart ? "Pilih Kursi" : "Pilih Tiket"}
                                     </h3>
                                 </div>
 
-                                <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
-                                    {event.ticketTypes.length === 0 ? (
-                                        <p className="text-center text-gray-500 py-4">
-                                            Tiket belum tersedia
-                                        </p>
-                                    ) : (
-                                        event.ticketTypes.map((ticket) => (
-                                            <div
-                                                key={ticket.id}
-                                                className="border border-gray-200 rounded-xl p-4 hover:border-indigo-300 transition-colors"
-                                            >
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="flex-1">
-                                                        <p className="font-bold text-gray-900">{ticket.name}</p>
-                                                        {ticket.description && (
-                                                            <p className="text-xs text-gray-500 mt-1">
-                                                                {ticket.description}
+                                {event.hasSeatingChart ? (
+                                    <div className="p-4">
+                                        <div className="max-h-[600px] overflow-y-auto mb-4">
+                                            <SeatSelector
+                                                eventSlug={event.slug}
+                                                ticketTypes={event.ticketTypes}
+                                                maxSeats={event.maxTicketsPerOrder || 5}
+                                                onSeatsSelected={setSelectedSeats}
+                                                onError={(msg) => alert(msg)}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
+                                        {event.ticketTypes.length === 0 ? (
+                                            <p className="text-center text-gray-500 py-4">
+                                                Tiket belum tersedia
+                                            </p>
+                                        ) : (
+                                            event.ticketTypes.map((ticket) => (
+                                                <div
+                                                    key={ticket.id}
+                                                    className={`border rounded-xl p-4 transition-colors ${
+                                                        ticket.availableQuantity === 0
+                                                            ? "border-gray-200 bg-gray-50"
+                                                            : "border-gray-200 hover:border-indigo-300"
+                                                    }`}
+                                                >
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div className="flex-1">
+                                                            <p className="font-bold text-gray-900">
+                                                                {ticket.name}
                                                             </p>
+                                                            {ticket.description && (
+                                                                <p className="text-xs text-gray-500 mt-1">
+                                                                    {ticket.description}
+                                                                </p>
+                                                            )}
+                                                            <p className="text-indigo-600 font-semibold mt-1">
+                                                                {ticket.isFree
+                                                                    ? "GRATIS"
+                                                                    : formatCurrency(ticket.basePrice)}
+                                                            </p>
+                                                        </div>
+                                                        {ticket.availableQuantity > 0 ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        handleQtyChange(ticket.id, -1)
+                                                                    }
+                                                                    disabled={!quantities[ticket.id]}
+                                                                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-30 transition-colors"
+                                                                >
+                                                                    -
+                                                                </button>
+                                                                <span className="font-bold w-6 text-center">
+                                                                    {quantities[ticket.id] || 0}
+                                                                </span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        handleQtyChange(ticket.id, 1)
+                                                                    }
+                                                                    disabled={
+                                                                        (quantities[ticket.id] || 0) >=
+                                                                        ticket.maxPerOrder
+                                                                    }
+                                                                    className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 hover:bg-indigo-100 disabled:opacity-30 transition-colors"
+                                                                >
+                                                                    +
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    openWaitlistModal(ticket)
+                                                                }
+                                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-100 transition-colors"
+                                                            >
+                                                                <Bell className="h-4 w-4" />
+                                                                Waitlist
+                                                            </button>
                                                         )}
-                                                        <p className="text-indigo-600 font-semibold mt-1">
-                                                            {ticket.isFree
-                                                                ? "GRATIS"
-                                                                : formatCurrency(ticket.basePrice)}
-                                                        </p>
                                                     </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <button
-                                                            onClick={() => handleQtyChange(ticket.id, -1)}
-                                                            disabled={!quantities[ticket.id]}
-                                                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-30 transition-colors"
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <span className="font-bold w-6 text-center">
-                                                            {quantities[ticket.id] || 0}
+                                                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                                                        <Users className="h-3 w-3" />
+                                                        <span>
+                                                            {ticket.availableQuantity > 0
+                                                                ? `Tersisa ${ticket.availableQuantity} tiket`
+                                                                : "Sold Out"}
                                                         </span>
-                                                        <button
-                                                            onClick={() => handleQtyChange(ticket.id, 1)}
-                                                            disabled={
-                                                                ticket.availableQuantity === 0 ||
-                                                                (quantities[ticket.id] || 0) >= ticket.maxPerOrder
-                                                            }
-                                                            className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 hover:bg-indigo-100 disabled:opacity-30 transition-colors"
-                                                        >
-                                                            +
-                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-xs text-gray-400">
-                                                    <Users className="h-3 w-3" />
-                                                    <span>
-                                                        {ticket.availableQuantity > 0
-                                                            ? `Tersisa ${ticket.availableQuantity} tiket`
-                                                            : "Sold Out"}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
 
                                 <div className="p-4 bg-gray-50 border-t border-gray-100">
                                     <div className="flex justify-between items-center mb-4">
@@ -529,13 +659,16 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                         </span>
                                     </div>
                                     <button
+                                        type="button"
                                         onClick={handleCheckout}
                                         disabled={totalTickets === 0}
                                         className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2"
                                     >
                                         <Ticket className="h-5 w-5" />
                                         {totalTickets === 0
-                                            ? "Pilih Tiket"
+                                            ? event.hasSeatingChart
+                                                ? "Pilih Kursi"
+                                                : "Pilih Tiket"
                                             : `Checkout (${totalTickets} tiket)`}
                                     </button>
                                     <p className="text-center text-xs text-gray-400 mt-3">
@@ -552,6 +685,112 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                     </div>
                 </div>
             </div>
+
+            {showWaitlistModal && waitlistTicket && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+                        {waitlistSuccess ? (
+                            <div className="text-center">
+                                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                                    <CheckCircle className="h-8 w-8 text-green-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">Berhasil Bergabung!</h3>
+                                <p className="text-gray-600 mb-6">
+                                    Anda akan menerima email notifikasi ke <strong>{waitlistEmail}</strong> ketika tiket <strong>{waitlistTicket.name}</strong> tersedia.
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowWaitlistModal(false)}
+                                    className="w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                                >
+                                    Tutup
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                                        <Bell className="h-6 w-6 text-amber-600" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900">Gabung Waitlist</h3>
+                                        <p className="text-sm text-gray-500">{waitlistTicket.name}</p>
+                                    </div>
+                                </div>
+
+                                <p className="text-gray-600 mb-4">
+                                    Tiket ini sedang sold out. Daftarkan email Anda untuk mendapat notifikasi ketika tiket tersedia lagi.
+                                </p>
+
+                                {waitlistError && (
+                                    <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg mb-4">
+                                        <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                                        <span className="text-sm">{waitlistError}</span>
+                                    </div>
+                                )}
+
+                                <div className="space-y-4 mb-6">
+                                    <div>
+                                        <label htmlFor="waitlistEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Email <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            id="waitlistEmail"
+                                            type="email"
+                                            value={waitlistEmail}
+                                            onChange={(e) => setWaitlistEmail(e.target.value)}
+                                            placeholder="email@contoh.com"
+                                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="waitlistName" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Nama (opsional)
+                                        </label>
+                                        <input
+                                            id="waitlistName"
+                                            type="text"
+                                            value={waitlistName}
+                                            onChange={(e) => setWaitlistName(e.target.value)}
+                                            placeholder="Nama lengkap"
+                                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowWaitlistModal(false)}
+                                        disabled={isJoiningWaitlist}
+                                        className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                                    >
+                                        Batal
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleJoinWaitlist}
+                                        disabled={isJoiningWaitlist || !waitlistEmail}
+                                        className="flex-1 px-4 py-2.5 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {isJoiningWaitlist ? (
+                                            <>
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                Memproses...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Bell className="h-4 w-4" />
+                                                Gabung Waitlist
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

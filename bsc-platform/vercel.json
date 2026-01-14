@@ -1,0 +1,32 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/webhooks/**/*.ts": {
+      "maxDuration": 300
+    },
+    "app/api/tickets/*/pdf/route.ts": {
+      "maxDuration": 120,
+      "memory": 1024
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-expired-bookings",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/end-past-events",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/send-reminders",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

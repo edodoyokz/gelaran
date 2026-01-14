@@ -10,10 +10,10 @@ export async function GET(request: NextRequest) {
             return errorResponse("Device token diperlukan", 401);
         }
 
-        const deviceAccess = await prisma.gateDeviceAccess.findUnique({
+        const deviceAccess = await prisma.deviceAccess.findUnique({
             where: { deviceToken },
             include: {
-                gateSession: {
+                session: {
                     include: {
                         event: {
                             include: {
@@ -42,16 +42,20 @@ export async function GET(request: NextRequest) {
             return errorResponse("Akses tidak valid", 401);
         }
 
-        if (!deviceAccess.gateSession.isActive) {
-            return errorResponse("Session gate tidak aktif. Hubungi organizer.", 403);
+        if (deviceAccess.session.sessionType !== "GATE") {
+            return errorResponse("Device ini bukan untuk Gate Scanner. Gunakan /pos untuk penjualan.", 403);
         }
 
-        await prisma.gateDeviceAccess.update({
+        if (!deviceAccess.session.isActive) {
+            return errorResponse("Session Gate Scanner tidak aktif. Hubungi organizer.", 403);
+        }
+
+        await prisma.deviceAccess.update({
             where: { id: deviceAccess.id },
             data: { lastActiveAt: new Date() },
         });
 
-        const event = deviceAccess.gateSession.event;
+        const event = deviceAccess.session.event;
 
         const [totalSold, checkedIn, onSiteSales] = await Promise.all([
             prisma.bookedTicket.count({

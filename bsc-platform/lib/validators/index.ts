@@ -38,6 +38,8 @@ export const createBookingSchema = z.object({
             quantity: z.number().min(1).max(10),
         })
     ).min(1),
+    seatIds: z.array(z.string().uuid()).optional(),
+    seatSessionId: z.string().uuid().optional(),
     promoCode: z.string().optional(),
     guestEmail: z.string().email().optional(),
     guestName: z.string().min(2).optional(),

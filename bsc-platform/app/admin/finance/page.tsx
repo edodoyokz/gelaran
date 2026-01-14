@@ -198,7 +198,7 @@ export default function AdminFinancePage() {
     const totalBookingAmount = data.bookingsByStatus.reduce((sum, s) => sum + s.amount, 0);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Finance Dashboard" 
                 backHref="/admin"
@@ -413,6 +413,6 @@ export default function AdminFinancePage() {
                     </div>
                 </div>
             </main>
-        </div>
+        </>
     );
 }

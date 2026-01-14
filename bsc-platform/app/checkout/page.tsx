@@ -24,6 +24,14 @@ interface TicketSelection {
     maxPerOrder: number;
 }
 
+interface LockedSeat {
+    id: string;
+    seatLabel: string;
+    ticketTypeId: string;
+    ticketTypeName: string;
+    price: number;
+}
+
 interface EventData {
     id: string;
     title: string;
@@ -48,12 +56,17 @@ function CheckoutContent() {
     const router = useRouter();
     const eventSlug = searchParams.get("event");
     const ticketsParam = searchParams.get("tickets");
+    const seatsParam = searchParams.get("seats");
 
     const [event, setEvent] = useState<EventData | null>(null);
     const [tickets, setTickets] = useState<TicketSelection[]>([]);
+    const [lockedSeats, setLockedSeats] = useState<LockedSeat[]>([]);
+    const [seatSessionId, setSeatSessionId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const isSeatCheckout = !!seatsParam;
 
     const [guestEmail, setGuestEmail] = useState("");
     const [guestName, setGuestName] = useState("");
@@ -79,7 +92,6 @@ function CheckoutContent() {
                     }
                 }
             } catch {
-            } finally {
                 setIsUserLoaded(true);
             }
         }
@@ -93,42 +105,83 @@ function CheckoutContent() {
             return;
         }
 
-        const preselectedTickets = new Map<string, number>();
-        if (ticketsParam) {
-            ticketsParam.split(",").forEach((pair) => {
-                const [id, qty] = pair.split(":");
-                if (id && qty) {
-                    preselectedTickets.set(id, parseInt(qty, 10) || 0);
-                }
-            });
-        }
-
-        async function fetchEvent() {
+        async function fetchEventAndSeats() {
             try {
                 const res = await fetch(`/api/events/${eventSlug}`);
                 const data = await res.json();
-                if (data.success) {
-                    setEvent(data.data);
-                    const initialTickets = data.data.ticketTypes.map((t: EventData["ticketTypes"][0]) => ({
-                        ticketTypeId: t.id,
-                        name: t.name,
-                        price: t.isFree ? 0 : t.basePrice,
-                        quantity: preselectedTickets.get(t.id) || 0,
-                        maxPerOrder: t.maxPerOrder,
-                    }));
-                    setTickets(initialTickets);
+                
+                if (!data.success) throw new Error("Failed to load event");
+                setEvent(data.data);
+
+                let currentLockedSeats: LockedSeat[] = [];
+
+                if (seatsParam) {
+                    let sessionId = localStorage.getItem("bsc-seat-session");
+                    if (!sessionId) {
+                        sessionId = crypto.randomUUID();
+                        localStorage.setItem("bsc-seat-session", sessionId);
+                    }
+                    setSeatSessionId(sessionId);
+
+                    const seatIds = seatsParam.split(",");
+                    const seatRes = await fetch(`/api/events/${eventSlug}/seats`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ seatIds, sessionId })
+                    });
+                    const seatData = await seatRes.json();
+                    
+                    if (seatData.success) {
+                        currentLockedSeats = seatData.data.lockedSeats.map((seat: LockedSeat & { price: string }) => ({
+                            ...seat,
+                            price: Number(seat.price),
+                        }));
+                        setLockedSeats(currentLockedSeats);
+                    } else {
+                        setError(seatData.error?.message || "Failed to lock seats");
+                    }
                 }
-            } catch {
-                setError("Failed to load event");
+
+                const preselectedTickets = new Map<string, number>();
+                
+                if (seatsParam && currentLockedSeats.length > 0) {
+                     currentLockedSeats.forEach(seat => {
+                         const count = preselectedTickets.get(seat.ticketTypeId) || 0;
+                         preselectedTickets.set(seat.ticketTypeId, count + 1);
+                     });
+                } else if (ticketsParam) {
+                    ticketsParam.split(",").forEach((pair) => {
+                        const [id, qty] = pair.split(":");
+                        if (id && qty) {
+                            preselectedTickets.set(id, parseInt(qty, 10) || 0);
+                        }
+                    });
+                }
+
+                const initialTickets = data.data.ticketTypes.map((t: EventData["ticketTypes"][0]) => ({
+                    ticketTypeId: t.id,
+                    name: t.name,
+                    price: t.isFree ? 0 : t.basePrice,
+                    quantity: preselectedTickets.get(t.id) || 0,
+                    maxPerOrder: t.maxPerOrder,
+                }));
+                setTickets(initialTickets);
+
+            } catch (err) {
+                console.error(err);
+                const message = err instanceof Error ? err.message : "Failed to load data";
+                if (!error) setError(message);
             } finally {
                 setIsLoading(false);
             }
         }
 
-        fetchEvent();
-    }, [eventSlug, ticketsParam, router]);
+        fetchEventAndSeats();
+    }, [eventSlug, ticketsParam, seatsParam, router]);
 
     const updateQuantity = (ticketTypeId: string, delta: number) => {
+        if (isSeatCheckout) return;
+
         setTickets((prev) =>
             prev.map((t) => {
                 if (t.ticketTypeId !== ticketTypeId) return t;
@@ -138,15 +191,25 @@ function CheckoutContent() {
         );
     };
 
-    const subtotal = tickets.reduce((sum, t) => sum + t.price * t.quantity, 0);
+    const subtotal = isSeatCheckout 
+        ? lockedSeats.reduce((sum, s) => sum + s.price, 0)
+        : tickets.reduce((sum, t) => sum + t.price * t.quantity, 0);
+        
     const platformFee = Math.round(subtotal * 0.05);
     const tax = Math.round(subtotal * 0.11);
     const total = subtotal + platformFee + tax;
-    const totalTickets = tickets.reduce((sum, t) => sum + t.quantity, 0);
+    const totalTickets = isSeatCheckout
+        ? lockedSeats.length
+        : tickets.reduce((sum, t) => sum + t.quantity, 0);
 
     const handleCheckout = async () => {
         if (totalTickets === 0) {
             setError("Pilih minimal 1 tiket");
+            return;
+        }
+
+        if (isSeatCheckout && (!seatSessionId || lockedSeats.length === 0)) {
+            setError("Kursi belum terkunci");
             return;
         }
 
@@ -172,6 +235,8 @@ function CheckoutContent() {
                     guestEmail,
                     guestName,
                     guestPhone,
+                    seatIds: isSeatCheckout ? lockedSeats.map(s => s.id) : undefined,
+                    seatSessionId: isSeatCheckout ? seatSessionId : undefined,
                 }),
             });
 
@@ -204,8 +269,9 @@ function CheckoutContent() {
 
             // Redirect to Midtrans
             window.location.href = paymentData.data.redirectUrl;
-        } catch {
-            setError("Terjadi kesalahan");
+        } catch (err) {
+            console.error("Checkout error:", err);
+            setError("Terjadi kesalahan saat memproses pembayaran");
             setIsProcessing(false);
         }
     };
@@ -288,16 +354,18 @@ function CheckoutContent() {
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <button
+                                                type="button"
                                                 onClick={() => updateQuantity(ticket.ticketTypeId, -1)}
-                                                disabled={ticket.quantity === 0}
+                                                disabled={ticket.quantity === 0 || isSeatCheckout}
                                                 className="w-8 h-8 rounded-full border flex items-center justify-center disabled:opacity-50"
                                             >
                                                 <Minus className="h-4 w-4" />
                                             </button>
                                             <span className="w-6 text-center font-medium">{ticket.quantity}</span>
                                             <button
+                                                type="button"
                                                 onClick={() => updateQuantity(ticket.ticketTypeId, 1)}
-                                                disabled={ticket.quantity >= ticket.maxPerOrder}
+                                                disabled={ticket.quantity >= ticket.maxPerOrder || isSeatCheckout}
                                                 className="w-8 h-8 rounded-full border flex items-center justify-center disabled:opacity-50"
                                             >
                                                 <Plus className="h-4 w-4" />
@@ -357,8 +425,22 @@ function CheckoutContent() {
                         <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
                             <h3 className="font-semibold mb-4">Ringkasan Pesanan</h3>
 
+                            {isSeatCheckout && lockedSeats.length > 0 && (
+                                <div className="mb-4 pb-4 border-b">
+                                    <p className="text-sm font-medium text-gray-700 mb-2">Kursi Dipilih:</p>
+                                    <div className="space-y-1">
+                                        {lockedSeats.map((seat) => (
+                                            <div key={seat.id} className="flex justify-between text-sm">
+                                                <span className="text-gray-600">{seat.seatLabel}</span>
+                                                <span className="font-medium">{formatCurrency(seat.price)}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="space-y-2 text-sm">
-                                {tickets.filter((t) => t.quantity > 0).map((ticket) => (
+                                {!isSeatCheckout && tickets.filter((t) => t.quantity > 0).map((ticket) => (
                                     <div key={ticket.ticketTypeId} className="flex justify-between">
                                         <span>{ticket.name} x{ticket.quantity}</span>
                                         <span>{formatCurrency(ticket.price * ticket.quantity)}</span>
@@ -398,6 +480,7 @@ function CheckoutContent() {
                             )}
 
                             <button
+                                type="button"
                                 onClick={handleCheckout}
                                 disabled={totalTickets === 0 || isProcessing}
                                 className="mt-6 w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"

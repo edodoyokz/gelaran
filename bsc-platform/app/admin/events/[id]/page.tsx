@@ -33,6 +33,8 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { ImageUploadField } from "@/components/ui/ImageUploadField";
+import { useToast } from "@/components/ui/toast-provider";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 interface Schedule {
     id: string;
@@ -233,6 +235,8 @@ export default function AdminEventDetailPage() {
     const [promoDeleting, setPromoDeleting] = useState<string | null>(null);
     
     const [ticketDeleting, setTicketDeleting] = useState<string | null>(null);
+    const { showToast } = useToast();
+    const { confirm } = useConfirm();
 
     const fetchEvent = useCallback(async () => {
         try {
@@ -291,22 +295,29 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to update event");
+                showToast(data.error?.message || "Failed to update event", "error");
                 return;
             }
 
             setShowRejectModal(false);
             setRejectionReason("");
             fetchEvent();
+            showToast("Event updated successfully", "success");
         } catch {
-            alert("Failed to update event");
+            showToast("Failed to update event", "error");
         } finally {
             setActionLoading(null);
         }
     };
 
     const handleDeleteTicket = async (ticketId: string) => {
-        if (!confirm("Are you sure you want to delete this ticket type?")) return;
+        if (!await confirm("Are you sure you want to delete this ticket type?", {
+            title: "Delete Ticket Type",
+            description: "This action cannot be undone.",
+            confirmText: "Delete",
+            cancelText: "Cancel",
+            variant: "danger"
+        })) return;
         
         try {
             setTicketDeleting(ticketId);
@@ -317,13 +328,14 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to delete ticket type");
+                showToast(data.error?.message || "Failed to delete ticket type", "error");
                 return;
             }
 
             fetchEvent();
+            showToast("Ticket type deleted", "success");
         } catch {
-            alert("Failed to delete ticket type");
+            showToast("Failed to delete ticket type", "error");
         } finally {
             setTicketDeleting(null);
         }
@@ -358,14 +370,15 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to update ticket");
+                showToast(data.error?.message || "Failed to update ticket", "error");
                 return;
             }
 
             setEditingTicket(null);
             fetchEvent();
+            showToast("Ticket updated successfully", "success");
         } catch {
-            alert("Failed to update ticket");
+            showToast("Failed to update ticket", "error");
         } finally {
             setTicketSaving(false);
         }
@@ -383,7 +396,7 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to create ticket");
+                showToast(data.error?.message || "Failed to create ticket", "error");
                 return;
             }
 
@@ -400,8 +413,9 @@ export default function AdminEventDetailPage() {
                 isActive: true,
             });
             fetchEvent();
+            showToast("Ticket created successfully", "success");
         } catch {
-            alert("Failed to create ticket");
+            showToast("Failed to create ticket", "error");
         } finally {
             setCreateTicketSaving(false);
         }
@@ -445,14 +459,15 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to update event");
+                showToast(data.error?.message || "Failed to update event", "error");
                 return;
             }
 
             setShowEditEventModal(false);
             fetchEvent();
+            showToast("Event updated successfully", "success");
         } catch {
-            alert("Failed to update event");
+            showToast("Failed to update event", "error");
         } finally {
             setEditEventSaving(false);
         }
@@ -468,13 +483,14 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to delete event");
+                showToast(data.error?.message || "Failed to delete event", "error");
                 return;
             }
 
             router.push("/admin/events");
+            showToast("Event deleted successfully", "success");
         } catch {
-            alert("Failed to delete event");
+            showToast("Failed to delete event", "error");
         } finally {
             setDeleteSaving(false);
         }
@@ -523,22 +539,29 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to save schedule");
+                showToast(data.error?.message || "Failed to save schedule", "error");
                 return;
             }
 
             setShowScheduleModal(false);
             setEditingSchedule(null);
             fetchEvent();
+            showToast("Schedule saved successfully", "success");
         } catch {
-            alert("Failed to save schedule");
+            showToast("Failed to save schedule", "error");
         } finally {
             setScheduleSaving(false);
         }
     };
 
     const handleDeleteSchedule = async (scheduleId: string) => {
-        if (!confirm("Are you sure you want to delete this schedule?")) return;
+        if (!await confirm("Are you sure you want to delete this schedule?", {
+            title: "Delete Schedule",
+            description: "This action cannot be undone.",
+            confirmText: "Delete",
+            cancelText: "Cancel",
+            variant: "danger"
+        })) return;
         
         try {
             setScheduleDeleting(scheduleId);
@@ -549,13 +572,14 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to delete schedule");
+                showToast(data.error?.message || "Failed to delete schedule", "error");
                 return;
             }
 
             fetchEvent();
+            showToast("Schedule deleted", "success");
         } catch {
-            alert("Failed to delete schedule");
+            showToast("Failed to delete schedule", "error");
         } finally {
             setScheduleDeleting(null);
         }
@@ -619,22 +643,29 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to save promo code");
+                showToast(data.error?.message || "Failed to save promo code", "error");
                 return;
             }
 
             setShowPromoModal(false);
             setEditingPromo(null);
             fetchEvent();
+            showToast("Promo code saved successfully", "success");
         } catch {
-            alert("Failed to save promo code");
+            showToast("Failed to save promo code", "error");
         } finally {
             setPromoSaving(false);
         }
     };
 
     const handleDeletePromo = async (promoId: string) => {
-        if (!confirm("Are you sure you want to delete this promo code?")) return;
+        if (!await confirm("Are you sure you want to delete this promo code?", {
+            title: "Delete Promo Code",
+            description: "This action cannot be undone.",
+            confirmText: "Delete",
+            cancelText: "Cancel",
+            variant: "danger"
+        })) return;
         
         try {
             setPromoDeleting(promoId);
@@ -645,13 +676,14 @@ export default function AdminEventDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to delete promo code");
+                showToast(data.error?.message || "Failed to delete promo code", "error");
                 return;
             }
 
             fetchEvent();
+            showToast("Promo code deleted", "success");
         } catch {
-            alert("Failed to delete promo code");
+            showToast("Failed to delete promo code", "error");
         } finally {
             setPromoDeleting(null);
         }
@@ -707,7 +739,7 @@ export default function AdminEventDetailPage() {
     const totalSold = event.ticketTypes.reduce((sum, t) => sum + (t.soldCount || 0), 0);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader
                 title="Event Details"
                 subtitle={event.title}
@@ -2264,6 +2296,6 @@ export default function AdminEventDetailPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

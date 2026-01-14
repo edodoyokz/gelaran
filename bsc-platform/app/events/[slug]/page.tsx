@@ -13,6 +13,9 @@ interface EventData {
     eventType: "OFFLINE" | "ONLINE" | "HYBRID";
     status: string;
     isFeatured: boolean;
+    hasSeatingChart: boolean;
+    minTicketsPerOrder?: number;
+    maxTicketsPerOrder?: number;
     termsAndConditions: string | null;
     refundPolicy: string | null;
     viewCount: number;

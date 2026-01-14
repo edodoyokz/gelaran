@@ -172,7 +172,7 @@ function AdminBookingsContent() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="All Bookings" 
                 backHref="/admin"
@@ -391,7 +391,7 @@ function AdminBookingsContent() {
                     </table>
                 </div>
             </main>
-        </div>
+        </>
     );
 }
 

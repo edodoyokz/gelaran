@@ -13,6 +13,7 @@ import {
     ArrowLeft,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useAdminProfile } from "@/components/admin/AdminProfileProvider";
 
 interface UserProfile {
     id: string;
@@ -31,8 +32,9 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ title, subtitle, backHref, actions }: AdminHeaderProps) {
     const router = useRouter();
-    const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const contextProfile = useAdminProfile();
+    const [profile, setProfile] = useState<UserProfile | null>(contextProfile);
+    const [isLoading, setIsLoading] = useState(!contextProfile);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -51,8 +53,9 @@ export function AdminHeader({ title, subtitle, backHref, actions }: AdminHeaderP
     }, []);
 
     useEffect(() => {
+        if (contextProfile) return;
         fetchProfile();
-    }, [fetchProfile]);
+    }, [fetchProfile, contextProfile]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

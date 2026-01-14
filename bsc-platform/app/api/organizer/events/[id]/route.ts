@@ -62,6 +62,12 @@ export async function GET(
             _sum: { totalQuantity: true, soldQuantity: true, reservedQuantity: true },
         });
 
+        const actualSoldTickets = await prisma.bookedTicket.count({
+            where: {
+                booking: { eventId: id, status: { in: ["CONFIRMED", "PAID"] } },
+            },
+        });
+
         const revenueStats = await prisma.booking.aggregate({
             where: {
                 eventId: id,
@@ -81,9 +87,9 @@ export async function GET(
             ...event,
             stats: {
                 totalTickets: ticketStats._sum.totalQuantity || 0,
-                soldTickets: ticketStats._sum.soldQuantity || 0,
+                soldTickets: actualSoldTickets,
                 reservedTickets: ticketStats._sum.reservedQuantity || 0,
-                availableTickets: (ticketStats._sum.totalQuantity || 0) - (ticketStats._sum.soldQuantity || 0) - (ticketStats._sum.reservedQuantity || 0),
+                availableTickets: (ticketStats._sum.totalQuantity || 0) - actualSoldTickets - (ticketStats._sum.reservedQuantity || 0),
                 totalRevenue: Number(revenueStats._sum.totalAmount || 0),
                 organizerRevenue: Number(revenueStats._sum.organizerRevenue || 0),
                 totalBookings: event._count.bookings,

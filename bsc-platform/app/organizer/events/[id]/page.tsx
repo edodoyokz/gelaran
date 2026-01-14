@@ -27,6 +27,10 @@ import {
     AlertCircle,
     Loader2,
     Tag,
+    LayoutGrid,
+    Camera,
+    ShoppingCart,
+    Settings,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -576,15 +580,27 @@ function OverviewTab({ event, onRefresh }: { event: EventData; onRefresh: () => 
                     </div>
                     <div className="p-4 space-y-2">
                         <Link
-                            href={`/organizer/events/${event.id}/gate`}
+                            href={`/gate?eventId=${event.id}`}
                             className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                             <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                <QrCode className="h-5 w-5 text-indigo-600" />
+                                <Camera className="h-5 w-5 text-indigo-600" />
                             </div>
                             <div className="text-left">
-                                <p className="font-medium text-gray-900">Scan Tiket</p>
+                                <p className="font-medium text-gray-900">Gate Scanner</p>
                                 <p className="text-sm text-gray-500">Check-in peserta</p>
+                            </div>
+                        </Link>
+                        <Link
+                            href={`/pos?eventId=${event.id}`}
+                            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <ShoppingCart className="h-5 w-5 text-emerald-600" />
+                            </div>
+                            <div className="text-left">
+                                <p className="font-medium text-gray-900">POS Kasir</p>
+                                <p className="text-sm text-gray-500">Penjualan tiket on-site</p>
                             </div>
                         </Link>
                         <Link
@@ -609,6 +625,30 @@ function OverviewTab({ event, onRefresh }: { event: EventData; onRefresh: () => 
                             <div className="text-left">
                                 <p className="font-medium text-gray-900">Kode Promo</p>
                                 <p className="text-sm text-gray-500">Kelola diskon</p>
+                            </div>
+                        </Link>
+                        <Link
+                            href={`/organizer/events/${event.id}/seating`}
+                            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <LayoutGrid className="h-5 w-5 text-orange-600" />
+                            </div>
+                            <div className="text-left">
+                                <p className="font-medium text-gray-900">Denah Kursi</p>
+                                <p className="text-sm text-gray-500">Kelola seating chart</p>
+                            </div>
+                        </Link>
+                        <Link
+                            href={`/organizer/events/${event.id}/gate`}
+                            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
+                                <Settings className="h-5 w-5 text-slate-600" />
+                            </div>
+                            <div className="text-left">
+                                <p className="font-medium text-gray-900">Pengaturan Gate & POS</p>
+                                <p className="text-sm text-gray-500">Kelola PIN & akses staff</p>
                             </div>
                         </Link>
                     </div>
@@ -888,7 +928,18 @@ function TicketsTab({ event, onRefresh }: { event: EventData; onRefresh: () => v
 }
 
 function AttendeesTab({ event }: { event: EventData }) {
-    const [attendees, setAttendees] = useState<unknown[]>([]);
+    const [attendees, setAttendees] = useState<Array<{
+        id: string;
+        ticketCode: string;
+        ticketType: string;
+        attendeeName: string;
+        attendeeEmail: string;
+        attendeePhone: string | null;
+        bookingCode: string;
+        isCheckedIn: boolean;
+        checkedInAt: string | null;
+        status: string;
+    }>>([]);
     const [isLoading, setIsLoading] = useState(true);
     const eventId = event.id;
 
@@ -899,8 +950,8 @@ function AttendeesTab({ event }: { event: EventData }) {
                 const res = await fetch(`/api/organizer/events/${eventId}/attendees`);
                 const data = await res.json();
 
-                if (data.success) {
-                    setAttendees(data.data);
+                if (data.success && data.data?.attendees) {
+                    setAttendees(data.data.attendees);
                 }
             } catch {
                 console.error("Failed to fetch attendees");
@@ -973,11 +1024,60 @@ function AttendeesTab({ event }: { event: EventData }) {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div className="p-12 text-center text-gray-500">
-                    <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p>Daftar peserta lengkap akan ditampilkan di sini.</p>
-                    <p className="text-sm mt-1">Fitur dalam pengembangan.</p>
-                </div>
+                {attendees.length === 0 ? (
+                    <div className="p-12 text-center text-gray-500">
+                        <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                        <p>Belum ada peserta terdaftar.</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead className="bg-gray-50 border-b">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Kode Tiket</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Nama</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Email</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Tipe Tiket</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {attendees.map((attendee) => (
+                                    <tr key={attendee.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4 font-mono text-sm">{attendee.ticketCode}</td>
+                                        <td className="px-6 py-4">
+                                            <div>
+                                                <p className="font-medium text-gray-900">{attendee.attendeeName}</p>
+                                                {attendee.attendeePhone && (
+                                                    <p className="text-sm text-gray-500">{attendee.attendeePhone}</p>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-600">{attendee.attendeeEmail}</td>
+                                        <td className="px-6 py-4">
+                                            <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded">
+                                                {attendee.ticketType}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {attendee.isCheckedIn ? (
+                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                                    <CheckCircle className="h-3 w-3" />
+                                                    Check-in
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">
+                                                    <Clock className="h-3 w-3" />
+                                                    Pending
+                                                </span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -19,6 +19,7 @@ import {
     ExternalLink,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface Venue {
     id: string;
@@ -76,6 +77,7 @@ const INITIAL_FORM: FormData = {
 
 export default function AdminVenuesPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const [venues, setVenues] = useState<Venue[]>([]);
     const [cities, setCities] = useState<string[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
@@ -188,16 +190,20 @@ export default function AdminVenuesPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || `Failed to ${editingVenue ? "update" : "create"} venue`);
+                showToast(
+                    data.error?.message || `Failed to ${editingVenue ? "update" : "create"} venue`,
+                    "error"
+                );
                 return;
             }
 
+            showToast(`Venue ${editingVenue ? "updated" : "created"}`, "success");
             setShowModal(false);
             setEditingVenue(null);
             setFormData(INITIAL_FORM);
             fetchVenues();
         } catch {
-            alert(`Failed to ${editingVenue ? "update" : "create"} venue`);
+            showToast(`Failed to ${editingVenue ? "update" : "create"} venue`, "error");
         } finally {
             setIsSubmitting(false);
         }
@@ -232,14 +238,15 @@ export default function AdminVenuesPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to delete venue");
+                showToast(data.error?.message || "Failed to delete venue", "error");
                 return;
             }
 
+            showToast("Venue deleted", "success");
             setDeletingVenue(null);
             fetchVenues();
         } catch {
-            alert("Failed to delete venue");
+            showToast("Failed to delete venue", "error");
         } finally {
             setIsSubmitting(false);
         }
@@ -278,7 +285,7 @@ export default function AdminVenuesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Venue Management" 
                 subtitle={`${pagination?.total || 0} venues`}
@@ -751,6 +758,6 @@ export default function AdminVenuesPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

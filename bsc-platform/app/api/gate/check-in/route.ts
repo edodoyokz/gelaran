@@ -10,13 +10,14 @@ export async function POST(request: NextRequest) {
             return errorResponse("Device token diperlukan", 401);
         }
 
-        const deviceAccess = await prisma.gateDeviceAccess.findUnique({
+        const deviceAccess = await prisma.deviceAccess.findUnique({
             where: { deviceToken },
             include: {
-                gateSession: {
+                session: {
                     select: {
                         isActive: true,
                         eventId: true,
+                        sessionType: true,
                     },
                 },
             },
@@ -26,8 +27,12 @@ export async function POST(request: NextRequest) {
             return errorResponse("Akses tidak valid", 401);
         }
 
-        if (!deviceAccess.gateSession.isActive) {
-            return errorResponse("Session gate tidak aktif", 403);
+        if (deviceAccess.session.sessionType !== "GATE") {
+            return errorResponse("Device ini bukan untuk check-in. Gunakan /pos untuk penjualan.", 403);
+        }
+
+        if (!deviceAccess.session.isActive) {
+            return errorResponse("Session Gate Scanner tidak aktif", 403);
         }
 
         const { ticketCode } = await request.json();
@@ -56,7 +61,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!bookedTicket) {
-            await prisma.gateDeviceAccess.update({
+            await prisma.deviceAccess.update({
                 where: { id: deviceAccess.id },
                 data: { lastActiveAt: new Date() },
             });
@@ -64,7 +69,7 @@ export async function POST(request: NextRequest) {
             return errorResponse("Tiket tidak ditemukan", 404, { result: "INVALID" });
         }
 
-        if (bookedTicket.booking.eventId !== deviceAccess.gateSession.eventId) {
+        if (bookedTicket.booking.eventId !== deviceAccess.session.eventId) {
             return errorResponse("Tiket untuk event berbeda", 400, { result: "WRONG_EVENT" });
         }
 
@@ -98,7 +103,7 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        await prisma.gateDeviceAccess.update({
+        await prisma.deviceAccess.update({
             where: { id: deviceAccess.id },
             data: { lastActiveAt: new Date() },
         });

@@ -18,6 +18,7 @@ import {
     AlertCircle,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface PlatformSettings {
     platformName: string;
@@ -61,6 +62,7 @@ export default function AdminSettingsPage() {
     const [success, setSuccess] = useState(false);
     const [settings, setSettings] = useState<PlatformSettings>(DEFAULT_SETTINGS);
     const [activeSection, setActiveSection] = useState<"general" | "fees" | "notifications" | "payment">("general");
+    const { showToast } = useToast();
 
     const checkAuth = useCallback(async () => {
         try {
@@ -109,14 +111,15 @@ export default function AdminSettingsPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to save settings");
+                showToast(data.error?.message || "Failed to save settings", "error");
                 return;
             }
 
             setSuccess(true);
+            showToast("Settings saved successfully", "success");
             setTimeout(() => setSuccess(false), 3000);
         } catch {
-            alert("Failed to save settings");
+            showToast("Failed to save settings", "error");
         } finally {
             setIsSaving(false);
         }
@@ -159,7 +162,7 @@ export default function AdminSettingsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Platform Settings" 
                 subtitle="Configure your platform preferences"
@@ -516,6 +519,6 @@ export default function AdminSettingsPage() {
                     </div>
                 </div>
             </main>
-        </div>
+        </>
     );
 }

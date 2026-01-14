@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
         const event = await prisma.event.findUnique({
             where: { id: eventId },
             include: {
-                gateSession: {
+                deviceSessions: {
                     include: {
                         devices: {
                             where: { isActive: true },
@@ -99,6 +99,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
             }),
         ]);
 
+        // Separate sessions by type
+        const gateSession = event.deviceSessions.find(s => s.sessionType === "GATE");
+        const posSession = event.deviceSessions.find(s => s.sessionType === "POS");
+
         return successResponse({
             event: {
                 id: event.id,
@@ -111,18 +115,34 @@ export async function GET(request: NextRequest, context: RouteContext) {
                     availableQuantity: tt.totalQuantity - tt.soldQuantity,
                 })),
             },
-            gateSession: event.gateSession
+            gateSession: gateSession
                 ? {
-                      id: event.gateSession.id,
-                      deviceLimit: event.gateSession.deviceLimit,
-                      isActive: event.gateSession.isActive,
-                      activeDevices: event.gateSession.devices.map((d) => ({
+                      id: gateSession.id,
+                      sessionType: gateSession.sessionType,
+                      deviceLimit: gateSession.deviceLimit,
+                      isActive: gateSession.isActive,
+                      activeDevices: gateSession.devices.map((d) => ({
                           id: d.id,
                           staffName: d.staffName,
                           lastActiveAt: d.lastActiveAt,
                           userAgent: d.userAgent,
                       })),
-                      createdAt: event.gateSession.createdAt,
+                      createdAt: gateSession.createdAt,
+                  }
+                : null,
+            posSession: posSession
+                ? {
+                      id: posSession.id,
+                      sessionType: posSession.sessionType,
+                      deviceLimit: posSession.deviceLimit,
+                      isActive: posSession.isActive,
+                      activeDevices: posSession.devices.map((d) => ({
+                          id: d.id,
+                          staffName: d.staffName,
+                          lastActiveAt: d.lastActiveAt,
+                          userAgent: d.userAgent,
+                      })),
+                      createdAt: posSession.createdAt,
                   }
                 : null,
             stats: {
@@ -134,8 +154,8 @@ export async function GET(request: NextRequest, context: RouteContext) {
             },
         });
     } catch (error) {
-        console.error("Get gate session error:", error);
-        return errorResponse("Failed to get gate session", 500);
+        console.error("Get device session error:", error);
+        return errorResponse("Failed to get device session", 500);
     }
 }
 
@@ -150,7 +170,11 @@ export async function POST(request: NextRequest, context: RouteContext) {
 
         const { id: eventId } = await context.params;
         const body = await request.json();
-        const { deviceLimit = 5 } = body;
+        const { sessionType = "GATE", deviceLimit = 5 } = body;
+
+        if (!["GATE", "POS"].includes(sessionType)) {
+            return errorResponse("Invalid session type", 400);
+        }
 
         const dbUser = await prisma.user.findUnique({
             where: { email: user.email! },
@@ -180,35 +204,40 @@ export async function POST(request: NextRequest, context: RouteContext) {
         const pin = generatePin();
         const pinHash = hashPin(pin);
 
-        const gateSession = await prisma.eventGateSession.upsert({
-            where: { eventId },
+        const session = await prisma.eventDeviceSession.upsert({
+            where: { eventId_sessionType: { eventId, sessionType } },
             update: {
                 pinHash,
-                deviceLimit: Math.max(1, Math.min(50, deviceLimit)),
+                deviceLimit: Math.max(1, Math.min(20, deviceLimit)),
                 isActive: true,
                 updatedAt: new Date(),
             },
             create: {
                 eventId,
+                sessionType,
                 pinHash,
-                deviceLimit: Math.max(1, Math.min(50, deviceLimit)),
+                deviceLimit: Math.max(1, Math.min(20, deviceLimit)),
                 createdBy: dbUser.id,
             },
         });
 
-        await prisma.gateDeviceAccess.deleteMany({
-            where: { gateSessionId: gateSession.id },
+        // Revoke all devices for this session
+        await prisma.deviceAccess.deleteMany({
+            where: { sessionId: session.id },
         });
+
+        const sessionLabel = sessionType === "GATE" ? "Gate Scanner" : "POS Kasir";
 
         return successResponse({
             pin,
+            sessionType,
             eventSlug: event.slug,
-            deviceLimit: gateSession.deviceLimit,
-            message: "PIN berhasil dibuat. Berikan kode event dan PIN ke staff.",
+            deviceLimit: session.deviceLimit,
+            message: `PIN ${sessionLabel} berhasil dibuat. Berikan kode event dan PIN ke staff.`,
         });
     } catch (error) {
-        console.error("Create gate session error:", error);
-        return errorResponse("Failed to create gate session", 500);
+        console.error("Create device session error:", error);
+        return errorResponse("Failed to create device session", 500);
     }
 }
 
@@ -222,6 +251,14 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
         }
 
         const { id: eventId } = await context.params;
+        const { searchParams } = new URL(request.url);
+        const sessionTypeParam = searchParams.get("sessionType");
+        
+        if (!sessionTypeParam || !["GATE", "POS"].includes(sessionTypeParam)) {
+            return errorResponse("Invalid session type", 400);
+        }
+
+        const revokeSessionType: "GATE" | "POS" = sessionTypeParam as "GATE" | "POS";
 
         const dbUser = await prisma.user.findUnique({
             where: { email: user.email! },
@@ -233,7 +270,11 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
         const event = await prisma.event.findUnique({
             where: { id: eventId },
-            include: { gateSession: true },
+            include: {
+                deviceSessions: {
+                    where: { sessionType: revokeSessionType },
+                },
+            },
         });
 
         if (!event) {
@@ -244,20 +285,24 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
             return errorResponse("Forbidden", 403);
         }
 
-        if (event.gateSession) {
-            await prisma.gateDeviceAccess.deleteMany({
-                where: { gateSessionId: event.gateSession.id },
+        const session = event.deviceSessions[0];
+
+        if (session) {
+            await prisma.deviceAccess.deleteMany({
+                where: { sessionId: session.id },
             });
 
-            await prisma.eventGateSession.update({
-                where: { id: event.gateSession.id },
+            await prisma.eventDeviceSession.update({
+                where: { id: session.id },
                 data: { isActive: false },
             });
         }
 
-        return successResponse({ message: "Semua akses gate telah di-revoke" });
+        const sessionLabel = revokeSessionType === "GATE" ? "Gate Scanner" : "POS Kasir";
+
+        return successResponse({ message: `Akses ${sessionLabel} telah di-revoke` });
     } catch (error) {
-        console.error("Revoke gate session error:", error);
-        return errorResponse("Failed to revoke gate session", 500);
+        console.error("Revoke device session error:", error);
+        return errorResponse("Failed to revoke device session", 500);
     }
 }

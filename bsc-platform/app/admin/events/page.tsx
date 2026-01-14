@@ -15,6 +15,7 @@ import {
     Filter,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface EventSchedule {
     scheduleDate: string;
@@ -72,6 +73,7 @@ export default function AdminEventsPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
     const [rejectionReason, setRejectionReason] = useState("");
+    const { showToast } = useToast();
 
     const fetchEvents = useCallback(async () => {
         try {
@@ -118,7 +120,7 @@ export default function AdminEventsPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to approve event");
+                showToast(data.error?.message || "Failed to approve event", "error");
                 return;
             }
 
@@ -127,8 +129,9 @@ export default function AdminEventsPage() {
                     e.id === eventId ? { ...e, status: "PUBLISHED" } : e
                 )
             );
+            showToast("Event approved successfully", "success");
         } catch {
-            alert("Failed to approve event");
+            showToast("Failed to approve event", "error");
         } finally {
             setActionLoading(null);
         }
@@ -151,7 +154,7 @@ export default function AdminEventsPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to reject event");
+                showToast(data.error?.message || "Failed to reject event", "error");
                 return;
             }
 
@@ -162,8 +165,9 @@ export default function AdminEventsPage() {
             );
             setShowRejectModal(null);
             setRejectionReason("");
+            showToast("Event rejected successfully", "success");
         } catch {
-            alert("Failed to reject event");
+            showToast("Failed to reject event", "error");
         } finally {
             setActionLoading(null);
         }
@@ -210,7 +214,7 @@ export default function AdminEventsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Event Moderation" 
                 subtitle={pendingCount > 0 ? `${pendingCount} event menunggu review` : undefined}
@@ -417,6 +421,6 @@ export default function AdminEventsPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

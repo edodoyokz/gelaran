@@ -1,4 +1,4 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
@@ -15,18 +15,93 @@ export async function GET(
             return errorResponse("Unauthorized", 401);
         }
 
+        const dbUser = await prisma.user.findUnique({
+            where: { email: user.email! },
+            select: { id: true },
+        });
+
+        if (!dbUser) {
+            return errorResponse("User not found", 404);
+        }
+
         const { id: eventId } = await params;
         const { searchParams } = new URL(request.url);
+        const exportCsv = searchParams.get("export") === "true";
+
+        if (exportCsv) {
+            const attendees = await prisma.bookedTicket.findMany({
+                where: {
+                    booking: {
+                        eventId,
+                        status: { in: ["CONFIRMED", "PAID"] },
+                    },
+                },
+                include: {
+                    booking: {
+                        select: {
+                            bookingCode: true,
+                            guestName: true,
+                            guestEmail: true,
+                            guestPhone: true,
+                            user: {
+                                select: {
+                                    name: true,
+                                    email: true,
+                                    phone: true,
+                                },
+                            },
+                        },
+                    },
+                    ticketType: {
+                        select: { name: true },
+                    },
+                },
+                orderBy: { createdAt: "desc" },
+            });
+
+            const csvHeader = [
+                "Kode Tiket",
+                "Kode Booking",
+                "Nama",
+                "Email",
+                "No. WhatsApp",
+                "Tipe Tiket",
+                "Status Check-in",
+                "Waktu Check-in",
+            ].join(",");
+
+            const csvRows = attendees.map((t) => [
+                t.uniqueCode,
+                t.booking.bookingCode,
+                t.booking.guestName || t.booking.user?.name || "",
+                t.booking.guestEmail || t.booking.user?.email || "",
+                t.booking.guestPhone || t.booking.user?.phone || "",
+                t.ticketType.name,
+                t.isCheckedIn ? "Sudah" : "Belum",
+                t.checkedInAt ? t.checkedInAt.toISOString() : "-",
+            ].map((v) => `"${(v || "").replace(/"/g, '""')}"`).join(","));
+
+            const csvContent = [csvHeader, ...csvRows].join("\n");
+
+            return new NextResponse(csvContent, {
+                headers: {
+                    "Content-Type": "text/csv; charset=utf-8",
+                    "Content-Disposition": `attachment; filename="attendees-${eventId}.csv"`,
+                },
+            });
+        }
+
         const page = parseInt(searchParams.get("page") || "1", 10);
         const limit = parseInt(searchParams.get("limit") || "20", 10);
         const search = searchParams.get("search") || "";
         const status = searchParams.get("status") || "";
         const checkedIn = searchParams.get("checkedIn");
 
+
         const event = await prisma.event.findFirst({
             where: {
                 id: eventId,
-                organizerId: user.id,
+                organizerId: dbUser.id,
                 deletedAt: null,
             },
             select: { id: true, title: true },
@@ -124,7 +199,7 @@ export async function GET(
                 totalPages: Math.ceil(total / limit),
             },
             stats: {
-                total,
+                totalAttendees: total,
                 checkedIn: totalCheckedIn,
                 pending: total - totalCheckedIn,
                 checkInRate: total > 0 ? Math.round((totalCheckedIn / total) * 100) : 0,

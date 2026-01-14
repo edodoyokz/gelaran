@@ -49,6 +49,7 @@ export function EventCard({
                 />
                 
                 <button
+                    type="button"
                     className="hidden md:flex absolute top-3 right-3 bg-white/80 backdrop-blur-md p-2.5 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all active:scale-95 z-10"
                     onClick={(e) => {
                         e.preventDefault();

@@ -18,6 +18,7 @@ import {
     Palette,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface Category {
     id: string;
@@ -57,6 +58,7 @@ const initialFormData: CategoryFormData = {
 
 export default function AdminCategoriesPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -208,14 +210,15 @@ export default function AdminCategoriesPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to delete category");
+                showToast(data.error?.message || "Failed to delete category", "error");
                 return;
             }
 
+            showToast("Category deleted", "success");
             setCategories((prev) => prev.filter((c) => c.id !== showDeleteModal));
             setShowDeleteModal(null);
         } catch {
-            alert("Failed to delete category");
+            showToast("Failed to delete category", "error");
         } finally {
             setActionLoading(null);
         }
@@ -234,7 +237,7 @@ export default function AdminCategoriesPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to update category");
+                showToast(data.error?.message || "Failed to update category", "error");
                 return;
             }
 
@@ -243,8 +246,9 @@ export default function AdminCategoriesPage() {
                     c.id === category.id ? { ...c, isActive: !c.isActive } : c
                 )
             );
+            showToast("Category updated", "success");
         } catch {
-            alert("Failed to update category");
+            showToast("Failed to update category", "error");
         } finally {
             setActionLoading(null);
         }
@@ -308,7 +312,7 @@ export default function AdminCategoriesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Category Management" 
                 subtitle={`${categories.length} categories • ${totalEvents} total events`}
@@ -751,6 +755,6 @@ export default function AdminCategoriesPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

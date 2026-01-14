@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
             return errorResponse("Booking ID is required", 400);
         }
 
-        // Get booking
         const booking = await prisma.booking.findUnique({
             where: { id: bookingId },
             include: {
@@ -43,6 +42,28 @@ export async function POST(request: NextRequest) {
             return errorResponse("Booking not found", 404);
         }
 
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (booking.userId) {
+            if (user) {
+                const dbUser = await prisma.user.findUnique({
+                    where: { email: user.email! },
+                    select: { id: true },
+                });
+                
+                if (!dbUser || booking.userId !== dbUser.id) {
+                    return errorResponse("Unauthorized - you don't own this booking", 403);
+                }
+            } else {
+                return errorResponse("Unauthorized", 403);
+            }
+        } else if (booking.guestEmail) {
+            if (user && user.email !== booking.guestEmail) {
+                return errorResponse("Unauthorized - booking email mismatch", 403);
+            }
+        }
+
         if (booking.paymentStatus === "PAID") {
             return errorResponse("Booking already paid", 400);
         }
@@ -51,22 +72,12 @@ export async function POST(request: NextRequest) {
             return errorResponse("Booking has expired", 400);
         }
 
-        // Get user from Supabase auth if not from booking
-        let customerDetails = {
+        const customerDetails = {
             first_name: booking.guestName || booking.user?.name || "Guest",
-            email: booking.guestEmail || booking.user?.email || "",
+            email: booking.guestEmail || booking.user?.email || user?.email || "",
             phone: booking.guestPhone || booking.user?.phone || "",
         };
 
-        if (!customerDetails.email) {
-            const supabase = await createClient();
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user?.email) {
-                customerDetails.email = user.email;
-            }
-        }
-
-        // Build item details
         const itemDetails = booking.bookedTickets.map((ticket) => ({
             id: ticket.ticketTypeId,
             name: ticket.ticketType.name,
@@ -74,7 +85,6 @@ export async function POST(request: NextRequest) {
             quantity: 1,
         }));
 
-        // Add platform fee as separate item
         if (Number(booking.platformFee) > 0) {
             itemDetails.push({
                 id: "platform-fee",
@@ -84,7 +94,6 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // Add tax as separate item
         if (Number(booking.taxAmount) > 0) {
             itemDetails.push({
                 id: "tax",
@@ -94,10 +103,8 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        // Generate order ID
         const orderId = generateOrderId(booking.bookingCode);
 
-        // Create Snap transaction
         const parameter = {
             transaction_details: {
                 order_id: orderId,
@@ -118,7 +125,6 @@ export async function POST(request: NextRequest) {
 
         const snapTransaction = await snap.createTransaction(parameter);
 
-        // Create transaction record
         await prisma.transaction.create({
             data: {
                 bookingId: booking.id,
@@ -131,7 +137,6 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        // Update booking with payment link
         await prisma.booking.update({
             where: { id: booking.id },
             data: {

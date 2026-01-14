@@ -10,6 +10,9 @@ import {
     KeyRound,
     Smartphone,
     Ticket,
+    Settings,
+    ExternalLink,
+    HelpCircle,
 } from "lucide-react";
 
 function generateDeviceFingerprint(): string {
@@ -136,9 +139,9 @@ export default function GateAccessPage() {
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 mb-4 shadow-lg shadow-indigo-500/30">
                         <ShieldCheck className="h-10 w-10 text-white" />
                     </div>
-                    <h1 className="text-2xl font-bold text-white">Gate Access</h1>
+                    <h1 className="text-2xl font-bold text-white">Gate Scanner</h1>
                     <p className="text-gray-400 mt-2">
-                        Masukkan kode event dan PIN untuk mengakses gate scanner
+                        Masukkan kode event dan PIN untuk check-in tiket
                     </p>
                 </div>
 
@@ -202,7 +205,7 @@ export default function GateAccessPage() {
 
                         <div className="flex items-center gap-2 px-4 py-3 bg-gray-700/50 rounded-lg text-sm text-gray-400">
                             <Smartphone className="h-4 w-4 flex-shrink-0" />
-                            <span>Device akan terdaftar otomatis saat login</span>
+                            <span>Device akan terdaftar sebagai Gate Scanner</span>
                         </div>
 
                         {error && (
@@ -230,10 +233,34 @@ export default function GateAccessPage() {
                             )}
                         </button>
                     </form>
+
+                    <div className="mt-6 pt-6 border-t border-gray-700">
+                        <div className="bg-gray-700/50 rounded-xl p-4">
+                            <div className="flex items-start gap-3">
+                                <HelpCircle className="h-5 w-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-white">Butuh PIN atau Kode Event?</p>
+                                    <p className="text-xs text-gray-400 mt-1">
+                                        Hubungi organizer untuk mendapatkan kredensial akses Gate Scanner dan POS Kasir.
+                                    </p>
+                                    <a
+                                        href="/organizer/gate"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 mt-3 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+                                    >
+                                        <Settings className="h-4 w-4" />
+                                        Pengaturan Gate & POS
+                                        <ExternalLink className="h-3 w-3" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <p className="text-center text-gray-500 text-sm mt-6">
-                    BSC Event Platform - Gate System
+                    BSC Event Platform - Gate Scanner
                 </p>
             </div>
         </div>

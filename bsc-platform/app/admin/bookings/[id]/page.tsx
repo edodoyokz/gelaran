@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface BookedTicket {
     id: string;
@@ -120,6 +121,7 @@ const TICKET_STATUS_COLORS: Record<string, string> = {
 
 export default function AdminBookingDetailPage() {
     const router = useRouter();
+    const { showToast } = useToast();
     const params = useParams();
     const bookingId = params.id as string;
 
@@ -171,7 +173,7 @@ export default function AdminBookingDetailPage() {
 
     const handleCancel = async () => {
         if (!cancelReason.trim()) {
-            alert("Please provide a cancellation reason");
+            showToast("Please provide a cancellation reason", "error");
             return;
         }
 
@@ -189,15 +191,16 @@ export default function AdminBookingDetailPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to cancel booking");
+                showToast(data.error?.message || "Failed to cancel booking", "error");
                 return;
             }
 
+            showToast("Booking cancelled", "success");
             setShowCancelModal(false);
             setCancelReason("");
             fetchBooking();
         } catch {
-            alert("Failed to cancel booking");
+            showToast("Failed to cancel booking", "error");
         } finally {
             setIsCancelling(false);
         }
@@ -234,7 +237,7 @@ export default function AdminBookingDetailPage() {
     const customerPhone = booking.user?.phone || booking.guestPhone;
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader
                 title={`Booking ${booking.bookingCode}`}
                 subtitle={booking.event.title}
@@ -547,6 +550,6 @@ export default function AdminBookingDetailPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

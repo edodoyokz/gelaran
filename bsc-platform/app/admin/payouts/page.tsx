@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface BankAccount {
     bankName: string;
@@ -64,6 +65,7 @@ export default function AdminPayoutsPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
     const [rejectionReason, setRejectionReason] = useState("");
+    const { showToast } = useToast();
 
     const fetchPayouts = useCallback(async () => {
         try {
@@ -110,7 +112,7 @@ export default function AdminPayoutsPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to approve payout");
+                showToast(data.error?.message || "Failed to approve payout", "error");
                 return;
             }
 
@@ -119,8 +121,9 @@ export default function AdminPayoutsPage() {
                     p.id === payoutId ? { ...p, status: "PROCESSING" } : p
                 )
             );
+            showToast("Payout approved successfully", "success");
         } catch {
-            alert("Failed to approve payout");
+            showToast("Failed to approve payout", "error");
         } finally {
             setActionLoading(null);
         }
@@ -138,7 +141,7 @@ export default function AdminPayoutsPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to complete payout");
+                showToast(data.error?.message || "Failed to complete payout", "error");
                 return;
             }
 
@@ -147,8 +150,9 @@ export default function AdminPayoutsPage() {
                     p.id === payoutId ? { ...p, status: "COMPLETED" } : p
                 )
             );
+            showToast("Payout completed successfully", "success");
         } catch {
-            alert("Failed to complete payout");
+            showToast("Failed to complete payout", "error");
         } finally {
             setActionLoading(null);
         }
@@ -171,7 +175,7 @@ export default function AdminPayoutsPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Failed to reject payout");
+                showToast(data.error?.message || "Failed to reject payout", "error");
                 return;
             }
 
@@ -182,8 +186,9 @@ export default function AdminPayoutsPage() {
             );
             setShowRejectModal(null);
             setRejectionReason("");
+            showToast("Payout rejected successfully", "success");
         } catch {
-            alert("Failed to reject payout");
+            showToast("Failed to reject payout", "error");
         } finally {
             setActionLoading(null);
         }
@@ -231,7 +236,7 @@ export default function AdminPayoutsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <>
             <AdminHeader 
                 title="Payout Processing" 
                 backHref="/admin"
@@ -462,6 +467,6 @@ export default function AdminPayoutsPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

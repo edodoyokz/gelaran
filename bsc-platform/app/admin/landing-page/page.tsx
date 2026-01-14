@@ -236,7 +236,7 @@ export default function AdminLandingPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <>
             <AdminHeader 
                 title="Landing Page" 
                 subtitle="Manage your website's public content"
@@ -671,6 +671,6 @@ export default function AdminLandingPage() {
                     </div>
                 </div>
             </main>
-        </div>
+        </>
     );
 }

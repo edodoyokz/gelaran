@@ -24,7 +24,6 @@ export async function POST(request: NextRequest) {
             return errorResponse("Nama staff harus 2-100 karakter", 400);
         }
 
-        // First, find the event by slug
         const event = await prisma.event.findUnique({
             where: { slug: eventSlug.toLowerCase().trim() },
             select: {
@@ -42,10 +41,11 @@ export async function POST(request: NextRequest) {
 
         const pinHash = hashPin(pin.replace(/[^0-9]/g, ""));
 
-        // Find gate session for THIS specific event with matching PIN
-        const gateSession = await prisma.eventGateSession.findFirst({
+        // Find GATE session for this event with matching PIN
+        const session = await prisma.eventDeviceSession.findFirst({
             where: {
                 eventId: event.id,
+                sessionType: "GATE",
                 pinHash,
                 isActive: true,
             },
@@ -56,20 +56,20 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        if (!gateSession) {
-            return errorResponse("PIN tidak valid untuk event ini", 401);
+        if (!session) {
+            return errorResponse("PIN tidak valid atau sesi Gate Scanner tidak aktif", 401);
         }
 
-        if (gateSession.expiresAt && new Date() > gateSession.expiresAt) {
+        if (session.expiresAt && new Date() > session.expiresAt) {
             return errorResponse("PIN sudah kadaluarsa", 401);
         }
 
-        const existingDevice = gateSession.devices.find(
+        const existingDevice = session.devices.find(
             (d) => d.deviceFingerprint === deviceFingerprint
         );
 
         if (existingDevice) {
-            await prisma.gateDeviceAccess.update({
+            await prisma.deviceAccess.update({
                 where: { id: existingDevice.id },
                 data: {
                     staffName,
@@ -83,22 +83,22 @@ export async function POST(request: NextRequest) {
                 deviceToken: existingDevice.deviceToken,
                 event,
                 staffName,
-                message: "Akses berhasil diperbarui",
+                message: "Akses Gate Scanner berhasil diperbarui",
             });
         }
 
-        if (gateSession.devices.length >= gateSession.deviceLimit) {
+        if (session.devices.length >= session.deviceLimit) {
             return errorResponse(
-                `Batas device tercapai (${gateSession.deviceLimit}). Hubungi organizer untuk menambah batas atau revoke device lain.`,
+                `Batas device Gate Scanner tercapai (${session.deviceLimit}). Hubungi organizer untuk menambah batas atau revoke device lain.`,
                 403
             );
         }
 
         const deviceToken = generateDeviceToken();
 
-        await prisma.gateDeviceAccess.create({
+        await prisma.deviceAccess.create({
             data: {
-                gateSessionId: gateSession.id,
+                sessionId: session.id,
                 deviceToken,
                 deviceFingerprint,
                 staffName,
@@ -111,10 +111,10 @@ export async function POST(request: NextRequest) {
             deviceToken,
             event,
             staffName,
-            message: "Akses gate berhasil",
+            message: "Akses Gate Scanner berhasil",
         });
     } catch (error) {
         console.error("Gate access error:", error);
-        return errorResponse("Gagal mengakses gate", 500);
+        return errorResponse("Gagal mengakses Gate Scanner", 500);
     }
 }
