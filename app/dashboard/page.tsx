@@ -256,7 +256,7 @@ export default function CustomerDashboardPage() {
                     <p className="text-[var(--text-muted)] text-sm mb-6">Terjadi kesalahan saat memuat data</p>
                     <Link
                         href="/"
-                        className="btn-primary"
+                        className="btn btn-primary"
                     >
                         Kembali ke Beranda
                     </Link>
@@ -341,11 +341,11 @@ export default function CustomerDashboardPage() {
                 </div>
                 <Link
                     href="/events"
-                    className="btn-primary self-start sm:self-auto shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
+                    className="btn btn-primary w-full sm:w-auto justify-center rounded-full py-3 sm:py-2.5 text-base sm:text-sm shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
                 >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    <Sparkles className="w-4 h-4 relative z-10" />
-                    <span className="relative z-10">Jelajahi Event</span>
+                    <Sparkles className="w-5 h-5 sm:w-4 sm:h-4 relative z-10" />
+                    <span className="relative z-10 font-semibold">Jelajahi Event</span>
                 </Link>
             </section>
 
@@ -566,7 +566,7 @@ export default function CustomerDashboardPage() {
                     </p>
                     <Link
                         href="/events"
-                        className="btn-primary inline-flex"
+                        className="btn btn-primary inline-flex rounded-full py-3 px-6 shadow-lg shadow-indigo-500/20"
                     >
                         <Sparkles className="h-5 w-5" />
                         Jelajahi Event
