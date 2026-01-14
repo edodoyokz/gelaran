@@ -1,5 +1,42 @@
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface TicketTypeWithTiers {
+    id: string;
+    name: string;
+    description: string | null;
+    basePrice: Decimal;
+    currency: string;
+    totalQuantity: number;
+    soldQuantity: number;
+    reservedQuantity: number;
+    minPerOrder: number;
+    maxPerOrder: number;
+    isFree: boolean;
+    requiresAttendeeInfo: boolean;
+    saleStartAt: Date | null;
+    saleEndAt: Date | null;
+    priceTiers: Array<{
+        id: string;
+        name: string;
+        price: Decimal;
+        quantityLimit: number | null;
+        soldQuantity: number;
+        startAt: Date;
+        endAt: Date;
+    }>;
+}
+
+interface PriceTier {
+    id: string;
+    name: string;
+    price: Decimal;
+    quantityLimit: number | null;
+    soldQuantity: number;
+    startAt: Date;
+    endAt: Date;
+}
 
 export async function GET(
     _request: Request,
@@ -65,7 +102,7 @@ export async function GET(
         });
 
         // Transform ticket types with availability
-        const ticketTypes = event.ticketTypes.map((ticket) => ({
+        const ticketTypes = event.ticketTypes.map((ticket: TicketTypeWithTiers) => ({
             id: ticket.id,
             name: ticket.name,
             description: ticket.description,
@@ -80,7 +117,7 @@ export async function GET(
             requiresAttendeeInfo: ticket.requiresAttendeeInfo,
             saleStartAt: ticket.saleStartAt,
             saleEndAt: ticket.saleEndAt,
-            priceTiers: ticket.priceTiers.map((tier) => ({
+            priceTiers: ticket.priceTiers.map((tier: PriceTier) => ({
                 id: tier.id,
                 name: tier.name,
                 price: Number(tier.price),

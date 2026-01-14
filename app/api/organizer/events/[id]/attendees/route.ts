@@ -3,6 +3,52 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 
+interface AttendeeTicket {
+    id: string;
+    uniqueCode: string;
+    isCheckedIn: boolean;
+    checkedInAt: Date | null;
+    status: string;
+    createdAt: Date;
+    booking: {
+        id: string;
+        bookingCode: string;
+        guestName: string | null;
+        guestEmail: string | null;
+        guestPhone: string | null;
+        user: {
+            id: string;
+            name: string;
+            email: string;
+            phone: string | null;
+        } | null;
+    };
+    ticketType: {
+        id: string;
+        name: string;
+    };
+}
+
+interface CsvAttendee {
+    uniqueCode: string;
+    booking: {
+        bookingCode: string;
+        guestName: string | null;
+        guestEmail: string | null;
+        guestPhone: string | null;
+        user: {
+            name: string;
+            email: string;
+            phone: string | null;
+        } | null;
+    };
+    ticketType: {
+        name: string;
+    };
+    isCheckedIn: boolean;
+    checkedInAt: Date | null;
+}
+
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -70,7 +116,7 @@ export async function GET(
                 "Waktu Check-in",
             ].join(",");
 
-            const csvRows = attendees.map((t) => [
+            const csvRows = attendees.map((t: CsvAttendee) => [
                 t.uniqueCode,
                 t.booking.bookingCode,
                 t.booking.guestName || t.booking.user?.name || "",
@@ -169,7 +215,7 @@ export async function GET(
             prisma.bookedTicket.count({ where: whereClause }),
         ]);
 
-        const formattedAttendees = attendees.map((ticket) => ({
+        const formattedAttendees = attendees.map((ticket: AttendeeTicket) => ({
             id: ticket.id,
             ticketCode: ticket.uniqueCode,
             ticketType: ticket.ticketType.name,

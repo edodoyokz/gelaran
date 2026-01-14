@@ -1,6 +1,31 @@
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface RecommendedEvent {
+    id: string;
+    title: string;
+    slug: string;
+    posterImage: string | null;
+    category: { name: string } | null;
+    venue: { name: string; city: string } | null;
+    schedules: Array<{ scheduleDate: Date; startTime: Date }>;
+    ticketTypes: Array<{ basePrice: Decimal; isFree: boolean }>;
+}
+
+interface RecentBooking {
+    id: string;
+    bookingCode: string;
+    status: string;
+    totalAmount: Decimal;
+    createdAt: Date;
+    event: {
+        title: string;
+        slug: string;
+        posterImage: string | null;
+    };
+}
 
 export async function GET() {
     try {
@@ -156,7 +181,7 @@ export async function GET() {
             },
         });
 
-        const formattedRecommended = recommendedEvents.map((e) => ({
+        const formattedRecommended = recommendedEvents.map((e: RecommendedEvent) => ({
             id: e.id,
             title: e.title,
             slug: e.slug,
@@ -180,7 +205,7 @@ export async function GET() {
                 wishlistCount,
             },
             upcomingBookings: upcomingBookingsData,
-            recentBookings: recentBookings.map((b) => ({
+            recentBookings: recentBookings.map((b: RecentBooking) => ({
                 ...b,
                 totalAmount: Number(b.totalAmount).toString(),
             })),

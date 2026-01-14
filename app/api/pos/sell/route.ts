@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
 
         const orderId = generateOrderId(bookingCode);
 
-        const itemDetails = ticketDetails.map((detail) => ({
+        const itemDetails = ticketDetails.map((detail: { ticketTypeId: string; quantity: number; unitPrice: number; name: string }) => ({
             id: detail.ticketTypeId,
             name: detail.name,
             price: detail.unitPrice,

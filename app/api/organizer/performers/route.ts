@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 
+interface PerformerRecord {
+  id: string;
+  name: string;
+  slug: string;
+  title: string | null;
+  bio: string | null;
+  photoUrl: string | null;
+  websiteUrl: string | null;
+  socialInstagram: string | null;
+  socialTwitter: string | null;
+  createdAt: Date;
+}
+
 function generateSlug(name: string): string {
   const baseSlug = name
     .toLowerCase()
@@ -46,7 +59,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: performers.map((p) => ({
+      data: performers.map((p: PerformerRecord) => ({
         id: p.id,
         name: p.name,
         slug: p.slug,

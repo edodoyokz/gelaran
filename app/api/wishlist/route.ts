@@ -3,6 +3,23 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface WishlistWithEvent {
+    id: string;
+    createdAt: Date;
+    event: {
+        id: string;
+        title: string;
+        slug: string;
+        posterImage: string | null;
+        status: string;
+        category: { name: string } | null;
+        venue: { name: string; city: string } | null;
+        schedules: Array<{ scheduleDate: Date; startTime: Date }>;
+        ticketTypes: Array<{ basePrice: Decimal; isFree: boolean }>;
+    };
+}
 
 const addWishlistSchema = z.object({
     eventId: z.string().uuid(),
@@ -60,7 +77,7 @@ export async function GET() {
             },
         });
 
-        const result = wishlists.map((w) => ({
+        const result = wishlists.map((w: WishlistWithEvent) => ({
             id: w.id,
             createdAt: w.createdAt,
             event: {

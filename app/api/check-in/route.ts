@@ -3,6 +3,21 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 
+interface CheckInLogWithTicket {
+    bookedTicket: {
+        ticketType: {
+            name: string;
+        };
+        booking: {
+            guestName: string | null;
+            user: {
+                name: string;
+            } | null;
+        };
+    };
+    scannedAt: Date;
+}
+
 // POST /api/check-in - Check in a ticket
 export async function POST(request: NextRequest) {
     try {
@@ -209,7 +224,7 @@ export async function GET(request: NextRequest) {
             checkedIn,
             remaining: totalTickets - checkedIn,
             percentage: totalTickets > 0 ? Math.round((checkedIn / totalTickets) * 100) : 0,
-            recentCheckIns: recentCheckIns.map((log) => ({
+            recentCheckIns: recentCheckIns.map((log: CheckInLogWithTicket) => ({
                 ticketType: log.bookedTicket.ticketType.name,
                 attendeeName: log.bookedTicket.booking.user?.name || log.bookedTicket.booking.guestName,
                 checkedInAt: log.scannedAt,

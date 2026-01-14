@@ -1,5 +1,61 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface SeatRecord {
+  id: string;
+  seatLabel: string;
+  seatNumber: number;
+  status: string;
+  isAccessible: boolean;
+  priceOverride: Decimal | null;
+  ticketTypeId: string | null;
+  lockedUntil: Date | null;
+}
+
+interface RowRecord {
+  id: string;
+  rowLabel: string;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: Date;
+  seats: SeatRecord[];
+}
+
+interface SectionRecord {
+  id: string;
+  name: string;
+  colorHex: string | null;
+  sortOrder: number;
+  capacity: number | null;
+  isActive: boolean;
+  createdAt: Date;
+  rows: RowRecord[];
+}
+
+interface SeatWithRow {
+  id: string;
+  seatLabel: string;
+  status: string;
+  lockedUntil: Date | null;
+  row: {
+    section: {
+      eventId: string;
+    };
+  };
+}
+
+interface LockedSeat {
+  id: string;
+  seatLabel: string;
+  ticketTypeId: string | null;
+  priceOverride: Decimal | null;
+  ticketType: {
+    id: string;
+    name: string;
+    basePrice: Decimal;
+  } | null;
+}
 
 export async function GET(
   request: NextRequest,
@@ -69,11 +125,11 @@ export async function GET(
     });
 
     const now = new Date();
-    const sectionsWithAvailability = sections.map((section) => ({
+    const sectionsWithAvailability = sections.map((section: SectionRecord) => ({
       ...section,
-      rows: section.rows.map((row) => ({
+      rows: section.rows.map((row: RowRecord) => ({
         ...row,
-        seats: row.seats.map((seat) => {
+        seats: row.seats.map((seat: SeatRecord) => {
           let effectiveStatus = seat.status;
           if (seat.status === "LOCKED" && seat.lockedUntil && seat.lockedUntil < now) {
             effectiveStatus = "AVAILABLE";
@@ -170,7 +226,7 @@ export async function POST(
       }
     }
 
-    const unavailableSeats = seats.filter((seat) => {
+    const unavailableSeats = seats.filter((seat: SeatWithRow) => {
       if (seat.status === "BOOKED" || seat.status === "BLOCKED") return true;
       if (seat.status === "LOCKED" && seat.lockedUntil && seat.lockedUntil > now) {
         return true;
@@ -184,7 +240,7 @@ export async function POST(
           success: false,
           error: {
             message: "One or more seats are not available",
-            unavailableSeats: unavailableSeats.map((s) => s.seatLabel),
+            unavailableSeats: unavailableSeats.map((s: SeatWithRow) => s.seatLabel),
           },
         },
         { status: 400 }
@@ -208,7 +264,7 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: {
-        lockedSeats: lockedSeats.map((seat) => ({
+        lockedSeats: lockedSeats.map((seat: LockedSeat) => ({
           id: seat.id,
           seatLabel: seat.seatLabel,
           ticketTypeId: seat.ticketTypeId,

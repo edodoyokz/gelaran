@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 
+interface ReviewWithUser {
+  id: string;
+  rating: number;
+  reviewText: string | null;
+  isVerified: boolean;
+  createdAt: Date;
+  user: {
+    name: string;
+    avatarUrl: string | null;
+  };
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -60,7 +72,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: {
-        reviews: reviews.map((review) => ({
+        reviews: reviews.map((review: ReviewWithUser) => ({
           id: review.id,
           rating: review.rating,
           reviewText: review.reviewText,

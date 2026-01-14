@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 
+interface MediaRecord {
+  id: string;
+  mediaType: string;
+  fileUrl: string;
+  thumbnailUrl: string | null;
+  title: string | null;
+  altText: string | null;
+  sortOrder: number;
+  createdAt: Date;
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -40,7 +51,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: media.map((m) => ({
+      data: media.map((m: MediaRecord) => ({
         id: m.id,
         mediaType: m.mediaType,
         fileUrl: m.fileUrl,

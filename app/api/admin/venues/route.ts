@@ -3,6 +3,29 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import type { Prisma } from "@/types/prisma";
+import type { Decimal, JsonValue } from "@prisma/client/runtime/library";
+
+interface VenueRecord {
+    id: string;
+    name: string;
+    slug: string;
+    address: string;
+    city: string;
+    province: string;
+    postalCode: string | null;
+    country: string;
+    latitude: Decimal | null;
+    longitude: Decimal | null;
+    googlePlaceId: string | null;
+    capacity: number | null;
+    description: string | null;
+    amenities: JsonValue;
+    imageUrl: string | null;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: { events: number };
+}
 
 type AdminResult = { admin: { id: string } } | { error: string; status: number };
 
@@ -73,7 +96,7 @@ export async function GET(request: Request) {
             }),
         ]);
 
-        const formattedVenues = venues.map((v) => ({
+        const formattedVenues = venues.map((v: VenueRecord) => ({
             ...v,
             latitude: v.latitude?.toString() || null,
             longitude: v.longitude?.toString() || null,
@@ -81,7 +104,7 @@ export async function GET(request: Request) {
 
         return successResponse({
             venues: formattedVenues,
-            cities: cities.map((c) => c.city),
+            cities: cities.map((c: { city: string }) => c.city),
             pagination: {
                 page,
                 limit,

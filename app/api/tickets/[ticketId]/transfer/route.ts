@@ -3,6 +3,16 @@ import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 
+interface TicketTransferRecord {
+  id: string;
+  recipientEmail: string;
+  recipientName: string | null;
+  status: string;
+  initiatedAt: Date;
+  acceptedAt: Date | null;
+  expiresAt: Date;
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 function generateNewTicketCode(): string {
@@ -284,7 +294,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: transfers.map((t) => ({
+      data: transfers.map((t: TicketTransferRecord) => ({
         id: t.id,
         recipientEmail: t.recipientEmail,
         recipientName: t.recipientName,

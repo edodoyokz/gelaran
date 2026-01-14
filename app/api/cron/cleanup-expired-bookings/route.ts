@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 
+interface ExpiredBooking {
+  id: string;
+  bookingCode: string;
+}
+
+interface TicketToRelease {
+  ticketTypeId: string;
+  seatId: string | null;
+}
+
 const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(request: NextRequest) {
@@ -28,7 +38,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const bookingIds = expiredBookings.map((b) => b.id);
+    const bookingIds = expiredBookings.map((b: ExpiredBooking) => b.id);
 
     const ticketsToRelease = await prisma.bookedTicket.findMany({
       where: { bookingId: { in: bookingIds } },
@@ -91,14 +101,14 @@ export async function GET(request: NextRequest) {
 
     console.log(
       `[CRON] Cleaned up ${expiredBookings.length} expired bookings:`,
-      expiredBookings.map((b) => b.bookingCode)
+      expiredBookings.map((b: ExpiredBooking) => b.bookingCode)
     );
 
     return NextResponse.json({
       success: true,
       message: `Processed ${expiredBookings.length} expired bookings`,
       processed: expiredBookings.length,
-      bookingCodes: expiredBookings.map((b) => b.bookingCode),
+      bookingCodes: expiredBookings.map((b: ExpiredBooking) => b.bookingCode),
     });
   } catch (error) {
     console.error("[CRON] Cleanup expired bookings error:", error);

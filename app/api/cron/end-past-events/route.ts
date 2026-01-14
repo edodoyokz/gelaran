@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 
+interface PastEvent {
+  id: string;
+  title: string;
+  schedules: Array<{
+    scheduleDate: Date;
+    startTime: Date;
+    endTime: Date;
+  }>;
+}
+
 const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(request: NextRequest) {
@@ -51,7 +61,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const eventIds = eventsToEnd.map((e) => e.id);
+    const eventIds = eventsToEnd.map((e: PastEvent) => e.id);
 
     await prisma.event.updateMany({
       where: { id: { in: eventIds } },
@@ -60,14 +70,14 @@ export async function GET(request: NextRequest) {
 
     console.log(
       `[CRON] Ended ${eventsToEnd.length} past events:`,
-      eventsToEnd.map((e) => e.title)
+      eventsToEnd.map((e: PastEvent) => e.title)
     );
 
     return NextResponse.json({
       success: true,
       message: `Ended ${eventsToEnd.length} past events`,
       processed: eventsToEnd.length,
-      events: eventsToEnd.map((e) => ({ id: e.id, title: e.title })),
+      events: eventsToEnd.map((e: PastEvent) => ({ id: e.id, title: e.title })),
     });
   } catch (error) {
     console.error("[CRON] End past events error:", error);

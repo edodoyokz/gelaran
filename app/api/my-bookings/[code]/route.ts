@@ -2,6 +2,33 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import type { BookingStatus } from "@/types/prisma";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface BookedTicketForDisplay {
+    id: string;
+    uniqueCode: string;
+    qrCodeUrl: string | null;
+    unitPrice: Decimal;
+    finalPrice: Decimal;
+    isCheckedIn: boolean;
+    checkedInAt: Date | null;
+    status: string;
+    ticketType: {
+        id: string;
+        name: string;
+        description: string | null;
+    };
+}
+
+interface RefundForDisplay {
+    id: string;
+    refundType: string;
+    refundAmount: Decimal;
+    reason: string | null;
+    status: string;
+    requestedAt: Date;
+    completedAt: Date | null;
+}
 
 const CANCELLABLE_STATUSES: BookingStatus[] = ["PENDING", "AWAITING_PAYMENT"];
 
@@ -151,7 +178,7 @@ export async function GET(
                 totalAmount: booking.totalAmount.toString(),
                 organizerRevenue: booking.organizerRevenue.toString(),
                 platformRevenue: booking.platformRevenue.toString(),
-                bookedTickets: booking.bookedTickets.map((ticket) => ({
+                bookedTickets: booking.bookedTickets.map((ticket: BookedTicketForDisplay) => ({
                     ...ticket,
                     unitPrice: ticket.unitPrice.toString(),
                     finalPrice: ticket.finalPrice.toString(),
@@ -162,7 +189,7 @@ export async function GET(
                           amount: booking.transaction.amount.toString(),
                       }
                     : null,
-                refunds: booking.refunds.map((refund) => ({
+                refunds: booking.refunds.map((refund: RefundForDisplay) => ({
                     ...refund,
                     refundAmount: refund.refundAmount.toString(),
                 })),

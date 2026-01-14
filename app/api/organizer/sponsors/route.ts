@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 
+interface SponsorRecord {
+  id: string;
+  name: string;
+  logoUrl: string | null;
+  websiteUrl: string | null;
+  description: string | null;
+  createdAt: Date;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -35,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: sponsors.map((s) => ({
+      data: sponsors.map((s: SponsorRecord) => ({
         id: s.id,
         name: s.name,
         logoUrl: s.logoUrl,

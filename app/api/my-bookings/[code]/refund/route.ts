@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface RefundRecord {
+  id: string;
+  refundType: string;
+  refundAmount: Decimal;
+  reason: string | null;
+  status: string;
+  adminNotes: string | null;
+  requestedAt: Date;
+  processedAt: Date | null;
+  completedAt: Date | null;
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -53,7 +66,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: {
-        refunds: booking.refunds.map((refund) => ({
+        refunds: booking.refunds.map((refund: RefundRecord) => ({
           id: refund.id,
           refundType: refund.refundType,
           refundAmount: refund.refundAmount.toString(),

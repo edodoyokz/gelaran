@@ -2,6 +2,17 @@ import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse, paginationMeta } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
+import type { JsonValue } from "@prisma/client/runtime/library";
+
+interface NotificationRecord {
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    isRead: boolean;
+    createdAt: Date;
+    data: JsonValue;
+}
 
 export async function GET(request: NextRequest) {
     try {
@@ -38,7 +49,7 @@ export async function GET(request: NextRequest) {
             }),
         ]);
 
-        const formattedNotifications = notifications.map((n) => ({
+        const formattedNotifications = notifications.map((n: NotificationRecord) => ({
             id: n.id,
             type: n.type,
             title: n.title,

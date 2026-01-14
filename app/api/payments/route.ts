@@ -3,6 +3,15 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { snap, generateOrderId } from "@/lib/midtrans/client";
 import { createClient } from "@/lib/supabase/server";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface BookedTicketWithType {
+    ticketTypeId: string;
+    unitPrice: Decimal;
+    ticketType: {
+        name: string;
+    };
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -78,7 +87,7 @@ export async function POST(request: NextRequest) {
             phone: booking.guestPhone || booking.user?.phone || "",
         };
 
-        const itemDetails = booking.bookedTickets.map((ticket) => ({
+        const itemDetails = booking.bookedTickets.map((ticket: BookedTicketWithType) => ({
             id: ticket.ticketTypeId,
             name: ticket.ticketType.name,
             price: Number(ticket.unitPrice),

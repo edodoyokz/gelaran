@@ -3,6 +3,23 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import crypto from "crypto";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface DeviceRecord {
+    id: string;
+    staffName: string;
+    lastActiveAt: Date;
+    userAgent: string | null;
+}
+
+interface TicketTypeRecord {
+    id: string;
+    name: string;
+    basePrice: Decimal;
+    totalQuantity: number;
+    soldQuantity: number;
+    isFree: boolean;
+}
 
 function generatePin(): string {
     return Math.floor(10000000 + Math.random() * 90000000).toString();
@@ -121,7 +138,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
                       sessionType: gateSession.sessionType,
                       deviceLimit: gateSession.deviceLimit,
                       isActive: gateSession.isActive,
-                      activeDevices: gateSession.devices.map((d) => ({
+                      activeDevices: gateSession.devices.map((d: DeviceRecord) => ({
                           id: d.id,
                           staffName: d.staffName,
                           lastActiveAt: d.lastActiveAt,
@@ -136,7 +153,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
                       sessionType: posSession.sessionType,
                       deviceLimit: posSession.deviceLimit,
                       isActive: posSession.isActive,
-                      activeDevices: posSession.devices.map((d) => ({
+                      activeDevices: posSession.devices.map((d: DeviceRecord) => ({
                           id: d.id,
                           staffName: d.staffName,
                           lastActiveAt: d.lastActiveAt,

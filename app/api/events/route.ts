@@ -2,6 +2,48 @@ import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse, paginationMeta } from "@/lib/api/response";
 import { eventQuerySchema } from "@/lib/validators";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface EventWithRelations {
+    id: string;
+    slug: string;
+    title: string;
+    shortDescription: string | null;
+    posterImage: string | null;
+    eventType: string;
+    isFeatured: boolean;
+    viewCount: number;
+    category: {
+        id: string;
+        name: string;
+        slug: string;
+        colorHex: string | null;
+    };
+    venue: {
+        id: string;
+        name: string;
+        city: string;
+        province: string;
+    } | null;
+    organizer: {
+        id: string;
+        name: string;
+        organizerProfile: {
+            organizationName: string;
+            organizationSlug: string;
+            organizationLogo: string | null;
+        } | null;
+    };
+    schedules: Array<{
+        scheduleDate: Date;
+        startTime: Date;
+        endTime: Date;
+    }>;
+    ticketTypes: Array<{
+        basePrice: Decimal;
+        isFree: boolean;
+    }>;
+}
 
 export async function GET(request: NextRequest) {
     try {
@@ -119,7 +161,7 @@ export async function GET(request: NextRequest) {
         });
 
         // Transform data
-        const transformedEvents = events.map((event) => ({
+        const transformedEvents = events.map((event: EventWithRelations) => ({
             id: event.id,
             slug: event.slug,
             title: event.title,
