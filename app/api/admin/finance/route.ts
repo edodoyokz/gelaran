@@ -1,6 +1,31 @@
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
+import type { Decimal } from "@prisma/client/runtime/library";
+import type { BookingStatus } from "@/types/prisma";
+
+interface BookingByStatus {
+    status: BookingStatus;
+    _count: { id: number };
+    _sum: { totalAmount: Decimal | null };
+}
+
+interface RecentTransaction {
+    id: string;
+    bookingCode: string;
+    totalAmount: Decimal;
+    platformRevenue: Decimal;
+    paidAt: Date | null;
+    event: { title: string };
+    user: { name: string | null } | null;
+}
+
+interface TopEvent {
+    id: string;
+    title: string;
+    posterImage: string | null;
+    _count: { bookings: number };
+}
 
 export async function GET() {
     try {
@@ -138,12 +163,12 @@ export async function GET() {
                     amount: Number(completedPayouts._sum.amount || 0),
                 },
             },
-            bookingsByStatus: bookingsByStatus.map((s) => ({
+            bookingsByStatus: bookingsByStatus.map((s: BookingByStatus) => ({
                 status: s.status,
                 count: s._count.id,
                 amount: Number(s._sum.totalAmount || 0),
             })),
-            recentTransactions: recentTransactions.map((t) => ({
+            recentTransactions: recentTransactions.map((t: RecentTransaction) => ({
                 id: t.id,
                 bookingCode: t.bookingCode,
                 amount: Number(t.totalAmount),
@@ -152,7 +177,7 @@ export async function GET() {
                 eventTitle: t.event.title,
                 customerName: t.user?.name || "Guest",
             })),
-            topEvents: topEvents.map((e) => ({
+            topEvents: topEvents.map((e: TopEvent) => ({
                 id: e.id,
                 title: e.title,
                 posterImage: e.posterImage,
