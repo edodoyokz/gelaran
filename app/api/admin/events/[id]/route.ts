@@ -42,7 +42,7 @@ async function notifyFollowers(event: PublishedEventData): Promise<void> {
     if (followers.length === 0) return;
 
     const users = await prisma.user.findMany({
-        where: { id: { in: followers.map((f) => f.userId) } },
+        where: { id: { in: followers.map((f: { userId: string }) => f.userId) } },
         select: { email: true, name: true },
     });
 
