@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import type { Decimal } from "@prisma/client/runtime/library";
 import {
     Users,
     Calendar,
@@ -23,7 +24,7 @@ interface RecentBooking {
     event: { title: string };
     user: { name: string | null; email: string | null } | null;
     guestName: string | null;
-    totalAmount: number;
+    totalAmount: Decimal;
     createdAt: Date;
 }
 
