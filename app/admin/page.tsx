@@ -152,7 +152,7 @@ export default async function AdminDashboard() {
                         </div>
                         <Link
                             href="/admin/payouts"
-                            className="px-4 py-2 bg-[var(--warning)] text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+                            className="px-5 py-2.5 bg-[var(--warning)] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
                         >
                             Review
                         </Link>

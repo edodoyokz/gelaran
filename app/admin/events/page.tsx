@@ -405,7 +405,7 @@ export default function AdminEventsPage() {
                                     setShowRejectModal(null);
                                     setRejectionReason("");
                                 }}
-                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+                                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50"
                             >
                                 Batal
                             </button>
@@ -413,7 +413,7 @@ export default function AdminEventsPage() {
                                 type="button"
                                 onClick={handleReject}
                                 disabled={actionLoading !== null || !rejectionReason.trim()}
-                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
+                                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 disabled:opacity-50"
                             >
                                 {actionLoading ? "Processing..." : "Tolak Event"}
                             </button>

@@ -177,7 +177,7 @@ export default function WishlistPage() {
                     <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
                         Simpan event yang kamu minati untuk ditemukan dengan mudah nanti.
                     </p>
-                    <Link href="/events" className="btn-primary inline-flex">
+                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
                         <Sparkles className="h-4 w-4" />
                         Jelajahi Event
                         <ExternalLink className="h-4 w-4" />
@@ -277,7 +277,7 @@ export default function WishlistPage() {
                                 <div className="mt-4 flex gap-2">
                                     <Link
                                         href={`/events/${item.event.slug}`}
-                                        className="btn-primary flex-1 py-2.5 text-sm"
+                                        className="btn-primary flex-1 py-3 text-sm rounded-xl shadow-md hover:shadow-lg transition-all text-center"
                                     >
                                         Lihat Event
                                     </Link>
@@ -285,7 +285,7 @@ export default function WishlistPage() {
                                         type="button"
                                         onClick={() => handleRemove(item.event.id)}
                                         disabled={removingId === item.event.id}
-                                        className="btn-secondary py-2.5 px-3"
+                                        className="btn-secondary py-3 px-3 rounded-xl hover:bg-[var(--surface-hover)] transition-colors"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </button>

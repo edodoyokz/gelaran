@@ -608,14 +608,17 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3">
-                    <Link href="/dashboard" className="btn-secondary">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
+                    <Link 
+                        href="/dashboard" 
+                        className="btn-secondary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center text-center"
+                    >
                         Batal
                     </Link>
                     <button
                         type="submit"
                         disabled={isSaving}
-                        className="btn-primary min-w-[160px] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300"
+                        className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
                     >
                         {isSaving ? (
                             <>

@@ -320,7 +320,7 @@ export default function MyBookingsPage() {
                             ? "Kamu belum memiliki pesanan."
                             : `Tidak ada pesanan dengan status ini.`}
                     </p>
-                    <Link href="/events" className="btn-primary inline-flex">
+                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
                         <Sparkles className="h-4 w-4" />
                         Jelajahi Event
                         <ChevronRight className="h-4 w-4" />
@@ -431,7 +431,7 @@ export default function MyBookingsPage() {
                                                     {booking.status === "CONFIRMED" && (
                                                         <Link
                                                             href={`/my-bookings/${booking.bookingCode}`}
-                                                            className="btn-primary py-2 px-3"
+                                                            className="btn-primary py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all"
                                                         >
                                                             <QrCode className="h-4 w-4" />
                                                             <span className="hidden sm:inline">Lihat Tiket</span>
@@ -440,7 +440,7 @@ export default function MyBookingsPage() {
                                                     {booking.status === "AWAITING_PAYMENT" && (
                                                         <Link
                                                             href={`/checkout/payment/${booking.id}`}
-                                                            className="btn-primary py-2 px-3 !from-orange-500 !to-amber-500"
+                                                            className="btn-primary py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all !from-orange-500 !to-amber-500"
                                                         >
                                                             Bayar
                                                         </Link>
@@ -448,7 +448,7 @@ export default function MyBookingsPage() {
                                                     {(booking.status === "CONFIRMED" || booking.status === "PAID") && (
                                                         <button
                                                             type="button"
-                                                            className="btn-secondary py-2 px-3"
+                                                            className="btn-secondary py-2.5 px-3 rounded-xl hover:bg-[var(--surface-hover)] transition-colors"
                                                         >
                                                             <Download className="h-4 w-4" />
                                                         </button>
@@ -483,7 +483,7 @@ export default function MyBookingsPage() {
                         type="button"
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className="btn-secondary py-2 disabled:opacity-50"
+                        className="btn-secondary py-2.5 px-4 rounded-xl disabled:opacity-50 hover:bg-[var(--surface-hover)] transition-colors"
                     >
                         Sebelumnya
                     </button>
@@ -521,7 +521,7 @@ export default function MyBookingsPage() {
                         type="button"
                         onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
                         disabled={currentPage === pagination.totalPages}
-                        className="btn-secondary py-2 disabled:opacity-50"
+                        className="btn-secondary py-2.5 px-4 rounded-xl disabled:opacity-50 hover:bg-[var(--surface-hover)] transition-colors"
                     >
                         Selanjutnya
                     </button>

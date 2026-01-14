@@ -186,7 +186,7 @@ export default function NotificationsPage() {
                     <button
                         type="button"
                         onClick={handleMarkAllAsRead}
-                        className="btn-secondary self-start sm:self-auto"
+                        className="btn-secondary self-start sm:self-auto rounded-xl py-2.5 px-4"
                     >
                         <Check className="h-4 w-4" />
                         Tandai Semua Dibaca
@@ -198,7 +198,7 @@ export default function NotificationsPage() {
                 <button
                     type="button"
                     onClick={() => setFilter("all")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         filter === "all"
                             ? "bg-[var(--accent-primary)] text-white"
                             : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
@@ -209,7 +209,7 @@ export default function NotificationsPage() {
                 <button
                     type="button"
                     onClick={() => setFilter("unread")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         filter === "unread"
                             ? "bg-[var(--accent-primary)] text-white"
                             : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
@@ -241,7 +241,7 @@ export default function NotificationsPage() {
                             ? "Semua notifikasi Anda sudah dibaca."
                             : "Anda belum memiliki notifikasi."}
                     </p>
-                    <Link href="/" className="btn-primary inline-flex">
+                    <Link href="/" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
                         <Sparkles className="h-4 w-4" />
                         Kembali ke Beranda
                     </Link>

@@ -43,7 +43,7 @@ export default async function OrganizerEventsPage() {
                         </div>
                         <Link
                             href="/organizer/events/new"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 shadow-sm"
                         >
                             <Plus className="h-5 w-5" />
                             Buat Event
@@ -77,7 +77,7 @@ export default async function OrganizerEventsPage() {
                         <p className="text-gray-500 mb-6">Buat event pertama kamu sekarang!</p>
                         <Link
                             href="/organizer/events/new"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 shadow-md transition-all hover:-translate-y-0.5"
                         >
                             <Plus className="h-5 w-5" />
                             Buat Event
@@ -129,13 +129,13 @@ export default async function OrganizerEventsPage() {
                                     <div className="mt-4 flex gap-2">
                                         <Link
                                             href={`/organizer/events/${event.id}`}
-                                            className="flex-1 text-center py-2 border border-indigo-600 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-50"
+                                            className="flex-1 text-center py-2.5 border border-indigo-600 text-indigo-600 rounded-xl text-sm font-medium hover:bg-indigo-50 transition-colors"
                                         >
                                             Kelola
                                         </Link>
                                         <Link
                                             href={`/events/${event.slug}`}
-                                            className="px-4 py-2 border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+                                            className="px-4 py-2.5 border rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
                                         >
                                             Lihat
                                         </Link>

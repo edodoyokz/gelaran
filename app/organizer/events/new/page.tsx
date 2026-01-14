@@ -419,7 +419,7 @@ export default function CreateEventPage() {
                                 <button
                                     type="button"
                                     onClick={addSchedule}
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors"
+                                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-medium hover:bg-indigo-100 transition-colors"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Jadwal
@@ -592,7 +592,7 @@ export default function CreateEventPage() {
                                 <button
                                     type="button"
                                     onClick={addTicket}
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors"
+                                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-medium hover:bg-indigo-100 transition-colors"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Tiket

@@ -185,7 +185,7 @@ export default function FollowingPage() {
                     <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
                         Ikuti organizer favorit Anda untuk mendapatkan update terbaru tentang event mereka.
                     </p>
-                    <Link href="/events" className="btn-primary inline-flex">
+                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
                         <Sparkles className="h-4 w-4" />
                         Jelajahi Event
                     </Link>
@@ -257,7 +257,7 @@ export default function FollowingPage() {
                                         )
                                     }
                                     disabled={actionLoading === item.id}
-                                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
+                                    className={`inline-flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
                                         item.notifyNewEvents
                                             ? "bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
                                             : "bg-[var(--bg-tertiary)] text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
@@ -276,7 +276,7 @@ export default function FollowingPage() {
                                         handleUnfollow(item.organizer.organizationSlug, item.id)
                                     }
                                     disabled={actionLoading === item.id}
-                                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[var(--error)] hover:bg-[var(--error-bg)] transition-all disabled:opacity-50"
+                                    className="inline-flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-[var(--error)] hover:bg-[var(--error-bg)] transition-all disabled:opacity-50"
                                 >
                                     {actionLoading === item.id ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />

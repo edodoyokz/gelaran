@@ -256,7 +256,7 @@ export default function CustomerDashboardPage() {
                     <p className="text-[var(--text-muted)] text-sm mb-6">Terjadi kesalahan saat memuat data</p>
                     <Link
                         href="/"
-                        className="btn btn-primary"
+                        className="btn btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center"
                     >
                         Kembali ke Beranda
                     </Link>
@@ -566,9 +566,9 @@ export default function CustomerDashboardPage() {
                     </p>
                     <Link
                         href="/events"
-                        className="btn btn-primary inline-flex rounded-full py-3 px-6 shadow-lg shadow-indigo-500/20"
+                        className="btn btn-primary w-full sm:w-auto inline-flex justify-center rounded-full py-3 px-6 shadow-lg shadow-indigo-500/20"
                     >
-                        <Sparkles className="h-5 w-5" />
+                        <Sparkles className="h-5 w-5 mr-2" />
                         Jelajahi Event
                     </Link>
                 </div>
