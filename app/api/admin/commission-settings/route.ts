@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
+import type { Decimal } from "@prisma/client/runtime/library";
+
+interface CommissionSetting {
+  id: string;
+  organizerId: string | null;
+  eventId: string | null;
+  commissionType: string;
+  commissionValue: Decimal;
+  minCommission: Decimal | null;
+  maxCommission: Decimal | null;
+  isActive: boolean;
+  validFrom: Date | null;
+  validUntil: Date | null;
+  createdAt: Date;
+  updatedAt?: Date;
+}
 
 async function isAdmin(userId: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
@@ -64,7 +80,7 @@ export async function GET(request: NextRequest) {
     });
 
     const enrichedSettings = await Promise.all(
-      commissionSettings.map(async (setting) => {
+      commissionSettings.map(async (setting: CommissionSetting) => {
         let organizerName = null;
         let eventTitle = null;
 
