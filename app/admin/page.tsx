@@ -17,6 +17,16 @@ import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 
+interface RecentBooking {
+    id: string;
+    bookingCode: string;
+    event: { title: string };
+    user: { name: string | null; email: string | null } | null;
+    guestName: string | null;
+    totalAmount: Decimal;
+    createdAt: DateTime;
+}
+
 export default async function AdminDashboard() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -253,7 +263,7 @@ export default async function AdminDashboard() {
                                 No recent bookings
                             </div>
                         ) : (
-                            recentBookings.map((booking) => (
+                            recentBookings.map((booking: RecentBooking) => (
                                 <Link 
                                     key={booking.id} 
                                     href={`/admin/bookings/${booking.id}`}
