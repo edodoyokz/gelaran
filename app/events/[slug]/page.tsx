@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { EventDetailView } from "@/components/features/events/EventDetailView";
+import prisma from "@/lib/prisma/client";
 
 interface EventData {
     id: string;
@@ -67,18 +68,106 @@ interface EventData {
 
 async function getEvent(slug: string): Promise<EventData | null> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-        const res = await fetch(`${baseUrl}/api/events/${slug}`, {
-            cache: "no-store",
+        const event = await prisma.event.findUnique({
+            where: { slug, deletedAt: null, status: "PUBLISHED" },
+            include: {
+                category: true,
+                venue: true,
+                organizer: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatarUrl: true,
+                        organizerProfile: {
+                            select: {
+                                organizationName: true,
+                                organizationSlug: true,
+                                organizationLogo: true,
+                                organizationDescription: true,
+                                isVerified: true,
+                            },
+                        },
+                    },
+                },
+                schedules: {
+                    where: { isActive: true },
+                    orderBy: { scheduleDate: "asc" },
+                },
+                ticketTypes: {
+                    where: { isActive: true },
+                    orderBy: { sortOrder: "asc" },
+                    include: {
+                        priceTiers: {
+                            where: { isActive: true },
+                            orderBy: { sortOrder: "asc" },
+                        },
+                    },
+                },
+                faqs: {
+                    where: { isActive: true },
+                    orderBy: { sortOrder: "asc" },
+                },
+            },
         });
 
-        if (!res.ok) {
+        if (!event) {
             return null;
         }
 
-        const data = await res.json();
-        return data.success ? data.data : null;
-    } catch {
+        prisma.event.update({
+            where: { id: event.id },
+            data: { viewCount: { increment: 1 } },
+        }).catch(() => {});
+
+        return {
+            id: event.id,
+            slug: event.slug,
+            title: event.title,
+            shortDescription: event.shortDescription,
+            description: event.description,
+            posterImage: event.posterImage,
+            bannerImage: event.bannerImage,
+            eventType: event.eventType as "OFFLINE" | "ONLINE" | "HYBRID",
+            status: event.status,
+            isFeatured: event.isFeatured,
+            hasSeatingChart: event.hasSeatingChart,
+            minTicketsPerOrder: event.minTicketsPerOrder ?? undefined,
+            maxTicketsPerOrder: event.maxTicketsPerOrder ?? undefined,
+            termsAndConditions: event.termsAndConditions,
+            refundPolicy: event.refundPolicy,
+            viewCount: event.viewCount,
+            category: event.category,
+            venue: event.venue,
+            organizer: {
+                id: event.organizer.id,
+                name: event.organizer.organizerProfile?.organizationName || event.organizer.name,
+                slug: event.organizer.organizerProfile?.organizationSlug ?? null,
+                logo: event.organizer.organizerProfile?.organizationLogo ?? event.organizer.avatarUrl,
+                description: event.organizer.organizerProfile?.organizationDescription ?? null,
+                isVerified: event.organizer.organizerProfile?.isVerified ?? false,
+            },
+            schedules: event.schedules.map((s: any) => ({
+                id: s.id,
+                title: s.title,
+                scheduleDate: s.scheduleDate.toISOString(),
+                startTime: s.startTime.toISOString(),
+                endTime: s.endTime.toISOString(),
+            })),
+            ticketTypes: event.ticketTypes.map((tt: any) => ({
+                id: tt.id,
+                name: tt.name,
+                description: tt.description,
+                basePrice: Number(tt.basePrice),
+                totalQuantity: tt.totalQuantity,
+                availableQuantity: tt.totalQuantity - tt.soldQuantity - tt.reservedQuantity,
+                minPerOrder: tt.minPerOrder,
+                maxPerOrder: tt.maxPerOrder,
+                isFree: tt.isFree,
+            })),
+            faqs: event.faqs,
+        };
+    } catch (error) {
+        console.error("Error fetching event:", error);
         return null;
     }
 }
