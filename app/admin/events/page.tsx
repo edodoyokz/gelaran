@@ -339,6 +339,27 @@ export default function AdminEventsPage() {
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-gray-500 mb-1">Total Events</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.total.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-gray-500 mb-1">Pending Review</p>
+                        <p className="text-2xl font-bold text-yellow-600">{stats.pending.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-gray-500 mb-1">Published</p>
+                        <p className="text-2xl font-bold text-green-600">{stats.published.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
+                        <p className="text-2xl font-bold text-indigo-600">
+                            Rp {stats.totalRevenue.toLocaleString()}
+                        </p>
+                    </div>
+                </div>
+
                 <div className="bg-white rounded-xl p-4 mb-6">
                     <div className="flex flex-wrap gap-4 mb-4">
                         <div className="flex-1 min-w-[200px] relative">
