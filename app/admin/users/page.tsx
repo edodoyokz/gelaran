@@ -170,6 +170,23 @@ export default function AdminUsersPage() {
         activityFilter
     );
 
+    const handleSort = (column: string) => {
+        if (sortBy === column) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(column);
+            setSortOrder('desc');
+        }
+        setCurrentPage(1);
+    };
+    
+    const getSortIcon = (column: string) => {
+        if (sortBy !== column) {
+            return <span className="text-gray-300">⇅</span>;
+        }
+        return sortOrder === 'asc' ? <span className="text-indigo-600">↑</span> : <span className="text-indigo-600">↓</span>;
+    };
+
     const handleVerify = async (userId: string, verify: boolean) => {
         try {
             setActionLoading(userId);
@@ -393,8 +410,14 @@ export default function AdminUsersPage() {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    User
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('name')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        User
+                                        {getSortIcon('name')}
+                                    </div>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                     Role
@@ -402,11 +425,23 @@ export default function AdminUsersPage() {
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                     Status
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Activity
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('bookings')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        Activity
+                                        {getSortIcon('bookings')}
+                                    </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Joined
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort('createdAt')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        Joined
+                                        {getSortIcon('createdAt')}
+                                    </div>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                     Actions
