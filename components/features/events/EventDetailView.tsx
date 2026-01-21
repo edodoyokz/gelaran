@@ -496,6 +496,12 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                         </div>
                                     ))}
                                 </div>
+                                <Link 
+                                    href={`/events/${event.slug}/faq`}
+                                    className="mt-4 inline-block text-blue-600 hover:underline text-sm"
+                                >
+                                    View all FAQs →
+                                </Link>
                             </div>
                         )}
 
