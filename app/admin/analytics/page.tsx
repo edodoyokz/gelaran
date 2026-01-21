@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { DateRangeFilter, type DateRangePreset } from "@/components/admin/DateRangeFilter";
+import { RevenueTrendChart } from "@/components/admin/RevenueTrendChart";
 import { formatCurrency } from "@/lib/utils";
 
 interface AnalyticsData {
@@ -190,6 +191,17 @@ export default function AdminAnalyticsPage() {
                         }}
                     />
                 </div>
+
+                {data.revenueTrend && data.revenueTrend.length > 0 ? (
+                    <div className="mb-8">
+                        <RevenueTrendChart data={data.revenueTrend} />
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-xl shadow-sm p-12 text-center mb-8">
+                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                        <p className="text-gray-500">Tidak ada data trend untuk periode ini</p>
+                    </div>
+                )}
 
                 <div className="grid lg:grid-cols-2 gap-6 mb-8">
                     <div className="bg-white rounded-xl shadow-sm p-6">
