@@ -72,6 +72,12 @@ function CheckoutContent() {
     const [guestName, setGuestName] = useState("");
     const [guestPhone, setGuestPhone] = useState("");
     const [isUserLoaded, setIsUserLoaded] = useState(false);
+    const [pricingData, setPricingData] = useState<{
+        subtotal: number;
+        taxAmount: number;
+        platformFee: number;
+        totalAmount: number;
+    } | null>(null);
 
     useEffect(() => {
         async function fetchUserProfile() {
@@ -179,6 +185,43 @@ function CheckoutContent() {
         fetchEventAndSeats();
     }, [eventSlug, ticketsParam, seatsParam, router]);
 
+    useEffect(() => {
+        if (!event || (tickets.length === 0 && lockedSeats.length === 0)) return;
+
+        async function fetchPricing() {
+            try {
+                const res = await fetch('/api/pricing/quote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        eventId: event.id,
+                        tickets: isSeatCheckout 
+                            ? [] 
+                            : tickets.filter(t => t.quantity > 0).map(t => ({
+                                ticketTypeId: t.ticketTypeId,
+                                quantity: t.quantity
+                            })),
+                        seatIds: isSeatCheckout ? lockedSeats.map(s => s.id) : undefined
+                    })
+                });
+
+                if (res.ok) {
+                    const pricing = await res.json();
+                    setPricingData({
+                        subtotal: pricing.subtotal,
+                        taxAmount: pricing.taxAmount,
+                        platformFee: pricing.platformFee,
+                        totalAmount: pricing.totalAmount
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to fetch pricing:', err);
+            }
+        }
+
+        fetchPricing();
+    }, [event, tickets, lockedSeats, isSeatCheckout]);
+
     const updateQuantity = (ticketTypeId: string, delta: number) => {
         if (isSeatCheckout) return;
 
@@ -191,13 +234,13 @@ function CheckoutContent() {
         );
     };
 
-    const subtotal = isSeatCheckout 
+    const subtotal = pricingData?.subtotal ?? (isSeatCheckout 
         ? lockedSeats.reduce((sum, s) => sum + s.price, 0)
-        : tickets.reduce((sum, t) => sum + t.price * t.quantity, 0);
+        : tickets.reduce((sum, t) => sum + t.price * t.quantity, 0));
         
-    const platformFee = Math.round(subtotal * 0.05);
-    const tax = Math.round(subtotal * 0.11);
-    const total = subtotal + platformFee + tax;
+    const platformFee = pricingData?.platformFee ?? 0;
+    const tax = pricingData?.taxAmount ?? 0;
+    const total = pricingData?.totalAmount ?? (subtotal + platformFee + tax);
     const totalTickets = isSeatCheckout
         ? lockedSeats.length
         : tickets.reduce((sum, t) => sum + t.quantity, 0);
