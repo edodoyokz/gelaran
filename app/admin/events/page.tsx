@@ -13,6 +13,7 @@ import {
     Loader2,
     AlertCircle,
     Filter,
+    ArrowUpDown,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
@@ -235,6 +236,15 @@ export default function AdminEventsPage() {
         cityFilter || 
         hasBookingsFilter
     );
+
+    const handleSort = (field: string) => {
+        if (sortBy === field) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            setSortBy(field);
+            setSortOrder("desc");
+        }
+    };
 
     const handleApprove = async (eventId: string) => {
         try {
@@ -482,20 +492,44 @@ export default function AdminEventsPage() {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Event
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort("title")}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        Event
+                                        <ArrowUpDown className="h-3 w-3" />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Organizer
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort("organizer")}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        Organizer
+                                        <ArrowUpDown className="h-3 w-3" />
+                                    </div>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                     Status
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Bookings
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort("bookings")}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        Bookings
+                                        <ArrowUpDown className="h-3 w-3" />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Date
+                                <th 
+                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort("createdAt")}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        Date
+                                        <ArrowUpDown className="h-3 w-3" />
+                                    </div>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                     Actions
