@@ -222,6 +222,16 @@ function CheckoutContent() {
         fetchPricing();
     }, [event, tickets, lockedSeats, isSeatCheckout]);
 
+    useEffect(() => {
+        return () => {
+            if (eventSlug && seatSessionId && lockedSeats.length > 0) {
+                fetch(`/api/events/${eventSlug}/seats?sessionId=${seatSessionId}`, {
+                    method: 'DELETE'
+                }).catch(err => console.error('Failed to release seats:', err));
+            }
+        };
+    }, [eventSlug, seatSessionId, lockedSeats.length]);
+
     const updateQuantity = (ticketTypeId: string, delta: number) => {
         if (isSeatCheckout) return;
 
