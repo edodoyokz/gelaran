@@ -214,22 +214,51 @@ export default function AdminAnalyticsPage() {
 
                     <div className="bg-white rounded-xl shadow-sm p-6">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Status Booking</h2>
-                        <div className="space-y-3">
-                            {data.bookingsByStatus.map((status) => (
-                                <div key={status.status} className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span
-                                            className={`px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[status.status]}`}
-                                        >
-                                            {STATUS_LABELS[status.status] || status.status}
-                                        </span>
+                        <div className="space-y-4">
+                            {data.bookingsByStatus.map((status) => {
+                                const total = data.bookingsByStatus.reduce((sum, s) => sum + s.count, 0);
+                                const percentage = total > 0 ? (status.count / total) * 100 : 0;
+                                
+                                const getProgressBarColor = (statusType: string): string => {
+                                    const colorMap: Record<string, string> = {
+                                        PAID: 'bg-green-500',
+                                        CONFIRMED: 'bg-blue-500',
+                                        PENDING: 'bg-yellow-500',
+                                        CANCELLED: 'bg-red-400',
+                                        REFUNDED: 'bg-red-500',
+                                    };
+                                    return colorMap[statusType] || 'bg-gray-400';
+                                };
+                                
+                                return (
+                                    <div key={status.status} className="space-y-2">
+                                        <div className="flex items-center justify-between text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className={`px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[status.status]}`}
+                                                >
+                                                    {STATUS_LABELS[status.status] || status.status}
+                                                </span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="font-semibold text-[var(--text-primary)]">
+                                                    {status.count} ({percentage.toFixed(1)}%)
+                                                </span>
+                                                <span className="text-xs text-[var(--text-muted)] ml-2">
+                                                    {formatCurrency(status.amount)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                                            <div 
+                                                className={`h-2.5 rounded-full transition-all duration-300 ${getProgressBarColor(status.status)}`}
+                                                style={{ width: `${percentage}%` }}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="font-semibold text-gray-900">{status.count}</p>
-                                        <p className="text-xs text-gray-500">{formatCurrency(status.amount)}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
