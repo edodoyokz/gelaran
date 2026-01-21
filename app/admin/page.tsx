@@ -65,11 +65,11 @@ export default async function AdminDashboard() {
         prisma.venue.count({ where: { isActive: true } }),
     ]);
 
-    const transactions = await prisma.transaction.aggregate({
-        where: { status: "SUCCESS" },
-        _sum: { amount: true },
+    const platformRevenueData = await prisma.booking.aggregate({
+        where: { status: { in: ["CONFIRMED", "PAID"] } },
+        _sum: { platformRevenue: true },
     });
-    const totalRevenue = Number(transactions._sum.amount || 0);
+    const totalPlatformRevenue = Number(platformRevenueData._sum.platformRevenue || 0);
 
     const recentBookings = await prisma.booking.findMany({
         take: 5,
@@ -112,7 +112,7 @@ export default async function AdminDashboard() {
         },
         {
             label: "Platform Revenue",
-            value: formatCurrency(totalRevenue),
+            value: formatCurrency(totalPlatformRevenue),
             icon: TrendingUp,
             href: "/admin/finance",
             color: "bg-indigo-500",
