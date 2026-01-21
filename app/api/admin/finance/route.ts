@@ -27,7 +27,7 @@ interface TopEvent {
     _count: { bookings: number };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -35,6 +35,13 @@ export async function GET() {
         if (!user || !user.email) {
             return errorResponse("Unauthorized", 401);
         }
+
+        const url = new URL(request.url);
+        const fromParam = url.searchParams.get('from');
+        const toParam = url.searchParams.get('to');
+
+        const dateFrom = fromParam ? new Date(fromParam) : new Date(0);
+        const dateTo = toParam ? new Date(toParam) : new Date();
 
         const admin = await prisma.user.findUnique({
             where: { email: user.email },
@@ -60,7 +67,10 @@ export async function GET() {
             topEvents,
         ] = await Promise.all([
             prisma.booking.aggregate({
-                where: { status: { in: ["CONFIRMED", "PAID"] } },
+                where: { 
+                    status: { in: ["CONFIRMED", "PAID"] },
+                    paidAt: { gte: dateFrom, lte: dateTo },
+                },
                 _sum: {
                     totalAmount: true,
                     platformRevenue: true,
@@ -94,11 +104,17 @@ export async function GET() {
             }),
             prisma.booking.groupBy({
                 by: ["status"],
+                where: {
+                    paidAt: { gte: dateFrom, lte: dateTo },
+                },
                 _count: { id: true },
                 _sum: { totalAmount: true },
             }),
             prisma.booking.findMany({
-                where: { status: { in: ["CONFIRMED", "PAID"] } },
+                where: { 
+                    status: { in: ["CONFIRMED", "PAID"] },
+                    paidAt: { gte: dateFrom, lte: dateTo },
+                },
                 orderBy: { paidAt: "desc" },
                 take: 10,
                 select: {
@@ -129,7 +145,14 @@ export async function GET() {
                     title: true,
                     posterImage: true,
                     _count: {
-                        select: { bookings: { where: { status: { in: ["CONFIRMED", "PAID"] } } } },
+                        select: { 
+                            bookings: { 
+                                where: { 
+                                    status: { in: ["CONFIRMED", "PAID"] },
+                                    paidAt: { gte: dateFrom, lte: dateTo },
+                                } 
+                            } 
+                        },
                     },
                 },
             }),
