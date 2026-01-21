@@ -209,6 +209,33 @@ export default function AdminEventsPage() {
         fetchEvents();
     }, [fetchEvents]);
 
+    const resetFilters = () => {
+        setStatusFilter("");
+        setCategoryFilter("");
+        setOrganizerFilter("");
+        setSearch("");
+        setDateFrom("");
+        setDateTo("");
+        setScheduledFrom("");
+        setScheduledTo("");
+        setCityFilter("");
+        setHasBookingsFilter("");
+        setCurrentPage(1);
+    };
+    
+    const hasActiveFilters = !!(
+        statusFilter || 
+        categoryFilter || 
+        organizerFilter || 
+        search || 
+        dateFrom || 
+        dateTo || 
+        scheduledFrom || 
+        scheduledTo || 
+        cityFilter || 
+        hasBookingsFilter
+    );
+
     const handleApprove = async (eventId: string) => {
         try {
             setActionLoading(eventId);
@@ -300,30 +327,154 @@ export default function AdminEventsPage() {
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="bg-white rounded-xl p-4 mb-6 flex flex-wrap gap-4">
-                    <div className="flex-1 min-w-[200px] relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search events..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg"
-                        />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Filter className="h-5 w-5 text-gray-400" />
+                <div className="bg-white rounded-xl p-4 mb-6">
+                    <div className="flex flex-wrap gap-4 mb-4">
+                        <div className="flex-1 min-w-[200px] relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search events, organizers..."
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
+                        
                         <select
                             value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border rounded-lg"
+                            onChange={(e) => {
+                                setStatusFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                             <option value="">All Status</option>
                             <option value="PENDING_REVIEW">Pending Review</option>
                             <option value="PUBLISHED">Published</option>
                             <option value="DRAFT">Draft</option>
                             <option value="CANCELLED">Cancelled</option>
+                            <option value="ENDED">Ended</option>
                         </select>
+                        
+                        <select
+                            value={categoryFilter}
+                            onChange={(e) => {
+                                setCategoryFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Categories</option>
+                            {filterOptions.categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>
+                                    {cat.name} ({cat.count})
+                                </option>
+                            ))}
+                        </select>
+                        
+                        <select
+                            value={organizerFilter}
+                            onChange={(e) => {
+                                setOrganizerFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Organizers</option>
+                            {filterOptions.organizers.map(org => (
+                                <option key={org.id} value={org.id}>
+                                    {org.organizationName || org.name}
+                                </option>
+                            ))}
+                        </select>
+                        
+                        <select
+                            value={cityFilter}
+                            onChange={(e) => {
+                                setCityFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Cities</option>
+                            {filterOptions.cities.map(city => (
+                                <option key={city} value={city}>{city}</option>
+                            ))}
+                        </select>
+                        
+                        <select
+                            value={hasBookingsFilter}
+                            onChange={(e) => {
+                                setHasBookingsFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Events</option>
+                            <option value="yes">Has Bookings</option>
+                            <option value="no">No Bookings</option>
+                        </select>
+                        
+                        {hasActiveFilters && (
+                            <button
+                                type="button"
+                                onClick={resetFilters}
+                                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border rounded-lg hover:bg-gray-50"
+                            >
+                                Clear Filters
+                            </button>
+                        )}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Created:</span>
+                            <input
+                                type="date"
+                                value={dateFrom}
+                                onChange={(e) => {
+                                    setDateFrom(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <span className="text-gray-400">to</span>
+                            <input
+                                type="date"
+                                value={dateTo}
+                                onChange={(e) => {
+                                    setDateTo(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Scheduled:</span>
+                            <input
+                                type="date"
+                                value={scheduledFrom}
+                                onChange={(e) => {
+                                    setScheduledFrom(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <span className="text-gray-400">to</span>
+                            <input
+                                type="date"
+                                value={scheduledTo}
+                                onChange={(e) => {
+                                    setScheduledTo(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
                     </div>
                 </div>
 
