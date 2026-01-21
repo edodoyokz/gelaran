@@ -111,7 +111,7 @@ export default async function AdminDashboard() {
     });
 
     const commissionStats = {
-        globalRate: globalCommission?.commissionValue || 5,
+        globalRate: Number(globalCommission?.commissionValue || 5),
         overridesCount: commissionOverridesCount,
     };
 

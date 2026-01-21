@@ -154,7 +154,7 @@ export function AdminDashboardCharts() {
                         Platform Analytics
                     </h2>
                     <p className="text-sm text-[var(--text-muted)] mt-0.5">
-                        {formatCurrency(totalRevenue)} revenue • {totalBookings} bookings • {totalNewUsers} new users
+                        {formatCurrency(totalRevenue)} platform revenue • {totalBookings} bookings • {totalNewUsers} new users
                     </p>
                 </div>
                 <DateRangePicker
@@ -166,11 +166,11 @@ export function AdminDashboardCharts() {
             <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 rounded-xl p-4 sm:p-6 shadow-[var(--shadow-sm)] bg-[var(--surface)] border border-[var(--border)]">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-[var(--text-primary)]">Revenue Trend</h3>
+                        <h3 className="font-semibold text-[var(--text-primary)]">Platform Revenue Trend</h3>
                         <div className="flex items-center gap-4 text-xs">
                             <span className="flex items-center gap-1.5">
                                 <span className="w-3 h-3 rounded-full bg-indigo-500" />
-                                Revenue
+                                Platform Revenue
                             </span>
                             <span className="flex items-center gap-1.5">
                                 <span className="w-3 h-3 rounded-full bg-emerald-500" />
