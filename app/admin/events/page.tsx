@@ -14,6 +14,8 @@ import {
     AlertCircle,
     Filter,
     ArrowUpDown,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
@@ -642,6 +644,79 @@ export default function AdminEventsPage() {
                         </tbody>
                     </table>
                 </div>
+
+                {pagination && pagination.totalPages > 1 && (
+                    <div className="bg-white rounded-xl shadow-sm px-6 py-4 mt-4 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm text-gray-700">
+                                Showing {((currentPage - 1) * itemsPerPage) + 1} to{" "}
+                                {Math.min(currentPage * itemsPerPage, pagination.total)} of{" "}
+                                {pagination.total} events
+                            </span>
+                            <select
+                                value={itemsPerPage}
+                                onChange={(e) => {
+                                    setItemsPerPage(Number(e.target.value));
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            >
+                                <option value={10}>10 per page</option>
+                                <option value={20}>20 per page</option>
+                                <option value={50}>50 per page</option>
+                                <option value={100}>100 per page</option>
+                            </select>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={!pagination.hasPrev}
+                                className="p-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </button>
+                            
+                            {Array.from({ length: Math.min(5, pagination.totalPages) }, (_: unknown, i: number) => {
+                                let pageNum: number;
+                                if (pagination.totalPages <= 5) {
+                                    pageNum = i + 1;
+                                } else if (currentPage <= 3) {
+                                    pageNum = i + 1;
+                                } else if (currentPage >= pagination.totalPages - 2) {
+                                    pageNum = pagination.totalPages - 4 + i;
+                                } else {
+                                    pageNum = currentPage - 2 + i;
+                                }
+                                
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        type="button"
+                                        onClick={() => setCurrentPage(pageNum)}
+                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                                            currentPage === pageNum
+                                                ? "bg-indigo-600 text-white"
+                                                : "border hover:bg-gray-50"
+                                        }`}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                            })}
+                            
+                            <button
+                                type="button"
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={!pagination.hasNext}
+                                className="p-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </main>
 
             {showRejectModal && (
