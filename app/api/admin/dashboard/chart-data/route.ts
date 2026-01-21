@@ -89,16 +89,13 @@ async function getRevenueOverTime(
     endDate: Date,
     period: string
 ): Promise<ChartDataPoint[]> {
-    const transactions = await prisma.transaction.findMany({
+    const revenueBookings = await prisma.booking.findMany({
         where: {
-            status: "SUCCESS",
-            createdAt: {
-                gte: startDate,
-                lte: endDate,
-            },
+            status: { in: ["CONFIRMED", "PAID"] },
+            createdAt: { gte: startDate, lte: endDate },
         },
         select: {
-            amount: true,
+            platformRevenue: true,
             createdAt: true,
         },
         orderBy: { createdAt: "asc" },
@@ -162,11 +159,11 @@ async function getRevenueOverTime(
         }
     }
 
-    transactions.forEach((tx) => {
-        const key = formatDate(new Date(tx.createdAt));
+    revenueBookings.forEach((booking) => {
+        const key = formatDate(new Date(booking.createdAt));
         const existing = dataMap.get(key);
         if (existing) {
-            existing.revenue += Number(tx.amount);
+            existing.revenue += Number(booking.platformRevenue || 0);
         }
     });
 
