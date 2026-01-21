@@ -188,13 +188,15 @@ function CheckoutContent() {
     useEffect(() => {
         if (!event || (tickets.length === 0 && lockedSeats.length === 0)) return;
 
+        const currentEvent = event;
+
         async function fetchPricing() {
             try {
                 const res = await fetch('/api/pricing/quote', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        eventId: event.id,
+                        eventId: currentEvent.id,
                         tickets: isSeatCheckout 
                             ? [] 
                             : tickets.filter(t => t.quantity > 0).map(t => ({
