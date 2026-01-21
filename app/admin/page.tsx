@@ -71,6 +71,39 @@ export default async function AdminDashboard() {
     });
     const totalPlatformRevenue = Number(platformRevenueData._sum.platformRevenue || 0);
 
+    const revenueBreakdown = await prisma.booking.aggregate({
+        where: { status: { in: ["CONFIRMED", "PAID"] } },
+        _sum: {
+            totalAmount: true,
+            platformRevenue: true,
+            organizerRevenue: true,
+            paymentGatewayFee: true,
+            taxAmount: true,
+        },
+    });
+
+    const breakdown = {
+        totalTransactions: Number(revenueBreakdown._sum.totalAmount || 0),
+        platformRevenue: Number(revenueBreakdown._sum.platformRevenue || 0),
+        organizerRevenue: Number(revenueBreakdown._sum.organizerRevenue || 0),
+        gatewayFee: Number(revenueBreakdown._sum.paymentGatewayFee || 0),
+        tax: Number(revenueBreakdown._sum.taxAmount || 0),
+    };
+
+    const globalCommission = await prisma.commissionSetting.findFirst({
+        where: { organizerId: null, isActive: true },
+        select: { commissionValue: true },
+    });
+
+    const commissionOverridesCount = await prisma.commissionSetting.count({
+        where: { organizerId: { not: null }, isActive: true },
+    });
+
+    const commissionStats = {
+        globalRate: globalCommission?.commissionValue || 5,
+        overridesCount: commissionOverridesCount,
+    };
+
     const recentBookings = await prisma.booking.findMany({
         take: 5,
         orderBy: { createdAt: "desc" },
