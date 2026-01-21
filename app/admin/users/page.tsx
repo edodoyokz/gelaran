@@ -98,6 +98,9 @@ export default function AdminUsersPage() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
     
+    const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+    const [isBulkActionLoading, setIsBulkActionLoading] = useState(false);
+    
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
     const fetchUsers = useCallback(async () => {
@@ -310,6 +313,72 @@ export default function AdminUsersPage() {
         }
     };
 
+    const toggleSelectAll = () => {
+        if (selectedUsers.size === users.length) {
+            setSelectedUsers(new Set());
+        } else {
+            setSelectedUsers(new Set(users.map(u => u.id)));
+        }
+    };
+
+    const toggleSelectUser = (userId: string) => {
+        const newSelected = new Set(selectedUsers);
+        if (newSelected.has(userId)) {
+            newSelected.delete(userId);
+        } else {
+            newSelected.add(userId);
+        }
+        setSelectedUsers(newSelected);
+    };
+
+    const handleBulkAction = async (action: 'verify' | 'suspend' | 'activate') => {
+        if (selectedUsers.size === 0) {
+            showToast("No users selected", "error");
+            return;
+        }
+
+        const confirmMessage = 
+            action === 'verify' ? `Verify ${selectedUsers.size} selected users?` :
+            action === 'suspend' ? `Suspend ${selectedUsers.size} selected users?` :
+            `Activate ${selectedUsers.size} selected users?`;
+
+        if (!confirm(confirmMessage)) return;
+
+        try {
+            setIsBulkActionLoading(true);
+            const userIds = Array.from(selectedUsers);
+            
+            const promises = userIds.map(userId => {
+                const body = 
+                    action === 'verify' ? { isVerified: true } :
+                    action === 'suspend' ? { status: 'suspended' } :
+                    { status: 'active' };
+
+                return fetch(`/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+            });
+
+            const results = await Promise.allSettled(promises);
+            const successCount = results.filter(r => r.status === 'fulfilled').length;
+            const failCount = results.length - successCount;
+
+            if (successCount > 0) {
+                await fetchUsers();
+                setSelectedUsers(new Set());
+                showToast(`${successCount} users updated${failCount > 0 ? `, ${failCount} failed` : ''}`, "success");
+            } else {
+                showToast("Failed to update users", "error");
+            }
+        } catch {
+            showToast("Failed to perform bulk action", "error");
+        } finally {
+            setIsBulkActionLoading(false);
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -462,7 +531,47 @@ export default function AdminUsersPage() {
                     </div>
                 </div>
 
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-between items-center mb-4">
+                    {selectedUsers.size > 0 ? (
+                        <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-600">
+                                {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => handleBulkAction('verify')}
+                                disabled={isBulkActionLoading}
+                                className="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                            >
+                                Verify Selected
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleBulkAction('suspend')}
+                                disabled={isBulkActionLoading}
+                                className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                            >
+                                Suspend Selected
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleBulkAction('activate')}
+                                disabled={isBulkActionLoading}
+                                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                Activate Selected
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSelectedUsers(new Set())}
+                                className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 border rounded-lg"
+                            >
+                                Clear Selection
+                            </button>
+                        </div>
+                    ) : (
+                        <div />
+                    )}
                     <button
                         type="button"
                         onClick={handleExportCSV}
@@ -584,6 +693,14 @@ export default function AdminUsersPage() {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
+                                <th className="px-6 py-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedUsers.size === users.length && users.length > 0}
+                                        onChange={toggleSelectAll}
+                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    />
+                                </th>
                                 <th 
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
                                     onClick={() => handleSort('name')}
@@ -625,7 +742,7 @@ export default function AdminUsersPage() {
                         <tbody className="divide-y">
                             {users.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                                         No users found
                                     </td>
                                 </tr>
@@ -635,6 +752,15 @@ export default function AdminUsersPage() {
                                         key={u.id}
                                         className={`hover:bg-gray-50 ${u.deletedAt ? "opacity-50" : ""}`}
                                     >
+                                        <td className="px-6 py-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedUsers.has(u.id)}
+                                                onChange={() => toggleSelectUser(u.id)}
+                                                disabled={u.role === 'SUPER_ADMIN'}
+                                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
+                                            />
+                                        </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
