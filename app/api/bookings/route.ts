@@ -4,6 +4,8 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createBookingSchema } from "@/lib/validators";
 import { createClient } from "@/lib/supabase/server";
 import { generateBookingCode } from "@/lib/utils";
+import { calculatePricing } from "@/lib/pricing/calculate";
+import { DEFAULT_PAYMENT_GATEWAY_FEE_PERCENTAGE, DEFAULT_PLATFORM_FEE_PERCENTAGE } from "@/lib/pricing/constants";
 import type { Decimal } from "@prisma/client/runtime/library";
 import type { PrismaTransactionClient } from "@/types/prisma";
 
@@ -256,14 +258,65 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Calculate fees (simplified)
-        const platformFeePercent = 0.05; // 5%
-        const platformFee = Math.round((subtotal - discountAmount) * platformFeePercent);
-        const taxPercent = 0.11; // 11% PPN
-        const taxAmount = Math.round((subtotal - discountAmount) * taxPercent);
-        const totalAmount = subtotal - discountAmount + platformFee + taxAmount;
-        const organizerRevenue = subtotal - discountAmount;
-        const platformRevenue = platformFee;
+        const defaultTaxRate = await prisma.taxRate.findFirst({
+            where: { isDefault: true, isActive: true }
+        });
+
+        let commissionSetting = await prisma.commissionSetting.findFirst({
+            where: {
+                eventId: event.id,
+                isActive: true,
+                OR: [
+                    { validFrom: null },
+                    { validFrom: { lte: new Date() } }
+                ],
+                AND: [
+                    {
+                        OR: [
+                            { validUntil: null },
+                            { validUntil: { gte: new Date() } }
+                        ]
+                    }
+                ]
+            }
+        });
+
+        if (!commissionSetting) {
+            commissionSetting = await prisma.commissionSetting.findFirst({
+                where: {
+                    organizerId: event.organizerId,
+                    isActive: true
+                }
+            });
+        }
+
+        const pricing = calculatePricing({
+            subtotal,
+            discountAmount,
+            taxRate: defaultTaxRate ? {
+                rate: Number(defaultTaxRate.rate),
+                type: defaultTaxRate.taxType,
+                isInclusive: defaultTaxRate.isInclusive
+            } : null,
+            commission: commissionSetting ? {
+                value: Number(commissionSetting.commissionValue),
+                type: commissionSetting.commissionType,
+                minCommission: commissionSetting.minCommission ? Number(commissionSetting.minCommission) : undefined,
+                maxCommission: commissionSetting.maxCommission ? Number(commissionSetting.maxCommission) : undefined
+            } : {
+                value: DEFAULT_PLATFORM_FEE_PERCENTAGE,
+                type: 'PERCENTAGE'
+            },
+            paymentGatewayFeePercentage: DEFAULT_PAYMENT_GATEWAY_FEE_PERCENTAGE
+        });
+
+        const totalAmount = pricing.totalAmount;
+        const taxAmount = pricing.taxAmount;
+        const platformFee = pricing.platformFee;
+        const paymentGatewayFee = pricing.paymentGatewayFee;
+        const organizerRevenue = pricing.organizerRevenue;
+        const platformRevenue = pricing.platformRevenue;
+        const taxPercent = pricing.taxBase > 0 ? pricing.taxAmount / pricing.taxBase : 0;
 
         // Generate booking code
         const bookingCode = generateBookingCode();
@@ -285,7 +338,7 @@ export async function POST(request: NextRequest) {
                     discountAmount,
                     taxAmount,
                     platformFee,
-                    paymentGatewayFee: 0,
+                    paymentGatewayFee,
                     totalAmount,
                     organizerRevenue,
                     platformRevenue,
