@@ -18,6 +18,8 @@ import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminDashboardCharts } from "@/components/admin/AdminDashboardCharts";
+import { RevenueBreakdown } from "@/components/admin/RevenueBreakdown";
+import { CommissionOverview } from "@/components/admin/CommissionOverview";
 
 interface RecentBooking {
     id: string;
@@ -227,6 +229,20 @@ export default async function AdminDashboard() {
                             </div>
                         </Link>
                     ))}
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                    <RevenueBreakdown
+                        totalTransactions={breakdown.totalTransactions}
+                        platformRevenue={breakdown.platformRevenue}
+                        organizerRevenue={breakdown.organizerRevenue}
+                        gatewayFee={breakdown.gatewayFee}
+                        tax={breakdown.tax}
+                    />
+                    <CommissionOverview
+                        globalRate={commissionStats.globalRate}
+                        overridesCount={commissionStats.overridesCount}
+                    />
                 </div>
 
                 <AdminDashboardCharts />
