@@ -2,34 +2,39 @@ import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
+// Use direct connection URL to avoid connection pool timeout during seeding
+const prisma = new PrismaClient({
+    datasources: {
+        db: {
+            url: process.env.DIRECT_URL || process.env.DATABASE_URL,
+        },
+    },
+});
 
 const DEFAULT_PASSWORD = "password123";
 
 async function main() {
     console.log("🗑️  Deleting existing data...");
 
-    await prisma.$transaction([
-        prisma.bookedTicket.deleteMany(),
-        prisma.booking.deleteMany(),
-        prisma.eventFaq.deleteMany(),
-        prisma.seat.deleteMany(),
-        prisma.venueSection.deleteMany(),
-        prisma.ticketType.deleteMany(),
-        prisma.eventSchedule.deleteMany(),
-        prisma.event.deleteMany(),
-        prisma.customerProfile.deleteMany(),
-        prisma.organizerProfile.deleteMany(),
-        prisma.user.deleteMany(),
-        prisma.venue.deleteMany(),
-        prisma.category.deleteMany(),
-        prisma.taxRate.deleteMany(),
-        prisma.commissionSetting.deleteMany(),
-    ]);
+    await prisma.bookedTicket.deleteMany();
+    await prisma.booking.deleteMany();
+    await prisma.eventFaq.deleteMany();
+    await prisma.seat.deleteMany();
+    await prisma.venueSection.deleteMany();
+    await prisma.ticketType.deleteMany();
+    await prisma.eventSchedule.deleteMany();
+    await prisma.event.deleteMany();
+    await prisma.customerProfile.deleteMany();
+    await prisma.organizerProfile.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.venue.deleteMany();
+    await prisma.category.deleteMany();
+    await prisma.taxRate.deleteMany();
+    await prisma.commissionSetting.deleteMany();
 
     console.log("✅ Deleted all existing data");
     console.log("🌱 Seeding database with Solo/Surakarta data...");
-    
+
     const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
     console.log(`🔑 Using default password: ${DEFAULT_PASSWORD}`);
 
@@ -376,8 +381,8 @@ Fasilitas:
 - Kantin tradisional
 
 Pertunjukan ini cocok untuk keluarga dan pecinta seni budaya Jawa.`,
-            posterImage: "https://images.unsplash.com/photo-1580870069867-74c57ee1bb07?w=800",
-            bannerImage: "https://images.unsplash.com/photo-1580870069867-74c57ee1bb07?w=1600",
+            posterImage: "/images/events/wayang-orang.png",
+            bannerImage: "/images/events/wayang-orang.png",
             eventType: "OFFLINE",
             status: "PUBLISHED",
             visibility: "PUBLIC",
@@ -389,8 +394,8 @@ Pertunjukan ini cocok untuk keluarga dan pecinta seni budaya Jawa.`,
                 create: [
                     {
                         scheduleDate: new Date("2026-02-15"),
-                        startTime: new Date("1970-01-01T19:30:00Z"),
-                        endTime: new Date("1970-01-01T22:00:00Z"),
+                        startTime: new Date("2026-02-15T19:30:00"),
+                        endTime: new Date("2026-02-15T22:00:00"),
                         isActive: true,
                     },
                 ],
@@ -423,8 +428,8 @@ Fasilitas:
 - Merchandise booth
 
 Jangan lewatkan aksi para pemain basket terbaik Indonesia!`,
-            posterImage: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800",
-            bannerImage: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600",
+            posterImage: "/images/events/basket-match.png",
+            bannerImage: "/images/events/basket-match.png",
             eventType: "OFFLINE",
             status: "PUBLISHED",
             visibility: "PUBLIC",
@@ -436,8 +441,8 @@ Jangan lewatkan aksi para pemain basket terbaik Indonesia!`,
                 create: [
                     {
                         scheduleDate: new Date("2026-02-20"),
-                        startTime: new Date("1970-01-01T18:00:00Z"),
-                        endTime: new Date("1970-01-01T21:00:00Z"),
+                        startTime: new Date("2026-02-20T18:00:00"),
+                        endTime: new Date("2026-02-20T21:00:00"),
                         isActive: true,
                     },
                 ],
@@ -475,8 +480,8 @@ Benefit:
 - Materi presentasi
 
 Cocok untuk: Pemilik UMKM, entrepreneur, mahasiswa bisnis`,
-            posterImage: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800",
-            bannerImage: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600",
+            posterImage: "/images/events/seminar-digital.png",
+            bannerImage: "/images/events/seminar-digital.png",
             eventType: "OFFLINE",
             status: "PUBLISHED",
             visibility: "PUBLIC",
@@ -488,8 +493,8 @@ Cocok untuk: Pemilik UMKM, entrepreneur, mahasiswa bisnis`,
                 create: [
                     {
                         scheduleDate: new Date("2026-02-25"),
-                        startTime: new Date("1970-01-01T08:00:00Z"),
-                        endTime: new Date("1970-01-01T16:00:00Z"),
+                        startTime: new Date("2026-02-25T08:00:00"),
+                        endTime: new Date("2026-02-25T16:00:00"),
                         isActive: true,
                     },
                 ],
@@ -528,8 +533,8 @@ Fasilitas:
 Musik: Indie rock, alternative, pop indie
 
 Wajib datang untuk pecinta musik indie!`,
-            posterImage: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800",
-            bannerImage: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=1600",
+            posterImage: "/images/events/indie-gigs.png",
+            bannerImage: "/images/events/indie-gigs.png",
             eventType: "OFFLINE",
             status: "PUBLISHED",
             visibility: "PUBLIC",
@@ -541,8 +546,8 @@ Wajib datang untuk pecinta musik indie!`,
                 create: [
                     {
                         scheduleDate: new Date("2026-03-01"),
-                        startTime: new Date("1970-01-01T18:00:00Z"),
-                        endTime: new Date("1970-01-01T23:00:00Z"),
+                        startTime: new Date("2026-03-01T18:00:00"),
+                        endTime: new Date("2026-03-01T23:00:00"),
                         isActive: true,
                     },
                 ],
@@ -581,8 +586,8 @@ Dress code: Semi formal / Smart casual
 21+ only (ID required)
 
 Limited seats - Book now!`,
-            posterImage: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
-            bannerImage: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600",
+            posterImage: "/images/events/new-year-party.png",
+            bannerImage: "/images/events/new-year-party.png",
             eventType: "OFFLINE",
             status: "PUBLISHED",
             visibility: "PUBLIC",
@@ -594,8 +599,8 @@ Limited seats - Book now!`,
                 create: [
                     {
                         scheduleDate: new Date("2026-12-31"),
-                        startTime: new Date("1970-01-01T20:00:00Z"),
-                        endTime: new Date("1970-01-02T03:00:00Z"),
+                        startTime: new Date("2026-12-31T20:00:00"),
+                        endTime: new Date("2027-01-01T03:00:00"),
                         isActive: true,
                     },
                 ],
