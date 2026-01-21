@@ -149,6 +149,27 @@ export default function AdminUsersPage() {
         fetchUsers();
     }, [fetchUsers]);
 
+    const resetFilters = () => {
+        setRoleFilter("");
+        setVerificationFilter("");
+        setStatusFilter("");
+        setSearch("");
+        setDateFrom("");
+        setDateTo("");
+        setActivityFilter("");
+        setCurrentPage(1);
+    };
+    
+    const hasActiveFilters = !!(
+        roleFilter || 
+        verificationFilter || 
+        statusFilter || 
+        search || 
+        dateFrom || 
+        dateTo || 
+        activityFilter
+    );
+
     const handleVerify = async (userId: string, verify: boolean) => {
         try {
             setActionLoading(userId);
@@ -261,29 +282,110 @@ export default function AdminUsersPage() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 mb-6 flex flex-wrap gap-4">
-                    <div className="flex-1 min-w-[200px] relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search users..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg"
-                        />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Filter className="h-5 w-5 text-gray-400" />
+                <div className="bg-white rounded-xl p-4 mb-6">
+                    <div className="flex flex-wrap gap-4 mb-4">
+                        <div className="flex-1 min-w-[200px] relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search by name or email..."
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
+                        
                         <select
                             value={roleFilter}
-                            onChange={(e) => setRoleFilter(e.target.value)}
-                            className="px-4 py-2 border rounded-lg"
+                            onChange={(e) => {
+                                setRoleFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                             <option value="">All Roles</option>
                             <option value="CUSTOMER">Customer</option>
                             <option value="ORGANIZER">Organizer</option>
                             <option value="ADMIN">Admin</option>
                         </select>
+                        
+                        <select
+                            value={verificationFilter}
+                            onChange={(e) => {
+                                setVerificationFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Verification</option>
+                            <option value="verified">Verified</option>
+                            <option value="unverified">Unverified</option>
+                        </select>
+                        
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => {
+                                setStatusFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                        
+                        <select
+                            value={activityFilter}
+                            onChange={(e) => {
+                                setActivityFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="">All Activity</option>
+                            <option value="hasBookings">Has Bookings</option>
+                            <option value="hasEvents">Has Events</option>
+                            <option value="noActivity">No Activity</option>
+                        </select>
+                        
+                        {hasActiveFilters && (
+                            <button
+                                type="button"
+                                onClick={resetFilters}
+                                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border rounded-lg hover:bg-gray-50"
+                            >
+                                Clear Filters
+                            </button>
+                        )}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Joined:</span>
+                            <input
+                                type="date"
+                                value={dateFrom}
+                                onChange={(e) => {
+                                    setDateFrom(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                            <span className="text-gray-400">to</span>
+                            <input
+                                type="date"
+                                value={dateTo}
+                                onChange={(e) => {
+                                    setDateTo(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
                     </div>
                 </div>
 
