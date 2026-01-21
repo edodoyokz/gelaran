@@ -65,6 +65,7 @@ export async function GET(request: Request) {
             bookingsByStatus,
             recentTransactions,
             topEvents,
+            revenueTrendData,
         ] = await Promise.all([
             prisma.booking.aggregate({
                 where: { 
@@ -156,6 +157,18 @@ export async function GET(request: Request) {
                     },
                 },
             }),
+            prisma.$queryRaw<Array<{ date: Date; platformRevenue: number; organizerRevenue: number }>>`
+                SELECT 
+                    DATE(paid_at) as date,
+                    SUM(platform_revenue) as "platformRevenue",
+                    SUM(organizer_revenue) as "organizerRevenue"
+                FROM bookings
+                WHERE status IN ('CONFIRMED', 'PAID')
+                    AND paid_at >= ${dateFrom}
+                    AND paid_at <= ${dateTo}
+                GROUP BY DATE(paid_at)
+                ORDER BY date ASC
+            `,
         ]);
 
         const thisMonthTotal = Number(thisMonthRevenue._sum.totalAmount || 0);
@@ -205,6 +218,11 @@ export async function GET(request: Request) {
                 title: e.title,
                 posterImage: e.posterImage,
                 bookingCount: e._count.bookings,
+            })),
+            revenueTrend: revenueTrendData.map(d => ({
+                date: d.date.toISOString(),
+                platformRevenue: Number(d.platformRevenue || 0),
+                organizerRevenue: Number(d.organizerRevenue || 0),
             })),
         });
     } catch (error) {

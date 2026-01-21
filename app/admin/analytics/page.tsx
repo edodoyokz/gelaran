@@ -61,6 +61,11 @@ interface AnalyticsData {
         posterImage: string | null;
         bookingCount: number;
     }[];
+    revenueTrend: Array<{
+        date: string;
+        platformRevenue: number;
+        organizerRevenue: number;
+    }>;
 }
 
 const STATUS_COLORS: Record<string, string> = {
