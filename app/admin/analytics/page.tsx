@@ -282,29 +282,46 @@ export default function AdminAnalyticsPage() {
                                 </div>
                             ) : (
                                 data.recentTransactions.map((tx) => (
-                                    <div key={tx.id} className="p-4 hover:bg-gray-50">
+                                    <Link 
+                                        href={`/admin/bookings/${tx.id}`}
+                                        key={tx.id} 
+                                        className="block p-4 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                                    >
                                         <div className="flex items-start justify-between mb-2">
-                                            <div>
-                                                <p className="font-medium text-gray-900">{tx.customerName}</p>
-                                                <p className="text-sm text-gray-500">{tx.eventTitle}</p>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <p className="font-medium text-[var(--text-primary)] truncate">
+                                                        {tx.customerName}
+                                                    </p>
+                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700 flex-shrink-0">
+                                                        PAID
+                                                    </span>
+                                                </div>
+                                                <p className="text-sm text-[var(--text-muted)] truncate">
+                                                    {tx.eventTitle}
+                                                </p>
+                                                <p className="text-xs text-[var(--text-muted)] mt-1">
+                                                    {tx.bookingCode}
+                                                </p>
                                             </div>
-                                            <p className="font-semibold text-gray-900">
-                                                {formatCurrency(tx.amount)}
-                                            </p>
+                                            <div className="text-right ml-4 flex-shrink-0">
+                                                <p className="font-semibold text-[var(--text-primary)]">
+                                                    {formatCurrency(tx.amount)}
+                                                </p>
+                                                <p className="text-xs text-[var(--accent-primary)] mt-0.5">
+                                                    Fee: {formatCurrency(tx.platformRevenue)}
+                                                </p>
+                                                <p className="text-xs text-[var(--text-muted)] mt-1">
+                                                    {new Date(tx.paidAt).toLocaleDateString("id-ID", {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                    })}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center justify-between text-xs text-gray-500">
-                                            <span>{tx.bookingCode}</span>
-                                            <span>
-                                                {new Date(tx.paidAt).toLocaleDateString("id-ID", {
-                                                    day: "numeric",
-                                                    month: "short",
-                                                    year: "numeric",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
-                                            </span>
-                                        </div>
-                                    </div>
+                                    </Link>
                                 ))
                             )}
                         </div>
