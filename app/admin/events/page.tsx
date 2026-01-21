@@ -16,6 +16,7 @@ import {
     ArrowUpDown,
     ChevronLeft,
     ChevronRight,
+    Download,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
@@ -248,6 +249,57 @@ export default function AdminEventsPage() {
         }
     };
 
+    const handleExportCSV = () => {
+        const headers = [
+            "ID",
+            "Title",
+            "Status",
+            "Category",
+            "Organizer",
+            "Organization",
+            "City",
+            "Scheduled Date",
+            "Bookings",
+            "Total Revenue",
+            "Platform Revenue",
+            "Created At"
+        ];
+
+        const rows = events.map(event => [
+            event.id,
+            event.title,
+            event.status,
+            event.category?.name || "N/A",
+            event.organizer.name,
+            event.organizer.organizerProfile?.organizationName || "N/A",
+            event.venue?.city || "N/A",
+            event.schedules[0]?.scheduleDate 
+                ? new Date(event.schedules[0].scheduleDate).toLocaleDateString("id-ID")
+                : "N/A",
+            event._count.bookings.toString(),
+            event.revenue.total.toString(),
+            event.revenue.platform.toString(),
+            new Date(event.createdAt).toLocaleString("id-ID")
+        ]);
+
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", `events_export_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = "hidden";
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const handleApprove = async (eventId: string) => {
         try {
             setActionLoading(eventId);
@@ -460,6 +512,16 @@ export default function AdminEventsPage() {
                                 Clear Filters
                             </button>
                         )}
+                        
+                        <button
+                            type="button"
+                            onClick={handleExportCSV}
+                            disabled={events.length === 0}
+                            className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                            <Download className="h-4 w-4" />
+                            Export CSV
+                        </button>
                     </div>
                     
                     <div className="flex flex-wrap gap-4">
