@@ -16,6 +16,7 @@ interface RecentTransaction {
     totalAmount: Decimal;
     platformRevenue: Decimal;
     paidAt: Date | null;
+    createdAt: Date;
     event: { title: string };
     user: { name: string | null } | null;
 }
@@ -70,7 +71,13 @@ export async function GET(request: Request) {
             prisma.booking.aggregate({
                 where: { 
                     status: { in: ["CONFIRMED", "PAID"] },
-                    paidAt: { gte: dateFrom, lte: dateTo },
+                    OR: [
+                        { paidAt: { gte: dateFrom, lte: dateTo } },
+                        { 
+                            paidAt: null,
+                            createdAt: { gte: dateFrom, lte: dateTo }
+                        }
+                    ]
                 },
                 _sum: {
                     totalAmount: true,
@@ -82,14 +89,26 @@ export async function GET(request: Request) {
             prisma.booking.aggregate({
                 where: {
                     status: { in: ["CONFIRMED", "PAID"] },
-                    paidAt: { gte: startOfMonth },
+                    OR: [
+                        { paidAt: { gte: startOfMonth, lte: now } },
+                        { 
+                            paidAt: null,
+                            createdAt: { gte: startOfMonth, lte: now }
+                        }
+                    ]
                 },
                 _sum: { totalAmount: true, platformRevenue: true },
             }),
             prisma.booking.aggregate({
                 where: {
                     status: { in: ["CONFIRMED", "PAID"] },
-                    paidAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+                    OR: [
+                        { paidAt: { gte: startOfLastMonth, lte: endOfLastMonth } },
+                        { 
+                            paidAt: null,
+                            createdAt: { gte: startOfLastMonth, lte: endOfLastMonth }
+                        }
+                    ]
                 },
                 _sum: { totalAmount: true, platformRevenue: true },
             }),
@@ -106,7 +125,16 @@ export async function GET(request: Request) {
             prisma.booking.groupBy({
                 by: ["status"],
                 where: {
-                    paidAt: { gte: dateFrom, lte: dateTo },
+                    OR: [
+                        { 
+                            status: { in: ["CONFIRMED", "PAID"] },
+                            paidAt: { gte: dateFrom, lte: dateTo },
+                        },
+                        {
+                            status: { notIn: ["CONFIRMED", "PAID"] },
+                            createdAt: { gte: dateFrom, lte: dateTo },
+                        }
+                    ]
                 },
                 _count: { id: true },
                 _sum: { totalAmount: true },
@@ -114,9 +142,18 @@ export async function GET(request: Request) {
             prisma.booking.findMany({
                 where: { 
                     status: { in: ["CONFIRMED", "PAID"] },
-                    paidAt: { gte: dateFrom, lte: dateTo },
+                    OR: [
+                        { paidAt: { gte: dateFrom, lte: dateTo } },
+                        { 
+                            paidAt: null,
+                            createdAt: { gte: dateFrom, lte: dateTo }
+                        }
+                    ]
                 },
-                orderBy: { paidAt: "desc" },
+                orderBy: [
+                    { paidAt: { sort: "desc", nulls: "last" } },
+                    { createdAt: "desc" }
+                ],
                 take: 10,
                 select: {
                     id: true,
@@ -124,6 +161,7 @@ export async function GET(request: Request) {
                     totalAmount: true,
                     platformRevenue: true,
                     paidAt: true,
+                    createdAt: true,
                     event: {
                         select: { title: true },
                     },
@@ -159,14 +197,16 @@ export async function GET(request: Request) {
             }),
             prisma.$queryRaw<Array<{ date: Date; platformRevenue: number; organizerRevenue: number }>>`
                 SELECT 
-                    DATE(paid_at) as date,
+                    DATE(COALESCE(paid_at, created_at)) as date,
                     SUM(platform_revenue) as "platformRevenue",
                     SUM(organizer_revenue) as "organizerRevenue"
                 FROM bookings
                 WHERE status IN ('CONFIRMED', 'PAID')
-                    AND paid_at >= ${dateFrom}
-                    AND paid_at <= ${dateTo}
-                GROUP BY DATE(paid_at)
+                    AND (
+                        (paid_at IS NOT NULL AND paid_at >= ${dateFrom} AND paid_at <= ${dateTo})
+                        OR (paid_at IS NULL AND created_at >= ${dateFrom} AND created_at <= ${dateTo})
+                    )
+                GROUP BY DATE(COALESCE(paid_at, created_at))
                 ORDER BY date ASC
             `,
         ]);
@@ -209,7 +249,7 @@ export async function GET(request: Request) {
                 bookingCode: t.bookingCode,
                 amount: Number(t.totalAmount),
                 platformRevenue: Number(t.platformRevenue),
-                paidAt: t.paidAt,
+                paidAt: t.paidAt || t.createdAt,
                 eventTitle: t.event.title,
                 customerName: t.user?.name || "Guest",
             })),
