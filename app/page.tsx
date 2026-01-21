@@ -88,7 +88,9 @@ function formatEventDate(schedule: EventSchedule | null): string {
 
 function formatEventTime(schedule: EventSchedule | null): string {
     if (!schedule) return "";
-    return `${schedule.startTime} WIB`;
+
+    const time = new Date(schedule.startTime);
+    return time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
 }
 
 function formatLocation(event: PublicEvent): string {
@@ -181,7 +183,7 @@ export default function HomePage() {
                             <p className="text-gray-500 text-sm">Jangan lewatkan event yang sedang trending.</p>
                         </div>
                         <Link href="/events" className="group text-indigo-600 text-sm font-bold flex items-center hover:text-indigo-700 transition-colors bg-indigo-50 px-4 py-2 rounded-full hover:bg-indigo-100 self-start sm:self-auto">
-                            Lihat Semua 
+                            Lihat Semua
                             <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
                         </Link>
                     </div>
@@ -196,7 +198,7 @@ export default function HomePage() {
                                 <Calendar className="text-gray-400" size={32} />
                             </div>
                             <p className="text-gray-500 font-medium text-lg">Belum ada event tersedia untuk kategori ini.</p>
-                            <button 
+                            <button
                                 onClick={() => setSelectedCategory("all")}
                                 className="mt-4 text-indigo-600 font-bold hover:underline"
                             >
@@ -232,7 +234,7 @@ export default function HomePage() {
                 {onlineEvents.length > 0 && (
                     <section className="mb-8">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
-                             <div>
+                            <div>
                                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-1">Online Event</h2>
                                 <p className="text-gray-500 text-sm">Ikuti event seru dari mana saja.</p>
                             </div>
@@ -240,7 +242,7 @@ export default function HomePage() {
                                 href="/events?eventType=ONLINE"
                                 className="group text-indigo-600 text-sm font-bold flex items-center hover:text-indigo-700 transition-colors bg-indigo-50 px-4 py-2 rounded-full hover:bg-indigo-100 self-start sm:self-auto"
                             >
-                                Lihat Semua 
+                                Lihat Semua
                                 <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
                             </Link>
                         </div>
