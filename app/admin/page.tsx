@@ -24,7 +24,16 @@ import { CommissionOverview } from "@/components/admin/CommissionOverview";
 interface RecentBooking {
     id: string;
     bookingCode: string;
-    event: { title: string };
+    status: string;
+    event: { 
+        title: string;
+        organizer: {
+            name: string | null;
+            organizerProfile: {
+                organizationName: string;
+            } | null;
+        };
+    };
     user: { name: string | null; email: string | null } | null;
     guestName: string | null;
     totalAmount: Decimal;
@@ -111,7 +120,19 @@ export default async function AdminDashboard() {
         orderBy: { createdAt: "desc" },
         where: { status: { in: ["CONFIRMED", "PAID"] } },
         include: {
-            event: { select: { title: true } },
+            event: { 
+                select: { 
+                    title: true,
+                    organizer: {
+                        select: {
+                            name: true,
+                            organizerProfile: {
+                                select: { organizationName: true }
+                            }
+                        }
+                    }
+                } 
+            },
             user: { select: { name: true, email: true } },
         },
     });
@@ -257,28 +278,50 @@ export default async function AdminDashboard() {
                                 No recent bookings
                             </div>
                         ) : (
-                            recentBookings.map((booking: RecentBooking) => (
-                                <Link 
-                                    key={booking.id} 
-                                    href={`/admin/bookings/${booking.id}`}
-                                    className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
-                                >
-                                    <div>
-                                        <p className="font-medium text-[var(--text-primary)]">{booking.event.title}</p>
-                                        <p className="text-sm text-[var(--text-muted)]">
-                                            {booking.user?.name || booking.guestName || "Guest"} • {booking.bookingCode}
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-medium text-[var(--accent-primary)]">
-                                            {formatCurrency(Number(booking.totalAmount))}
-                                        </p>
-                                        <p className="text-xs text-[var(--text-muted)]">
-                                            {new Date(booking.createdAt).toLocaleDateString("id-ID")}
-                                        </p>
-                                    </div>
-                                </Link>
-                            ))
+                            recentBookings.map((booking: RecentBooking) => {
+                                const statusColors = {
+                                    PAID: "bg-green-500/10 text-green-600",
+                                    CONFIRMED: "bg-blue-500/10 text-blue-600",
+                                };
+                                const organizerName = booking.event.organizer.organizerProfile?.organizationName 
+                                    || booking.event.organizer.name 
+                                    || "Unknown";
+
+                                return (
+                                    <Link 
+                                        key={booking.id} 
+                                        href={`/admin/bookings/${booking.id}`}
+                                        className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
+                                    >
+                                        <div className="flex-1">
+                                            <p className="font-medium text-[var(--text-primary)]">
+                                                {booking.event.title}
+                                            </p>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-sm text-[var(--text-muted)]">
+                                                    {booking.user?.name || booking.guestName || "Guest"} • {booking.bookingCode}
+                                                </span>
+                                                <span className="text-xs text-[var(--text-muted)]">
+                                                    • by {organizerName}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="text-right">
+                                                <p className="font-medium text-[var(--accent-primary)]">
+                                                    {formatCurrency(Number(booking.totalAmount))}
+                                                </p>
+                                                <p className="text-xs text-[var(--text-muted)]">
+                                                    {new Date(booking.createdAt).toLocaleDateString("id-ID")}
+                                                </p>
+                                            </div>
+                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[booking.status as keyof typeof statusColors]}`}>
+                                                {booking.status}
+                                            </span>
+                                        </div>
+                                    </Link>
+                                );
+                            })
                         )}
                     </div>
                 </div>
