@@ -91,6 +91,15 @@ export async function POST(req: NextRequest) {
       })
     }
     
+    if (!commissionSetting) {
+      commissionSetting = await prisma.commissionSetting.findFirst({
+        where: {
+          organizerId: null,
+          isActive: true
+        }
+      })
+    }
+    
     const pricing = calculatePricing({
       subtotal,
       discountAmount,

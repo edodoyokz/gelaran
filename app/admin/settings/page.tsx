@@ -67,14 +67,17 @@ export default function AdminSettingsPage() {
     const checkAuth = useCallback(async () => {
         try {
             setIsLoading(true);
-            const res = await fetch("/api/admin/settings");
+            const [settingsRes, commissionRes] = await Promise.all([
+                fetch("/api/admin/settings"),
+                fetch("/api/admin/settings/commission")
+            ]);
             
-            if (!res.ok) {
-                if (res.status === 401) {
+            if (!settingsRes.ok) {
+                if (settingsRes.status === 401) {
                     router.push("/login?returnUrl=/admin/settings");
                     return;
                 }
-                if (res.status === 403) {
+                if (settingsRes.status === 403) {
                     router.push("/admin");
                     return;
                 }
@@ -82,9 +85,17 @@ export default function AdminSettingsPage() {
                 return;
             }
 
-            const data = await res.json();
-            if (data.success) {
-                setSettings(data.data);
+            const settingsData = await settingsRes.json();
+            const commissionData = await commissionRes.json();
+            
+            if (settingsData.success) {
+                const mergedSettings = {
+                    ...settingsData.data,
+                    platformFeePercentage: commissionData.success 
+                        ? commissionData.data.commissionValue 
+                        : settingsData.data.platformFeePercentage
+                };
+                setSettings(mergedSettings);
             }
         } catch {
             setError("Failed to load settings");
@@ -102,16 +113,31 @@ export default function AdminSettingsPage() {
             setIsSaving(true);
             setSuccess(false);
 
-            const res = await fetch("/api/admin/settings", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(settings),
-            });
+            const { platformFeePercentage, ...otherSettings } = settings;
 
-            const data = await res.json();
+            const [settingsRes, commissionRes] = await Promise.all([
+                fetch("/api/admin/settings", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(otherSettings),
+                }),
+                fetch("/api/admin/settings/commission", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ commissionValue: platformFeePercentage }),
+                })
+            ]);
 
-            if (!data.success) {
-                showToast(data.error?.message || "Failed to save settings", "error");
+            const [settingsData, commissionData] = await Promise.all([
+                settingsRes.json(),
+                commissionRes.json()
+            ]);
+
+            if (!settingsData.success || !commissionData.success) {
+                const errorMsg = !settingsData.success 
+                    ? (settingsData.error?.message || "Failed to save settings")
+                    : (commissionData.error?.message || "Failed to save commission");
+                showToast(errorMsg, "error");
                 return;
             }
 

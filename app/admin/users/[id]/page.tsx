@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
+import { CommissionOverride } from "@/components/admin/CommissionOverride";
 
 interface CustomerProfile {
     id: string;
@@ -163,7 +164,7 @@ export default function AdminUserDetailPage({
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState<"overview" | "bookings" | "events" | "organizer">("overview");
+    const [activeTab, setActiveTab] = useState<"overview" | "bookings" | "events" | "organizer" | "commission">("overview");
 
     useEffect(() => {
         params.then((p) => setUserId(p.id));
@@ -517,6 +518,17 @@ export default function AdminUserDetailPage({
                                             >
                                                 Organizer Profile
                                             </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveTab("commission")}
+                                                className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                                                    activeTab === "commission"
+                                                        ? "border-indigo-600 text-indigo-600"
+                                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                                }`}
+                                            >
+                                                Commission
+                                            </button>
                                         </>
                                     )}
                                 </div>
@@ -823,6 +835,15 @@ export default function AdminUserDetailPage({
                                                 </div>
                                             </div>
                                         )}
+                                    </div>
+                                )}
+
+                                {activeTab === "commission" && userData.organizerProfile && (
+                                    <div className="space-y-6">
+                                        <CommissionOverride 
+                                            organizerId={userData.id}
+                                            organizationName={userData.organizerProfile.organizationName}
+                                        />
                                     </div>
                                 )}
                             </div>
