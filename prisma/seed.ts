@@ -1,7 +1,10 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
+
+const DEFAULT_PASSWORD = "password123";
 
 async function main() {
     console.log("🗑️  Deleting existing data...");
@@ -26,6 +29,9 @@ async function main() {
 
     console.log("✅ Deleted all existing data");
     console.log("🌱 Seeding database with Solo/Surakarta data...");
+    
+    const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
+    console.log(`🔑 Using default password: ${DEFAULT_PASSWORD}`);
 
     const taxRate = await prisma.taxRate.create({
         data: {
@@ -103,6 +109,7 @@ async function main() {
         data: {
             name: "Taman Sriwedari",
             email: "info@sriwedari.solo.go.id",
+            passwordHash,
             role: "ORGANIZER",
             isVerified: true,
             isActive: true,
@@ -123,6 +130,7 @@ async function main() {
         data: {
             name: "GOR Manahan Management",
             email: "info@gormanahan.solo.go.id",
+            passwordHash,
             role: "ORGANIZER",
             isVerified: true,
             isActive: true,
@@ -143,6 +151,7 @@ async function main() {
         data: {
             name: "Solo Creative Hub",
             email: "hello@solocreativehub.id",
+            passwordHash,
             role: "ORGANIZER",
             isVerified: true,
             isActive: true,
@@ -163,6 +172,7 @@ async function main() {
         data: {
             name: "Solo Music Fest",
             email: "contact@solomusicfest.id",
+            passwordHash,
             role: "ORGANIZER",
             isVerified: true,
             isActive: true,
@@ -183,6 +193,7 @@ async function main() {
         data: {
             name: "Solo Nightlife Events",
             email: "party@solonightlife.id",
+            passwordHash,
             role: "ORGANIZER",
             isVerified: true,
             isActive: true,
@@ -205,6 +216,7 @@ async function main() {
         data: {
             name: "Admin Gelaran Solo",
             email: "admin@gelaran.id",
+            passwordHash,
             role: "SUPER_ADMIN",
             isVerified: true,
             isActive: true,
@@ -219,6 +231,7 @@ async function main() {
                 name: "Budi Santoso",
                 email: "budi.santoso@email.com",
                 phone: "081234567001",
+                passwordHash,
                 role: "CUSTOMER",
                 isVerified: true,
                 isActive: true,
@@ -237,6 +250,7 @@ async function main() {
                 name: "Siti Nurhaliza",
                 email: "siti.nur@email.com",
                 phone: "081234567002",
+                passwordHash,
                 role: "CUSTOMER",
                 isVerified: true,
                 isActive: true,
@@ -255,6 +269,7 @@ async function main() {
                 name: "Ahmad Rizki",
                 email: "ahmad.rizki@email.com",
                 phone: "081234567003",
+                passwordHash,
                 role: "CUSTOMER",
                 isVerified: true,
                 isActive: true,
@@ -920,9 +935,19 @@ Limited seats - Book now!`,
     console.log(`- Bookings: 4 (with paid tickets)`);
     console.log(`- FAQs: Created`);
     console.log("\n✉️  Login credentials:");
-    console.log("Admin: admin@gelaran.id");
-    console.log("Organizers: info@sriwedari.solo.go.id, info@gormanahan.solo.go.id, etc.");
-    console.log("Customers: budi.santoso@email.com, siti.nur@email.com, ahmad.rizki@email.com");
+    console.log(`Password untuk semua user: ${DEFAULT_PASSWORD}`);
+    console.log("\nAdmin:");
+    console.log("  - admin@gelaran.id");
+    console.log("\nOrganizers:");
+    console.log("  - info@sriwedari.solo.go.id");
+    console.log("  - info@gormanahan.solo.go.id");
+    console.log("  - hello@solocreativehub.id");
+    console.log("  - contact@solomusicfest.id");
+    console.log("  - party@solonightlife.id");
+    console.log("\nCustomers:");
+    console.log("  - budi.santoso@email.com");
+    console.log("  - siti.nur@email.com");
+    console.log("  - ahmad.rizki@email.com");
 }
 
 main()
