@@ -272,6 +272,106 @@ export default function AdminUsersPage() {
         );
     }
 
+    const PaginationControls = () => {
+        if (!pagination) return null;
+        
+        const { page, totalPages, hasNext, hasPrev, total } = pagination;
+        const startItem = (page - 1) * itemsPerPage + 1;
+        const endItem = Math.min(page * itemsPerPage, total);
+        
+        return (
+            <div className="flex items-center justify-between px-6 py-4 border-t bg-white">
+                <div className="flex items-center gap-4">
+                    <p className="text-sm text-gray-600">
+                        Showing <span className="font-medium">{startItem}</span> to{" "}
+                        <span className="font-medium">{endItem}</span> of{" "}
+                        <span className="font-medium">{total}</span> users
+                    </p>
+                    
+                    <select
+                        value={itemsPerPage}
+                        onChange={(e) => {
+                            setItemsPerPage(Number(e.target.value));
+                            setCurrentPage(1);
+                        }}
+                        className="px-3 py-1 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                        <option value={10}>10 per page</option>
+                        <option value={20}>20 per page</option>
+                        <option value={50}>50 per page</option>
+                        <option value={100}>100 per page</option>
+                    </select>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={!hasPrev}
+                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        First
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setCurrentPage(page - 1)}
+                        disabled={!hasPrev}
+                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Previous
+                    </button>
+                    
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: Math.min(5, totalPages) }, (_: unknown, i: number) => {
+                            let pageNum: number;
+                            if (totalPages <= 5) {
+                                pageNum = i + 1;
+                            } else if (page <= 3) {
+                                pageNum = i + 1;
+                            } else if (page >= totalPages - 2) {
+                                pageNum = totalPages - 4 + i;
+                            } else {
+                                pageNum = page - 2 + i;
+                            }
+                            
+                            return (
+                                <button
+                                    key={pageNum}
+                                    type="button"
+                                    onClick={() => setCurrentPage(pageNum)}
+                                    className={`px-3 py-1 text-sm border rounded-lg ${
+                                        page === pageNum
+                                            ? "bg-indigo-600 text-white border-indigo-600"
+                                            : "hover:bg-gray-50"
+                                    }`}
+                                >
+                                    {pageNum}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    
+                    <button
+                        type="button"
+                        onClick={() => setCurrentPage(page + 1)}
+                        disabled={!hasNext}
+                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={!hasNext}
+                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Last
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <>
             <AdminHeader 
@@ -580,6 +680,8 @@ export default function AdminUsersPage() {
                             )}
                         </tbody>
                     </table>
+                    
+                    <PaginationControls />
                 </div>
             </main>
         </>
