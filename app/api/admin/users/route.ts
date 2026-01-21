@@ -140,13 +140,30 @@ export async function GET(request: Request) {
         const hasNext = page < totalPages;
         const hasPrev = page > 1;
 
-        // Calculate stats for all users (not just current page)
-        const [totalUsers, customerCount, organizerCount, adminCount] = await Promise.all([
+        const [totalUsers, customerCount, organizerCount, adminCount, verifiedCount, unverifiedCount] = await Promise.all([
             prisma.user.count(),
             prisma.user.count({ where: { role: 'CUSTOMER' } }),
             prisma.user.count({ where: { role: 'ORGANIZER' } }),
             prisma.user.count({ where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } } }),
+            prisma.user.count({ where: { isVerified: true } }),
+            prisma.user.count({ where: { isVerified: false } }),
         ]);
+
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const userGrowthData = await prisma.$queryRaw<Array<{ date: Date; count: bigint }>>`
+            SELECT DATE(created_at) as date, COUNT(*)::bigint as count
+            FROM "User"
+            WHERE created_at >= ${thirtyDaysAgo}
+            GROUP BY DATE(created_at)
+            ORDER BY date ASC
+        `;
+
+        const growthChart = userGrowthData.map(item => ({
+            date: item.date.toISOString().split('T')[0],
+            count: Number(item.count),
+        }));
         
         return successResponse({
             users,
@@ -163,6 +180,18 @@ export async function GET(request: Request) {
                 customers: customerCount,
                 organizers: organizerCount,
                 admins: adminCount,
+            },
+            charts: {
+                roleDistribution: [
+                    { name: 'Customers', value: customerCount },
+                    { name: 'Organizers', value: organizerCount },
+                    { name: 'Admins', value: adminCount },
+                ],
+                verificationStatus: [
+                    { name: 'Verified', value: verifiedCount },
+                    { name: 'Unverified', value: unverifiedCount },
+                ],
+                userGrowth: growthChart,
             },
         });
     } catch (error) {

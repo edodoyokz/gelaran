@@ -15,9 +15,12 @@ import {
     CheckCircle,
     Eye,
     Download,
+    ChevronDown,
+    ChevronUp,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
+import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface OrganizerProfile {
     organizationName: string | null;
@@ -57,10 +60,27 @@ interface StatsData {
     admins: number;
 }
 
+interface ChartDataPoint {
+    name: string;
+    value: number;
+}
+
+interface GrowthDataPoint {
+    date: string;
+    count: number;
+}
+
+interface ChartsData {
+    roleDistribution: ChartDataPoint[];
+    verificationStatus: ChartDataPoint[];
+    userGrowth: GrowthDataPoint[];
+}
+
 interface UsersResponse {
     users: AdminUser[];
     pagination: PaginationMeta;
     stats: StatsData;
+    charts: ChartsData;
 }
 
 const ROLE_COLORS: Record<string, string> = {
@@ -81,6 +101,12 @@ export default function AdminUsersPage() {
         organizers: 0,
         admins: 0,
     });
+    const [charts, setCharts] = useState<ChartsData>({
+        roleDistribution: [],
+        verificationStatus: [],
+        userGrowth: [],
+    });
+    const [showAnalytics, setShowAnalytics] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     
@@ -141,6 +167,9 @@ export default function AdminUsersPage() {
                 setUsers(data.data.users);
                 setPagination(data.data.pagination);
                 setStats(data.data.stats);
+                if (data.data.charts) {
+                    setCharts(data.data.charts);
+                }
             }
         } catch {
             setError("Failed to load users");
@@ -529,6 +558,110 @@ export default function AdminUsersPage() {
                         <p className="text-2xl font-bold text-red-600">{stats.admins}</p>
                         <p className="text-sm text-gray-500">Admins</p>
                     </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
+                    <button
+                        type="button"
+                        onClick={() => setShowAnalytics(!showAnalytics)}
+                        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    >
+                        <h2 className="text-lg font-semibold text-gray-900">User Analytics</h2>
+                        {showAnalytics ? (
+                            <ChevronUp className="h-5 w-5 text-gray-500" />
+                        ) : (
+                            <ChevronDown className="h-5 w-5 text-gray-500" />
+                        )}
+                    </button>
+                    
+                    {showAnalytics && (
+                        <div className="p-6 border-t bg-gray-50">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Role Distribution</h3>
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <PieChart>
+                                            <Pie
+                                                data={charts.roleDistribution as never[]}
+                                                cx="50%"
+                                                cy="50%"
+                                                labelLine={false}
+                                                label
+                                                outerRadius={80}
+                                                fill="#8884d8"
+                                                dataKey="value"
+                                            >
+                                                {charts.roleDistribution.map((_, index) => {
+                                                    const colors = ['#6366f1', '#a855f7', '#ef4444'];
+                                                    return <Cell key={`role-${index}`} fill={colors[index % colors.length]} />;
+                                                })}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Verification Status</h3>
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <PieChart>
+                                            <Pie
+                                                data={charts.verificationStatus as never[]}
+                                                cx="50%"
+                                                cy="50%"
+                                                labelLine={false}
+                                                label
+                                                outerRadius={80}
+                                                innerRadius={50}
+                                                fill="#8884d8"
+                                                dataKey="value"
+                                            >
+                                                {charts.verificationStatus.map((_, index) => {
+                                                    const colors = ['#10b981', '#f59e0b'];
+                                                    return <Cell key={`verification-${index}`} fill={colors[index % colors.length]} />;
+                                                })}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-lg p-4 shadow-sm">
+                                <h3 className="text-sm font-medium text-gray-700 mb-4">User Growth (Last 30 Days)</h3>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <LineChart data={charts.userGrowth}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                                        <XAxis 
+                                            dataKey="date" 
+                                            tick={{ fontSize: 12 }}
+                                            tickFormatter={(value) => {
+                                                const date = new Date(value);
+                                                return `${date.getMonth() + 1}/${date.getDate()}`;
+                                            }}
+                                        />
+                                        <YAxis tick={{ fontSize: 12 }} />
+                                        <Tooltip 
+                                            labelFormatter={(value) => {
+                                                const date = new Date(value);
+                                                return date.toLocaleDateString('id-ID');
+                                            }}
+                                        />
+                                        <Legend />
+                                        <Line 
+                                            type="monotone" 
+                                            dataKey="count" 
+                                            stroke="#6366f1" 
+                                            strokeWidth={2}
+                                            name="New Users"
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex justify-between items-center mb-4">
