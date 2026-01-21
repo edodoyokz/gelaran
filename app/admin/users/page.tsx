@@ -14,6 +14,7 @@ import {
     Ban,
     CheckCircle,
     Eye,
+    Download,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
@@ -247,6 +248,68 @@ export default function AdminUsersPage() {
         }
     };
 
+    const handleExportCSV = async () => {
+        try {
+            const params = new URLSearchParams();
+            if (roleFilter) params.set('role', roleFilter);
+            if (verificationFilter) params.set('verification', verificationFilter);
+            if (statusFilter) params.set('status', statusFilter);
+            if (search) params.set('search', search);
+            if (dateFrom) params.set('dateFrom', dateFrom);
+            if (dateTo) params.set('dateTo', dateTo);
+            if (activityFilter) params.set('activity', activityFilter);
+            if (sortBy) params.set('sortBy', sortBy);
+            if (sortOrder) params.set('sortOrder', sortOrder);
+            
+            params.set('limit', '10000');
+            
+            const res = await fetch(`/api/admin/users?${params.toString()}`);
+            const data = await res.json();
+            
+            if (!data.success || !data.data.users) {
+                showToast("Failed to export users", "error");
+                return;
+            }
+            
+            const csvRows = [];
+            csvRows.push(['ID', 'Name', 'Email', 'Phone', 'Role', 'Verified', 'Status', 'Bookings', 'Events', 'Joined', 'Organization'].join(','));
+            
+            data.data.users.forEach((user: AdminUser) => {
+                const row = [
+                    user.id,
+                    `"${user.name.replace(/"/g, '""')}"`,
+                    user.email,
+                    user.phone || '',
+                    user.role,
+                    user.isVerified ? 'Yes' : 'No',
+                    user.deletedAt ? 'Suspended' : 'Active',
+                    user._count.bookings,
+                    user._count.events,
+                    new Date(user.createdAt).toLocaleDateString('id-ID'),
+                    user.organizerProfile?.organizationName ? `"${user.organizerProfile.organizationName.replace(/"/g, '""')}"` : '',
+                ];
+                csvRows.push(row.join(','));
+            });
+            
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            const timestamp = new Date().toISOString().split('T')[0];
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `users-export-${timestamp}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast(`Exported ${data.data.users.length} users`, "success");
+        } catch {
+            showToast("Failed to export users", "error");
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -397,6 +460,17 @@ export default function AdminUsersPage() {
                         <p className="text-2xl font-bold text-red-600">{stats.admins}</p>
                         <p className="text-sm text-gray-500">Admins</p>
                     </div>
+                </div>
+
+                <div className="flex justify-end mb-4">
+                    <button
+                        type="button"
+                        onClick={handleExportCSV}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    >
+                        <Download className="h-4 w-4" />
+                        Export to CSV
+                    </button>
                 </div>
 
                 <div className="bg-white rounded-xl p-4 mb-6">
