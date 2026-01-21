@@ -107,6 +107,24 @@ async function getEvent(slug: string): Promise<EventData | null> {
                     where: { isActive: true },
                     orderBy: { sortOrder: "asc" },
                 },
+                venueSections: {
+                    where: { isActive: true },
+                    orderBy: { sortOrder: "asc" },
+                    include: {
+                        rows: {
+                            where: { isActive: true },
+                            orderBy: { sortOrder: "asc" },
+                            include: {
+                                seats: {
+                                    where: { isActive: true },
+                                    include: {
+                                        ticketType: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
             },
         });
 
