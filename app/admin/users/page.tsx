@@ -40,6 +40,28 @@ interface AdminUser {
     };
 }
 
+interface PaginationMeta {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
+
+interface StatsData {
+    total: number;
+    customers: number;
+    organizers: number;
+    admins: number;
+}
+
+interface UsersResponse {
+    users: AdminUser[];
+    pagination: PaginationMeta;
+    stats: StatsData;
+}
+
 const ROLE_COLORS: Record<string, string> = {
     CUSTOMER: "bg-gray-100 text-gray-700",
     ORGANIZER: "bg-purple-100 text-purple-700",
@@ -51,16 +73,51 @@ export default function AdminUsersPage() {
     const router = useRouter();
     const { showToast } = useToast();
     const [users, setUsers] = useState<AdminUser[]>([]);
+    const [pagination, setPagination] = useState<PaginationMeta | null>(null);
+    const [stats, setStats] = useState<StatsData>({
+        total: 0,
+        customers: 0,
+        organizers: 0,
+        admins: 0,
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    
     const [roleFilter, setRoleFilter] = useState<string>("");
+    const [verificationFilter, setVerificationFilter] = useState<string>("");
+    const [statusFilter, setStatusFilter] = useState<string>("");
     const [search, setSearch] = useState("");
+    const [dateFrom, setDateFrom] = useState<string>("");
+    const [dateTo, setDateTo] = useState<string>("");
+    const [activityFilter, setActivityFilter] = useState<string>("");
+    
+    const [sortBy, setSortBy] = useState<string>("createdAt");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+    
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
     const fetchUsers = useCallback(async () => {
         try {
             setIsLoading(true);
-            const res = await fetch("/api/admin/users");
+            
+            const params = new URLSearchParams();
+            params.set('page', currentPage.toString());
+            params.set('limit', itemsPerPage.toString());
+            
+            if (roleFilter) params.set('role', roleFilter);
+            if (verificationFilter) params.set('verification', verificationFilter);
+            if (statusFilter) params.set('status', statusFilter);
+            if (search) params.set('search', search);
+            if (dateFrom) params.set('dateFrom', dateFrom);
+            if (dateTo) params.set('dateTo', dateTo);
+            if (activityFilter) params.set('activity', activityFilter);
+            if (sortBy) params.set('sortBy', sortBy);
+            if (sortOrder) params.set('sortOrder', sortOrder);
+            
+            const res = await fetch(`/api/admin/users?${params.toString()}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -77,14 +134,16 @@ export default function AdminUsersPage() {
             }
 
             if (data.success) {
-                setUsers(data.data);
+                setUsers(data.data.users);
+                setPagination(data.data.pagination);
+                setStats(data.data.stats);
             }
         } catch {
             setError("Failed to load users");
         } finally {
             setIsLoading(false);
         }
-    }, [router]);
+    }, [router, currentPage, itemsPerPage, roleFilter, verificationFilter, statusFilter, search, dateFrom, dateTo, activityFilter, sortBy, sortOrder]);
 
     useEffect(() => {
         fetchUsers();
@@ -148,23 +207,6 @@ export default function AdminUsersPage() {
         } finally {
             setActionLoading(null);
         }
-    };
-
-    const filteredUsers = users.filter((user) => {
-        const matchesRole = !roleFilter || user.role === roleFilter;
-        const matchesSearch =
-            !search ||
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.email.toLowerCase().includes(search.toLowerCase());
-
-        return matchesRole && matchesSearch;
-    });
-
-    const stats = {
-        total: users.length,
-        customers: users.filter((u) => u.role === "CUSTOMER").length,
-        organizers: users.filter((u) => u.role === "ORGANIZER").length,
-        admins: users.filter((u) => u.role === "ADMIN" || u.role === "SUPER_ADMIN").length,
     };
 
     if (isLoading) {
@@ -270,14 +312,14 @@ export default function AdminUsersPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y">
-                            {filteredUsers.length === 0 ? (
+                            {users.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                                         No users found
                                     </td>
                                 </tr>
                             ) : (
-                                filteredUsers.map((u) => (
+                                users.map((u) => (
                                     <tr
                                         key={u.id}
                                         className={`hover:bg-gray-50 ${u.deletedAt ? "opacity-50" : ""}`}
