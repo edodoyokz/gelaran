@@ -16,6 +16,7 @@ import {
     Download,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { DateRangeFilter, type DateRangePreset } from "@/components/admin/DateRangeFilter";
 import { formatCurrency } from "@/lib/utils";
 
 interface AnalyticsData {
@@ -82,12 +83,23 @@ export default function AdminAnalyticsPage() {
     const [data, setData] = useState<AnalyticsData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [dateRange, setDateRange] = useState<{
+        from: Date;
+        to: Date;
+        preset?: DateRangePreset;
+    }>({
+        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        to: new Date(),
+        preset: '30d',
+    });
 
     useEffect(() => {
         const loadData = async () => {
             try {
                 setIsLoading(true);
-                const res = await fetch("/api/admin/finance");
+                const fromStr = dateRange.from.toISOString();
+                const toStr = dateRange.to.toISOString();
+                const res = await fetch(`/api/admin/finance?from=${fromStr}&to=${toStr}`);
                 const resData = await res.json();
 
                 if (!resData.success) {
@@ -104,7 +116,7 @@ export default function AdminAnalyticsPage() {
         };
 
         loadData();
-    }, []);
+    }, [dateRange]);
 
     if (isLoading) {
         return (
@@ -138,7 +150,11 @@ export default function AdminAnalyticsPage() {
         <>
             <AdminHeader title="Analitik Dashboard" backHref="/admin" />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-end">
+                <DateRangeFilter value={dateRange} onChange={setDateRange} />
+            </div>
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <StatCard
                         title="Total Transaksi"
