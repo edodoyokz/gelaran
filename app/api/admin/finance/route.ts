@@ -143,7 +143,7 @@ export async function GET() {
 
         return successResponse({
             overview: {
-                totalRevenue: Number(totalRevenue._sum.totalAmount || 0),
+                totalTransactions: Number(totalRevenue._sum.totalAmount || 0),
                 platformRevenue: Number(totalRevenue._sum.platformRevenue || 0),
                 organizerRevenue: Number(totalRevenue._sum.organizerRevenue || 0),
                 totalBookings: totalRevenue._count.id,

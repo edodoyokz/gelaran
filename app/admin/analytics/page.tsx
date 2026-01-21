@@ -20,7 +20,7 @@ import { formatCurrency } from "@/lib/utils";
 
 interface AnalyticsData {
     overview: {
-        totalRevenue: number;
+        totalTransactions: number;
         platformRevenue: number;
         organizerRevenue: number;
         totalBookings: number;
@@ -141,8 +141,8 @@ export default function AdminAnalyticsPage() {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <StatCard
-                        title="Total Pendapatan"
-                        value={formatCurrency(data.overview.totalRevenue)}
+                        title="Total Transaksi"
+                        value={formatCurrency(data.overview.totalTransactions)}
                         icon={DollarSign}
                         color="green"
                     />
