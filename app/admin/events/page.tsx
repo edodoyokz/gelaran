@@ -29,14 +29,21 @@ interface EventVenue {
 }
 
 interface EventCategory {
+    id: string;
     name: string;
 }
 
 interface EventOrganizer {
+    id: string;
     name: string;
     organizerProfile: {
         organizationName: string | null;
     } | null;
+}
+
+interface EventRevenue {
+    total: number;
+    platform: number;
 }
 
 interface AdminEvent {
@@ -44,15 +51,49 @@ interface AdminEvent {
     slug: string;
     title: string;
     posterImage: string | null;
-    status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "CANCELLED" | "COMPLETED";
+    status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "CANCELLED" | "ENDED";
     createdAt: string;
     organizer: EventOrganizer;
     category: EventCategory | null;
     venue: EventVenue | null;
     schedules: EventSchedule[];
+    revenue: EventRevenue;
     _count: {
         bookings: number;
     };
+}
+
+interface PaginationMeta {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
+
+interface StatsData {
+    total: number;
+    draft: number;
+    pending: number;
+    published: number;
+    cancelled: number;
+    ended: number;
+    totalRevenue: number;
+    platformRevenue: number;
+}
+
+interface FilterOptions {
+    categories: Array<{ id: string; name: string; count: number }>;
+    cities: string[];
+    organizers: Array<{ id: string; name: string; organizationName: string | null }>;
+}
+
+interface EventsResponse {
+    events: AdminEvent[];
+    pagination: PaginationMeta;
+    stats: StatsData;
+    filterOptions: FilterOptions;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -60,25 +101,82 @@ const STATUS_COLORS: Record<string, string> = {
     PENDING_REVIEW: "bg-yellow-100 text-yellow-700",
     PUBLISHED: "bg-green-100 text-green-700",
     CANCELLED: "bg-red-100 text-red-700",
-    COMPLETED: "bg-blue-100 text-blue-700",
+    ENDED: "bg-blue-100 text-blue-700",
 };
 
 export default function AdminEventsPage() {
     const router = useRouter();
+    const { showToast } = useToast();
+    
     const [events, setEvents] = useState<AdminEvent[]>([]);
+    const [pagination, setPagination] = useState<PaginationMeta | null>(null);
+    const [stats, setStats] = useState<StatsData>({
+        total: 0,
+        draft: 0,
+        pending: 0,
+        published: 0,
+        cancelled: 0,
+        ended: 0,
+        totalRevenue: 0,
+        platformRevenue: 0,
+    });
+    const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+        categories: [],
+        cities: [],
+        organizers: [],
+    });
+    
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    
     const [statusFilter, setStatusFilter] = useState<string>("");
+    const [categoryFilter, setCategoryFilter] = useState<string>("");
+    const [organizerFilter, setOrganizerFilter] = useState<string>("");
     const [search, setSearch] = useState("");
+    const [dateFrom, setDateFrom] = useState<string>("");
+    const [dateTo, setDateTo] = useState<string>("");
+    const [scheduledFrom, setScheduledFrom] = useState<string>("");
+    const [scheduledTo, setScheduledTo] = useState<string>("");
+    const [cityFilter, setCityFilter] = useState<string>("");
+    const [hasBookingsFilter, setHasBookingsFilter] = useState<string>("");
+    
+    const [sortBy, setSortBy] = useState<string>("createdAt");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+    
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    
+    const [selectedEvents, setSelectedEvents] = useState<Set<string>>(new Set());
+    const [isBulkActionLoading, setIsBulkActionLoading] = useState(false);
+    
+    const [showAnalytics, setShowAnalytics] = useState(false);
+    
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
     const [rejectionReason, setRejectionReason] = useState("");
-    const { showToast } = useToast();
 
     const fetchEvents = useCallback(async () => {
         try {
             setIsLoading(true);
-            const res = await fetch("/api/admin/events");
+            
+            const params = new URLSearchParams();
+            params.set('page', currentPage.toString());
+            params.set('limit', itemsPerPage.toString());
+            
+            if (statusFilter) params.set('status', statusFilter);
+            if (categoryFilter) params.set('category', categoryFilter);
+            if (organizerFilter) params.set('organizer', organizerFilter);
+            if (search) params.set('search', search);
+            if (dateFrom) params.set('dateFrom', dateFrom);
+            if (dateTo) params.set('dateTo', dateTo);
+            if (scheduledFrom) params.set('scheduledFrom', scheduledFrom);
+            if (scheduledTo) params.set('scheduledTo', scheduledTo);
+            if (cityFilter) params.set('city', cityFilter);
+            if (hasBookingsFilter) params.set('hasBookings', hasBookingsFilter);
+            if (sortBy) params.set('sortBy', sortBy);
+            if (sortOrder) params.set('sortOrder', sortOrder);
+            
+            const res = await fetch(`/api/admin/events?${params.toString()}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -95,14 +193,17 @@ export default function AdminEventsPage() {
             }
 
             if (data.success) {
-                setEvents(data.data);
+                setEvents(data.data.events);
+                setPagination(data.data.pagination);
+                setStats(data.data.stats);
+                setFilterOptions(data.data.filterOptions);
             }
         } catch {
             setError("Failed to load events");
         } finally {
             setIsLoading(false);
         }
-    }, [router]);
+    }, [router, currentPage, itemsPerPage, statusFilter, categoryFilter, organizerFilter, search, dateFrom, dateTo, scheduledFrom, scheduledTo, cityFilter, hasBookingsFilter, sortBy, sortOrder]);
 
     useEffect(() => {
         fetchEvents();
@@ -124,11 +225,7 @@ export default function AdminEventsPage() {
                 return;
             }
 
-            setEvents((prev) =>
-                prev.map((e) =>
-                    e.id === eventId ? { ...e, status: "PUBLISHED" } : e
-                )
-            );
+            await fetchEvents();
             showToast("Event approved successfully", "success");
         } catch {
             showToast("Failed to approve event", "error");
@@ -158,11 +255,7 @@ export default function AdminEventsPage() {
                 return;
             }
 
-            setEvents((prev) =>
-                prev.map((e) =>
-                    e.id === showRejectModal ? { ...e, status: "CANCELLED" } : e
-                )
-            );
+            await fetchEvents();
             setShowRejectModal(null);
             setRejectionReason("");
             showToast("Event rejected successfully", "success");
@@ -172,21 +265,6 @@ export default function AdminEventsPage() {
             setActionLoading(null);
         }
     };
-
-    const filteredEvents = events.filter((event) => {
-        const matchesStatus = !statusFilter || event.status === statusFilter;
-        const matchesSearch =
-            !search ||
-            event.title.toLowerCase().includes(search.toLowerCase()) ||
-            event.organizer.organizerProfile?.organizationName
-                ?.toLowerCase()
-                .includes(search.toLowerCase()) ||
-            event.organizer.name.toLowerCase().includes(search.toLowerCase());
-
-        return matchesStatus && matchesSearch;
-    });
-
-    const pendingCount = events.filter((e) => e.status === "PENDING_REVIEW").length;
 
     if (isLoading) {
         return (
@@ -217,7 +295,7 @@ export default function AdminEventsPage() {
         <>
             <AdminHeader 
                 title="Event Moderation" 
-                subtitle={pendingCount > 0 ? `${pendingCount} event menunggu review` : undefined}
+                subtitle={stats.pending > 0 ? `${stats.pending} event menunggu review` : undefined}
                 backHref="/admin"
             />
 
@@ -274,14 +352,14 @@ export default function AdminEventsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y">
-                            {filteredEvents.length === 0 ? (
+                            {events.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                                         No events found
                                     </td>
                                 </tr>
                             ) : (
-                                filteredEvents.map((event) => (
+                                events.map((event: AdminEvent) => (
                                     <tr key={event.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
