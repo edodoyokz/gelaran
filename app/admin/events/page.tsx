@@ -158,6 +158,8 @@ export default function AdminEventsPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
     const [rejectionReason, setRejectionReason] = useState("");
+    const [showBulkRejectModal, setShowBulkRejectModal] = useState(false);
+    const [bulkRejectionReason, setBulkRejectionReason] = useState("");
 
     const fetchEvents = useCallback(async () => {
         try {
@@ -298,6 +300,83 @@ export default function AdminEventsPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedEvents.size === events.length) {
+            setSelectedEvents(new Set());
+        } else {
+            setSelectedEvents(new Set(events.map(e => e.id)));
+        }
+    };
+
+    const toggleSelectEvent = (eventId: string) => {
+        const newSelected = new Set(selectedEvents);
+        if (newSelected.has(eventId)) {
+            newSelected.delete(eventId);
+        } else {
+            newSelected.add(eventId);
+        }
+        setSelectedEvents(newSelected);
+    };
+
+    const handleBulkApprove = async () => {
+        if (selectedEvents.size === 0) return;
+
+        try {
+            setIsBulkActionLoading(true);
+            const eventIds = Array.from(selectedEvents);
+            
+            await Promise.all(
+                eventIds.map(eventId =>
+                    fetch(`/api/admin/events/${eventId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: "PUBLISHED" }),
+                    })
+                )
+            );
+
+            await fetchEvents();
+            setSelectedEvents(new Set());
+            showToast(`${eventIds.length} events approved successfully`, "success");
+        } catch {
+            showToast("Failed to approve events", "error");
+        } finally {
+            setIsBulkActionLoading(false);
+        }
+    };
+
+    const handleBulkReject = async () => {
+        if (selectedEvents.size === 0 || !bulkRejectionReason.trim()) return;
+
+        try {
+            setIsBulkActionLoading(true);
+            const eventIds = Array.from(selectedEvents);
+            
+            await Promise.all(
+                eventIds.map(eventId =>
+                    fetch(`/api/admin/events/${eventId}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ 
+                            status: "CANCELLED",
+                            rejectionReason: bulkRejectionReason 
+                        }),
+                    })
+                )
+            );
+
+            await fetchEvents();
+            setSelectedEvents(new Set());
+            setShowBulkRejectModal(false);
+            setBulkRejectionReason("");
+            showToast(`${eventIds.length} events rejected successfully`, "success");
+        } catch {
+            showToast("Failed to reject events", "error");
+        } finally {
+            setIsBulkActionLoading(false);
+        }
     };
 
     const handleApprove = async (eventId: string) => {
@@ -522,6 +601,29 @@ export default function AdminEventsPage() {
                             <Download className="h-4 w-4" />
                             Export CSV
                         </button>
+                        
+                        {selectedEvents.size > 0 && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={handleBulkApprove}
+                                    disabled={isBulkActionLoading}
+                                    className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    <CheckCircle className="h-4 w-4" />
+                                    Approve ({selectedEvents.size})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowBulkRejectModal(true)}
+                                    disabled={isBulkActionLoading}
+                                    className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                    Reject ({selectedEvents.size})
+                                </button>
+                            </>
+                        )}
                     </div>
                     
                     <div className="flex flex-wrap gap-4">
@@ -577,6 +679,14 @@ export default function AdminEventsPage() {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b">
                             <tr>
+                                <th className="px-6 py-3 text-left">
+                                    <input
+                                        type="checkbox"
+                                        checked={events.length > 0 && selectedEvents.size === events.length}
+                                        onChange={toggleSelectAll}
+                                        className="rounded border-gray-300"
+                                    />
+                                </th>
                                 <th 
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
                                     onClick={() => handleSort("title")}
@@ -624,13 +734,21 @@ export default function AdminEventsPage() {
                         <tbody className="divide-y">
                             {events.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                                         No events found
                                     </td>
                                 </tr>
                             ) : (
                                 events.map((event: AdminEvent) => (
                                     <tr key={event.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedEvents.has(event.id)}
+                                                onChange={() => toggleSelectEvent(event.id)}
+                                                className="rounded border-gray-300"
+                                            />
+                                        </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <img
@@ -801,6 +919,49 @@ export default function AdminEventsPage() {
                     </div>
                 )}
             </main>
+
+            {showBulkRejectModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6">
+                        <h3 className="text-lg font-bold text-gray-900 mb-4">
+                            Reject {selectedEvents.size} Events
+                        </h3>
+                        <div className="mb-4">
+                            <label htmlFor="bulk-rejection-reason" className="block text-sm font-medium text-gray-700 mb-1">
+                                Alasan Penolakan
+                            </label>
+                            <textarea
+                                id="bulk-rejection-reason"
+                                value={bulkRejectionReason}
+                                onChange={(e) => setBulkRejectionReason(e.target.value)}
+                                rows={3}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none"
+                                placeholder="Jelaskan alasan penolakan..."
+                            />
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowBulkRejectModal(false);
+                                    setBulkRejectionReason("");
+                                }}
+                                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleBulkReject}
+                                disabled={isBulkActionLoading || !bulkRejectionReason.trim()}
+                                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 disabled:opacity-50"
+                            >
+                                {isBulkActionLoading ? "Processing..." : "Reject Events"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showRejectModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
