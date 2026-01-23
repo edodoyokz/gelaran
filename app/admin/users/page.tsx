@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { useToast } from "@/components/ui/toast-provider";
-import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, PieChart, Pie, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface OrganizerProfile {
     organizationName: string | null;
@@ -58,6 +58,7 @@ interface StatsData {
     customers: number;
     organizers: number;
     admins: number;
+    activeLastMonth: number;
 }
 
 interface ChartDataPoint {
@@ -74,6 +75,9 @@ interface ChartsData {
     roleDistribution: ChartDataPoint[];
     verificationStatus: ChartDataPoint[];
     userGrowth: GrowthDataPoint[];
+    genderDistribution: ChartDataPoint[];
+    ageDistribution: ChartDataPoint[];
+    topCities: ChartDataPoint[];
 }
 
 interface UsersResponse {
@@ -100,11 +104,15 @@ export default function AdminUsersPage() {
         customers: 0,
         organizers: 0,
         admins: 0,
+        activeLastMonth: 0,
     });
     const [charts, setCharts] = useState<ChartsData>({
         roleDistribution: [],
         verificationStatus: [],
         userGrowth: [],
+        genderDistribution: [],
+        ageDistribution: [],
+        topCities: [],
     });
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -541,7 +549,7 @@ export default function AdminUsersPage() {
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                     <div className="bg-white rounded-xl p-4 shadow-sm">
                         <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
                         <p className="text-sm text-gray-500">Total Users</p>
@@ -557,6 +565,10 @@ export default function AdminUsersPage() {
                     <div className="bg-white rounded-xl p-4 shadow-sm">
                         <p className="text-2xl font-bold text-red-600">{stats.admins}</p>
                         <p className="text-sm text-gray-500">Admins</p>
+                    </div>
+                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                        <p className="text-2xl font-bold text-green-600">{stats.activeLastMonth}</p>
+                        <p className="text-sm text-gray-500">Active (30d)</p>
                     </div>
                 </div>
 
@@ -658,6 +670,61 @@ export default function AdminUsersPage() {
                                             name="New Users"
                                         />
                                     </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Gender Distribution</h3>
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <PieChart>
+                                            <Pie
+                                                data={charts.genderDistribution as never[]}
+                                                cx="50%"
+                                                cy="50%"
+                                                labelLine={false}
+                                                label
+                                                outerRadius={80}
+                                                fill="#8884d8"
+                                                dataKey="value"
+                                            >
+                                                {charts.genderDistribution.map((_: ChartDataPoint, index: number) => {
+                                                    const colors = ['#3b82f6', '#ec4899', '#8b5cf6', '#6b7280'];
+                                                    return <Cell key={`gender-${index}`} fill={colors[index % colors.length]} />;
+                                                })}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+
+                                <div className="bg-white rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Age Distribution</h3>
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <BarChart data={charts.ageDistribution}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                                            <YAxis tick={{ fontSize: 12 }} />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="value" fill="#6366f1" name="Users" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-lg p-4 shadow-sm mt-6">
+                                <h3 className="text-sm font-medium text-gray-700 mb-4">Top 10 Cities</h3>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <BarChart data={charts.topCities} layout="vertical">
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                                        <XAxis type="number" tick={{ fontSize: 12 }} />
+                                        <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={100} />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="value" fill="#10b981" name="Users" />
+                                    </BarChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>

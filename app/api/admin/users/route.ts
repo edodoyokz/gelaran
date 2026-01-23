@@ -164,6 +164,64 @@ export async function GET(request: Request) {
             date: item.date.toISOString().split('T')[0],
             count: Number(item.count),
         }));
+
+        const genderDistribution = await prisma.customerProfile.groupBy({
+            by: ['gender'],
+            _count: true,
+        });
+
+        const customerProfilesWithAge = await prisma.customerProfile.findMany({
+            where: {
+                birthDate: { not: null },
+            },
+            select: {
+                birthDate: true,
+            },
+        });
+
+        const ageGroups = {
+            '13-17': 0,
+            '18-24': 0,
+            '25-34': 0,
+            '35-44': 0,
+            '45-54': 0,
+            '55+': 0,
+        };
+
+        const now = new Date();
+        customerProfilesWithAge.forEach(profile => {
+            if (profile.birthDate) {
+                const age = now.getFullYear() - profile.birthDate.getFullYear();
+                if (age >= 13 && age <= 17) ageGroups['13-17']++;
+                else if (age >= 18 && age <= 24) ageGroups['18-24']++;
+                else if (age >= 25 && age <= 34) ageGroups['25-34']++;
+                else if (age >= 35 && age <= 44) ageGroups['35-44']++;
+                else if (age >= 45 && age <= 54) ageGroups['45-54']++;
+                else if (age >= 55) ageGroups['55+']++;
+            }
+        });
+
+        const cityDistribution = await prisma.customerProfile.groupBy({
+            by: ['city'],
+            _count: true,
+            where: {
+                city: { not: null },
+            },
+            orderBy: {
+                _count: {
+                    city: 'desc',
+                },
+            },
+            take: 10,
+        });
+
+        const activeUsersLast30Days = await prisma.user.count({
+            where: {
+                lastLoginAt: {
+                    gte: thirtyDaysAgo,
+                },
+            },
+        });
         
         return successResponse({
             users,
@@ -180,6 +238,7 @@ export async function GET(request: Request) {
                 customers: customerCount,
                 organizers: organizerCount,
                 admins: adminCount,
+                activeLastMonth: activeUsersLast30Days,
             },
             charts: {
                 roleDistribution: [
@@ -192,6 +251,22 @@ export async function GET(request: Request) {
                     { name: 'Unverified', value: unverifiedCount },
                 ],
                 userGrowth: growthChart,
+                genderDistribution: genderDistribution.map(g => ({
+                    name: g.gender || 'Not Specified',
+                    value: g._count,
+                })),
+                ageDistribution: [
+                    { name: '13-17', value: ageGroups['13-17'] },
+                    { name: '18-24', value: ageGroups['18-24'] },
+                    { name: '25-34', value: ageGroups['25-34'] },
+                    { name: '35-44', value: ageGroups['35-44'] },
+                    { name: '45-54', value: ageGroups['45-54'] },
+                    { name: '55+', value: ageGroups['55+'] },
+                ],
+                topCities: cityDistribution.map(c => ({
+                    name: c.city || 'Unknown',
+                    value: c._count,
+                })),
             },
         });
     } catch (error) {
