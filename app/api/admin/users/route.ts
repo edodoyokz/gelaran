@@ -154,7 +154,7 @@ export async function GET(request: Request) {
         
         const userGrowthData = await prisma.$queryRaw<Array<{ date: Date; count: bigint }>>`
             SELECT DATE(created_at) as date, COUNT(*)::bigint as count
-            FROM "User"
+            FROM "users"
             WHERE created_at >= ${thirtyDaysAgo}
             GROUP BY DATE(created_at)
             ORDER BY date ASC
