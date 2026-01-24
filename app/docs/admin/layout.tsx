@@ -2,21 +2,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import { Breadcrumb } from "@/components/docs/Breadcrumb";
-import {
-    LayoutDashboard,
-    Users,
-    Calendar,
-    CreditCard,
-    Settings,
-} from "lucide-react";
 
 const adminNavItems = [
-    { title: "Overview", href: "/docs/admin", icon: LayoutDashboard },
-    { title: "User Management", href: "/docs/admin/users", icon: Users },
-    { title: "Event Moderation", href: "/docs/admin/events", icon: Calendar },
-    { title: "Transactions", href: "/docs/admin/transactions", icon: CreditCard },
-    { title: "Settings", href: "/docs/admin/settings", icon: Settings },
+    { title: "Overview", href: "/docs/admin", iconName: "LayoutDashboard" },
+    { title: "User Management", href: "/docs/admin/users", iconName: "Users" },
+    { title: "Event Moderation", href: "/docs/admin/events", iconName: "Calendar" },
+    { title: "Transactions", href: "/docs/admin/transactions", iconName: "CreditCard" },
+    { title: "Settings", href: "/docs/admin/settings", iconName: "Settings" },
 ];
 
 export default async function AdminDocsLayout({

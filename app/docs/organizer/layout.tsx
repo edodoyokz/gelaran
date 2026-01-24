@@ -2,20 +2,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import {
-    LayoutDashboard,
-    Calendar,
-    ScanLine,
-    Wallet,
-    Users,
-} from "lucide-react";
 
 const organizerNavItems = [
-    { title: "Overview", href: "/docs/organizer", icon: LayoutDashboard },
-    { title: "Kelola Event", href: "/docs/organizer/events", icon: Calendar },
-    { title: "Gate & POS", href: "/docs/organizer/gate", icon: ScanLine },
-    { title: "Wallet & Payouts", href: "/docs/organizer/wallet", icon: Wallet },
-    { title: "Tim", href: "/docs/organizer/team", icon: Users },
+    { title: "Overview", href: "/docs/organizer", iconName: "LayoutDashboard" },
+    { title: "Kelola Event", href: "/docs/organizer/events", iconName: "Calendar" },
+    { title: "Gate & POS", href: "/docs/organizer/gate", iconName: "ScanLine" },
+    { title: "Wallet & Payouts", href: "/docs/organizer/wallet", iconName: "Wallet" },
+    { title: "Tim", href: "/docs/organizer/team", iconName: "Users" },
 ];
 
 export default async function OrganizerDocsLayout({

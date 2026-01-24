@@ -1,20 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import {
-    BookOpen,
-    Ticket,
-    User,
-    HelpCircle,
-    MessageCircle,
-} from "lucide-react";
 
 const customerNavItems = [
-    { title: "Memulai", href: "/docs/customer", icon: BookOpen },
-    { title: "Beli Tiket", href: "/docs/customer/buying-tickets", icon: Ticket },
-    { title: "Akun Saya", href: "/docs/customer/account", icon: User },
-    { title: "FAQ", href: "/docs/customer/faq", icon: HelpCircle },
-    { title: "Hubungi Support", href: "/docs/customer/support", icon: MessageCircle },
+    { title: "Memulai", href: "/docs/customer", iconName: "BookOpen" },
+    { title: "Beli Tiket", href: "/docs/customer/buying-tickets", iconName: "Ticket" },
+    { title: "Akun Saya", href: "/docs/customer/account", iconName: "User" },
+    { title: "FAQ", href: "/docs/customer/faq", iconName: "HelpCircle" },
+    { title: "Hubungi Support", href: "/docs/customer/support", iconName: "MessageCircle" },
 ];
 
 export default async function CustomerDocsLayout({

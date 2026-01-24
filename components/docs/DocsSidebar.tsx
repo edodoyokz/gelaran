@@ -3,12 +3,43 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import {
+    ChevronRight,
+    LayoutDashboard,
+    Users,
+    Calendar,
+    CreditCard,
+    Settings,
+    ScanLine,
+    Wallet,
+    BookOpen,
+    Ticket,
+    User,
+    HelpCircle,
+    MessageCircle,
+    type LucideIcon,
+} from "lucide-react";
+
+// Icon map to resolve icon names to components
+const iconMap: Record<string, LucideIcon> = {
+    LayoutDashboard,
+    Users,
+    Calendar,
+    CreditCard,
+    Settings,
+    ScanLine,
+    Wallet,
+    BookOpen,
+    Ticket,
+    User,
+    HelpCircle,
+    MessageCircle,
+};
 
 export interface DocsSidebarItem {
     title: string;
     href: string;
-    icon?: LucideIcon;
+    iconName?: string;
 }
 
 interface DocsSidebarProps {
@@ -30,7 +61,7 @@ export function DocsSidebar({ items, title }: DocsSidebarProps) {
                 <nav className="space-y-1">
                     {items.map((item) => {
                         const isActive = pathname === item.href;
-                        const Icon = item.icon;
+                        const Icon = item.iconName ? iconMap[item.iconName] : null;
                         return (
                             <Link
                                 key={item.href}
