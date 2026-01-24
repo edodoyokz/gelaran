@@ -1,6 +1,15 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
+import { DocsSidebar } from "@/components/docs/DocsSidebar";
+
+const organizerNavItems = [
+    { title: "Overview", href: "/docs/organizer" },
+    { title: "My Events", href: "/docs/organizer/events" },
+    { title: "Gate & POS", href: "/docs/organizer/gate" },
+    { title: "Wallet & Payouts", href: "/docs/organizer/wallet" },
+    { title: "Team Management", href: "/docs/organizer/team" },
+];
 
 export default async function OrganizerDocsLayout({
     children,
@@ -24,14 +33,17 @@ export default async function OrganizerDocsLayout({
     }
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/20 p-4">
-                <p className="text-sm font-medium text-indigo-500 flex items-center gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
-                    Organizer Documentation
-                </p>
+        <div className="flex flex-col md:flex-row gap-8">
+            <DocsSidebar items={organizerNavItems} />
+            <div className="flex-1 space-y-6">
+                <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/20 p-4 mb-6">
+                    <p className="text-sm font-medium text-indigo-500 flex items-center gap-2">
+                        <span className="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
+                        Organizer Documentation
+                    </p>
+                </div>
+                {children}
             </div>
-            {children}
         </div>
     );
 }
