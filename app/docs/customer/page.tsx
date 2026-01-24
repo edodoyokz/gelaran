@@ -1,55 +1,73 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Image from "next/image";
+import { Breadcrumb } from "@/components/docs/Breadcrumb";
+import { FeatureCard } from "@/components/docs/FeatureCard";
+import { Ticket, User, HelpCircle, MessageCircle } from "lucide-react";
 
 export default function CustomerDocsPage() {
     return (
-        <div className="space-y-8">
-            <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight text-green-600">User Guide</h1>
-                <p className="text-xl text-muted-foreground">
-                    Discover events, book tickets, and enjoy your experience with ease.
-                </p>
+        <div className="animate-fade-in">
+            <Breadcrumb
+                items={[
+                    { label: "Dokumentasi", href: "/docs" },
+                    { label: "Panduan Pengguna" },
+                ]}
+            />
+
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                Selamat Datang di BSC
+            </h1>
+            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+                Temukan dan beli tiket event favorit Anda dengan mudah. Ikuti panduan ini untuk memulai.
+            </p>
+
+            {/* Feature Cards */}
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Mulai Dari Sini</h2>
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+                <FeatureCard
+                    icon={Ticket}
+                    title="Beli Tiket"
+                    description="Pelajari cara mencari event, memilih tiket, dan melakukan pembayaran."
+                    iconBgColor="bg-blue-100"
+                    iconColor="text-blue-600"
+                />
+                <FeatureCard
+                    icon={User}
+                    title="Akun Saya"
+                    description="Kelola profil, lihat riwayat pembelian, dan download tiket Anda."
+                    iconBgColor="bg-green-100"
+                    iconColor="text-green-600"
+                />
+                <FeatureCard
+                    icon={HelpCircle}
+                    title="FAQ"
+                    description="Jawaban untuk pertanyaan yang sering diajukan pengguna."
+                    iconBgColor="bg-amber-100"
+                    iconColor="text-amber-600"
+                />
+                <FeatureCard
+                    icon={MessageCircle}
+                    title="Hubungi Support"
+                    description="Tim kami siap membantu jika Anda mengalami kendala."
+                    iconBgColor="bg-purple-100"
+                    iconColor="text-purple-600"
+                />
             </div>
 
-            <Card className="overflow-hidden border-2 border-green-500/20 shadow-lg">
-                <CardHeader className="bg-muted/50 pb-8">
-                    <CardTitle className="text-2xl">Event Discovery & Booking</CardTitle>
-                    <CardDescription>
-                        Seamlessly browse details and secure your spot for the hottest events in Solo.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <div className="relative aspect-video w-full bg-muted">
-                        <Image
-                            src="/docs/images/customer_event_detail_1769231203192.png"
-                            alt="Event Booking Experience"
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    </div>
-                    <div className="p-6 grid gap-6 md:grid-cols-3 bg-card/50">
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-green-600">Rich Information</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Get all the details including location maps, schedules, and performer lineups in one place.
-                            </p>
-                        </div>
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-green-600">Easy Checkout</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Select from multiple ticket tiers (Regular, VIP) and pay securely with your preferred method.
-                            </p>
-                        </div>
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-green-600">Digital Tickets</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Receive QR code tickets instantly via email and access them anytime in your "My Bookings" page.
-                            </p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+            {/* Quick Start */}
+            <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 mb-8">
+                <h3 className="font-bold text-slate-900 mb-4">🚀 Langkah Cepat</h3>
+                <ol className="list-decimal list-inside space-y-2 text-slate-600">
+                    <li>Jelajahi event di halaman utama</li>
+                    <li>Pilih event dan kategori tiket</li>
+                    <li>Isi data dan selesaikan pembayaran</li>
+                    <li>Tiket dikirim ke email Anda</li>
+                    <li>Tunjukkan QR code saat check-in</li>
+                </ol>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
+                <span>Terakhir diperbarui: Januari 2026</span>
+            </div>
         </div>
     );
 }

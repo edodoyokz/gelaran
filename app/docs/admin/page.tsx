@@ -1,94 +1,74 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Image from "next/image";
+import { Breadcrumb } from "@/components/docs/Breadcrumb";
+import { FeatureCard } from "@/components/docs/FeatureCard";
+import { BrowserFrame } from "@/components/docs/BrowserFrame";
+import { Users, Calendar, CreditCard, Shield } from "lucide-react";
 
 export default function AdminDocsPage() {
     return (
-        <div className="space-y-8">
-            <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight text-primary">Admin Documentation</h1>
-                <p className="text-xl text-muted-foreground">
-                    Complete guide for platform administrators to manage users, events, and transactions.
+        <div className="animate-fade-in">
+            <Breadcrumb
+                items={[
+                    { label: "Dokumentasi", href: "/docs" },
+                    { label: "Admin" },
+                ]}
+            />
+
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                Admin Dashboard
+            </h1>
+            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+                Selamat datang di panduan Admin BSC. Kelola pengguna, event, dan transaksi dari satu tempat.
+            </p>
+
+            {/* Screenshot */}
+            <div className="mb-10">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Tampilan Dashboard</h3>
+                <p className="text-slate-600 mb-4 text-sm">
+                    Dashboard admin memberikan overview lengkap tentang aktivitas platform.
                 </p>
+                <BrowserFrame
+                    src="/docs/images/admin-dashboard.png"
+                    title="https://bsc.com/admin"
+                    alt="Admin Dashboard Screenshot"
+                />
             </div>
 
-            <Card className="overflow-hidden border-2 border-primary/20 shadow-lg">
-                <CardHeader className="bg-muted/50 pb-8">
-                    <CardTitle className="text-2xl">Administrator Dashboard</CardTitle>
-                    <CardDescription>
-                        The central command center for platform monitoring and quick actions.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <div className="relative aspect-video w-full bg-muted">
-                        <Image
-                            src="/docs/images/admin_dashboard_main_1769228481897.png"
-                            alt="Admin Dashboard Interface"
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    </div>
-                    <div className="p-6 grid gap-6 md:grid-cols-3 bg-card/50">
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-primary">Quick Actions</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Use the "Admin Demo" button on the login page for quick access during testing phases.
-                            </p>
-                        </div>
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-primary">Key Metrics</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Real-time oversight of Total Revenue, User Registration count, and active Order processing.
-                            </p>
-                        </div>
-                        <div className="space-y-2">
-                            <h4 className="font-semibold text-primary">System Health</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Monitor server status and database connectivity directly from the dashboard widgets.
-                            </p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+            {/* Feature Cards */}
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Fitur Utama</h2>
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+                <FeatureCard
+                    icon={Users}
+                    title="User Management"
+                    description="Kelola semua pengguna, ubah role, dan pantau aktivitas akun."
+                    iconBgColor="bg-blue-100"
+                    iconColor="text-blue-600"
+                />
+                <FeatureCard
+                    icon={Calendar}
+                    title="Event Moderation"
+                    description="Review dan approve event baru dari organizer."
+                    iconBgColor="bg-green-100"
+                    iconColor="text-green-600"
+                />
+                <FeatureCard
+                    icon={CreditCard}
+                    title="Transactions"
+                    description="Pantau semua transaksi, proses refund, dan kelola payout."
+                    iconBgColor="bg-purple-100"
+                    iconColor="text-purple-600"
+                />
+                <FeatureCard
+                    icon={Shield}
+                    title="Platform Settings"
+                    description="Konfigurasi pengaturan platform dan payment gateway."
+                    iconBgColor="bg-amber-100"
+                    iconColor="text-amber-600"
+                />
+            </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>User Management</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="relative aspect-video w-full rounded-md overflow-hidden bg-muted border">
-                            <Image
-                                src="/docs/images/admin_users_list_1769228502877.png"
-                                alt="User Management Interface"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            View all registered users including their roles (Admin, Organizer, Customer). You can verify organizers and manage account statuses directly from this list.
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Event Moderation</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="relative aspect-video w-full rounded-md overflow-hidden bg-muted border">
-                            <Image
-                                src="/docs/images/admin_events_list_1769228524374.png"
-                                alt="Event Management Interface"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            Review and moderate events submitted by organizers before they go public. Ensure quality and compliance with platform guidelines.
-                        </p>
-                    </CardContent>
-                </Card>
+            {/* Footer */}
+            <div className="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
+                <span>Terakhir diperbarui: Januari 2026</span>
             </div>
         </div>
     );

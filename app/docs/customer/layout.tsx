@@ -1,13 +1,20 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
+import {
+    BookOpen,
+    Ticket,
+    User,
+    HelpCircle,
+    MessageCircle,
+} from "lucide-react";
 
 const customerNavItems = [
-    { title: "Getting Started", href: "/docs/customer" },
-    { title: "Buying Tickets", href: "/docs/customer/buying-tickets" },
-    { title: "My Account", href: "/docs/customer/account" },
-    { title: "FAQ", href: "/docs/customer/faq" },
-    { title: "Contact Support", href: "/docs/customer/support" },
+    { title: "Memulai", href: "/docs/customer", icon: BookOpen },
+    { title: "Beli Tiket", href: "/docs/customer/buying-tickets", icon: Ticket },
+    { title: "Akun Saya", href: "/docs/customer/account", icon: User },
+    { title: "FAQ", href: "/docs/customer/faq", icon: HelpCircle },
+    { title: "Hubungi Support", href: "/docs/customer/support", icon: MessageCircle },
 ];
 
 export default async function CustomerDocsLayout({
@@ -18,23 +25,18 @@ export default async function CustomerDocsLayout({
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    // Pretty loose guard, just easier to require login so we know who is viewing
     if (!user) {
         redirect("/login?returnUrl=/docs/customer");
     }
 
     return (
         <div className="flex flex-col md:flex-row gap-8">
-            <DocsSidebar items={customerNavItems} />
-            <div className="flex-1 space-y-6">
-                <div className="rounded-lg bg-green-500/10 border border-green-500/20 p-4 mb-6">
-                    <p className="text-sm font-medium text-green-600 flex items-center gap-2">
-                        <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-                        User Guide
-                    </p>
+            <DocsSidebar items={customerNavItems} title="Panduan Pengguna" />
+            <main className="flex-1 min-w-0 px-4 py-6 lg:px-8">
+                <div className="max-w-4xl">
+                    {children}
                 </div>
-                {children}
-            </div>
+            </main>
         </div>
     );
 }

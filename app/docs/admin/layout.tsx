@@ -2,13 +2,21 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
+import { Breadcrumb } from "@/components/docs/Breadcrumb";
+import {
+    LayoutDashboard,
+    Users,
+    Calendar,
+    CreditCard,
+    Settings,
+} from "lucide-react";
 
 const adminNavItems = [
-    { title: "Overview", href: "/docs/admin" },
-    { title: "User Management", href: "/docs/admin/users" },
-    { title: "Event Moderation", href: "/docs/admin/events" },
-    { title: "Transactions", href: "/docs/admin/transactions" },
-    { title: "Settings", href: "/docs/admin/settings" },
+    { title: "Overview", href: "/docs/admin", icon: LayoutDashboard },
+    { title: "User Management", href: "/docs/admin/users", icon: Users },
+    { title: "Event Moderation", href: "/docs/admin/events", icon: Calendar },
+    { title: "Transactions", href: "/docs/admin/transactions", icon: CreditCard },
+    { title: "Settings", href: "/docs/admin/settings", icon: Settings },
 ];
 
 export default async function AdminDocsLayout({
@@ -33,16 +41,12 @@ export default async function AdminDocsLayout({
 
     return (
         <div className="flex flex-col md:flex-row gap-8">
-            <DocsSidebar items={adminNavItems} />
-            <div className="flex-1 space-y-6">
-                <div className="rounded-lg bg-primary/10 border border-primary/20 p-4 mb-6">
-                    <p className="text-sm font-medium text-primary flex items-center gap-2">
-                        <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                        Admin Access Verified
-                    </p>
+            <DocsSidebar items={adminNavItems} title="Admin Documentation" />
+            <main className="flex-1 min-w-0 px-4 py-6 lg:px-8">
+                <div className="max-w-4xl">
+                    {children}
                 </div>
-                {children}
-            </div>
+            </main>
         </div>
     );
 }

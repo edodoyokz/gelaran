@@ -1,76 +1,74 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Image from "next/image";
+import { Breadcrumb } from "@/components/docs/Breadcrumb";
+import { FeatureCard } from "@/components/docs/FeatureCard";
+import { BrowserFrame } from "@/components/docs/BrowserFrame";
+import { Calendar, ScanLine, Wallet, Users } from "lucide-react";
 
 export default function OrganizerDocsPage() {
     return (
-        <div className="space-y-8">
-            <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight text-indigo-500">Organizer Guide</h1>
-                <p className="text-xl text-muted-foreground">
-                    Comprehensive resources for creating successful events, managing sales, and tracking revenue.
+        <div className="animate-fade-in">
+            <Breadcrumb
+                items={[
+                    { label: "Dokumentasi", href: "/docs" },
+                    { label: "Organizer" },
+                ]}
+            />
+
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                Organizer Dashboard
+            </h1>
+            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+                Buat dan kelola event Anda dengan mudah. Pantau penjualan tiket dan check-in secara real-time.
+            </p>
+
+            {/* Screenshot */}
+            <div className="mb-10">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Dashboard Organizer</h3>
+                <p className="text-slate-600 mb-4 text-sm">
+                    Lihat statistik penjualan, event aktif, dan pendapatan dalam satu tampilan.
                 </p>
+                <BrowserFrame
+                    src="/docs/images/organizer-dashboard.png"
+                    title="https://bsc.com/organizer"
+                    alt="Organizer Dashboard Screenshot"
+                />
             </div>
 
-            <Card className="overflow-hidden border-2 border-indigo-500/20 shadow-lg">
-                <CardHeader className="bg-muted/50 pb-8">
-                    <CardTitle className="text-2xl">Organizer Dashboard</CardTitle>
-                    <CardDescription>
-                        Your command center for event operations and financial insights.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <div className="relative aspect-video w-full bg-muted">
-                        <Image
-                            src="/docs/images/organizer_dashboard_main_1769228951725.png"
-                            alt="Organizer Dashboard Interface"
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    </div>
-                </CardContent>
-            </Card>
+            {/* Feature Cards */}
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Fitur Organizer</h2>
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+                <FeatureCard
+                    icon={Calendar}
+                    title="Kelola Event"
+                    description="Buat event baru, edit informasi, dan kelola kategori tiket."
+                    iconBgColor="bg-indigo-100"
+                    iconColor="text-indigo-600"
+                />
+                <FeatureCard
+                    icon={ScanLine}
+                    title="Gate & POS"
+                    description="Scan tiket pengunjung dan jual tiket langsung di lokasi."
+                    iconBgColor="bg-green-100"
+                    iconColor="text-green-600"
+                />
+                <FeatureCard
+                    icon={Wallet}
+                    title="Wallet & Payouts"
+                    description="Pantau pendapatan dan tarik dana ke rekening bank Anda."
+                    iconBgColor="bg-amber-100"
+                    iconColor="text-amber-600"
+                />
+                <FeatureCard
+                    icon={Users}
+                    title="Tim Management"
+                    description="Tambahkan anggota tim dan atur akses mereka."
+                    iconBgColor="bg-purple-100"
+                    iconColor="text-purple-600"
+                />
+            </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            Gate & POS System
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="relative aspect-video w-full rounded-md overflow-hidden bg-muted border">
-                            <Image
-                                src="/docs/images/organizer_gate_pos_1769230896096.png"
-                                alt="Gate and POS Interface"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            Manage on-site check-ins and ticket sales. Generate PINs for staff devices to scan tickets securely at the venue entrance.
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Financial & Wallet</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="relative aspect-video w-full rounded-md overflow-hidden bg-muted border">
-                            <Image
-                                src="/docs/images/organizer_wallet_1769230938219.png"
-                                alt="Organizer Wallet Interface"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            Track your earnings in real-time. View transaction history, manage bank accounts, and request payouts directly to your registered bank.
-                        </p>
-                    </CardContent>
-                </Card>
+            {/* Footer */}
+            <div className="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
+                <span>Terakhir diperbarui: Januari 2026</span>
             </div>
         </div>
     );
