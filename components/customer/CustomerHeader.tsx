@@ -16,6 +16,7 @@ import {
     Ticket,
     Heart,
     X,
+    BookOpen,
 } from "lucide-react";
 import { useTheme } from "@/lib/hooks/useTheme";
 import { createClient } from "@/lib/supabase/client";
@@ -145,9 +146,8 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
                                         </div>
                                     )}
                                     <ChevronDown
-                                        className={`w-4 h-4 text-[var(--text-muted)] transition-transform hidden sm:block ${
-                                            isProfileOpen ? "rotate-180" : ""
-                                        }`}
+                                        className={`w-4 h-4 text-[var(--text-muted)] transition-transform hidden sm:block ${isProfileOpen ? "rotate-180" : ""
+                                            }`}
                                     />
                                 </button>
 
@@ -186,6 +186,14 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
                                             >
                                                 <Heart className="w-4 h-4" />
                                                 <span className="text-sm font-medium">Wishlist</span>
+                                            </Link>
+                                            <Link
+                                                href="/docs/customer"
+                                                onClick={() => setIsProfileOpen(false)}
+                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                            >
+                                                <BookOpen className="w-4 h-4" />
+                                                <span className="text-sm font-medium">Bantuan</span>
                                             </Link>
                                             <Link
                                                 href="/profile#settings"
