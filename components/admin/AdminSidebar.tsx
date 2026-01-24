@@ -21,6 +21,7 @@ import {
     Star,
     Wallet,
     RotateCcw,
+    BookOpen,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -40,9 +41,9 @@ const menuItems: MenuItem[] = [
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/events", label: "Events", icon: Calendar },
     { href: "/admin/bookings", label: "Bookings", icon: CreditCard },
-    { 
-        href: "/admin/finance", 
-        label: "Finance", 
+    {
+        href: "/admin/finance",
+        label: "Finance",
         icon: Wallet,
         children: [
             { href: "/admin/finance", label: "Overview", icon: Wallet },
@@ -50,18 +51,18 @@ const menuItems: MenuItem[] = [
             { href: "/admin/refunds", label: "Refunds", icon: RotateCcw },
         ]
     },
-    { 
-        href: "/admin/master", 
-        label: "Master Data", 
+    {
+        href: "/admin/master",
+        label: "Master Data",
         icon: Tags,
         children: [
             { href: "/admin/categories", label: "Categories", icon: Tags },
             { href: "/admin/venues", label: "Venues", icon: MapPin },
         ]
     },
-    { 
-        href: "/admin/content", 
-        label: "Content", 
+    {
+        href: "/admin/content",
+        label: "Content",
         icon: LayoutTemplate,
         children: [
             { href: "/admin/landing-page", label: "Landing Page", icon: LayoutTemplate },
@@ -69,6 +70,7 @@ const menuItems: MenuItem[] = [
         ]
     },
     { href: "/admin/settings", label: "Settings", icon: Settings },
+    { href: "/docs/admin", label: "Documentation", icon: BookOpen },
 ];
 
 interface AdminSidebarProps {
@@ -119,8 +121,8 @@ export function AdminSidebar({ isCollapsed, onToggleCollapse }: AdminSidebarProp
     };
 
     const toggleExpanded = (href: string) => {
-        setExpandedItems(prev => 
-            prev.includes(href) 
+        setExpandedItems(prev =>
+            prev.includes(href)
                 ? prev.filter(h => h !== href)
                 : [...prev, href]
         );

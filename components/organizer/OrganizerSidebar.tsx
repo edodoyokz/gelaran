@@ -18,6 +18,7 @@ import {
     ScanLine,
     Sun,
     Moon,
+    BookOpen,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -44,9 +45,9 @@ const menuItems: MenuItem[] = [
     { href: "/organizer", label: "Dashboard", icon: LayoutDashboard },
     { href: "/organizer/events", label: "Event Saya", icon: Calendar },
     { href: "/organizer/gate", label: "Gate & POS", icon: ScanLine },
-    { 
-        href: "/organizer/wallet", 
-        label: "Wallet", 
+    {
+        href: "/organizer/wallet",
+        label: "Wallet",
         icon: Wallet,
         children: [
             { href: "/organizer/wallet/withdraw", label: "Tarik Dana", icon: CreditCard },
@@ -54,10 +55,11 @@ const menuItems: MenuItem[] = [
         ]
     },
     { href: "/organizer/settings", label: "Pengaturan", icon: Settings },
+    { href: "/docs/organizer", label: "Dokumentasi", icon: BookOpen },
 ];
 
-export function OrganizerSidebar({ 
-    organizationName, 
+export function OrganizerSidebar({
+    organizationName,
     organizationLogo,
     isVerified = false,
     isCollapsed,
@@ -106,8 +108,8 @@ export function OrganizerSidebar({
     };
 
     const toggleExpanded = (href: string) => {
-        setExpandedItems(prev => 
-            prev.includes(href) 
+        setExpandedItems(prev =>
+            prev.includes(href)
                 ? prev.filter(h => h !== href)
                 : [...prev, href]
         );

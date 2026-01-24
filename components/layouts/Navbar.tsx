@@ -14,6 +14,7 @@ import {
     LayoutDashboard,
     Menu,
     X,
+    BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -192,6 +193,19 @@ export function Navbar({ transparent = true }: NavbarProps) {
                             )}
                         >
                             Buat Event
+                        </Link>
+
+                        <Link
+                            href="/docs"
+                            className={cn(
+                                "font-medium transition-colors px-4 py-2 rounded-full flex items-center gap-2",
+                                showBackground
+                                    ? "text-gray-600 hover:text-indigo-600 hover:bg-gray-50"
+                                    : "text-white/90 hover:text-white hover:bg-white/10"
+                            )}
+                        >
+                            <BookOpen size={18} />
+                            <span className="hidden lg:inline">Bantuan</span>
                         </Link>
 
                         {isLoading ? (
@@ -413,6 +427,14 @@ export function Navbar({ transparent = true }: NavbarProps) {
                             >
                                 <LayoutDashboard size={22} className="text-gray-400" />
                                 Buat Event
+                            </Link>
+                            <Link
+                                href="/docs"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 px-4 py-4 text-gray-700 hover:bg-gray-50 rounded-2xl font-medium text-lg active:bg-gray-100 transition-colors"
+                            >
+                                <BookOpen size={22} className="text-gray-400" />
+                                Bantuan & Dokumentasi
                             </Link>
                             {user && (
                                 <>
