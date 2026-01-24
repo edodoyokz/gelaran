@@ -1,5 +1,6 @@
 import { Breadcrumb } from "@/components/docs/Breadcrumb";
 import { FeatureCard } from "@/components/docs/FeatureCard";
+import { BrowserFrame } from "@/components/docs/BrowserFrame";
 import { Ticket, User, HelpCircle, MessageCircle } from "lucide-react";
 
 export default function CustomerDocsPage() {
@@ -18,6 +19,15 @@ export default function CustomerDocsPage() {
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
                 Temukan dan beli tiket event favorit Anda dengan mudah. Ikuti panduan ini untuk memulai.
             </p>
+
+            {/* Screenshot */}
+            <div className="mb-10">
+                <BrowserFrame
+                    src="/docs/images/customer-home.png"
+                    title="https://bsc.com"
+                    alt="BSC Halaman Utama"
+                />
+            </div>
 
             {/* Feature Cards */}
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Mulai Dari Sini</h2>
