@@ -19,6 +19,7 @@ import {
     Sun,
     Moon,
     BookOpen,
+    Users,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -54,6 +55,7 @@ const menuItems: MenuItem[] = [
             { href: "/organizer/wallet/bank-account", label: "Rekening Bank", icon: Building2 },
         ]
     },
+    { href: "/organizer/team", label: "Tim", icon: Users },
     { href: "/organizer/settings", label: "Pengaturan", icon: Settings },
     { href: "/docs/organizer", label: "Dokumentasi", icon: BookOpen },
 ];
