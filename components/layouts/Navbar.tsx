@@ -279,6 +279,14 @@ export function Navbar({ transparent = true }: NavbarProps) {
                                                 Wishlist
                                             </Link>
                                             <Link
+                                                href="/docs/customer"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                                className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition-all"
+                                            >
+                                                <BookOpen size={18} className="text-gray-400 group-hover:text-indigo-500" />
+                                                Bantuan
+                                            </Link>
+                                            <Link
                                                 href="/profile"
                                                 onClick={() => setIsDropdownOpen(false)}
                                                 className="flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-xl transition-all"
