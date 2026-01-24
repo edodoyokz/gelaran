@@ -24,6 +24,7 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import SeatSelector, { SelectedSeat } from "@/components/seating/SeatSelector";
 import { ReviewSection } from "@/components/features/reviews";
+import { VenueMapViewer } from "@/components/features/events/VenueMapViewer";
 
 interface TicketType {
     id: string;
@@ -322,8 +323,8 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                             onClick={handleWishlistToggle}
                             disabled={isWishlistLoading}
                             className={`p-2 rounded-full transition-colors ${isWishlisted
-                                    ? "text-rose-500 hover:bg-rose-50"
-                                    : "text-gray-600 hover:bg-gray-100"
+                                ? "text-rose-500 hover:bg-rose-50"
+                                : "text-gray-600 hover:bg-gray-100"
                                 }`}
                             aria-label={isWishlisted ? "Hapus dari wishlist" : "Tambah ke wishlist"}
                         >
@@ -465,6 +466,14 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                             </div>
                         </div>
 
+                        {/* Venue Map - Show for events with seating chart */}
+                        {event.hasSeatingChart && (
+                            <VenueMapViewer
+                                eventSlug={event.slug}
+                                mode="view"
+                            />
+                        )}
+
                         {/* FAQs */}
                         {event.faqs.length > 0 && (
                             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -579,8 +588,8 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                                 <div
                                                     key={ticket.id}
                                                     className={`border rounded-xl p-4 transition-colors ${ticket.availableQuantity === 0
-                                                            ? "border-gray-200 bg-gray-50"
-                                                            : "border-gray-200 hover:border-indigo-300"
+                                                        ? "border-gray-200 bg-gray-50"
+                                                        : "border-gray-200 hover:border-indigo-300"
                                                         }`}
                                                 >
                                                     <div className="flex justify-between items-start mb-2">
