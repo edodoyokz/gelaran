@@ -18,7 +18,7 @@ export default function AdminEventsDocsPage() {
                 Event Moderation
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan untuk memoderasi dan mengelola event di platform BSC.
+                Panduan untuk memoderasi dan mengelola event di platform Gelaran.
             </p>
 
             {/* Screenshot */}

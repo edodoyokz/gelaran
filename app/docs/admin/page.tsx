@@ -17,7 +17,7 @@ export default function AdminDocsPage() {
                 Admin Dashboard
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Selamat datang di panduan Admin BSC. Kelola pengguna, event, dan transaksi dari satu tempat.
+                Selamat datang di panduan Admin Gelaran. Kelola pengguna, event, dan transaksi dari satu tempat.
             </p>
 
             {/* Screenshot */}

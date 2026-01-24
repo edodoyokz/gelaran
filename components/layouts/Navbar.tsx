@@ -163,9 +163,9 @@ export function Navbar({ transparent = true }: NavbarProps) {
                             showBackground ? "text-indigo-600" : "text-white"
                         )}
                     >
-                        BSC
+                        Gelaran
                         <span className={showBackground ? "text-gray-800" : "text-white/90"}>
-                            Tickets
+                            .id
                         </span>
                     </Link>
 

@@ -12,7 +12,7 @@ export default function DocsLayout({
                 <header className="border-b px-6 py-4 flex items-center justify-between bg-card">
                     <div className="flex items-center gap-4">
                         <Link href="/" className="text-xl font-bold text-primary">
-                            Termikel Docs
+                            Gelaran Docs
                         </Link>
                     </div>
                 </header>

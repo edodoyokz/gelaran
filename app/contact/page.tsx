@@ -58,7 +58,7 @@ const FAQ_ITEMS = [
     },
     {
         question: "Berapa biaya platform untuk organizer?",
-        answer: "BSC Tickets mengambil fee sebesar 5% dari setiap transaksi tiket yang berhasil.",
+        answer: "Gelaran mengambil fee sebesar 5% dari setiap transaksi tiket yang berhasil.",
     },
 ];
 

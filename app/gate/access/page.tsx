@@ -260,7 +260,7 @@ export default function GateAccessPage() {
                 </div>
 
                 <p className="text-center text-gray-500 text-sm mt-6">
-                    BSC Event Platform - Gate Scanner
+                    Gelaran - Gate Scanner
                 </p>
             </div>
         </div>

@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       try {
         const recipientName = user.user_metadata?.name || user.email?.split("@")[0] || "the recipient";
         await resend.emails.send({
-          from: `BSC Events <${process.env.RESEND_FROM_EMAIL || "noreply@bsc.events"}>`,
+          from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
           to: fromUser.email,
           subject: `Tiket Anda berhasil ditransfer`,
           html: `

@@ -190,7 +190,7 @@ export async function POST(
 
       if (userData) {
         await resend.emails.send({
-          from: `BSC Events <${process.env.RESEND_FROM_EMAIL || "noreply@bsc.events"}>`,
+          from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
           to: userData.email,
           subject: `Permintaan Refund Diterima - ${booking.bookingCode}`,
           html: `

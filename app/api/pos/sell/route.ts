@@ -253,7 +253,7 @@ export async function POST(request: NextRequest) {
             item_details: itemDetails,
             customer_details: {
                 first_name: buyerName,
-                email: buyerEmail || "guest@bsc.events",
+                email: buyerEmail || "guest@gelaran.id",
                 phone: buyerPhone || "",
             },
             callbacks: {

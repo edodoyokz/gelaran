@@ -295,7 +295,7 @@ export async function PUT(request: NextRequest) {
         };
 
         await resend.emails.send({
-          from: `BSC Events <${process.env.RESEND_FROM_EMAIL || "noreply@bsc.events"}>`,
+          from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
           to: requester.email,
           subject: `Update Refund - ${refund.booking.bookingCode}`,
           html: `

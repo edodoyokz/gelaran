@@ -191,7 +191,7 @@ export default async function AdminDashboard() {
         <>
             <AdminHeader 
                 title="Admin Panel" 
-                subtitle="BSC Platform Management"
+                subtitle="Gelaran Management"
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

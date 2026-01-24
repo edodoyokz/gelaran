@@ -18,7 +18,7 @@ export default function AdminUsersDocsPage() {
                 User Management
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan lengkap untuk mengelola pengguna di platform BSC.
+                Panduan lengkap untuk mengelola pengguna di platform Gelaran.
             </p>
 
             {/* Screenshot */}

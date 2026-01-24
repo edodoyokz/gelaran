@@ -3,8 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Syarat & Ketentuan - BSC Tickets",
-    description: "Syarat dan ketentuan penggunaan platform BSC Tickets untuk pengguna dan organizer.",
+    title: "Syarat & Ketentuan - Gelaran",
+    description: "Syarat dan ketentuan penggunaan platform Gelaran untuk pengguna dan organizer.",
 };
 
 export default function TermsPage() {
@@ -29,12 +29,12 @@ export default function TermsPage() {
                     <section className="mb-8">
                         <h2 className="text-xl font-bold text-gray-900 mb-4">1. Penerimaan Syarat</h2>
                         <p className="text-gray-600 mb-4">
-                            Dengan mengakses dan menggunakan platform BSC Tickets (&quot;Platform&quot;), Anda
+                            Dengan mengakses dan menggunakan platform Gelaran (&quot;Platform&quot;), Anda
                             menyetujui untuk terikat oleh Syarat dan Ketentuan ini. Jika Anda tidak
                             menyetujui syarat-syarat ini, mohon untuk tidak menggunakan Platform kami.
                         </p>
                         <p className="text-gray-600">
-                            BSC Tickets berhak untuk mengubah syarat dan ketentuan ini sewaktu-waktu.
+                            Gelaran berhak untuk mengubah syarat dan ketentuan ini sewaktu-waktu.
                             Perubahan akan berlaku efektif segera setelah dipublikasikan di Platform.
                         </p>
                     </section>
@@ -43,7 +43,7 @@ export default function TermsPage() {
                         <h2 className="text-xl font-bold text-gray-900 mb-4">2. Definisi</h2>
                         <ul className="list-disc pl-6 text-gray-600 space-y-2">
                             <li>
-                                <strong>&quot;Platform&quot;</strong> berarti website dan aplikasi BSC Tickets.
+                                <strong>&quot;Platform&quot;</strong> berarti website dan aplikasi Gelaran.
                             </li>
                             <li>
                                 <strong>&quot;Pengguna&quot;</strong> berarti setiap individu yang mengakses Platform.
@@ -92,7 +92,7 @@ export default function TermsPage() {
                         <h2 className="text-xl font-bold text-gray-900 mb-4">5. Kebijakan Pembatalan dan Refund</h2>
                         <p className="text-gray-600 mb-4">
                             Kebijakan pembatalan dan refund ditentukan oleh masing-masing Organizer.
-                            BSC Tickets berperan sebagai fasilitator dan tidak bertanggung jawab atas
+                            Gelaran berperan sebagai fasilitator dan tidak bertanggung jawab atas
                             keputusan refund yang dibuat oleh Organizer.
                         </p>
                         <p className="text-gray-600">
@@ -118,7 +118,7 @@ export default function TermsPage() {
                     <section className="mb-8">
                         <h2 className="text-xl font-bold text-gray-900 mb-4">7. Biaya Platform</h2>
                         <p className="text-gray-600 mb-4">
-                            BSC Tickets mengenakan biaya platform sebesar 5% dari setiap transaksi tiket
+                            Gelaran mengenakan biaya platform sebesar 5% dari setiap transaksi tiket
                             yang berhasil. Biaya ini sudah termasuk dalam harga tiket yang ditampilkan
                             kepada Pembeli.
                         </p>
@@ -132,7 +132,7 @@ export default function TermsPage() {
                         <h2 className="text-xl font-bold text-gray-900 mb-4">8. Hak Kekayaan Intelektual</h2>
                         <p className="text-gray-600">
                             Semua konten di Platform, termasuk namun tidak terbatas pada logo, desain,
-                            teks, gambar, dan software, adalah milik BSC Tickets atau pemberi lisensi
+                            teks, gambar, dan software, adalah milik Gelaran atau pemberi lisensi
                             kami dan dilindungi oleh hukum hak cipta.
                         </p>
                     </section>
@@ -140,7 +140,7 @@ export default function TermsPage() {
                     <section className="mb-8">
                         <h2 className="text-xl font-bold text-gray-900 mb-4">9. Batasan Tanggung Jawab</h2>
                         <p className="text-gray-600">
-                            BSC Tickets tidak bertanggung jawab atas kerugian langsung, tidak langsung,
+                            Gelaran tidak bertanggung jawab atas kerugian langsung, tidak langsung,
                             insidental, atau konsekuensial yang timbul dari penggunaan Platform atau
                             kehadiran di event yang diselenggarakan melalui Platform.
                         </p>

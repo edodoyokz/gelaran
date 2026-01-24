@@ -190,8 +190,8 @@ export function EventDetailView({ event }: EventDetailViewProps) {
         event.eventType === "ONLINE"
             ? "Online Event"
             : event.venue
-              ? `${event.venue.name}, ${event.venue.city}`
-              : "Lokasi akan diumumkan";
+                ? `${event.venue.name}, ${event.venue.city}`
+                : "Lokasi akan diumumkan";
 
     const handleQtyChange = (ticketId: string, delta: number) => {
         setQuantities((prev) => {
@@ -208,8 +208,8 @@ export function EventDetailView({ event }: EventDetailViewProps) {
     const total = event.hasSeatingChart
         ? selectedSeats.reduce((acc, seat) => acc + seat.price, 0)
         : event.ticketTypes.reduce((acc, ticket) => {
-              return acc + ticket.basePrice * (quantities[ticket.id] || 0);
-          }, 0);
+            return acc + ticket.basePrice * (quantities[ticket.id] || 0);
+        }, 0);
 
     const totalTickets = event.hasSeatingChart
         ? selectedSeats.length
@@ -321,11 +321,10 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                             type="button"
                             onClick={handleWishlistToggle}
                             disabled={isWishlistLoading}
-                            className={`p-2 rounded-full transition-colors ${
-                                isWishlisted
+                            className={`p-2 rounded-full transition-colors ${isWishlisted
                                     ? "text-rose-500 hover:bg-rose-50"
                                     : "text-gray-600 hover:bg-gray-100"
-                            }`}
+                                }`}
                             aria-label={isWishlisted ? "Hapus dari wishlist" : "Tambah ke wishlist"}
                         >
                             {isWishlistLoading ? (
@@ -496,7 +495,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                         </div>
                                     ))}
                                 </div>
-                                <Link 
+                                <Link
                                     href={`/events/${event.slug}/faq`}
                                     className="mt-4 inline-block text-blue-600 hover:underline text-sm"
                                 >
@@ -579,11 +578,10 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                             event.ticketTypes.map((ticket) => (
                                                 <div
                                                     key={ticket.id}
-                                                    className={`border rounded-xl p-4 transition-colors ${
-                                                        ticket.availableQuantity === 0
+                                                    className={`border rounded-xl p-4 transition-colors ${ticket.availableQuantity === 0
                                                             ? "border-gray-200 bg-gray-50"
                                                             : "border-gray-200 hover:border-indigo-300"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <div className="flex justify-between items-start mb-2">
                                                         <div className="flex-1">
@@ -678,7 +676,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                             : `Checkout (${totalTickets} tiket)`}
                                     </button>
                                     <p className="text-center text-xs text-gray-400 mt-3">
-                                        Transaksi dijamin aman oleh <strong>BSC Guarantee</strong>
+                                        Transaksi dijamin aman oleh <strong>Gelaran Guarantee</strong>
                                     </p>
                                 </div>
                             </div>

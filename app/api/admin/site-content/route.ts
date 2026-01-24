@@ -12,9 +12,9 @@ const DEFAULT_CONTENT: Record<string, unknown> = {
         ctaText: "Cari",
     },
     footer: {
-        brandName: "BSC Tickets",
+        brandName: "Gelaran",
         tagline: "Platform manajemen event dan penjualan tiket terpercaya.",
-        copyright: "© 2026 BSC Event Platform. All rights reserved.",
+        copyright: "© 2026 Gelaran. All rights reserved.",
         links: [
             { label: "Tentang Kami", href: "/about" },
             { label: "Hubungi", href: "/contact" },
@@ -24,7 +24,7 @@ const DEFAULT_CONTENT: Record<string, unknown> = {
         socialLinks: [],
     },
     seo: {
-        siteTitle: "BSC Tickets - Platform Event & Ticketing",
+        siteTitle: "Gelaran - Platform Event & Ticketing",
         siteDescription: "Platform manajemen event dan penjualan tiket terpercaya di Indonesia.",
         siteKeywords: "event, tiket, konser, workshop, festival, indonesia",
         ogImage: "",

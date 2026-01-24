@@ -18,7 +18,7 @@ export default function CustomerBuyingTicketsDocsPage() {
                 Membeli Tiket
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan lengkap untuk membeli tiket event di BSC.
+                Panduan lengkap untuk membeli tiket event di Gelaran.
             </p>
 
             {/* Screenshot */}

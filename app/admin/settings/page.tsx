@@ -38,7 +38,7 @@ interface PlatformSettings {
 }
 
 const DEFAULT_SETTINGS: PlatformSettings = {
-    platformName: "BSC Ticketing",
+    platformName: "Gelaran",
     platformEmail: "support@bsc-ticketing.com",
     platformPhone: "+62 21 1234567",
     platformFeePercentage: 5,

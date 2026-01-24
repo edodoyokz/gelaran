@@ -75,16 +75,16 @@ const DEFAULT_HERO: HeroContent = {
 };
 
 const DEFAULT_FOOTER: FooterContent = {
-    brandName: "BSC Ticketing",
+    brandName: "Gelaran",
     tagline: "Your gateway to unforgettable experiences.",
-    copyrightText: "© 2024 BSC Ticketing. All rights reserved.",
+    copyrightText: "© 2024 Gelaran. All rights reserved.",
     links: [],
     socialLinks: [],
 };
 
 const DEFAULT_SEO: SeoContent = {
-    siteTitle: "BSC Ticketing - Buy Tickets for Events, Concerts & More",
-    siteDescription: "Secure your spot at the hottest events. BSC Ticketing offers a seamless booking experience for concerts, workshops, and festivals.",
+    siteTitle: "Gelaran - Buy Tickets for Events, Concerts & More",
+    siteDescription: "Secure your spot at the hottest events. Gelaran offers a seamless booking experience for concerts, workshops, and festivals.",
     siteKeywords: "tickets, events, concerts, workshops, booking, bsc",
     ogImage: "",
 };

@@ -223,7 +223,7 @@ export function AdminSidebar({ isCollapsed, onToggleCollapse }: AdminSidebarProp
                     {!collapsed && (
                         <div className="flex-1 min-w-0">
                             <h2 className="font-bold truncate text-base text-[var(--text-primary)]">
-                                BSC Admin
+                                Gelaran Admin
                             </h2>
                             <p className="text-xs text-[var(--text-muted)]">
                                 Platform Management

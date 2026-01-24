@@ -205,7 +205,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     return {
-        title: `${event.title} | BSC Events`,
+        title: `${event.title} | Gelaran`,
         description: event.shortDescription || event.description?.slice(0, 160),
         openGraph: {
             title: event.title,

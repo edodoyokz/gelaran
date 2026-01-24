@@ -3,8 +3,8 @@ import { ArrowLeft, Shield } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Kebijakan Privasi - BSC Tickets",
-    description: "Kebijakan privasi BSC Tickets menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda.",
+    title: "Kebijakan Privasi - Gelaran",
+    description: "Kebijakan privasi Gelaran menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda.",
 };
 
 export default function PrivacyPage() {
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
                 <div className="bg-white rounded-2xl shadow-sm p-8 prose prose-gray max-w-none">
                     <div className="mb-8 p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
                         <p className="text-indigo-800 text-sm">
-                            Kebijakan Privasi ini menjelaskan bagaimana BSC Tickets mengumpulkan,
+                            Kebijakan Privasi ini menjelaskan bagaimana Gelaran mengumpulkan,
                             menggunakan, dan melindungi informasi pribadi Anda. Kami berkomitmen
                             untuk menjaga privasi dan keamanan data Anda.
                         </p>

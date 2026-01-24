@@ -51,9 +51,8 @@ export function CustomerSidebar({
 
     return (
         <aside
-            className={`fixed left-0 top-0 h-full bg-white border-r border-gray-200 z-40 transition-all duration-300 hidden lg:flex flex-col ${
-                isCollapsed ? "w-20" : "w-60"
-            }`}
+            className={`fixed left-0 top-0 h-full bg-white border-r border-gray-200 z-40 transition-all duration-300 hidden lg:flex flex-col ${isCollapsed ? "w-20" : "w-60"
+                }`}
         >
             <div className={`p-4 border-b border-gray-100 ${isCollapsed ? "px-3" : ""}`}>
                 <Link href="/" className="flex items-center gap-2">
@@ -62,7 +61,7 @@ export function CustomerSidebar({
                     </div>
                     {!isCollapsed && (
                         <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-                            BSC
+                            Gelaran
                         </span>
                     )}
                 </Link>
@@ -104,17 +103,15 @@ export function CustomerSidebar({
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 group ${
-                                isActive
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 group ${isActive
                                     ? "bg-indigo-50 text-indigo-700"
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                            } ${isCollapsed ? "justify-center" : ""}`}
+                                } ${isCollapsed ? "justify-center" : ""}`}
                             title={isCollapsed ? item.label : undefined}
                         >
                             <item.icon
-                                className={`w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110 ${
-                                    isActive ? "text-indigo-600" : "text-gray-400 group-hover:text-gray-600"
-                                }`}
+                                className={`w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110 ${isActive ? "text-indigo-600" : "text-gray-400 group-hover:text-gray-600"
+                                    }`}
                             />
                             {!isCollapsed && <span>{item.label}</span>}
                             {isActive && !isCollapsed && (
@@ -132,11 +129,10 @@ export function CustomerSidebar({
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 ${
-                                isActive
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 ${isActive
                                     ? "bg-gray-100 text-gray-900"
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                            } ${isCollapsed ? "justify-center" : ""}`}
+                                } ${isCollapsed ? "justify-center" : ""}`}
                             title={isCollapsed ? item.label : undefined}
                         >
                             <item.icon className="w-5 h-5 flex-shrink-0 text-gray-400" />
@@ -149,9 +145,8 @@ export function CustomerSidebar({
                     <button
                         type="button"
                         onClick={onLogout}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-all duration-200 w-full ${
-                            isCollapsed ? "justify-center" : ""
-                        }`}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-all duration-200 w-full ${isCollapsed ? "justify-center" : ""
+                            }`}
                         title={isCollapsed ? "Keluar" : undefined}
                     >
                         <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -163,9 +158,8 @@ export function CustomerSidebar({
             <div className="p-3 border-t border-gray-100">
                 <Link
                     href="/events"
-                    className={`flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200 ${
-                        isCollapsed ? "justify-center px-3" : ""
-                    }`}
+                    className={`flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-indigo-200 transition-all duration-200 ${isCollapsed ? "justify-center px-3" : ""
+                        }`}
                     title={isCollapsed ? "Jelajahi Event" : undefined}
                 >
                     <Sparkles className="w-5 h-5" />

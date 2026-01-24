@@ -183,7 +183,7 @@ export async function POST(
 
     try {
       await resend.emails.send({
-        from: `BSC Events <${process.env.RESEND_FROM_EMAIL || "noreply@bsc.events"}>`,
+        from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
         to: recipientEmail,
         subject: `Anda menerima tiket untuk ${eventTitle}`,
         html: `

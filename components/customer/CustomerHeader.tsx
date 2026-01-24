@@ -84,7 +84,7 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
                                 <span className="text-white font-bold text-lg">B</span>
                             </div>
                             <span className="font-bold text-xl text-[var(--text-primary)] hidden sm:block">
-                                BSC
+                                Gelaran
                             </span>
                         </Link>
 

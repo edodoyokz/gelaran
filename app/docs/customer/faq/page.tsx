@@ -8,7 +8,7 @@ const faqs = [
     },
     {
         question: "Tiket tidak masuk ke email, bagaimana?",
-        answer: "Cek folder spam/junk di email Anda. Jika tidak ada, login ke akun BSC dan download tiket dari menu 'Tiket Saya'. Anda juga bisa meminta pengiriman ulang email."
+        answer: "Cek folder spam/junk di email Anda. Jika tidak ada, login ke akun Gelaran dan download tiket dari menu 'Tiket Saya'. Anda juga bisa meminta pengiriman ulang email."
     },
     {
         question: "Apakah tiket bisa dipindahtangankan?",

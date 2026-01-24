@@ -12,8 +12,8 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Tentang Kami - BSC Tickets",
-    description: "BSC Tickets adalah platform ticketing event terpercaya di Indonesia. Kami membantu organizer dan penonton terhubung melalui pengalaman event yang luar biasa.",
+    title: "Tentang Kami - Gelaran",
+    description: "Gelaran adalah platform ticketing event terpercaya di Indonesia. Kami membantu organizer dan penonton terhubung melalui pengalaman event yang luar biasa.",
 };
 
 const STATS = [
@@ -67,7 +67,7 @@ export default function AboutPage() {
                         Menghubungkan Orang Melalui Event
                     </h1>
                     <p className="text-xl text-white/90 max-w-3xl mx-auto">
-                        BSC Tickets adalah platform ticketing event terpercaya yang membantu
+                        Gelaran adalah platform ticketing event terpercaya yang membantu
                         organizer dan penonton terhubung melalui pengalaman event yang luar biasa.
                     </p>
                 </div>
@@ -171,7 +171,7 @@ export default function AboutPage() {
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Tim Kami</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">
-                            Orang-orang hebat di balik BSC Tickets yang bekerja keras untuk memberikan
+                            Orang-orang hebat di balik Gelaran yang bekerja keras untuk memberikan
                             layanan terbaik.
                         </p>
                     </div>

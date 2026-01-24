@@ -260,7 +260,7 @@ export default function POSAccessPage() {
                 </div>
 
                 <p className="text-center text-gray-500 text-sm mt-6">
-                    BSC Event Platform - POS System
+                    Gelaran - POS System
                 </p>
             </div>
         </div>

@@ -14,7 +14,7 @@ export default function CustomerDocsPage() {
             />
 
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                Selamat Datang di BSC
+                Selamat Datang di Gelaran
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
                 Temukan dan beli tiket event favorit Anda dengan mudah. Ikuti panduan ini untuk memulai.
@@ -25,7 +25,7 @@ export default function CustomerDocsPage() {
                 <BrowserFrame
                     src="/docs/images/customer-home.png"
                     title="https://bsc.com"
-                    alt="BSC Halaman Utama"
+                    alt="Gelaran Halaman Utama"
                 />
             </div>
 

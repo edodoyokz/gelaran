@@ -1,4 +1,4 @@
-// Common type definitions for BSC Platform
+// Common type definitions for Gelaran
 
 // ===========================================
 // USER TYPES

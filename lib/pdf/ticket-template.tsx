@@ -233,7 +233,7 @@ export function TicketPdfDocument({ ticket }: { ticket: TicketPdfData }) {
       <Page size="A5" orientation="landscape" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>BSC Events</Text>
+          <Text style={styles.logo}>Gelaran</Text>
           <Text style={styles.ticketBadge}>E-TICKET</Text>
         </View>
 
@@ -320,7 +320,7 @@ export function TicketPdfDocument({ ticket }: { ticket: TicketPdfData }) {
             Dibeli pada: {ticket.purchaseDate}
           </Text>
           <Text style={styles.footerText}>
-            © {new Date().getFullYear()} BSC Events. All rights reserved.
+            © {new Date().getFullYear()} Gelaran. All rights reserved.
           </Text>
         </View>
       </Page>

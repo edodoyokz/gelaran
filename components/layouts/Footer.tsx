@@ -23,9 +23,9 @@ interface FooterContent {
 }
 
 const DEFAULT_CONTENT: FooterContent = {
-    brandName: "BSC Tickets",
+    brandName: "Gelaran",
     tagline: "Platform manajemen event dan penjualan tiket terpercaya untuk pengalaman terbaik Anda.",
-    copyright: "© 2026 BSC Event Platform. All rights reserved.",
+    copyright: "© 2026 Gelaran. All rights reserved.",
     links: [
         { label: "Tentang Kami", href: "/about" },
         { label: "Hubungi Kami", href: "/contact" },
@@ -46,7 +46,7 @@ export function Footer() {
 
     useEffect(() => {
         if (loaded) return;
-        
+
         const loadContent = async () => {
             try {
                 const res = await fetch("/api/site-content?keys=footer");
@@ -71,7 +71,7 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
                     <div>
                         <h3 className="font-bold text-2xl md:text-3xl text-white mb-4 md:mb-6 tracking-tight flex items-center gap-2">
-                            BSC<span className="text-indigo-400">Tickets</span>
+                            Gelaran<span className="text-indigo-400">.id</span>
                         </h3>
                         <p className="text-slate-400 leading-relaxed mb-6 md:mb-8 text-sm md:text-base">
                             {content.tagline}
@@ -94,8 +94,8 @@ export function Footer() {
                         <ul className="space-y-3">
                             {content.links.slice(0, 3).map((link, index) => (
                                 <li key={index}>
-                                    <Link 
-                                        href={link.href} 
+                                    <Link
+                                        href={link.href}
                                         className="text-slate-400 hover:text-indigo-400 transition-colors text-sm md:text-base"
                                     >
                                         {link.label}
@@ -110,8 +110,8 @@ export function Footer() {
                         <ul className="space-y-3">
                             {content.links.slice(3).map((link, index) => (
                                 <li key={index}>
-                                    <Link 
-                                        href={link.href} 
+                                    <Link
+                                        href={link.href}
                                         className="text-slate-400 hover:text-indigo-400 transition-colors text-sm md:text-base"
                                     >
                                         {link.label}

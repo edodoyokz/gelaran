@@ -184,7 +184,7 @@ export function TicketPrint({ tickets, onClose }: TicketPrintProps) {
                                 <div className="footer">
                                     Tunjukkan tiket ini saat masuk venue
                                     <br />
-                                    BSC Event Platform
+                                    Gelaran
                                 </div>
                             </div>
                         ))}

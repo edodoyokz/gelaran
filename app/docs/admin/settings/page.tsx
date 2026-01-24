@@ -17,7 +17,7 @@ export default function AdminSettingsDocsPage() {
                 Platform Settings
             </h1>
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan untuk mengonfigurasi pengaturan platform BSC.
+                Panduan untuk mengonfigurasi pengaturan platform Gelaran.
             </p>
 
             {/* Feature Cards */}

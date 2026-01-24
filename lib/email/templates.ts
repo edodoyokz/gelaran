@@ -1,5 +1,5 @@
 // lib/email/templates.ts
-// Email templates for BSC Platform
+// Email templates for Gelaran
 
 interface BookingConfirmationProps {
     customerName: string;
@@ -132,7 +132,7 @@ export function bookingConfirmationHtml(props: BookingConfirmationProps): string
                 Simpan email ini sebagai bukti pemesanan.
               </p>
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                © ${new Date().getFullYear()} BSC Events. All rights reserved.
+                © ${new Date().getFullYear()} Gelaran. All rights reserved.
               </p>
             </td>
           </tr>
@@ -177,7 +177,7 @@ TOTAL PEMBAYARAN: ${props.totalAmount}
 
 Simpan email ini sebagai bukti pemesanan.
 
-© ${new Date().getFullYear()} BSC Events\n  `.trim();
+© ${new Date().getFullYear()} Gelaran\n  `.trim();
 }
 
 interface EventReminderProps {
@@ -272,7 +272,7 @@ export function eventReminderHtml(props: EventReminderProps): string {
           <tr>
             <td style="background-color: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                © ${new Date().getFullYear()} BSC Events. All rights reserved.
+                © ${new Date().getFullYear()} Gelaran. All rights reserved.
               </p>
             </td>
           </tr>
@@ -309,7 +309,7 @@ KODE BOOKING: ${props.bookingCode}
 
 ${props.onlineMeetingUrl ? `Link Meeting: ${props.onlineMeetingUrl}` : "Tunjukkan kode booking atau e-tiket saat check-in."}
 
-© ${new Date().getFullYear()} BSC Events
+© ${new Date().getFullYear()} Gelaran
   `.trim();
 }
 
@@ -385,7 +385,7 @@ export function paymentPendingHtml(props: PaymentPendingProps): string {
                 Pesanan akan otomatis dibatalkan jika tidak dibayar tepat waktu.
               </p>
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                © ${new Date().getFullYear()} BSC Events. All rights reserved.
+                © ${new Date().getFullYear()} Gelaran. All rights reserved.
               </p>
             </td>
           </tr>
@@ -417,7 +417,7 @@ Bayar sekarang: ${props.paymentUrl || `${process.env.NEXT_PUBLIC_APP_URL}/my-boo
 
 Pesanan akan otomatis dibatalkan jika tidak dibayar tepat waktu.
 
-© ${new Date().getFullYear()} BSC Events
+© ${new Date().getFullYear()} Gelaran
   `.trim();
 }
 
@@ -503,7 +503,7 @@ export function ticketDeliveryHtml(props: TicketDeliveryProps): string {
           <tr>
             <td style="background-color: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0; font-size: 12px; color: #9ca3af;">
-                © ${new Date().getFullYear()} BSC Events. All rights reserved.
+                © ${new Date().getFullYear()} Gelaran. All rights reserved.
               </p>
             </td>
           </tr>
@@ -541,6 +541,6 @@ Download E-Ticket: ${props.downloadUrl}
 
 Simpan dan tunjukkan saat check-in di lokasi.
 
-© ${new Date().getFullYear()} BSC Events
+© ${new Date().getFullYear()} Gelaran
   `.trim();
 }

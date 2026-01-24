@@ -87,7 +87,7 @@ export default function CustomerSupportDocsPage() {
                 <li>Sertakan nomor booking/transaksi jika ada masalah pembelian</li>
                 <li>Jelaskan masalah dengan detail dan kronologis</li>
                 <li>Lampirkan screenshot jika diperlukan</li>
-                <li>Gunakan email yang terdaftar di akun BSC Anda</li>
+                <li>Gunakan email yang terdaftar di akun Gelaran Anda</li>
             </ul>
 
             {/* Footer */}
