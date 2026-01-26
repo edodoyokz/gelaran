@@ -18,28 +18,13 @@ export interface EVoucherData extends TicketPdfData {
 
 
 // Register fonts
-Font.register({
-    family: "Inter",
-    fonts: [
-        {
-            src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2",
-            fontWeight: 400,
-        },
-        {
-            src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiJ-Ek-_EeA.woff2",
-            fontWeight: 600,
-        },
-        {
-            src: "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff2",
-            fontWeight: 700,
-        },
-    ],
-});
+// Using standard fonts for stability in production environment to avoid subsetting/fetching errors
+// If custom fonts are required, we should bundle them in the repo.
 
 const styles = StyleSheet.create({
     page: {
         padding: 30, // Slightly less padding to fit everything
-        fontFamily: "Inter",
+        fontFamily: "Helvetica", // Standard PDF font
         backgroundColor: "#ffffff",
         fontSize: 9,
     },
