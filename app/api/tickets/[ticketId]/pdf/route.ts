@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
-import {
-  TicketPdfDocument,
-  generateTicketPdfData,
-} from "@/lib/pdf/ticket-template";
+import { generateTicketPdfData } from "@/lib/pdf/ticket-template";
+import { EVoucherTemplate } from "@/lib/pdf/evoucher-template";
+import { formatVoucherDateTimeRange } from "@/lib/pdf/utils";
+import QRCode from "qrcode";
 
 export async function GET(
   request: NextRequest,
@@ -58,6 +58,8 @@ export async function GET(
       );
     }
 
+    // Allow generating PDF even if not paid for testing in dev, or strictly check status
+    // Keeping original strict check
     if (
       ticket.booking.status !== "PAID" &&
       ticket.booking.status !== "CONFIRMED"
@@ -78,13 +80,41 @@ export async function GET(
       );
     }
 
+    // Generate basic data
     const pdfData = generateTicketPdfData(ticket.booking, ticket);
 
+    // Generate QR Code
+    const qrCodeDataUrl = await QRCode.toDataURL(ticket.uniqueCode);
+
+    // Format specific fields for Voucher
+    const schedule = ticket.booking.event.schedules[0];
+    const scheduleDate = schedule ? new Date(schedule.scheduleDate) : new Date();
+    const startTime = schedule ? new Date(schedule.startTime) : new Date();
+    // Assuming 23:00 end time as default or needs to be fetched if available. Using default from util for now.
+
+    // Override date/time display with specific voucher format
+    // "15 JUN 2025 15:00 – 23:00" logic in template relies on separate date/time or combined?
+    // The template uses pdfData.eventDate + pdfData.eventTime. 
+    // Let's rely on the template's logic but we can also update pdfData properties if we want specific overrides.
+    // Actually our new template uses:
+    // {ticket.eventDate} {ticket.eventTime} – 23:00
+    // So we just need to make sure eventDate and eventTime are formatted nicely. 
+    // The existing generateTicketPdfData uses 'id-ID' locale. 
+    // The reference PDF used English format "15 JUN 2025".
+
+    // Let's create a specialized data object for the voucher
+    const voucherData = {
+      ...pdfData,
+      eventDate: schedule ? new Date(schedule.scheduleDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }).toUpperCase() : pdfData.eventDate,
+      eventTime: schedule ? new Date(schedule.startTime).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }) : pdfData.eventTime,
+      qrCodeDataUrl
+    };
+
     const pdfBuffer = await renderToBuffer(
-      TicketPdfDocument({ ticket: pdfData })
+      EVoucherTemplate({ ticket: voucherData })
     );
 
-    const filename = `ticket-${ticket.uniqueCode.substring(0, 8)}.pdf`;
+    const filename = `voucher-${ticket.uniqueCode.substring(0, 8)}.pdf`;
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,
