@@ -77,6 +77,7 @@ function CheckoutContent() {
         taxAmount: number;
         platformFee: number;
         totalAmount: number;
+        taxLabel?: string;
     } | null>(null);
 
     useEffect(() => {
@@ -213,7 +214,8 @@ function CheckoutContent() {
                         subtotal: pricing.subtotal,
                         taxAmount: pricing.taxAmount,
                         platformFee: pricing.platformFee,
-                        totalAmount: pricing.totalAmount
+                        totalAmount: pricing.totalAmount,
+                        taxLabel: pricing.taxLabel
                     });
                 }
             } catch (err) {
@@ -516,7 +518,7 @@ function CheckoutContent() {
                                             <span>{formatCurrency(platformFee)}</span>
                                         </div>
                                         <div className="flex justify-between text-gray-500">
-                                            <span>PPN (11%)</span>
+                                            <span>{pricingData?.taxLabel || "PPN (11%)"}</span>
                                             <span>{formatCurrency(tax)}</span>
                                         </div>
                                     </div>

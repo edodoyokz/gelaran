@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/prisma/client'
 import { calculatePricing } from '@/lib/pricing/calculate'
-import { DEFAULT_PAYMENT_GATEWAY_FEE_PERCENTAGE, DEFAULT_PLATFORM_FEE_PERCENTAGE } from '@/lib/pricing/constants'
+import { DEFAULT_PAYMENT_GATEWAY_FEE_PERCENTAGE, DEFAULT_PLATFORM_FEE_PERCENTAGE, DEFAULT_TAX_PERCENTAGE } from '@/lib/pricing/constants'
 
 const QuoteSchema = z.object({
   eventId: z.string().uuid(),
@@ -107,7 +107,11 @@ export async function POST(req: NextRequest) {
         rate: Number(defaultTaxRate.rate),
         type: defaultTaxRate.taxType,
         isInclusive: defaultTaxRate.isInclusive
-      } : null,
+      } : {
+        rate: DEFAULT_TAX_PERCENTAGE,
+        type: 'PERCENTAGE',
+        isInclusive: false
+      },
       commission: commissionSetting ? {
         value: Number(commissionSetting.commissionValue),
         type: commissionSetting.commissionType,
