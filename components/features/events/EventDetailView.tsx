@@ -235,7 +235,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
             const seatIds = selectedSeats.map((s) => s.id).join(",");
 
             router.push(
-                `/checkout?event=${event.id}&tickets=${ticketParams}&seats=${seatIds}`
+                `/checkout?event=${event.slug}&tickets=${ticketParams}&seats=${seatIds}`
             );
         } else {
             const ticketParams = event.ticketTypes
@@ -243,7 +243,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                 .map((t) => `${t.id}:${quantities[t.id]}`)
                 .join(",");
 
-            router.push(`/checkout?event=${event.id}&tickets=${ticketParams}`);
+            router.push(`/checkout?event=${event.slug}&tickets=${ticketParams}`);
         }
     };
 
