@@ -25,7 +25,7 @@ interface RecentBooking {
     id: string;
     bookingCode: string;
     status: string;
-    event: { 
+    event: {
         title: string;
         organizer: {
             name: string | null;
@@ -86,6 +86,7 @@ export default async function AdminDashboard() {
         where: { status: { in: ["CONFIRMED", "PAID"] } },
         _sum: {
             totalAmount: true,
+            subtotal: true,
             platformRevenue: true,
             organizerRevenue: true,
             paymentGatewayFee: true,
@@ -95,6 +96,7 @@ export default async function AdminDashboard() {
 
     const breakdown = {
         totalTransactions: Number(revenueBreakdown._sum.totalAmount || 0),
+        subtotal: Number(revenueBreakdown._sum.subtotal || 0),
         platformRevenue: Number(revenueBreakdown._sum.platformRevenue || 0),
         organizerRevenue: Number(revenueBreakdown._sum.organizerRevenue || 0),
         gatewayFee: Number(revenueBreakdown._sum.paymentGatewayFee || 0),
@@ -120,8 +122,8 @@ export default async function AdminDashboard() {
         orderBy: { createdAt: "desc" },
         where: { status: { in: ["CONFIRMED", "PAID"] } },
         include: {
-            event: { 
-                select: { 
+            event: {
+                select: {
                     title: true,
                     organizer: {
                         select: {
@@ -131,7 +133,7 @@ export default async function AdminDashboard() {
                             }
                         }
                     }
-                } 
+                }
             },
             user: { select: { name: true, email: true } },
         },
@@ -189,8 +191,8 @@ export default async function AdminDashboard() {
 
     return (
         <>
-            <AdminHeader 
-                title="Admin Panel" 
+            <AdminHeader
+                title="Admin Panel"
                 subtitle="Gelaran Management"
             />
 
@@ -255,6 +257,7 @@ export default async function AdminDashboard() {
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
                     <RevenueBreakdown
                         totalTransactions={breakdown.totalTransactions}
+                        subtotal={breakdown.subtotal}
                         platformRevenue={breakdown.platformRevenue}
                         organizerRevenue={breakdown.organizerRevenue}
                         gatewayFee={breakdown.gatewayFee}
@@ -283,13 +286,13 @@ export default async function AdminDashboard() {
                                     PAID: "bg-green-500/10 text-green-600",
                                     CONFIRMED: "bg-blue-500/10 text-blue-600",
                                 };
-                                const organizerName = booking.event.organizer.organizerProfile?.organizationName 
-                                    || booking.event.organizer.name 
+                                const organizerName = booking.event.organizer.organizerProfile?.organizationName
+                                    || booking.event.organizer.name
                                     || "Unknown";
 
                                 return (
-                                    <Link 
-                                        key={booking.id} 
+                                    <Link
+                                        key={booking.id}
                                         href={`/admin/bookings/${booking.id}`}
                                         className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
                                     >

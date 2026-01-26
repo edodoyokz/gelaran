@@ -1,5 +1,6 @@
 interface RevenueBreakdownProps {
     totalTransactions: number;
+    subtotal: number;
     platformRevenue: number;
     organizerRevenue: number;
     gatewayFee: number;
@@ -8,6 +9,7 @@ interface RevenueBreakdownProps {
 
 export function RevenueBreakdown({
     totalTransactions,
+    subtotal,
     platformRevenue,
     organizerRevenue,
     gatewayFee,
@@ -22,9 +24,10 @@ export function RevenueBreakdown({
         }).format(value);
     };
 
+    // Calculate percentage based on subtotal (taxBase) to show actual rates
     const calculatePercentage = (value: number): string => {
-        if (totalTransactions === 0) return "0%";
-        return ((value / totalTransactions) * 100).toFixed(1) + "%";
+        if (subtotal === 0) return "0%";
+        return ((value / subtotal) * 100).toFixed(1) + "%";
     };
 
     return (
