@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         const taxPercent = 0.11;
         const taxAmount = Math.round(subtotal * taxPercent);
         const totalAmount = subtotal + platformFee + taxAmount;
-        const organizerRevenue = subtotal;
+        const organizerRevenue = subtotal - platformFee;
         const platformRevenue = platformFee;
 
         const bookingCode = generateBookingCode();
