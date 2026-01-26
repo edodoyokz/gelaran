@@ -234,17 +234,13 @@ export function EVoucherTemplate({ ticket }: { ticket: EVoucherData }) {
 
                     <View style={styles.qrContainer}>
                         <Text style={styles.ticketIdText}>{ticket.ticketCode}</Text>
-                        {/* 
-                 In a real implementation, we would generate a QR code image buffer 
-                 and pass it here. For now, we use a placeholder styling 
-                 or a simple text representation if we can't generate images on the fly easily 
-                 without node-qrcode. 
-                 Since `qrcode.react` is client-side, we might need a server-side qr generator 
-                 or just text for now.
-             */}
-                        <View style={styles.qrCodeBox}>
-                            <Text style={styles.qrCodeText}>QR CODE HERE</Text>
-                        </View>
+                        {ticket.qrCodeDataUrl ? (
+                            <Image src={ticket.qrCodeDataUrl} style={{ width: 120, height: 120, marginBottom: 5 }} />
+                        ) : (
+                            <View style={styles.qrCodeBox}>
+                                <Text style={styles.qrCodeText}>NO QR CODE</Text>
+                            </View>
+                        )}
                     </View>
                 </View>
 
@@ -290,18 +286,16 @@ export function EVoucherTemplate({ ticket }: { ticket: EVoucherData }) {
                 {/* Footer */}
                 <View style={styles.footer}>
                     <View style={styles.footerSection}>
-                        <Text style={styles.footerTitle}>UNTUK INFORMASI LEBIH LANJUT:</Text>
-                        <Text style={styles.footerTitle}>FOR FURTHER INFORMATION:</Text>
-
-                        <Text style={{ ...styles.footerTitle, marginTop: 10 }}>{VOUCHER_TERMS.footer.bossCreator.name}</Text>
-                        <Text style={styles.footerText}>{VOUCHER_TERMS.footer.bossCreator.whatsapp}</Text>
-                        <Text style={styles.footerText}>{VOUCHER_TERMS.footer.bossCreator.email}</Text>
+                        <Text style={styles.footerTitle}>{VOUCHER_TERMS.footer.organizer.title}</Text>
+                        <Text style={styles.footerText}>{ticket.ticketType}</Text> {/* Using generic info or event organizer name if available in ticket data, otherwise generic */}
+                        <Text style={{ ...styles.footerText, fontStyle: 'italic', marginTop: 2 }}>{VOUCHER_TERMS.footer.organizer.subtitle}</Text>
                     </View>
 
                     <View style={styles.footerSection}>
-                        <Text style={{ ...styles.footerTitle, marginTop: 20 }}>{VOUCHER_TERMS.footer.loket.name}</Text>
-                        <Text style={styles.footerText}>{VOUCHER_TERMS.footer.loket.email}</Text>
-                        <Text style={styles.footerText}>{VOUCHER_TERMS.footer.loket.phone}</Text>
+                        <Text style={styles.footerTitle}>{VOUCHER_TERMS.footer.platform.title}</Text>
+                        <Text style={{ ...styles.footerText, fontWeight: 700, fontSize: 10 }}>{VOUCHER_TERMS.footer.platform.name}</Text>
+                        <Text style={styles.footerText}>{VOUCHER_TERMS.footer.platform.website}</Text>
+                        <Text style={styles.footerText}>{VOUCHER_TERMS.footer.platform.email}</Text>
                     </View>
                 </View>
 
