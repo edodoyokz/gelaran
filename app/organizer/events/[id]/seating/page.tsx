@@ -134,9 +134,12 @@ export default function SeatingChartPage() {
             const sectionsRes = await fetch(`/api/organizer/events/${eventId}/seating/sections`);
             const sectionsData = await sectionsRes.json();
             if (sectionsData.success) {
-                setSections(sectionsData.data);
+                const sectionsList = Array.isArray(sectionsData.data) ? sectionsData.data : [];
+                setSections(sectionsList);
                 const initialExpanded: Record<string, boolean> = {};
-                sectionsData.data.forEach((s: VenueSection) => initialExpanded[s.id] = true);
+                sectionsList.forEach((s: VenueSection) => {
+                    initialExpanded[s.id] = true;
+                });
                 setExpandedSections(initialExpanded);
             }
 
