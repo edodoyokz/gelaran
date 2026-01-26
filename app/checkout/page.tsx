@@ -12,7 +12,10 @@ import {
     ArrowLeft,
     Calendar,
     MapPin,
-    Clock
+    Clock,
+    Zap,
+    CheckCircle2,
+    X
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -65,6 +68,12 @@ function CheckoutContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showDemoModal, setShowDemoModal] = useState(false);
+    const [demoPaymentStatus, setDemoPaymentStatus] = useState<"idle" | "processing" | "success">("idle");
+    const [pendingBookingId, setPendingBookingId] = useState<string | null>(null);
+    const [pendingBookingCode, setPendingBookingCode] = useState<string | null>(null);
+
+    const isDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT === "true";
 
     const isSeatCheckout = !!seatsParam;
 
@@ -310,6 +319,15 @@ function CheckoutContent() {
                 return;
             }
 
+            // Demo mode: show modal instead of Midtrans
+            if (isDemoMode) {
+                setPendingBookingId(bookingData.data.id);
+                setPendingBookingCode(bookingData.data.bookingCode);
+                setShowDemoModal(true);
+                setIsProcessing(false);
+                return;
+            }
+
             // Create payment
             const paymentRes = await fetch("/api/payments", {
                 method: "POST",
@@ -330,6 +348,38 @@ function CheckoutContent() {
             console.error("Checkout error:", err);
             setError("Terjadi kesalahan saat memproses pembayaran");
             setIsProcessing(false);
+        }
+    };
+
+    const handleDemoPayment = async () => {
+        if (!pendingBookingId || !pendingBookingCode) return;
+        
+        setDemoPaymentStatus("processing");
+        
+        try {
+            const res = await fetch("/api/payments/demo", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bookingId: pendingBookingId }),
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                setDemoPaymentStatus("success");
+                setTimeout(() => {
+                    router.push(`/checkout/success?booking=${pendingBookingCode}`);
+                }, 1500);
+            } else {
+                setError(data.error?.message || "Demo payment failed");
+                setShowDemoModal(false);
+                setDemoPaymentStatus("idle");
+            }
+        } catch (err) {
+            console.error("Demo payment error:", err);
+            setError("Failed to process demo payment");
+            setShowDemoModal(false);
+            setDemoPaymentStatus("idle");
         }
     };
 
@@ -562,6 +612,82 @@ function CheckoutContent() {
                     </div>
                 </div>
             </div>
+
+            {/* Demo Payment Modal */}
+            {showDemoModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+                        {demoPaymentStatus === "success" ? (
+                            <div className="text-center py-8">
+                                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <CheckCircle2 className="h-8 w-8 text-green-600" />
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                    Pembayaran Berhasil!
+                                </h3>
+                                <p className="text-gray-500">Mengalihkan ke halaman sukses...</p>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="flex items-center justify-between mb-6">
+                                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                                        <Zap className="h-5 w-5 text-amber-500" />
+                                        Demo Payment
+                                    </h3>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowDemoModal(false);
+                                            setDemoPaymentStatus("idle");
+                                        }}
+                                        className="text-gray-400 hover:text-gray-600"
+                                        disabled={demoPaymentStatus === "processing"}
+                                    >
+                                        <X className="h-5 w-5" />
+                                    </button>
+                                </div>
+                                
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                                    <p className="text-sm text-amber-800">
+                                        <strong>Demo Mode:</strong> Ini adalah simulasi pembayaran. 
+                                        Tidak ada transaksi nyata yang akan diproses.
+                                    </p>
+                                </div>
+
+                                <div className="space-y-3 mb-6">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-500">Booking Code</span>
+                                        <span className="font-medium">{pendingBookingCode}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-500">Total</span>
+                                        <span className="font-semibold text-indigo-600">{formatCurrency(total)}</span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleDemoPayment}
+                                    disabled={demoPaymentStatus === "processing"}
+                                    className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg font-medium hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+                                >
+                                    {demoPaymentStatus === "processing" ? (
+                                        <>
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                            Memproses Demo...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Zap className="h-5 w-5" />
+                                            Simulasi Pembayaran Berhasil
+                                        </>
+                                    )}
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
