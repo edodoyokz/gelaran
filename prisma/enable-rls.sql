@@ -51,6 +51,19 @@ ALTER TABLE public.organizer_followers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.seats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.event_device_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.device_accesses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.venue_layouts ENABLE ROW LEVEL SECURITY;
+
+-- ====================================
+-- VENUE LAYOUT POLICIES
+-- ====================================
+
+CREATE POLICY "Public can view venue layouts" ON public.venue_layouts FOR SELECT USING (true);
+CREATE POLICY "Organizers can manage their venue layouts" ON public.venue_layouts FOR ALL USING (
+  event_id IN (SELECT id FROM public.events WHERE organizer_id::uuid = auth.uid())
+);
+CREATE POLICY "Admins have full access to venue layouts" ON public.venue_layouts FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid()::text AND role = 'SUPER_ADMIN')
+);
 
 -- ====================================
 -- PUBLIC READ POLICIES

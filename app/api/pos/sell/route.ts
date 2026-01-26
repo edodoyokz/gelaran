@@ -1,10 +1,11 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { snap, generateOrderId } from "@/lib/midtrans/client";
 import { generateBookingCode } from "@/lib/utils";
 import type { Decimal } from "@prisma/client/runtime/library";
 import type { PrismaTransactionClient } from "@/types/prisma";
+import { SeatError, SeatErrorResponse, createSeatErrorResponse, getHttpStatusForError } from "./errors";
 
 interface TicketRequest {
     ticketTypeId: string;
@@ -58,8 +59,9 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { tickets, buyerName, buyerPhone, buyerEmail, autoCheckIn = false } = body as {
+        const { tickets, seatIds, buyerName, buyerPhone, buyerEmail, autoCheckIn = false } = body as {
             tickets: TicketRequest[];
+            seatIds?: string[];
             buyerName: string;
             buyerPhone?: string;
             buyerEmail?: string;
@@ -117,7 +119,97 @@ export async function POST(request: NextRequest) {
             return errorResponse("Pilih minimal 1 tiket", 400);
         }
 
-        const totalTickets = ticketDetails.reduce((sum, t) => sum + t.quantity, 0);
+        // Handle seat-based booking
+        const seatSelection = seatIds && seatIds.length > 0;
+        let totalTickets = 0;
+        let seatDetails: Array<{
+            seatId: string;
+            ticketTypeId: string;
+            unitPrice: number;
+            version: number; // Added version for optimistic locking
+        }> = [];
+
+        if (seatSelection) {
+            // Validate seats belong to event and are available
+            const seats = await prisma.seat.findMany({
+                where: { id: { in: seatIds }, isActive: true },
+                include: {
+                    ticketType: true,
+                    row: { include: { section: true } },
+                },
+            });
+
+            if (seats.length !== seatIds.length) {
+                const missingSeats = seatIds.filter(id => !seats.find(s => s.id === id));
+                return NextResponse.json<SeatErrorResponse>(
+                    createSeatErrorResponse(
+                        SeatError.NOT_FOUND,
+                        "Satu atau lebih seat tidak ditemukan",
+                        missingSeats[0]
+                    ),
+                    { status: getHttpStatusForError(SeatError.NOT_FOUND) }
+                );
+            }
+
+            for (const seat of seats) {
+                if (seat.row.section.eventId !== event.id) {
+                    const seatLabel = `${seat.row.rowLabel}${seat.seatNumber}`;
+                    return NextResponse.json<SeatErrorResponse>(
+                        createSeatErrorResponse(
+                            SeatError.INVALID_EVENT,
+                            `Seat ${seatLabel} tidak milik event ini`,
+                            seat.id,
+                            seatLabel
+                        ),
+                        { status: getHttpStatusForError(SeatError.INVALID_EVENT) }
+                    );
+                }
+
+                if (!seat.ticketTypeId || !seat.ticketType) {
+                    const seatLabel = `${seat.row.rowLabel}${seat.seatNumber}`;
+                    return NextResponse.json<SeatErrorResponse>(
+                        createSeatErrorResponse(
+                            SeatError.MISSING_TICKET_TYPE,
+                            `Seat ${seatLabel} tidak memiliki ticket type`,
+                            seat.id,
+                            seatLabel
+                        ),
+                        { status: getHttpStatusForError(SeatError.MISSING_TICKET_TYPE) }
+                    );
+                }
+
+                if (seat.status !== "AVAILABLE") {
+                    const seatLabel = `${seat.row.rowLabel}${seat.seatNumber}`;
+                    return NextResponse.json<SeatErrorResponse>(
+                        createSeatErrorResponse(
+                            SeatError.ALREADY_BOOKED,
+                            `Seat ${seatLabel} sudah terbooking`,
+                            seat.id,
+                            seatLabel
+                        ),
+                        { status: getHttpStatusForError(SeatError.ALREADY_BOOKED) }
+                    );
+                }
+            }
+
+            // Create seat details with version for optimistic locking
+            for (const seat of seats) {
+                if (!seat.ticketType || !seat.ticketTypeId) continue; // Safety check
+                const unitPrice = seat.ticketType.isFree ? 0 : Number(seat.ticketType.basePrice);
+                subtotal += unitPrice;
+
+                seatDetails.push({
+                    seatId: seat.id,
+                    ticketTypeId: seat.ticketTypeId,
+                    unitPrice,
+                    version: (seat as any).version, // Capture current version for optimistic locking
+                });
+            }
+
+            totalTickets = seatIds.length;
+        } else {
+            totalTickets = ticketDetails.reduce((sum, t) => sum + t.quantity, 0);
+        }
 
         const platformFeePercent = 0.05;
         const platformFee = Math.round(subtotal * platformFeePercent);
@@ -161,52 +253,125 @@ export async function POST(request: NextRequest) {
 
             const createdTickets = [];
 
-            for (const detail of ticketDetails) {
-                for (let i = 0; i < detail.quantity; i++) {
-                    const uniqueCode = `${bookingCode}-${detail.ticketTypeId.slice(0, 4).toUpperCase()}-${String(i + 1).padStart(3, "0")}`;
+            if (seatSelection) {
+                // Handle seat-based tickets with optimistic locking
+                for (let i = 0; i < seatDetails.length; i++) {
+                    const seatDetail = seatDetails[i];
+                    const uniqueCode = `${bookingCode}-SEAT-${String(i + 1).padStart(3, "0")}`;
+
+                    // Atomic update with optimistic locking
+                    const updated = await tx.seat.updateMany({
+                        where: {
+                            id: seatDetail.seatId,
+                            status: 'AVAILABLE',
+                            version: seatDetail.version as any, // Optimistic lock: only update if version hasn't changed
+                        },
+                        data: {
+                            status: 'BOOKED',
+                            version: { increment: 1 } as any, // Increment version
+                        },
+                    });
+
+                    // Check if update was successful (conflict detection)
+                    if (updated.count === 0) {
+                        // Get seat label for better error message
+                        const seatLabel = `${seatDetail.seatId}`;
+                        const errorResponse = createSeatErrorResponse(
+                            SeatError.LOCKED_BY_OTHER,
+                            `Seat conflict - seat sudah dipilih kasir lain`,
+                            seatDetail.seatId,
+                            seatLabel,
+                            { version: seatDetail.version }
+                        );
+
+                        // Throw with error response for proper handling
+                        const error = new Error(errorResponse.message);
+                        (error as any).seatErrorResponse = errorResponse;
+                        throw error;
+                    }
 
                     const ticket = await tx.bookedTicket.create({
                         data: {
                             bookingId: newBooking.id,
-                            ticketTypeId: detail.ticketTypeId,
+                            ticketTypeId: seatDetail.ticketTypeId,
+                            seatId: seatDetail.seatId,
                             uniqueCode,
-                            unitPrice: detail.unitPrice,
-                            taxAmount: Math.round(detail.unitPrice * taxPercent),
-                            finalPrice: detail.unitPrice + Math.round(detail.unitPrice * taxPercent),
+                            unitPrice: seatDetail.unitPrice,
+                            taxAmount: Math.round(seatDetail.unitPrice * taxPercent),
+                            finalPrice: seatDetail.unitPrice + Math.round(seatDetail.unitPrice * taxPercent),
                             status: "ACTIVE",
                             isCheckedIn: autoCheckIn && totalAmount === 0,
                             checkedInAt: autoCheckIn && totalAmount === 0 ? new Date() : null,
                         },
                     });
 
+                    // Get ticket type name
+                    const ticketType = await tx.ticketType.findUnique({
+                        where: { id: seatDetail.ticketTypeId },
+                        select: { name: true },
+                    });
+
                     createdTickets.push({
                         id: ticket.id,
                         uniqueCode: ticket.uniqueCode,
-                        ticketType: detail.name,
-                        unitPrice: detail.unitPrice,
+                        ticketType: ticketType?.name || "Unknown",
+                        unitPrice: seatDetail.unitPrice,
                     });
                 }
+            } else {
+                // Handle quantity-based tickets
+                for (const detail of ticketDetails) {
+                    for (let i = 0; i < detail.quantity; i++) {
+                        const uniqueCode = `${bookingCode}-${detail.ticketTypeId.slice(0, 4).toUpperCase()}-${String(i + 1).padStart(3, "0")}`;
 
-                await tx.ticketType.update({
-                    where: { id: detail.ticketTypeId },
-                    data: {
-                        reservedQuantity: { increment: detail.quantity },
-                    },
-                });
+                        const ticket = await tx.bookedTicket.create({
+                            data: {
+                                bookingId: newBooking.id,
+                                ticketTypeId: detail.ticketTypeId,
+                                uniqueCode,
+                                unitPrice: detail.unitPrice,
+                                taxAmount: Math.round(detail.unitPrice * taxPercent),
+                                finalPrice: detail.unitPrice + Math.round(detail.unitPrice * taxPercent),
+                                status: "ACTIVE",
+                                isCheckedIn: autoCheckIn && totalAmount === 0,
+                                checkedInAt: autoCheckIn && totalAmount === 0 ? new Date() : null,
+                            },
+                        });
+
+                        createdTickets.push({
+                            id: ticket.id,
+                            uniqueCode: ticket.uniqueCode,
+                            ticketType: detail.name,
+                            unitPrice: detail.unitPrice,
+                        });
+                    }
+
+                    await tx.ticketType.update({
+                        where: { id: detail.ticketTypeId },
+                        data: {
+                            reservedQuantity: { increment: detail.quantity },
+                        },
+                    });
+                }
             }
 
             return { booking: newBooking, tickets: createdTickets };
         });
 
         if (totalAmount === 0) {
-            for (const detail of ticketDetails) {
-                await prisma.ticketType.update({
-                    where: { id: detail.ticketTypeId },
-                    data: {
-                        soldQuantity: { increment: detail.quantity },
-                        reservedQuantity: { decrement: detail.quantity },
-                    },
-                });
+            if (seatSelection) {
+                // For seat-based bookings, seats are already marked as BOOKED in transaction
+                // No need to update ticket type quantities for seat-based bookings
+            } else {
+                for (const detail of ticketDetails) {
+                    await prisma.ticketType.update({
+                        where: { id: detail.ticketTypeId },
+                        data: {
+                            soldQuantity: { increment: detail.quantity },
+                            reservedQuantity: { decrement: detail.quantity },
+                        },
+                    });
+                }
             }
 
             return successResponse({
@@ -294,6 +459,27 @@ export async function POST(request: NextRequest) {
         });
     } catch (error) {
         console.error("POS sell error:", error);
+
+        // Handle optimistic locking conflicts with specific error response
+        if (error instanceof Error && (error as any).seatErrorResponse) {
+            const seatError = (error as any).seatErrorResponse as SeatErrorResponse;
+            return NextResponse.json<SeatErrorResponse>(
+                seatError,
+                { status: getHttpStatusForError(seatError.error) }
+            );
+        }
+
+        // Handle other seat conflicts
+        if (error instanceof Error && error.message.includes("Seat conflict")) {
+            return NextResponse.json<SeatErrorResponse>(
+                createSeatErrorResponse(
+                    SeatError.CONFLICT,
+                    error.message
+                ),
+                { status: getHttpStatusForError(SeatError.CONFLICT) }
+            );
+        }
+
         return errorResponse("Gagal membuat pesanan", 500);
     }
 }

@@ -1223,6 +1223,7 @@ model Seat {
   lockedUntil     DateTime?  @map("locked_until")
   bookedTicketId  String?    @map("booked_ticket_id") @db.Uuid
   sortOrder       Int        @default(0) @map("sort_order")
+  version         Int        @default(0)
   isActive        Boolean    @default(true) @map("is_active")
   createdAt       DateTime   @default(now()) @map("created_at")
 

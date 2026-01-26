@@ -24,6 +24,59 @@ import {
     TrendingUp,
     Settings,
 } from "lucide-react";
+import { POSSeatSelector } from "@/components/pos/POSSeatSelector";
+
+// Error codes from backend
+enum SeatError {
+    ALREADY_BOOKED = 'ALREADY_BOOKED',
+    LOCKED_BY_OTHER = 'LOCKED_BY_OTHER',
+    NOT_AVAILABLE = 'NOT_AVAILABLE',
+    INVALID_SEAT = 'INVALID_SEAT',
+    CONFLICT = 'CONFLICT',
+    NOT_FOUND = 'NOT_FOUND',
+    INVALID_EVENT = 'INVALID_EVENT',
+    MISSING_TICKET_TYPE = 'MISSING_TICKET_TYPE',
+}
+
+interface SeatErrorResponse {
+    error: SeatError;
+    message: string;
+    seatId?: string;
+    seatLabel?: string;
+    details?: any;
+}
+
+// Helper function untuk mendapatkan user-friendly error message
+function getUserFriendlyErrorMessage(errorResponse: SeatErrorResponse): string {
+    switch (errorResponse.error) {
+        case SeatError.ALREADY_BOOKED:
+            return `Seat ${errorResponse.seatLabel || errorResponse.seatId} sudah terbooking. Silakan pilih seat lain.`;
+
+        case SeatError.LOCKED_BY_OTHER:
+            return `Seat ${errorResponse.seatLabel || errorResponse.seatId} sedang dipilih kasir lain. Silakan pilih seat lain.`;
+
+        case SeatError.NOT_AVAILABLE:
+            return `Seat ${errorResponse.seatLabel || errorResponse.seatId} tidak tersedia. Silakan pilih seat lain.`;
+
+        case SeatError.NOT_FOUND:
+            return `Seat tidak ditemukan. Silakan refresh halaman dan coba lagi.`;
+
+        case SeatError.INVALID_SEAT:
+            return `Seat tidak valid. Silakan pilih seat yang tersedia.`;
+
+        case SeatError.CONFLICT:
+            return `Terjadi konflik pada seat. Silakan pilih seat lain dan coba lagi.`;
+
+        case SeatError.INVALID_EVENT:
+            return `Seat tidak milik event ini. Silakan pilih seat yang benar.`;
+
+        case SeatError.MISSING_TICKET_TYPE:
+            return `Seat ${errorResponse.seatLabel || errorResponse.seatId} tidak memiliki tipe tiket. Silakan hubungi admin.`;
+
+        default:
+            return errorResponse.message || "Gagal membuat pesanan";
+    }
+}
 
 interface TicketType {
     id: string;
@@ -37,11 +90,13 @@ interface TicketType {
 
 interface EventData {
     id: string;
+    slug: string;
     title: string;
     posterImage: string | null;
     venue: { name: string; city: string } | null;
     schedule: { scheduleDate: string } | null;
     ticketTypes: TicketType[];
+    hasSeatingChart: boolean;
 }
 
 interface Stats {
@@ -84,8 +139,10 @@ export default function POSPage() {
     const [staffName, setStaffName] = useState<string>("");
     const [event, setEvent] = useState<EventData | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
-    
+
     const [selectedTickets, setSelectedTickets] = useState<Record<string, number>>({});
+    const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+    const [seatMode, setSeatMode] = useState(false);
     const [buyerName, setBuyerName] = useState("");
     const [buyerPhone, setBuyerPhone] = useState("");
     const [buyerEmail, setBuyerEmail] = useState("");
@@ -100,13 +157,13 @@ export default function POSPage() {
                 headers: { "x-device-token": token },
             });
             const data = await res.json();
-            
+
             if (!data.success) {
                 localStorage.removeItem("pos_device_token");
                 router.push("/pos/access");
                 return;
             }
-            
+
             setStaffName(data.data.staffName);
             setEvent(data.data.event);
             setStats(data.data.stats);
@@ -160,7 +217,7 @@ export default function POSPage() {
             const ticketType = event?.ticketTypes.find((t) => t.id === ticketTypeId);
             const max = Math.min(ticketType?.maxPerOrder || 10, ticketType?.availableQuantity || 0);
             const newValue = Math.max(0, Math.min(max, current + delta));
-            
+
             if (newValue === 0) {
                 const { [ticketTypeId]: _, ...rest } = prev;
                 return rest;
@@ -169,8 +226,34 @@ export default function POSPage() {
         });
     };
 
+    const handleSeatSelect = (seatId: string, seat: any) => {
+        setSelectedSeats((prev) => [...prev, seatId]);
+        // Auto-select ticket type based on seat's ticket type
+        if (seat.ticketTypeId) {
+            setSelectedTickets((prev) => ({
+                ...prev,
+                [seat.ticketTypeId]: (prev[seat.ticketTypeId] || 0) + 1,
+            }));
+        }
+    };
+
+    const handleSeatDeselect = (seatId: string) => {
+        setSelectedSeats((prev) => prev.filter((id) => id !== seatId));
+        // Note: We don't auto-deselect ticket types here to allow mixed mode
+    };
+
     const calculateTotal = () => {
         if (!event) return 0;
+
+        if (event.hasSeatingChart) {
+            // For seat-based events, calculate based on selected seats
+            // Note: This is a simplified calculation. In reality, we'd need seat data with ticket types
+            return Object.entries(selectedTickets).reduce((total, [id, qty]) => {
+                const ticketType = event.ticketTypes.find((t) => t.id === id);
+                return total + (ticketType?.basePrice || 0) * qty;
+            }, 0);
+        }
+
         return Object.entries(selectedTickets).reduce((total, [id, qty]) => {
             const ticketType = event.ticketTypes.find((t) => t.id === id);
             return total + (ticketType?.basePrice || 0) * qty;
@@ -178,22 +261,28 @@ export default function POSPage() {
     };
 
     const getTotalTickets = () => {
+        if (event?.hasSeatingChart) {
+            return selectedSeats.length;
+        }
         return Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
     };
 
     const handleSell = async () => {
         if (!deviceToken || getTotalTickets() === 0 || buyerName.trim().length < 2) return;
-        
+
+        // Additional validation for seat-based events
+        if (event?.hasSeatingChart && selectedSeats.length === 0) return;
+
         setIsProcessing(true);
         setSellError(null);
         setSellResult(null);
-        
+
         try {
             const tickets = Object.entries(selectedTickets).map(([ticketTypeId, quantity]) => ({
                 ticketTypeId,
                 quantity,
             }));
-            
+
             const res = await fetch("/api/pos/sell", {
                 method: "POST",
                 headers: {
@@ -202,20 +291,32 @@ export default function POSPage() {
                 },
                 body: JSON.stringify({
                     tickets,
+                    seatIds: selectedSeats.length > 0 ? selectedSeats : undefined,
                     buyerName: buyerName.trim(),
                     buyerPhone: buyerPhone.trim() || undefined,
                     buyerEmail: buyerEmail.trim() || undefined,
                     autoCheckIn,
                 }),
             });
-            
+
             const data = await res.json();
-            
+
             if (!data.success) {
-                setSellError(data.error?.message || "Gagal membuat pesanan");
+                // Check if response has specific error structure
+                if (data.error && typeof data.error === 'object' && 'error' in data.error) {
+                    const errorResponse = data.error as SeatErrorResponse;
+                    setSellError(getUserFriendlyErrorMessage(errorResponse));
+
+                    // If it's a seat-specific error, deselect the problematic seat
+                    if (errorResponse.seatId) {
+                        setSelectedSeats(prev => prev.filter(id => id !== errorResponse.seatId));
+                    }
+                } else {
+                    setSellError(data.error?.message || "Gagal membuat pesanan");
+                }
                 return;
             }
-            
+
             if (data.data.paymentToken && window.snap) {
                 window.snap.pay(data.data.paymentToken, {
                     onSuccess: () => {
@@ -247,6 +348,8 @@ export default function POSPage() {
 
     const resetSellForm = () => {
         setSelectedTickets({});
+        setSelectedSeats([]);
+        setSeatMode(false);
         setBuyerName("");
         setBuyerPhone("");
         setBuyerEmail("");
@@ -356,7 +459,7 @@ export default function POSPage() {
                                     <p className="text-gray-400">Kode: {sellResult.bookingCode}</p>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-3 mb-6">
                                 {sellResult.tickets.map((ticket) => (
                                     <div key={ticket.id} className="bg-gray-800 rounded-lg p-3 flex items-center gap-3">
@@ -368,7 +471,7 @@ export default function POSPage() {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             <div className="flex gap-3">
                                 <button
                                     type="button"
@@ -389,53 +492,62 @@ export default function POSPage() {
                         </div>
                     ) : (
                         <>
-                            <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-                                <div className="p-4 border-b border-gray-700">
-                                    <h3 className="font-semibold text-white flex items-center gap-2">
-                                        <Ticket className="h-5 w-5 text-emerald-400" />
-                                        Pilih Tiket
-                                    </h3>
-                                </div>
-                                <div className="divide-y divide-gray-700">
-                                    {event?.ticketTypes.map((ticketType) => (
-                                        <div key={ticketType.id} className="p-4 flex items-center justify-between gap-4">
-                                            <div className="min-w-0 flex-1">
-                                                <h4 className="font-medium text-white">{ticketType.name}</h4>
-                                                <p className="text-sm text-gray-400">
-                                                    {ticketType.isFree ? "Gratis" : formatCurrency(ticketType.basePrice)}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    Tersedia: {ticketType.availableQuantity}
-                                                </p>
+                            {event?.hasSeatingChart ? (
+                                <POSSeatSelector
+                                    eventSlug={event.slug}
+                                    selectedSeats={selectedSeats}
+                                    onSeatSelect={handleSeatSelect}
+                                    onSeatDeselect={handleSeatDeselect}
+                                />
+                            ) : (
+                                <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                                    <div className="p-4 border-b border-gray-700">
+                                        <h3 className="font-semibold text-white flex items-center gap-2">
+                                            <Ticket className="h-5 w-5 text-emerald-400" />
+                                            Pilih Tiket
+                                        </h3>
+                                    </div>
+                                    <div className="divide-y divide-gray-700">
+                                        {event?.ticketTypes.map((ticketType) => (
+                                            <div key={ticketType.id} className="p-4 flex items-center justify-between gap-4">
+                                                <div className="min-w-0 flex-1">
+                                                    <h4 className="font-medium text-white">{ticketType.name}</h4>
+                                                    <p className="text-sm text-gray-400">
+                                                        {ticketType.isFree ? "Gratis" : formatCurrency(ticketType.basePrice)}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        Tersedia: {ticketType.availableQuantity}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateTicketQuantity(ticketType.id, -1)}
+                                                        disabled={!selectedTickets[ticketType.id]}
+                                                        className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center disabled:opacity-30 hover:bg-gray-600 transition-colors"
+                                                    >
+                                                        <Minus className="h-4 w-4" />
+                                                    </button>
+                                                    <span className="w-8 text-center text-lg font-semibold text-white">
+                                                        {selectedTickets[ticketType.id] || 0}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateTicketQuantity(ticketType.id, 1)}
+                                                        disabled={
+                                                            (selectedTickets[ticketType.id] || 0) >= ticketType.maxPerOrder ||
+                                                            (selectedTickets[ticketType.id] || 0) >= ticketType.availableQuantity
+                                                        }
+                                                        className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center disabled:opacity-30 hover:bg-emerald-700 transition-colors"
+                                                    >
+                                                        <Plus className="h-4 w-4" />
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => updateTicketQuantity(ticketType.id, -1)}
-                                                    disabled={!selectedTickets[ticketType.id]}
-                                                    className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center disabled:opacity-30 hover:bg-gray-600 transition-colors"
-                                                >
-                                                    <Minus className="h-4 w-4" />
-                                                </button>
-                                                <span className="w-8 text-center text-lg font-semibold text-white">
-                                                    {selectedTickets[ticketType.id] || 0}
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => updateTicketQuantity(ticketType.id, 1)}
-                                                    disabled={
-                                                        (selectedTickets[ticketType.id] || 0) >= ticketType.maxPerOrder ||
-                                                        (selectedTickets[ticketType.id] || 0) >= ticketType.availableQuantity
-                                                    }
-                                                    className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center disabled:opacity-30 hover:bg-emerald-700 transition-colors"
-                                                >
-                                                    <Plus className="h-4 w-4" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             {getTotalTickets() > 0 && (
                                 <>
@@ -444,7 +556,7 @@ export default function POSPage() {
                                             <User className="h-5 w-5 text-emerald-400" />
                                             Data Pembeli
                                         </h3>
-                                        
+
                                         <div>
                                             <label htmlFor="buyerName" className="block text-sm text-gray-400 mb-1">
                                                 Nama <span className="text-red-400">*</span>
@@ -461,7 +573,7 @@ export default function POSPage() {
                                                 />
                                             </div>
                                         </div>
-                                        
+
                                         <div>
                                             <label htmlFor="buyerPhone" className="block text-sm text-gray-400 mb-1">Telepon</label>
                                             <div className="relative">
@@ -476,7 +588,7 @@ export default function POSPage() {
                                                 />
                                             </div>
                                         </div>
-                                        
+
                                         <div>
                                             <label htmlFor="buyerEmail" className="block text-sm text-gray-400 mb-1">Email</label>
                                             <div className="relative">
@@ -540,7 +652,12 @@ export default function POSPage() {
                                     <button
                                         type="button"
                                         onClick={handleSell}
-                                        disabled={isProcessing || buyerName.trim().length < 2}
+                                        disabled={
+                                            isProcessing ||
+                                            buyerName.trim().length < 2 ||
+                                            (event?.hasSeatingChart && selectedSeats.length === 0) ||
+                                            (!event?.hasSeatingChart && getTotalTickets() === 0)
+                                        }
                                         className="w-full py-4 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
                                     >
                                         {isProcessing ? (

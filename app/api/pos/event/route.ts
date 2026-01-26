@@ -92,6 +92,8 @@ export async function GET(request: NextRequest) {
                 title: event.title,
                 posterImage: event.posterImage,
                 status: event.status,
+                hasSeatingChart: event.hasSeatingChart,
+                slug: event.slug,
                 venue: event.venue,
                 schedule: event.schedules[0] || null,
                 ticketTypes: event.ticketTypes.map((tt) => ({
