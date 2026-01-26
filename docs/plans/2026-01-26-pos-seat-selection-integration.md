@@ -181,3 +181,155 @@ const [seatMode, setSeatMode] = useState(false); // true if event has seating ch
 1. Apakah perlu seat locking untuk POS?
 2. Apakah POS perlu support partial seat selection (beberapa tiket pilih seat, beberapa tidak)?
 3. UI preference: tab-based atau integrated?
+
+---
+
+## Improvement Roadmap
+
+### 1. Race Condition Handling (Medium Priority)
+
+**Problem:**
+- Tidak ada locking mechanism untuk concurrent sales
+- Potensi double-booking jika timing tepat
+
+**Solution: Optimistic Locking dengan Version Check**
+
+```typescript
+// Di Prisma transaction
+const seat = await tx.seat.findUnique({
+    where: { id: seatId },
+    select: { id: true, status: true, version: true }
+});
+
+if (seat.status !== 'AVAILABLE') {
+    throw new Error('Seat sudah tidak tersedia');
+}
+
+// Atomic update dengan version check
+const updated = await tx.seat.updateMany({
+    where: { 
+        id: seatId, 
+        status: 'AVAILABLE',
+        version: seat.version  // Optimistic lock
+    },
+    data: { 
+        status: 'BOOKED',
+        version: { increment: 1 }
+    }
+});
+
+if (updated.count === 0) {
+    throw new Error('Seat conflict - silakan pilih seat lain');
+}
+```
+
+**Alternative: Short-term Reservation (30 detik)**
+```typescript
+// Lock seat saat dipilih
+await tx.seat.update({
+    where: { id: seatId },
+    data: {
+        status: 'LOCKED',
+        lockedBySession: posSessionId,
+        lockedUntil: new Date(Date.now() + 30000)
+    }
+});
+```
+
+### 2. Real-time UI Updates (Low-Medium Priority)
+
+**Problem:**
+- Tidak ada real-time update jika seat diambil user lain
+- Kasir mungkin memilih seat yang sudah sold
+
+**Solution Options:**
+
+**Option A: Polling (Simple)**
+```typescript
+// Poll setiap 5 detik
+useEffect(() => {
+    const interval = setInterval(() => {
+        fetchSeatAvailability();
+    }, 5000);
+    return () => clearInterval(interval);
+}, []);
+```
+
+**Option B: WebSocket/SSE (Recommended untuk scale)**
+```typescript
+// Server-Sent Events untuk seat status
+const eventSource = new EventSource(`/api/pos/seats/stream?eventId=${eventId}`);
+eventSource.onmessage = (event) => {
+    const { seatId, newStatus } = JSON.parse(event.data);
+    updateSeatStatus(seatId, newStatus);
+};
+```
+
+**Option C: Supabase Realtime (Easiest dengan current stack)**
+```typescript
+// Subscribe ke seat changes
+supabase
+    .channel('seats')
+    .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'seats',
+        filter: `event_id=eq.${eventId}`
+    }, handleSeatChange)
+    .subscribe();
+```
+
+### 3. Enhanced Error Handling (Low Priority)
+
+**Problem:**
+- Error messages generic untuk seat conflicts
+- UX kurang baik saat terjadi conflict
+
+**Solution: Specific Error Messages + Visual Feedback**
+
+```typescript
+// Error types
+enum SeatError {
+    ALREADY_BOOKED = 'ALREADY_BOOKED',
+    LOCKED_BY_OTHER = 'LOCKED_BY_OTHER',
+    NOT_FOUND = 'NOT_FOUND',
+    WRONG_EVENT = 'WRONG_EVENT'
+}
+
+// Error response dengan detail
+return errorResponse({
+    code: SeatError.ALREADY_BOOKED,
+    message: 'Seat ini sudah dibeli oleh customer lain',
+    seatId: conflictingSeatId,
+    suggestion: 'Silakan refresh dan pilih seat lain'
+});
+```
+
+**Frontend UX:**
+```tsx
+// Visual feedback saat conflict
+{conflictSeats.map(seatId => (
+    <SeatIcon 
+        key={seatId}
+        className="animate-pulse bg-red-500" 
+        tooltip="Seat ini sudah tidak tersedia"
+    />
+))}
+```
+
+---
+
+## Priority Matrix
+
+| Improvement | Priority | Effort | Impact |
+|-------------|----------|--------|--------|
+| Optimistic Locking | Medium | 2-3h | High |
+| Polling (5s) | Low-Med | 1h | Medium |
+| WebSocket/Realtime | Low | 4-5h | Medium |
+| Better Error Messages | Low | 1-2h | Low-Med |
+
+**Rekomendasi:**
+1. Implement Optimistic Locking di Phase 1 (wajib)
+2. Implement Polling 5s di Phase 2 (simple, effective)
+3. Better error messages bisa ditambah kapan saja
+4. WebSocket bisa jadi future enhancement
