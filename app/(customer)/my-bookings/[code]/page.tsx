@@ -308,7 +308,7 @@ export default function BookingDetailPage({
         try {
             setDownloadingTicket(ticketId);
             const response = await fetch(`/api/tickets/${ticketId}/pdf`);
-            
+
             if (!response.ok) {
                 const data = await response.json();
                 alert(data.error?.message || "Gagal mengunduh tiket");
@@ -333,7 +333,7 @@ export default function BookingDetailPage({
 
     const downloadAllTickets = async () => {
         if (!booking) return;
-        
+
         const activeTickets = booking.bookedTickets.filter(t => t.status === "ACTIVE" && !t.isCheckedIn);
         if (activeTickets.length === 0) return;
 
@@ -429,7 +429,7 @@ export default function BookingDetailPage({
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <header className="bg-white border-b sticky top-0 z-20">
+            <header className="bg-white border-b sticky top-0 z-20 print:hidden">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -442,6 +442,7 @@ export default function BookingDetailPage({
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
+                            {/* Controls hidden on print by header class */}
                             <button
                                 type="button"
                                 onClick={() => copyToClipboard(booking.bookingCode, "booking")}
@@ -638,7 +639,7 @@ export default function BookingDetailPage({
                                             <button
                                                 type="button"
                                                 onClick={() => setExpandedTicket(isExpanded ? null : ticket.id)}
-                                                className="w-full text-left"
+                                                className="w-full text-left print:hidden"
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
@@ -667,11 +668,11 @@ export default function BookingDetailPage({
                                                 </div>
                                             </button>
 
-                                            {isExpanded && (
-                                                <div className="mt-4 pt-4 border-t">
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                        <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
-                                                            <div className="w-48 h-48 bg-white rounded-lg p-3 shadow-inner mb-3 flex items-center justify-center">
+                                            <div className="print:block print:mb-8">
+                                                <div className={`mt-4 pt-4 border-t ${isExpanded ? 'block' : 'hidden print:block'}`}>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-2">
+                                                        <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg print:bg-transparent print:border">
+                                                            <div className="w-48 h-48 bg-white rounded-lg p-3 shadow-inner mb-3 flex items-center justify-center print:shadow-none">
                                                                 {ticket.status === "ACTIVE" ? (
                                                                     <QRCodeSVG
                                                                         value={ticket.uniqueCode}
@@ -692,7 +693,7 @@ export default function BookingDetailPage({
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => copyToClipboard(ticket.uniqueCode, ticket.id)}
-                                                                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                                                                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors print:hidden"
                                                                 >
                                                                     {copiedCode === ticket.id ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                                                                 </button>
@@ -723,7 +724,7 @@ export default function BookingDetailPage({
                                                                 </div>
                                                             </div>
                                                             {ticket.status === "ACTIVE" && !ticket.isCheckedIn && (
-                                                                <div className="flex gap-2">
+                                                                <div className="flex gap-2 print:hidden">
                                                                     <button
                                                                         type="button"
                                                                         onClick={() => downloadTicketPdf(ticket.id, ticket.uniqueCode)}
@@ -755,7 +756,7 @@ export default function BookingDetailPage({
                                                         </div>
                                                     </div>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
                                     );
                                 })}
@@ -897,11 +898,10 @@ export default function BookingDetailPage({
                                     {booking.refunds.map((refund) => (
                                         <div key={refund.id} className="p-4">
                                             <div className="flex justify-between items-start mb-2">
-                                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                                    refund.status === "COMPLETED" ? "bg-green-100 text-green-700" :
+                                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${refund.status === "COMPLETED" ? "bg-green-100 text-green-700" :
                                                     refund.status === "REJECTED" ? "bg-red-100 text-red-700" :
-                                                    "bg-yellow-100 text-yellow-700"
-                                                }`}>
+                                                        "bg-yellow-100 text-yellow-700"
+                                                    }`}>
                                                     {refund.status}
                                                 </span>
                                                 <span className="font-bold text-gray-900">{formatCurrency(refund.refundAmount)}</span>
@@ -1026,7 +1026,7 @@ export default function BookingDetailPage({
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 mb-2">Transfer Dikirim!</h3>
                                     <p className="text-gray-600 mb-6">
-                                        Undangan transfer telah dikirim ke <strong>{transferEmail}</strong>. 
+                                        Undangan transfer telah dikirim ke <strong>{transferEmail}</strong>.
                                         Mereka akan menerima email untuk menerima tiket dalam 48 jam.
                                     </p>
                                     <button
