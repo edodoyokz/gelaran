@@ -40,6 +40,28 @@ export async function POST(req: NextRequest) {
       subtotal += Number(ticketType.basePrice) * ticket.quantity
     }
     
+    if (data.seatIds && data.seatIds.length > 0) {
+      const seats = await prisma.seat.findMany({
+        where: { id: { in: data.seatIds } },
+        include: {
+          row: { include: { section: true } },
+          ticketType: true
+        }
+      })
+
+      for (const seat of seats) {
+        if (seat.row.section.eventId !== event.id) {
+          return NextResponse.json({ error: 'One or more seats do not belong to this event' }, { status: 400 })
+        }
+        
+        const price = seat.priceOverride 
+          ? Number(seat.priceOverride)
+          : (seat.ticketType?.basePrice ? Number(seat.ticketType.basePrice) : 0)
+          
+        subtotal += price
+      }
+    }
+    
     let discountAmount = 0
     
     if (data.promoCode) {
