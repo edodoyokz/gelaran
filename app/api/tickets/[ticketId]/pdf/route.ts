@@ -4,8 +4,27 @@ import prisma from "@/lib/prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { generateTicketPdfData } from "@/lib/pdf/ticket-template";
 import { EVoucherTemplate } from "@/lib/pdf/evoucher-template";
-import { formatVoucherDateTimeRange } from "@/lib/pdf/utils";
+import { getTemplate, mergeVoucherConfig } from "@/lib/pdf/templates/registry";
+import type { VoucherConfig } from "@/lib/pdf/types";
 import QRCode from "qrcode";
+
+const DEFAULT_VOUCHER_CONFIG: VoucherConfig = {
+  colors: {
+    primary: "#4F46E5",
+    background: "#FFFFFF",
+    text: "#111827",
+  },
+  assets: {
+    logoUrl: null,
+    backgroundUrl: null,
+  },
+  toggles: {
+    showQr: true,
+    showPrice: true,
+    showVenueMap: true,
+  },
+  customSections: [],
+};
 
 export async function GET(
   request: NextRequest,
@@ -33,6 +52,11 @@ export async function GET(
                   take: 1,
                   orderBy: { scheduleDate: "asc" },
                 },
+                voucherConfig: {
+                  include: {
+                    template: true,
+                  },
+                },
               },
             },
           },
@@ -58,8 +82,6 @@ export async function GET(
       );
     }
 
-    // Allow generating PDF even if not paid for testing in dev, or strictly check status
-    // Keeping original strict check
     if (
       ticket.booking.status !== "PAID" &&
       ticket.booking.status !== "CONFIRMED"
@@ -80,40 +102,55 @@ export async function GET(
       );
     }
 
-    // Generate basic data
     const pdfData = generateTicketPdfData(ticket.booking, ticket);
-
-    // Generate QR Code
     const qrCodeDataUrl = await QRCode.toDataURL(ticket.uniqueCode);
 
-    // Format specific fields for Voucher
     const schedule = ticket.booking.event.schedules[0];
-    const scheduleDate = schedule ? new Date(schedule.scheduleDate) : new Date();
-    const startTime = schedule ? new Date(schedule.startTime) : new Date();
-    // Assuming 23:00 end time as default or needs to be fetched if available. Using default from util for now.
-
-    // Override date/time display with specific voucher format
-    // "15 JUN 2025 15:00 – 23:00" logic in template relies on separate date/time or combined?
-    // The template uses pdfData.eventDate + pdfData.eventTime. 
-    // Let's rely on the template's logic but we can also update pdfData properties if we want specific overrides.
-    // Actually our new template uses:
-    // {ticket.eventDate} {ticket.eventTime} – 23:00
-    // So we just need to make sure eventDate and eventTime are formatted nicely. 
-    // The existing generateTicketPdfData uses 'id-ID' locale. 
-    // The reference PDF used English format "15 JUN 2025".
-
-    // Let's create a specialized data object for the voucher
     const voucherData = {
       ...pdfData,
-      eventDate: schedule ? new Date(schedule.scheduleDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }).toUpperCase() : pdfData.eventDate,
-      eventTime: schedule ? new Date(schedule.startTime).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }) : pdfData.eventTime,
-      qrCodeDataUrl
+      eventDate: schedule
+        ? new Date(schedule.scheduleDate)
+            .toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+            .toUpperCase()
+        : pdfData.eventDate,
+      eventTime: schedule
+        ? new Date(schedule.startTime).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : pdfData.eventTime,
+      qrCodeDataUrl,
     };
 
-    const pdfBuffer = await renderToBuffer(
-      EVoucherTemplate({ ticket: voucherData })
-    );
+    let documentNode = EVoucherTemplate({ ticket: voucherData });
 
+    const eventVoucherConfig = ticket.booking.event.voucherConfig;
+    if (eventVoucherConfig?.template?.isActive) {
+      try {
+        const template = getTemplate(eventVoucherConfig.template.componentKey);
+        const configFromTemplate =
+          (eventVoucherConfig.template.defaultConfig as Partial<VoucherConfig>) ??
+          null;
+        const configOverrides =
+          (eventVoucherConfig.configOverrides as Partial<VoucherConfig>) ?? null;
+
+        const mergedConfig = mergeVoucherConfig(
+          mergeVoucherConfig(DEFAULT_VOUCHER_CONFIG, configFromTemplate),
+          configOverrides
+        );
+
+        documentNode = template({ ticket: pdfData, config: mergedConfig });
+      } catch (templateError) {
+        console.error("Template rendering fallback to EVoucherTemplate:", templateError);
+      }
+    }
+
+    const pdfBuffer = await renderToBuffer(documentNode);
     const filename = `voucher-${ticket.uniqueCode.substring(0, 8)}.pdf`;
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
@@ -122,8 +159,8 @@ export async function GET(
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${filename}"`,
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       },
     });
   } catch (error) {
