@@ -28,6 +28,11 @@ interface TopEvent {
     _count: { bookings: number };
 }
 
+function toSafeNumber(value: unknown): number {
+    const parsed = Number(value ?? 0);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
 export async function GET(request: Request) {
     try {
         const supabase = await createClient();
@@ -211,44 +216,44 @@ export async function GET(request: Request) {
             `,
         ]);
 
-        const thisMonthTotal = Number(thisMonthRevenue._sum.totalAmount || 0);
-        const lastMonthTotal = Number(lastMonthRevenue._sum.totalAmount || 0);
+        const thisMonthTotal = toSafeNumber(thisMonthRevenue._sum.totalAmount);
+        const lastMonthTotal = toSafeNumber(lastMonthRevenue._sum.totalAmount);
         const growthPercent = lastMonthTotal > 0
             ? Math.round(((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100)
             : 0;
 
         return successResponse({
             overview: {
-                totalTransactions: Number(totalRevenue._sum.totalAmount || 0),
-                platformRevenue: Number(totalRevenue._sum.platformRevenue || 0),
-                organizerRevenue: Number(totalRevenue._sum.organizerRevenue || 0),
+                totalTransactions: toSafeNumber(totalRevenue._sum.totalAmount),
+                platformRevenue: toSafeNumber(totalRevenue._sum.platformRevenue),
+                organizerRevenue: toSafeNumber(totalRevenue._sum.organizerRevenue),
                 totalBookings: totalRevenue._count.id,
             },
             thisMonth: {
                 revenue: thisMonthTotal,
-                platformRevenue: Number(thisMonthRevenue._sum.platformRevenue || 0),
+                platformRevenue: toSafeNumber(thisMonthRevenue._sum.platformRevenue),
                 growthPercent,
             },
             payouts: {
                 pending: {
                     count: pendingPayouts._count.id,
-                    amount: Number(pendingPayouts._sum.amount || 0),
+                    amount: toSafeNumber(pendingPayouts._sum.amount),
                 },
                 completed: {
                     count: completedPayouts._count.id,
-                    amount: Number(completedPayouts._sum.amount || 0),
+                    amount: toSafeNumber(completedPayouts._sum.amount),
                 },
             },
             bookingsByStatus: bookingsByStatus.map((s: BookingByStatus) => ({
                 status: s.status,
                 count: s._count.id,
-                amount: Number(s._sum.totalAmount || 0),
+                amount: toSafeNumber(s._sum.totalAmount),
             })),
             recentTransactions: recentTransactions.map((t: RecentTransaction) => ({
                 id: t.id,
                 bookingCode: t.bookingCode,
-                amount: Number(t.totalAmount),
-                platformRevenue: Number(t.platformRevenue),
+                amount: toSafeNumber(t.totalAmount),
+                platformRevenue: toSafeNumber(t.platformRevenue),
                 paidAt: t.paidAt || t.createdAt,
                 eventTitle: t.event.title,
                 customerName: t.user?.name || "Guest",
@@ -259,10 +264,10 @@ export async function GET(request: Request) {
                 posterImage: e.posterImage,
                 bookingCount: e._count.bookings,
             })),
-            revenueTrend: revenueTrendData.map(d => ({
+            revenueTrend: revenueTrendData.map((d) => ({
                 date: d.date.toISOString(),
-                platformRevenue: Number(d.platformRevenue || 0),
-                organizerRevenue: Number(d.organizerRevenue || 0),
+                platformRevenue: toSafeNumber(d.platformRevenue),
+                organizerRevenue: toSafeNumber(d.organizerRevenue),
             })),
         });
     } catch (error) {
