@@ -16,20 +16,21 @@ export function formatCurrency(
     }
 ): string {
     const { showSymbol = true, abbreviated = false } = options || {};
+    const safeAmount = Number.isFinite(amount) ? amount : 0;
 
     if (abbreviated) {
-        if (amount >= 1_000_000_000) {
-            return `${showSymbol ? "Rp " : ""}${(amount / 1_000_000_000).toFixed(1)}M`;
+        if (safeAmount >= 1_000_000_000) {
+            return `${showSymbol ? "Rp " : ""}${(safeAmount / 1_000_000_000).toFixed(1)}M`;
         }
-        if (amount >= 1_000_000) {
-            return `${showSymbol ? "Rp " : ""}${(amount / 1_000_000).toFixed(1)}Jt`;
+        if (safeAmount >= 1_000_000) {
+            return `${showSymbol ? "Rp " : ""}${(safeAmount / 1_000_000).toFixed(1)}Jt`;
         }
-        if (amount >= 1_000) {
-            return `${showSymbol ? "Rp " : ""}${(amount / 1_000).toFixed(0)}Rb`;
+        if (safeAmount >= 1_000) {
+            return `${showSymbol ? "Rp " : ""}${(safeAmount / 1_000).toFixed(0)}Rb`;
         }
     }
 
-    const formatted = new Intl.NumberFormat("id-ID").format(amount);
+    const formatted = new Intl.NumberFormat("id-ID").format(safeAmount);
     return showSymbol ? `Rp ${formatted}` : formatted;
 }
 

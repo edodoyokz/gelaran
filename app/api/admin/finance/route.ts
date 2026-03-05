@@ -222,9 +222,12 @@ export async function GET(request: Request) {
             ? Math.round(((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100)
             : 0;
 
+        const totalRevenueAmount = toSafeNumber(totalRevenue._sum.totalAmount);
+
         return successResponse({
             overview: {
-                totalTransactions: toSafeNumber(totalRevenue._sum.totalAmount),
+                totalRevenue: totalRevenueAmount,
+                totalTransactions: totalRevenueAmount,
                 platformRevenue: toSafeNumber(totalRevenue._sum.platformRevenue),
                 organizerRevenue: toSafeNumber(totalRevenue._sum.organizerRevenue),
                 totalBookings: totalRevenue._count.id,

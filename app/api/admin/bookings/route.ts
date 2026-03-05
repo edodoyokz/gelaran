@@ -2,6 +2,11 @@ import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 
+function toSafeNumber(value: unknown): number {
+    const parsed = Number(value ?? 0);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
 export async function GET() {
     try {
         const supabase = await createClient();
@@ -76,9 +81,9 @@ export async function GET() {
             stats: {
                 byStatus: stats,
                 totalRevenue: {
-                    total: Number(totalRevenue._sum.totalAmount || 0),
-                    platform: Number(totalRevenue._sum.platformRevenue || 0),
-                    organizer: Number(totalRevenue._sum.organizerRevenue || 0),
+                    total: toSafeNumber(totalRevenue._sum.totalAmount),
+                    platform: toSafeNumber(totalRevenue._sum.platformRevenue),
+                    organizer: toSafeNumber(totalRevenue._sum.organizerRevenue),
                 },
             },
         });
