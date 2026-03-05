@@ -65,8 +65,12 @@ export async function POST(req: NextRequest) {
     let discountAmount = 0
     
     if (data.promoCode) {
-      const promo = await prisma.promoCode.findUnique({
-        where: { code: data.promoCode, isActive: true }
+      const promo = await prisma.promoCode.findFirst({
+        where: {
+          code: data.promoCode.toUpperCase(),
+          isActive: true,
+          OR: [{ eventId: null }, { eventId: event.id }],
+        }
       })
       
       if (promo && new Date() >= promo.validFrom && new Date() <= promo.validUntil) {

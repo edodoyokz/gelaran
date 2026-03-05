@@ -81,6 +81,18 @@ const EVENT_TYPES = [
     { value: "HYBRID", label: "Hybrid" },
 ];
 
+const DATE_FILTERS = [
+    { value: "", label: "Semua Waktu" },
+    { value: "THIS_WEEK", label: "Minggu Ini" },
+    { value: "THIS_MONTH", label: "Bulan Ini" },
+];
+
+const PRICE_TYPES = [
+    { value: "", label: "Gratis & Berbayar" },
+    { value: "FREE", label: "Gratis" },
+    { value: "PAID", label: "Berbayar" },
+];
+
 function EventsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -97,6 +109,8 @@ function EventsContent() {
         category: searchParams.get("category") || "",
         city: searchParams.get("city") || "",
         eventType: searchParams.get("eventType") || "",
+        dateFilter: searchParams.get("dateFilter") || "",
+        priceType: searchParams.get("priceType") || "",
         sort: searchParams.get("sort") || "createdAt-desc",
     });
 
@@ -111,6 +125,8 @@ function EventsContent() {
             if (filters.category) params.set("category", filters.category);
             if (filters.city) params.set("city", filters.city);
             if (filters.eventType) params.set("eventType", filters.eventType);
+            if (filters.dateFilter) params.set("dateFilter", filters.dateFilter);
+            if (filters.priceType) params.set("priceType", filters.priceType);
 
             const [sortBy, sortOrder] = filters.sort.split("-");
             params.set("sortBy", sortBy);
@@ -158,6 +174,8 @@ function EventsContent() {
         if (newFilters.category) params.set("category", newFilters.category);
         if (newFilters.city) params.set("city", newFilters.city);
         if (newFilters.eventType) params.set("eventType", newFilters.eventType);
+        if (newFilters.dateFilter) params.set("dateFilter", newFilters.dateFilter);
+        if (newFilters.priceType) params.set("priceType", newFilters.priceType);
         if (newFilters.sort !== "createdAt-desc") params.set("sort", newFilters.sort);
 
         router.push(`/events?${params.toString()}`);
@@ -182,6 +200,8 @@ function EventsContent() {
             category: "",
             city: "",
             eventType: "",
+            dateFilter: "",
+            priceType: "",
             sort: "createdAt-desc",
         };
         setFilters(newFilters);
@@ -189,7 +209,7 @@ function EventsContent() {
         router.push("/events");
     };
 
-    const hasActiveFilters = filters.search || filters.category || filters.city || filters.eventType;
+    const hasActiveFilters = filters.search || filters.category || filters.city || filters.eventType || filters.dateFilter || filters.priceType;
 
     const formatDate = (dateStr: string): string => {
         return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -256,7 +276,7 @@ function EventsContent() {
                                 Filter
                                 {hasActiveFilters && (
                                     <span className="px-1.5 py-0.5 bg-indigo-600 text-white text-xs rounded-full">
-                                        {[filters.search, filters.category, filters.city, filters.eventType].filter(Boolean).length}
+                                        {[filters.search, filters.category, filters.city, filters.eventType, filters.dateFilter, filters.priceType].filter(Boolean).length}
                                     </span>
                                 )}
                             </button>
@@ -310,7 +330,7 @@ function EventsContent() {
 
                     {showFilters && (
                         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
                                 <div>
                                     <label htmlFor="filter-category" className="block text-sm font-medium text-gray-700 mb-1">
                                         Kategori
@@ -357,6 +377,42 @@ function EventsContent() {
                                         {EVENT_TYPES.map((type) => (
                                             <option key={type.value} value={type.value}>
                                                 {type.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="filter-date" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Periode
+                                    </label>
+                                    <select
+                                        id="filter-date"
+                                        value={filters.dateFilter}
+                                        onChange={(e) => handleFilterChange("dateFilter", e.target.value)}
+                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    >
+                                        {DATE_FILTERS.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="filter-price-type" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Harga
+                                    </label>
+                                    <select
+                                        id="filter-price-type"
+                                        value={filters.priceType}
+                                        onChange={(e) => handleFilterChange("priceType", e.target.value)}
+                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    >
+                                        {PRICE_TYPES.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
                                             </option>
                                         ))}
                                     </select>
@@ -416,6 +472,32 @@ function EventsContent() {
                                     <button
                                         type="button"
                                         onClick={() => handleFilterChange("eventType", "")}
+                                        className="ml-1 hover:text-indigo-900"
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </span>
+                            )}
+                            {filters.dateFilter && (
+                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
+                                    <Calendar className="h-3 w-3" />
+                                    {DATE_FILTERS.find((d) => d.value === filters.dateFilter)?.label}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleFilterChange("dateFilter", "")}
+                                        className="ml-1 hover:text-indigo-900"
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </span>
+                            )}
+                            {filters.priceType && (
+                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
+                                    <Tag className="h-3 w-3" />
+                                    {PRICE_TYPES.find((p) => p.value === filters.priceType)?.label}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleFilterChange("priceType", "")}
                                         className="ml-1 hover:text-indigo-900"
                                     >
                                         <X className="h-3 w-3" />

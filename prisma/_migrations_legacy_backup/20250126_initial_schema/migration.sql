@@ -448,8 +448,7 @@ CREATE TABLE IF NOT EXISTS "promo_code_usages" (
     "user_id" UUID NOT NULL,
     "discount_amount" DECIMAL(15, 2) NOT NULL,
     "used_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    CONSTRAINT "promo_code_usages_promo_code_id_fkey" FOREIGN KEY ("promo_code_id") REFERENCES "promo_codes"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "promo_code_usages_booking_id_fkey" FOREIGN KEY ("booking_id") REFERENCES "bookings"("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "promo_code_usages_promo_code_id_fkey" FOREIGN KEY ("promo_code_id") REFERENCES "promo_codes"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- ============================================
@@ -494,6 +493,13 @@ CREATE TABLE IF NOT EXISTS "bookings" (
     CONSTRAINT "bookings_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "bookings_event_schedule_id_fkey" FOREIGN KEY ("event_schedule_id") REFERENCES "event_schedules"("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
+
+ALTER TABLE "promo_code_usages"
+    DROP CONSTRAINT IF EXISTS "promo_code_usages_booking_id_fkey";
+
+ALTER TABLE "promo_code_usages"
+    ADD CONSTRAINT "promo_code_usages_booking_id_fkey"
+    FOREIGN KEY ("booking_id") REFERENCES "bookings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS "booked_tickets" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),

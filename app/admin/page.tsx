@@ -12,6 +12,7 @@ import {
     Tag,
     Settings,
     LayoutTemplate,
+    Gift,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
@@ -65,6 +66,7 @@ export default async function AdminDashboard() {
         pendingPayouts,
         totalCategories,
         totalVenues,
+        pendingComplimentaryRequests,
     ] = await Promise.all([
         prisma.user.count({ where: { deletedAt: null } }),
         prisma.user.count({ where: { role: "ORGANIZER", deletedAt: null } }),
@@ -74,6 +76,7 @@ export default async function AdminDashboard() {
         prisma.payout.count({ where: { status: "REQUESTED" } }),
         prisma.category.count({ where: { isActive: true } }),
         prisma.venue.count({ where: { isActive: true } }),
+        prisma.complimentaryTicketRequest.count({ where: { status: "PENDING" } }),
     ]);
 
     const platformRevenueData = await prisma.booking.aggregate({
@@ -186,6 +189,7 @@ export default async function AdminDashboard() {
         { href: "/admin/categories", icon: Tag, label: "Categories", sublabel: `${totalCategories} categories`, iconColor: "text-orange-500", bgColor: "bg-orange-500/10" },
         { href: "/admin/venues", icon: MapPin, label: "Venues", sublabel: `${totalVenues} venues`, iconColor: "text-teal-500", bgColor: "bg-teal-500/10" },
         { href: "/admin/settings", icon: Settings, label: "Platform Settings", sublabel: "Configure platform", iconColor: "text-gray-500", bgColor: "bg-gray-500/10" },
+        { href: "/admin/complimentary-requests", icon: Gift, label: "Complimentary Requests", sublabel: `${pendingComplimentaryRequests} pending`, iconColor: "text-pink-500", bgColor: "bg-pink-500/10" },
         { href: "/admin/landing-page", icon: LayoutTemplate, label: "Landing Page", sublabel: "Hero, footer, SEO", iconColor: "text-indigo-500", bgColor: "bg-indigo-500/10" },
     ];
 

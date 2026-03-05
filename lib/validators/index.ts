@@ -18,6 +18,8 @@ export const eventQuerySchema = z.object({
     status: nullToUndefined(z.enum(["PUBLISHED"]).default("PUBLISHED")),
     startDate: nullToUndefined(z.string().datetime().optional()),
     endDate: nullToUndefined(z.string().datetime().optional()),
+    dateFilter: nullToUndefined(z.enum(["THIS_WEEK", "THIS_MONTH"]).optional()),
+    priceType: nullToUndefined(z.enum(["FREE", "PAID"]).optional()),
     isFeatured: nullToUndefined(z.coerce.boolean().optional()),
     sortBy: nullToUndefined(z.enum(["createdAt", "scheduleDate", "title", "price", "viewCount"]).default("createdAt")),
     sortOrder: nullToUndefined(z.enum(["asc", "desc"]).default("desc")),

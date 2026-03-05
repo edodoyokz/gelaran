@@ -83,11 +83,17 @@ function CheckoutContent() {
     const [isUserLoaded, setIsUserLoaded] = useState(false);
     const [pricingData, setPricingData] = useState<{
         subtotal: number;
+        discountAmount: number;
         taxAmount: number;
         platformFee: number;
         totalAmount: number;
         taxLabel?: string;
+        promoApplied?: boolean;
+        promoMessage?: string;
     } | null>(null);
+    const [promoInput, setPromoInput] = useState("");
+    const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
+    const [promoFeedback, setPromoFeedback] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchUserProfile() {
@@ -207,13 +213,14 @@ function CheckoutContent() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         eventId: currentEvent.id,
-                        tickets: isSeatCheckout 
-                            ? [] 
+                        tickets: isSeatCheckout
+                            ? []
                             : tickets.filter(t => t.quantity > 0).map(t => ({
                                 ticketTypeId: t.ticketTypeId,
                                 quantity: t.quantity
                             })),
-                        seatIds: isSeatCheckout ? lockedSeats.map(s => s.id) : undefined
+                        seatIds: isSeatCheckout ? lockedSeats.map(s => s.id) : undefined,
+                        promoCode: appliedPromoCode || undefined
                     })
                 });
 
@@ -221,10 +228,17 @@ function CheckoutContent() {
                     const pricing = await res.json();
                     setPricingData({
                         subtotal: pricing.subtotal,
+                        discountAmount: pricing.discountAmount || 0,
                         taxAmount: pricing.taxAmount,
                         platformFee: pricing.platformFee,
                         totalAmount: pricing.totalAmount,
-                        taxLabel: pricing.taxLabel
+                        taxLabel: pricing.taxLabel,
+                        promoApplied: Boolean(appliedPromoCode && (pricing.discountAmount || 0) > 0),
+                        promoMessage: appliedPromoCode
+                            ? (pricing.discountAmount || 0) > 0
+                                ? `Voucher ${appliedPromoCode} berhasil digunakan`
+                                : `Voucher ${appliedPromoCode} tidak valid atau tidak berlaku`
+                            : undefined
                     });
                 }
             } catch (err) {
@@ -233,7 +247,7 @@ function CheckoutContent() {
         }
 
         fetchPricing();
-    }, [event, tickets, lockedSeats, isSeatCheckout]);
+    }, [event, tickets, lockedSeats, isSeatCheckout, appliedPromoCode]);
 
     useEffect(() => {
         return () => {
@@ -268,6 +282,22 @@ function CheckoutContent() {
         ? lockedSeats.length
         : tickets.reduce((sum, t) => sum + t.quantity, 0);
 
+    const applyPromoCode = () => {
+        const normalized = promoInput.trim().toUpperCase();
+        if (!normalized) {
+            setPromoFeedback("Masukkan kode voucher terlebih dahulu");
+            return;
+        }
+        setAppliedPromoCode(normalized);
+        setPromoFeedback(null);
+    };
+
+    const removePromoCode = () => {
+        setAppliedPromoCode(null);
+        setPromoInput("");
+        setPromoFeedback("Voucher dihapus");
+    };
+
     const handleCheckout = async () => {
         if (totalTickets === 0) {
             setError("Pilih minimal 1 tiket");
@@ -301,6 +331,7 @@ function CheckoutContent() {
                     guestEmail,
                     guestName,
                     guestPhone,
+                    promoCode: appliedPromoCode || undefined,
                     seatIds: isSeatCheckout ? lockedSeats.map(s => s.id) : undefined,
                     seatSessionId: isSeatCheckout ? seatSessionId : undefined,
                 }),
@@ -558,11 +589,55 @@ function CheckoutContent() {
                             {totalTickets > 0 && (
                                 <>
                                     <div className="border-t my-4" />
+
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Voucher Diskon
+                                        </label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={promoInput}
+                                                onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                                                placeholder="Masukkan kode voucher"
+                                                className="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            />
+                                            {appliedPromoCode ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={removePromoCode}
+                                                    className="px-3 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50"
+                                                >
+                                                    Hapus
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={applyPromoCode}
+                                                    className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
+                                                >
+                                                    Pakai
+                                                </button>
+                                            )}
+                                        </div>
+                                        {(promoFeedback || pricingData?.promoMessage) && (
+                                            <p className={`mt-2 text-xs ${(pricingData?.promoApplied || promoFeedback === "Voucher dihapus") ? "text-green-600" : "text-amber-600"}`}>
+                                                {promoFeedback || pricingData?.promoMessage}
+                                            </p>
+                                        )}
+                                    </div>
+
                                     <div className="space-y-1 text-sm">
                                         <div className="flex justify-between">
                                             <span>Subtotal</span>
                                             <span>{formatCurrency(subtotal)}</span>
                                         </div>
+                                        {(pricingData?.discountAmount || 0) > 0 && (
+                                            <div className="flex justify-between text-green-600">
+                                                <span>Diskon Voucher</span>
+                                                <span>-{formatCurrency(pricingData?.discountAmount || 0)}</span>
+                                            </div>
+                                        )}
                                         <div className="flex justify-between text-gray-500">
                                             <span>Platform fee (5%)</span>
                                             <span>{formatCurrency(platformFee)}</span>

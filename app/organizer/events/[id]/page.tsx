@@ -31,8 +31,9 @@ import {
     Camera,
     ShoppingCart,
     Settings,
+    Gift,
 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface EventSchedule {
     id: string;
@@ -127,7 +128,7 @@ interface EventData {
     stats: EventStats;
 }
 
-type TabType = "overview" | "schedules" | "tickets" | "promo-codes" | "attendees" | "settings";
+type TabType = "overview" | "schedules" | "tickets" | "promo-codes" | "complimentary" | "attendees" | "settings";
 
 const STATUS_COLORS: Record<string, string> = {
     DRAFT: "bg-gray-100 text-gray-700",
@@ -276,6 +277,7 @@ export default function EventDetailPage() {
         { id: "schedules", label: "Jadwal", icon: Calendar },
         { id: "tickets", label: "Tiket", icon: Ticket },
         { id: "promo-codes", label: "Promo", icon: Tag },
+        { id: "complimentary", label: "Complimentary", icon: Gift },
         { id: "attendees", label: "Peserta", icon: Users },
         { id: "settings", label: "Pengaturan", icon: Edit2 },
     ];
@@ -388,6 +390,9 @@ export default function EventDetailPage() {
                 )}
                 {activeTab === "promo-codes" && (
                     <PromoCodesTab event={event} />
+                )}
+                {activeTab === "complimentary" && (
+                    <ComplimentaryTab event={event} />
                 )}
                 {activeTab === "attendees" && (
                     <AttendeesTab event={event} />
@@ -1323,6 +1328,229 @@ function SchedulesTab({ event, onRefresh }: { event: EventData; onRefresh: () =>
                                 <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Batal</button>
                                 <button type="submit" disabled={isLoading} className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
                                     {isLoading ? "Menyimpan..." : "Simpan"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function ComplimentaryTab({ event }: { event: EventData }) {
+    const [requests, setRequests] = useState<Array<{
+        id: string;
+        guestName: string | null;
+        guestEmail: string | null;
+        reason: string | null;
+        requestedTotal: number;
+        status: "PENDING" | "APPROVED" | "REJECTED";
+        reviewedNote: string | null;
+        createdAt: string;
+        items: Array<{
+            id: string;
+            quantity: number;
+            ticketType: {
+                id: string;
+                name: string;
+                basePrice: number;
+                isFree: boolean;
+            };
+        }>;
+        bookings: Array<{
+            id: string;
+            bookingCode: string;
+            status: string;
+            createdAt: string;
+        }>;
+    }>>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+    const fetchRequests = async () => {
+        try {
+            const res = await fetch(`/api/organizer/events/${event.id}/complimentary-requests`);
+            const data = await res.json();
+            if (data.success) {
+                setRequests(data.data);
+            }
+        } catch {
+            setRequests([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchRequests();
+    }, [event.id]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+
+        const ticketTypeRows = event.ticketTypes
+            .map((ticketType) => ({
+                ticketTypeId: ticketType.id,
+                quantity: Number(formData.get(`qty-${ticketType.id}`) || 0),
+            }))
+            .filter((item) => item.quantity > 0);
+
+        if (ticketTypeRows.length === 0) {
+            alert("Pilih minimal 1 tiket complimentary");
+            return;
+        }
+
+        const payload = {
+            guestName: String(formData.get("guestName") || ""),
+            guestEmail: String(formData.get("guestEmail") || ""),
+            guestPhone: String(formData.get("guestPhone") || ""),
+            reason: String(formData.get("reason") || ""),
+            items: ticketTypeRows,
+        };
+
+        try {
+            setIsSaving(true);
+            const res = await fetch(`/api/organizer/events/${event.id}/complimentary-requests`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                alert(data.error?.message || "Gagal membuat request complimentary");
+                return;
+            }
+
+            setIsModalOpen(false);
+            fetchRequests();
+        } catch {
+            alert("Terjadi kesalahan");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    if (isLoading) {
+        return <div className="text-center py-12"><Loader2 className="h-8 w-8 animate-spin mx-auto text-indigo-600" /></div>;
+    }
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900">Complimentary Ticket Requests</h2>
+                <button
+                    type="button"
+                    onClick={() => setIsModalOpen(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                >
+                    <Gift className="h-4 w-4" />
+                    Request Complimentary
+                </button>
+            </div>
+
+            {requests.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+                    <Gift className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">Belum ada request complimentary untuk event ini.</p>
+                </div>
+            ) : (
+                <div className="grid gap-4">
+                    {requests.map((request) => (
+                        <div key={request.id} className="bg-white rounded-xl shadow-sm p-5">
+                            <div className="flex items-start justify-between gap-3">
+                                <div>
+                                    <p className="font-semibold text-gray-900">{request.guestName || "Guest"}</p>
+                                    <p className="text-sm text-gray-500">{request.guestEmail || "-"}</p>
+                                    <p className="text-sm text-gray-600 mt-1">Total tiket: {request.requestedTotal}</p>
+                                    <div className="text-sm text-gray-600 mt-2 space-y-1">
+                                        {request.items.map((item) => (
+                                            <p key={item.id}>• {item.ticketType.name} x{item.quantity}</p>
+                                        ))}
+                                    </div>
+                                    {request.reason && (
+                                        <p className="text-sm text-gray-500 mt-2">Alasan: {request.reason}</p>
+                                    )}
+                                    {request.bookings?.[0] && (
+                                        <p className="text-sm text-green-700 mt-2">Booking issued: {request.bookings[0].bookingCode}</p>
+                                    )}
+                                </div>
+                                <div className="text-right">
+                                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                        request.status === "APPROVED"
+                                            ? "bg-green-100 text-green-700"
+                                            : request.status === "REJECTED"
+                                              ? "bg-red-100 text-red-700"
+                                              : "bg-yellow-100 text-yellow-700"
+                                    }`}>
+                                        {request.status}
+                                    </span>
+                                    <p className="text-xs text-gray-500 mt-2">{formatDate(request.createdAt)}</p>
+                                    {request.reviewedNote && (
+                                        <p className="text-xs text-gray-500 mt-1 max-w-[220px]">Catatan admin: {request.reviewedNote}</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b sticky top-0 bg-white">
+                            <h3 className="text-lg font-bold text-gray-900">Request Complimentary Ticket</h3>
+                        </div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Nama Penerima *</label>
+                                    <input name="guestName" required className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Penerima *</label>
+                                    <input name="guestEmail" type="email" required className="w-full px-3 py-2 border rounded-lg" />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">No. WhatsApp</label>
+                                <input name="guestPhone" className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Alasan Request</label>
+                                <textarea name="reason" rows={3} className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+
+                            <div>
+                                <p className="text-sm font-medium text-gray-700 mb-2">Jumlah tiket per tipe</p>
+                                <div className="space-y-2">
+                                    {event.ticketTypes.filter((ticket) => ticket.isActive).map((ticket) => (
+                                        <div key={ticket.id} className="grid grid-cols-[1fr_110px] gap-3 items-center">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-900">{ticket.name}</p>
+                                                <p className="text-xs text-gray-500">Sisa tersedia: {Math.max(0, ticket.totalQuantity - ticket._count.bookedTickets)}</p>
+                                            </div>
+                                            <input
+                                                name={`qty-${ticket.id}`}
+                                                type="number"
+                                                min={0}
+                                                max={50}
+                                                defaultValue={0}
+                                                className="px-3 py-2 border rounded-lg"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="pt-4 flex gap-3">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Batal</button>
+                                <button type="submit" disabled={isSaving} className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50">
+                                    {isSaving ? "Mengirim..." : "Kirim Request"}
                                 </button>
                             </div>
                         </form>

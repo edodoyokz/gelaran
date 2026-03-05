@@ -22,6 +22,7 @@ import {
     Wallet,
     RotateCcw,
     BookOpen,
+    Gift,
     type LucideIcon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -41,6 +42,7 @@ const menuItems: MenuItem[] = [
     { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/events", label: "Events", icon: Calendar },
     { href: "/admin/bookings", label: "Bookings", icon: CreditCard },
+    { href: "/admin/complimentary-requests", label: "Complimentary", icon: Gift },
     {
         href: "/admin/finance",
         label: "Finance",

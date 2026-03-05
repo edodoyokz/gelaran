@@ -58,6 +58,10 @@ export async function GET(request: NextRequest) {
             search: searchParams.get("search"),
             eventType: searchParams.get("eventType"),
             status: searchParams.get("status"),
+            startDate: searchParams.get("startDate"),
+            endDate: searchParams.get("endDate"),
+            dateFilter: searchParams.get("dateFilter"),
+            priceType: searchParams.get("priceType"),
             isFeatured: searchParams.get("isFeatured"),
             sortBy: searchParams.get("sortBy"),
             sortOrder: searchParams.get("sortOrder"),
@@ -67,7 +71,7 @@ export async function GET(request: NextRequest) {
             return errorResponse("Invalid query parameters", 400, params.error.flatten().fieldErrors);
         }
 
-        const { page, limit, category, city, search, eventType, status, isFeatured, sortBy, sortOrder } = params.data;
+        const { page, limit, category, city, search, eventType, status, startDate, endDate, dateFilter, priceType, isFeatured, sortBy, sortOrder } = params.data;
         const skip = (page - 1) * limit;
 
         // Build where clause
@@ -75,6 +79,41 @@ export async function GET(request: NextRequest) {
             status,
             deletedAt: null,
         };
+
+        const scheduleDateWhere: Record<string, Date> = {};
+
+        if (startDate) {
+            scheduleDateWhere.gte = new Date(startDate);
+        }
+
+        if (endDate) {
+            scheduleDateWhere.lte = new Date(endDate);
+        }
+
+        if (dateFilter === "THIS_WEEK") {
+            const now = new Date();
+            const day = now.getDay();
+            const mondayOffset = day === 0 ? -6 : 1 - day;
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() + mondayOffset);
+            startOfWeek.setHours(0, 0, 0, 0);
+
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59, 999);
+
+            scheduleDateWhere.gte = startOfWeek;
+            scheduleDateWhere.lte = endOfWeek;
+        }
+
+        if (dateFilter === "THIS_MONTH") {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+            scheduleDateWhere.gte = startOfMonth;
+            scheduleDateWhere.lte = endOfMonth;
+        }
 
         if (category) {
             where.category = { slug: category };
@@ -97,6 +136,35 @@ export async function GET(request: NextRequest) {
 
         if (isFeatured !== undefined) {
             where.isFeatured = isFeatured;
+        }
+
+        if (Object.keys(scheduleDateWhere).length > 0) {
+            where.schedules = {
+                some: {
+                    isActive: true,
+                    scheduleDate: scheduleDateWhere,
+                },
+            };
+        }
+
+        if (priceType === "FREE") {
+            where.ticketTypes = {
+                some: {
+                    isActive: true,
+                    isHidden: false,
+                    isFree: true,
+                },
+            };
+        }
+
+        if (priceType === "PAID") {
+            where.ticketTypes = {
+                some: {
+                    isActive: true,
+                    isHidden: false,
+                    isFree: false,
+                },
+            };
         }
 
         // Get total count
