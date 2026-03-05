@@ -128,28 +128,28 @@ interface UserData {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-    CUSTOMER: "bg-gray-100 text-gray-700",
-    ORGANIZER: "bg-purple-100 text-purple-700",
-    ADMIN: "bg-red-100 text-red-700",
-    SUPER_ADMIN: "bg-red-100 text-red-700",
+    CUSTOMER: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    ORGANIZER: "bg-purple-500/10 text-purple-500",
+    ADMIN: "bg-red-500/10 text-red-500",
+    SUPER_ADMIN: "bg-red-500/10 text-red-500",
 };
 
 const STATUS_COLORS: Record<string, string> = {
-    DRAFT: "bg-gray-100 text-gray-700",
-    PENDING_REVIEW: "bg-yellow-100 text-yellow-700",
-    PUBLISHED: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    ENDED: "bg-gray-100 text-gray-700",
+    DRAFT: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    PENDING_REVIEW: "bg-yellow-500/10 text-yellow-600",
+    PUBLISHED: "bg-green-500/10 text-green-600",
+    CANCELLED: "bg-red-500/10 text-red-500",
+    ENDED: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
 };
 
 const BOOKING_STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-yellow-100 text-yellow-700",
+    PENDING: "bg-yellow-500/10 text-yellow-600",
     AWAITING_PAYMENT: "bg-orange-100 text-orange-700",
-    PAID: "bg-blue-100 text-blue-700",
-    CONFIRMED: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    REFUNDED: "bg-purple-100 text-purple-700",
-    EXPIRED: "bg-gray-100 text-gray-700",
+    PAID: "bg-blue-500/10 text-blue-500",
+    CONFIRMED: "bg-green-500/10 text-green-600",
+    CANCELLED: "bg-red-500/10 text-red-500",
+    REFUNDED: "bg-purple-500/10 text-purple-500",
+    EXPIRED: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
 };
 
 export default function AdminUserDetailPage({
@@ -277,10 +277,10 @@ export default function AdminUserDetailPage({
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading user details...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Loading user details...</p>
                 </div>
             </div>
         );
@@ -288,11 +288,11 @@ export default function AdminUserDetailPage({
 
     if (error || !userData) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error || "User not found"}</p>
-                    <Link href="/admin/users" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error || "User not found"}</p>
+                    <Link href="/admin/users" className="text-[var(--accent-primary)] hover:text-indigo-500">
                         Back to Users
                     </Link>
                 </div>
@@ -351,9 +351,9 @@ export default function AdminUserDetailPage({
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
                             <div className="p-6 text-center border-b">
-                                <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
+                                <div className="w-24 h-24 bg-[var(--border)] rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
                                     {userData.avatarUrl ? (
                                         <img
                                             src={userData.avatarUrl}
@@ -361,27 +361,27 @@ export default function AdminUserDetailPage({
                                             className="w-24 h-24 rounded-full object-cover"
                                         />
                                     ) : (
-                                        <User className="h-12 w-12 text-gray-400" />
+                                        <User className="h-12 w-12 text-[var(--text-muted)]" />
                                     )}
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900 mb-1">{userData.name}</h2>
+                                <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">{userData.name}</h2>
                                 <div className="flex items-center justify-center gap-2 mb-3">
                                     <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${ROLE_COLORS[userData.role]}`}>
                                         {userData.role === "SUPER_ADMIN" && <Shield className="h-3 w-3" />}
                                         {userData.role}
                                     </span>
                                     {isSuspended ? (
-                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">
+                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-red-500/10 text-red-500">
                                             <Ban className="h-3 w-3" />
                                             Suspended
                                         </span>
                                     ) : userData.isVerified ? (
-                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-600">
                                             <CheckCircle className="h-3 w-3" />
                                             Verified
                                         </span>
                                     ) : (
-                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
                                             <XCircle className="h-3 w-3" />
                                             Unverified
                                         </span>
@@ -391,76 +391,76 @@ export default function AdminUserDetailPage({
 
                             <div className="p-4 space-y-3">
                                 <div className="flex items-center gap-3">
-                                    <Mail className="h-5 w-5 text-gray-400" />
-                                    <span className="text-sm text-gray-700">{userData.email}</span>
+                                    <Mail className="h-5 w-5 text-[var(--text-muted)]" />
+                                    <span className="text-sm text-[var(--text-secondary)]">{userData.email}</span>
                                 </div>
                                 {userData.phone && (
                                     <div className="flex items-center gap-3">
-                                        <Phone className="h-5 w-5 text-gray-400" />
-                                        <span className="text-sm text-gray-700">{userData.phone}</span>
+                                        <Phone className="h-5 w-5 text-[var(--text-muted)]" />
+                                        <span className="text-sm text-[var(--text-secondary)]">{userData.phone}</span>
                                     </div>
                                 )}
                                 <div className="flex items-center gap-3">
-                                    <Calendar className="h-5 w-5 text-gray-400" />
-                                    <span className="text-sm text-gray-700">Joined {formatDate(userData.createdAt)}</span>
+                                    <Calendar className="h-5 w-5 text-[var(--text-muted)]" />
+                                    <span className="text-sm text-[var(--text-secondary)]">Joined {formatDate(userData.createdAt)}</span>
                                 </div>
                                 {userData.lastLoginAt && (
                                     <div className="flex items-center gap-3">
-                                        <Clock className="h-5 w-5 text-gray-400" />
-                                        <span className="text-sm text-gray-700">Last login {formatDateTime(userData.lastLoginAt)}</span>
+                                        <Clock className="h-5 w-5 text-[var(--text-muted)]" />
+                                        <span className="text-sm text-[var(--text-secondary)]">Last login {formatDateTime(userData.lastLoginAt)}</span>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm p-4">
-                            <h3 className="text-sm font-medium text-gray-500 mb-3">Activity Summary</h3>
+                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-4">
+                            <h3 className="text-sm font-medium text-[var(--text-muted)] mb-3">Activity Summary</h3>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                                    <Ticket className="h-5 w-5 text-indigo-600 mx-auto mb-1" />
-                                    <p className="text-lg font-bold text-gray-900">{userData._count.bookings}</p>
-                                    <p className="text-xs text-gray-500">Bookings</p>
+                                <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
+                                    <Ticket className="h-5 w-5 text-[var(--accent-primary)] mx-auto mb-1" />
+                                    <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.bookings}</p>
+                                    <p className="text-xs text-[var(--text-muted)]">Bookings</p>
                                 </div>
                                 {userData.role === "ORGANIZER" && (
-                                    <div className="text-center p-3 bg-gray-50 rounded-lg">
+                                    <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
                                         <Calendar className="h-5 w-5 text-purple-600 mx-auto mb-1" />
-                                        <p className="text-lg font-bold text-gray-900">{userData._count.events}</p>
-                                        <p className="text-xs text-gray-500">Events</p>
+                                        <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.events}</p>
+                                        <p className="text-xs text-[var(--text-muted)]">Events</p>
                                     </div>
                                 )}
-                                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                                <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
                                     <Star className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
-                                    <p className="text-lg font-bold text-gray-900">{userData._count.reviews}</p>
-                                    <p className="text-xs text-gray-500">Reviews</p>
+                                    <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.reviews}</p>
+                                    <p className="text-xs text-[var(--text-muted)]">Reviews</p>
                                 </div>
-                                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                                <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
                                     <Heart className="h-5 w-5 text-red-500 mx-auto mb-1" />
-                                    <p className="text-lg font-bold text-gray-900">{userData._count.wishlists}</p>
-                                    <p className="text-xs text-gray-500">Wishlist</p>
+                                    <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.wishlists}</p>
+                                    <p className="text-xs text-[var(--text-muted)]">Wishlist</p>
                                 </div>
                             </div>
                         </div>
 
                         {userData.customerProfile && (
-                            <div className="bg-white rounded-xl shadow-sm p-4">
-                                <h3 className="text-sm font-medium text-gray-500 mb-3">Customer Profile</h3>
+                            <div className="bg-[var(--surface)] rounded-xl shadow-sm p-4">
+                                <h3 className="text-sm font-medium text-[var(--text-muted)] mb-3">Customer Profile</h3>
                                 <div className="space-y-2 text-sm">
                                     {userData.customerProfile.gender && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">Gender</span>
-                                            <span className="text-gray-900 capitalize">{userData.customerProfile.gender.toLowerCase()}</span>
+                                            <span className="text-[var(--text-muted)]">Gender</span>
+                                            <span className="text-[var(--text-primary)] capitalize">{userData.customerProfile.gender.toLowerCase()}</span>
                                         </div>
                                     )}
                                     {userData.customerProfile.birthDate && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">Birth Date</span>
-                                            <span className="text-gray-900">{formatDate(userData.customerProfile.birthDate)}</span>
+                                            <span className="text-[var(--text-muted)]">Birth Date</span>
+                                            <span className="text-[var(--text-primary)]">{formatDate(userData.customerProfile.birthDate)}</span>
                                         </div>
                                     )}
                                     {userData.customerProfile.city && (
                                         <div className="flex justify-between">
-                                            <span className="text-gray-500">Location</span>
-                                            <span className="text-gray-900">{userData.customerProfile.city}, {userData.customerProfile.province}</span>
+                                            <span className="text-[var(--text-muted)]">Location</span>
+                                            <span className="text-[var(--text-primary)]">{userData.customerProfile.city}, {userData.customerProfile.province}</span>
                                         </div>
                                     )}
                                 </div>
@@ -469,7 +469,7 @@ export default function AdminUserDetailPage({
                     </div>
 
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                        <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
                             <div className="border-b overflow-x-auto">
                                 <div className="flex">
                                     <button
@@ -477,8 +477,8 @@ export default function AdminUserDetailPage({
                                         onClick={() => setActiveTab("overview")}
                                         className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                             activeTab === "overview"
-                                                ? "border-indigo-600 text-indigo-600"
-                                                : "border-transparent text-gray-500 hover:text-gray-700"
+                                                ? "border-indigo-600 text-[var(--accent-primary)]"
+                                                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                                         }`}
                                     >
                                         Overview
@@ -488,8 +488,8 @@ export default function AdminUserDetailPage({
                                         onClick={() => setActiveTab("bookings")}
                                         className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                             activeTab === "bookings"
-                                                ? "border-indigo-600 text-indigo-600"
-                                                : "border-transparent text-gray-500 hover:text-gray-700"
+                                                ? "border-indigo-600 text-[var(--accent-primary)]"
+                                                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                                         }`}
                                     >
                                         Bookings ({userData._count.bookings})
@@ -501,8 +501,8 @@ export default function AdminUserDetailPage({
                                                 onClick={() => setActiveTab("events")}
                                                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                                     activeTab === "events"
-                                                        ? "border-indigo-600 text-indigo-600"
-                                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                                        ? "border-indigo-600 text-[var(--accent-primary)]"
+                                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                                                 }`}
                                             >
                                                 Events ({userData._count.events})
@@ -512,8 +512,8 @@ export default function AdminUserDetailPage({
                                                 onClick={() => setActiveTab("organizer")}
                                                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                                     activeTab === "organizer"
-                                                        ? "border-indigo-600 text-indigo-600"
-                                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                                        ? "border-indigo-600 text-[var(--accent-primary)]"
+                                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                                                 }`}
                                             >
                                                 Organizer Profile
@@ -523,8 +523,8 @@ export default function AdminUserDetailPage({
                                                 onClick={() => setActiveTab("commission")}
                                                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                                     activeTab === "commission"
-                                                        ? "border-indigo-600 text-indigo-600"
-                                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                                        ? "border-indigo-600 text-[var(--accent-primary)]"
+                                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                                                 }`}
                                             >
                                                 Commission
@@ -538,22 +538,22 @@ export default function AdminUserDetailPage({
                                 {activeTab === "overview" && (
                                     <div className="space-y-6">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
+                                            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Account Information</h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="p-4 bg-gray-50 rounded-lg">
-                                                    <p className="text-sm text-gray-500 mb-1">User ID</p>
-                                                    <p className="text-sm font-mono text-gray-900">{userData.id}</p>
+                                                <div className="p-4 bg-[var(--surface-hover)] rounded-lg">
+                                                    <p className="text-sm text-[var(--text-muted)] mb-1">User ID</p>
+                                                    <p className="text-sm font-mono text-[var(--text-primary)]">{userData.id}</p>
                                                 </div>
-                                                <div className="p-4 bg-gray-50 rounded-lg">
-                                                    <p className="text-sm text-gray-500 mb-1">Locale / Timezone</p>
-                                                    <p className="text-sm text-gray-900">{userData.locale} / {userData.timezone}</p>
+                                                <div className="p-4 bg-[var(--surface-hover)] rounded-lg">
+                                                    <p className="text-sm text-[var(--text-muted)] mb-1">Locale / Timezone</p>
+                                                    <p className="text-sm text-[var(--text-primary)]">{userData.locale} / {userData.timezone}</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {userData.role !== "SUPER_ADMIN" && (
                                             <div>
-                                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Change Role</h3>
+                                                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Change Role</h3>
                                                 <div className="flex flex-wrap gap-2">
                                                     {["CUSTOMER", "ORGANIZER", "ADMIN"].map((role) => (
                                                         <button
@@ -563,8 +563,8 @@ export default function AdminUserDetailPage({
                                                             disabled={actionLoading || userData.role === role}
                                                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
                                                                 userData.role === role
-                                                                    ? "bg-indigo-600 text-white"
-                                                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                                                    ? "bg-[var(--accent-primary)] text-white"
+                                                                    : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
                                                             }`}
                                                         >
                                                             {role}
@@ -577,27 +577,27 @@ export default function AdminUserDetailPage({
                                         {userData.bookings.length > 0 && (
                                             <div>
                                                 <div className="flex items-center justify-between mb-4">
-                                                    <h3 className="text-lg font-semibold text-gray-900">Recent Bookings</h3>
+                                                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">Recent Bookings</h3>
                                                     <button
                                                         type="button"
                                                         onClick={() => setActiveTab("bookings")}
-                                                        className="text-sm text-indigo-600 hover:text-indigo-700"
+                                                        className="text-sm text-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
                                                     >
                                                         View all
                                                     </button>
                                                 </div>
                                                 <div className="space-y-3">
                                                     {userData.bookings.slice(0, 3).map((booking) => (
-                                                        <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                                        <div key={booking.id} className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
                                                             <div>
-                                                                <p className="font-medium text-gray-900">{booking.event.title}</p>
-                                                                <p className="text-sm text-gray-500">{booking.bookingCode}</p>
+                                                                <p className="font-medium text-[var(--text-primary)]">{booking.event.title}</p>
+                                                                <p className="text-sm text-[var(--text-muted)]">{booking.bookingCode}</p>
                                                             </div>
                                                             <div className="text-right">
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${BOOKING_STATUS_COLORS[booking.status]}`}>
                                                                     {booking.status}
                                                                 </span>
-                                                                <p className="text-sm text-gray-900 mt-1">{formatCurrency(booking.totalAmount)}</p>
+                                                                <p className="text-sm text-[var(--text-primary)] mt-1">{formatCurrency(booking.totalAmount)}</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -611,8 +611,8 @@ export default function AdminUserDetailPage({
                                     <div>
                                         {userData.bookings.length === 0 ? (
                                             <div className="text-center py-12">
-                                                <Ticket className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                                <p className="text-gray-500">No bookings yet</p>
+                                                <Ticket className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                                                <p className="text-[var(--text-muted)]">No bookings yet</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -620,14 +620,14 @@ export default function AdminUserDetailPage({
                                                     <Link
                                                         key={booking.id}
                                                         href={`/admin/bookings/${booking.id}`}
-                                                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                                        className="flex items-center justify-between p-4 bg-[var(--surface-hover)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
                                                     >
                                                         <div>
-                                                            <p className="font-medium text-gray-900">{booking.event.title}</p>
+                                                            <p className="font-medium text-[var(--text-primary)]">{booking.event.title}</p>
                                                             <div className="flex items-center gap-2 mt-1">
-                                                                <span className="text-sm font-mono text-gray-500">{booking.bookingCode}</span>
-                                                                <span className="text-gray-300">•</span>
-                                                                <span className="text-sm text-gray-500">{formatDate(booking.createdAt)}</span>
+                                                                <span className="text-sm font-mono text-[var(--text-muted)]">{booking.bookingCode}</span>
+                                                                <span className="text-[var(--text-muted)]">•</span>
+                                                                <span className="text-sm text-[var(--text-muted)]">{formatDate(booking.createdAt)}</span>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center gap-4">
@@ -635,9 +635,9 @@ export default function AdminUserDetailPage({
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${BOOKING_STATUS_COLORS[booking.status]}`}>
                                                                     {booking.status}
                                                                 </span>
-                                                                <p className="text-sm font-medium text-gray-900 mt-1">{formatCurrency(booking.totalAmount)}</p>
+                                                                <p className="text-sm font-medium text-[var(--text-primary)] mt-1">{formatCurrency(booking.totalAmount)}</p>
                                                             </div>
-                                                            <ChevronRight className="h-5 w-5 text-gray-400" />
+                                                            <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
                                                         </div>
                                                     </Link>
                                                 ))}
@@ -650,8 +650,8 @@ export default function AdminUserDetailPage({
                                     <div>
                                         {userData.events.length === 0 ? (
                                             <div className="text-center py-12">
-                                                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                                <p className="text-gray-500">No events created</p>
+                                                <Calendar className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                                                <p className="text-[var(--text-muted)]">No events created</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -659,20 +659,20 @@ export default function AdminUserDetailPage({
                                                     <Link
                                                         key={event.id}
                                                         href={`/admin/events/${event.id}`}
-                                                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                                        className="flex items-center justify-between p-4 bg-[var(--surface-hover)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
                                                     >
                                                         <div>
-                                                            <p className="font-medium text-gray-900">{event.title}</p>
-                                                            <p className="text-sm text-gray-500">{formatDate(event.createdAt)}</p>
+                                                            <p className="font-medium text-[var(--text-primary)]">{event.title}</p>
+                                                            <p className="text-sm text-[var(--text-muted)]">{formatDate(event.createdAt)}</p>
                                                         </div>
                                                         <div className="flex items-center gap-4">
                                                             <div className="text-right">
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[event.status]}`}>
                                                                     {event.status.replace(/_/g, " ")}
                                                                 </span>
-                                                                <p className="text-sm text-gray-500 mt-1">{event._count.bookings} bookings</p>
+                                                                <p className="text-sm text-[var(--text-muted)] mt-1">{event._count.bookings} bookings</p>
                                                             </div>
-                                                            <ChevronRight className="h-5 w-5 text-gray-400" />
+                                                            <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
                                                         </div>
                                                     </Link>
                                                 ))}
@@ -684,7 +684,7 @@ export default function AdminUserDetailPage({
                                 {activeTab === "organizer" && userData.organizerProfile && (
                                     <div className="space-y-6">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center overflow-hidden">
+                                            <div className="w-16 h-16 bg-[var(--border)] rounded-xl flex items-center justify-center overflow-hidden">
                                                 {userData.organizerProfile.organizationLogo ? (
                                                     <img
                                                         src={userData.organizerProfile.organizationLogo}
@@ -692,37 +692,37 @@ export default function AdminUserDetailPage({
                                                         className="w-16 h-16 object-cover"
                                                     />
                                                 ) : (
-                                                    <Building2 className="h-8 w-8 text-gray-400" />
+                                                    <Building2 className="h-8 w-8 text-[var(--text-muted)]" />
                                                 )}
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-lg font-bold text-gray-900">{userData.organizerProfile.organizationName}</h3>
-                                                <p className="text-sm text-gray-500">@{userData.organizerProfile.organizationSlug}</p>
+                                                <h3 className="text-lg font-bold text-[var(--text-primary)]">{userData.organizerProfile.organizationName}</h3>
+                                                <p className="text-sm text-[var(--text-muted)]">@{userData.organizerProfile.organizationSlug}</p>
                                                 {userData.organizerProfile.organizationDescription && (
-                                                    <p className="text-sm text-gray-600 mt-2">{userData.organizerProfile.organizationDescription}</p>
+                                                    <p className="text-sm text-[var(--text-secondary)] mt-2">{userData.organizerProfile.organizationDescription}</p>
                                                 )}
                                             </div>
                                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                                                 userData.organizerProfile.verificationStatus === "APPROVED"
-                                                    ? "bg-green-100 text-green-700"
+                                                    ? "bg-green-500/10 text-green-600"
                                                     : userData.organizerProfile.verificationStatus === "REJECTED"
-                                                        ? "bg-red-100 text-red-700"
-                                                        : "bg-yellow-100 text-yellow-700"
+                                                        ? "bg-red-500/10 text-red-500"
+                                                        : "bg-yellow-500/10 text-yellow-600"
                                             }`}>
                                                 {userData.organizerProfile.verificationStatus}
                                             </span>
                                         </div>
 
                                         <div className="grid grid-cols-3 gap-4">
-                                            <div className="p-4 bg-green-50 rounded-lg text-center">
+                                            <div className="p-4 bg-green-500/10 rounded-lg text-center">
                                                 <p className="text-sm text-green-600 mb-1">Wallet Balance</p>
                                                 <p className="text-lg font-bold text-green-700">{formatCurrency(userData.organizerProfile.walletBalance)}</p>
                                             </div>
-                                            <div className="p-4 bg-blue-50 rounded-lg text-center">
+                                            <div className="p-4 bg-blue-500/10 rounded-lg text-center">
                                                 <p className="text-sm text-blue-600 mb-1">Total Earned</p>
                                                 <p className="text-lg font-bold text-blue-700">{formatCurrency(userData.organizerProfile.totalEarned)}</p>
                                             </div>
-                                            <div className="p-4 bg-purple-50 rounded-lg text-center">
+                                            <div className="p-4 bg-purple-500/10 rounded-lg text-center">
                                                 <p className="text-sm text-purple-600 mb-1">Total Withdrawn</p>
                                                 <p className="text-lg font-bold text-purple-700">{formatCurrency(userData.organizerProfile.totalWithdrawn)}</p>
                                             </div>
@@ -730,14 +730,14 @@ export default function AdminUserDetailPage({
 
                                         {(userData.organizerProfile.websiteUrl || userData.organizerProfile.socialInstagram || userData.organizerProfile.socialFacebook || userData.organizerProfile.socialTwitter) && (
                                             <div>
-                                                <h4 className="text-sm font-medium text-gray-500 mb-3">Social Links</h4>
+                                                <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">Social Links</h4>
                                                 <div className="flex flex-wrap gap-3">
                                                     {userData.organizerProfile.websiteUrl && (
                                                         <a
                                                             href={userData.organizerProfile.websiteUrl}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700 hover:bg-gray-200"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
                                                         >
                                                             <Globe className="h-4 w-4" />
                                                             Website
@@ -749,7 +749,7 @@ export default function AdminUserDetailPage({
                                                             href={`https://instagram.com/${userData.organizerProfile.socialInstagram}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700 hover:bg-gray-200"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
                                                         >
                                                             <Instagram className="h-4 w-4" />
                                                             @{userData.organizerProfile.socialInstagram}
@@ -760,7 +760,7 @@ export default function AdminUserDetailPage({
                                                             href={userData.organizerProfile.socialFacebook}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700 hover:bg-gray-200"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
                                                         >
                                                             <Facebook className="h-4 w-4" />
                                                             Facebook
@@ -771,7 +771,7 @@ export default function AdminUserDetailPage({
                                                             href={`https://twitter.com/${userData.organizerProfile.socialTwitter}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg text-sm text-gray-700 hover:bg-gray-200"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
                                                         >
                                                             <Twitter className="h-4 w-4" />
                                                             @{userData.organizerProfile.socialTwitter}
@@ -783,20 +783,20 @@ export default function AdminUserDetailPage({
 
                                         {userData.organizerProfile.bankAccounts.length > 0 && (
                                             <div>
-                                                <h4 className="text-sm font-medium text-gray-500 mb-3">Bank Accounts</h4>
+                                                <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">Bank Accounts</h4>
                                                 <div className="space-y-2">
                                                     {userData.organizerProfile.bankAccounts.map((bank) => (
-                                                        <div key={bank.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                                        <div key={bank.id} className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
                                                             <div className="flex items-center gap-3">
-                                                                <CreditCard className="h-5 w-5 text-gray-400" />
+                                                                <CreditCard className="h-5 w-5 text-[var(--text-muted)]" />
                                                                 <div>
-                                                                    <p className="font-medium text-gray-900">{bank.bankName}</p>
-                                                                    <p className="text-sm text-gray-500">{bank.accountNumber} - {bank.accountHolderName}</p>
+                                                                    <p className="font-medium text-[var(--text-primary)]">{bank.bankName}</p>
+                                                                    <p className="text-sm text-[var(--text-muted)]">{bank.accountNumber} - {bank.accountHolderName}</p>
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center gap-2">
                                                                 {bank.isPrimary && (
-                                                                    <span className="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">Primary</span>
+                                                                    <span className="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-[var(--accent-primary)] rounded-full">Primary</span>
                                                                 )}
                                                                 {bank.isVerified && (
                                                                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -810,22 +810,22 @@ export default function AdminUserDetailPage({
 
                                         {userData.organizerProfile.payouts.length > 0 && (
                                             <div>
-                                                <h4 className="text-sm font-medium text-gray-500 mb-3">Recent Payouts</h4>
+                                                <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">Recent Payouts</h4>
                                                 <div className="space-y-2">
                                                     {userData.organizerProfile.payouts.map((payout) => (
-                                                        <div key={payout.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                                        <div key={payout.id} className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
                                                             <div>
-                                                                <p className="font-mono text-sm text-gray-700">{payout.payoutCode}</p>
-                                                                <p className="text-xs text-gray-500">{formatDate(payout.createdAt)}</p>
+                                                                <p className="font-mono text-sm text-[var(--text-secondary)]">{payout.payoutCode}</p>
+                                                                <p className="text-xs text-[var(--text-muted)]">{formatDate(payout.createdAt)}</p>
                                                             </div>
                                                             <div className="text-right">
-                                                                <p className="font-medium text-gray-900">{formatCurrency(payout.amount)}</p>
+                                                                <p className="font-medium text-[var(--text-primary)]">{formatCurrency(payout.amount)}</p>
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${
                                                                     payout.status === "COMPLETED"
-                                                                        ? "bg-green-100 text-green-700"
+                                                                        ? "bg-green-500/10 text-green-600"
                                                                         : payout.status === "REJECTED"
-                                                                            ? "bg-red-100 text-red-700"
-                                                                            : "bg-yellow-100 text-yellow-700"
+                                                                            ? "bg-red-500/10 text-red-500"
+                                                                            : "bg-yellow-500/10 text-yellow-600"
                                                                 }`}>
                                                                     {payout.status}
                                                                 </span>

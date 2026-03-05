@@ -161,28 +161,28 @@ export default function AdminReviewsPage() {
                 );
             case "PUBLISHED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-600 text-xs font-bold rounded-full">
                         <CheckCircle className="h-3 w-3" />
                         Diterbitkan
                     </span>
                 );
             case "HIDDEN":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-bold rounded-full">
                         <EyeOff className="h-3 w-3" />
                         Disembunyikan
                     </span>
                 );
             case "REJECTED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-500 text-xs font-bold rounded-full">
                         <XCircle className="h-3 w-3" />
                         Ditolak
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-bold rounded-full">
                         {status}
                     </span>
                 );
@@ -193,7 +193,7 @@ export default function AdminReviewsPage() {
         return [1, 2, 3, 4, 5].map((star) => (
             <Star
                 key={star}
-                className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                className={`h-4 w-4 ${star <= rating ? "fill-yellow-400 text-yellow-400" : "text-[var(--text-muted)]"}`}
             />
         ));
     };
@@ -204,7 +204,7 @@ export default function AdminReviewsPage() {
                 <div className="mb-6">
                     <Link
                         href="/admin"
-                        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span>Kembali ke Dashboard Admin</span>
@@ -213,23 +213,23 @@ export default function AdminReviewsPage() {
 
                 <div className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Manajemen Ulasan</h1>
-                        <p className="text-gray-600">Moderasi ulasan event dari pengguna.</p>
+                        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Manajemen Ulasan</h1>
+                        <p className="text-[var(--text-secondary)]">Moderasi ulasan event dari pengguna.</p>
                     </div>
 
                     <div className="flex items-center gap-2">
                         <Link
                             href="/admin/analytics"
-                            className="px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                            className="px-4 py-2 bg-[var(--surface)] rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-2 transition-colors"
                         >
                             Lihat Statistik
                         </Link>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex gap-4">
+                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)] p-4 mb-6 flex gap-4">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
                         <input
                             type="text"
                             placeholder="Cari ulasan berdasarkan nama pengguna, email, atau judul event..."
@@ -238,7 +238,7 @@ export default function AdminReviewsPage() {
                                 setSearch(e.target.value);
                                 setPage(1);
                             }}
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                         />
                     </div>
 
@@ -248,7 +248,7 @@ export default function AdminReviewsPage() {
                             setStatusFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-indigo-500"
+                        className="px-4 py-2 border rounded-lg bg-[var(--surface)] focus:ring-2 focus:ring-[var(--accent-primary)]"
                     >
                         <option value="">Semua Status</option>
                         <option value="PENDING">Menunggu Review</option>
@@ -265,55 +265,55 @@ export default function AdminReviewsPage() {
                             setEventIdFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="px-4 py-2 border rounded-lg w-48 focus:ring-2 focus:ring-indigo-500"
+                        className="px-4 py-2 border rounded-lg w-48 focus:ring-2 focus:ring-[var(--accent-primary)]"
                     />
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)] overflow-hidden">
                     {isLoading ? (
                         <div className="p-12 flex items-center justify-center">
-                            <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+                            <Loader2 className="h-8 w-8 text-[var(--accent-primary)] animate-spin" />
                         </div>
                     ) : error ? (
                         <div className="p-12 text-center text-red-600">
                             {error}
                         </div>
                     ) : reviews.length === 0 ? (
-                        <div className="p-12 text-center text-gray-500">
+                        <div className="p-12 text-center text-[var(--text-muted)]">
                             Tidak ada ulasan ditemukan.
                         </div>
                     ) : (
                         <>
                             <div className="overflow-x-auto">
                                 <table className="w-full">
-                                    <thead className="bg-gray-50 border-b border-gray-200">
+                                    <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Pengguna
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Event
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Booking
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Rating
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Ulasan
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Status
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Tanggal
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {reviews.map((review) => (
-                                            <tr key={review.id} className="hover:bg-gray-50 transition-colors">
+                                            <tr key={review.id} className="hover:bg-[var(--surface-hover)] transition-colors">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {review.user.avatarUrl ? (
@@ -324,27 +324,27 @@ export default function AdminReviewsPage() {
                                                             />
                                                         ) : (
                                                             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                                                <span className="font-semibold text-indigo-600">
+                                                                <span className="font-semibold text-[var(--accent-primary)]">
                                                                     {review.user.name.charAt(0)}
                                                                 </span>
                                                             </div>
                                                         )}
                                                         <div>
-                                                            <p className="font-medium text-gray-900">{review.user.name}</p>
-                                                            <p className="text-xs text-gray-500">{review.user.email}</p>
+                                                            <p className="font-medium text-[var(--text-primary)]">{review.user.name}</p>
+                                                            <p className="text-xs text-[var(--text-muted)]">{review.user.email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <Link
                                                         href={`/events/${review.event.slug}`}
-                                                        className="text-indigo-600 hover:text-indigo-700 hover:underline font-medium"
+                                                        className="text-[var(--accent-primary)] hover:text-[var(--accent-primary)] hover:underline font-medium"
                                                     >
                                                         {review.event.title}
                                                     </Link>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className="font-mono text-sm text-gray-700">
+                                                    <span className="font-mono text-sm text-[var(--text-secondary)]">
                                                         {review.booking.bookingCode}
                                                     </span>
                                                 </td>
@@ -354,14 +354,14 @@ export default function AdminReviewsPage() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 max-w-xs">
-                                                    <p className="text-sm text-gray-700 line-clamp-2">
+                                                    <p className="text-sm text-[var(--text-secondary)] line-clamp-2">
                                                         {review.reviewText || "-"}
                                                     </p>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {getStatusBadge(review.status)}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-600">
+                                                <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                                                     {formatDate(review.createdAt)}
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -370,7 +370,7 @@ export default function AdminReviewsPage() {
                                                             <select
                                                                 value={review.status}
                                                                 onChange={(e) => handleStatusChange(review.id, e.target.value as "PENDING" | "PUBLISHED" | "HIDDEN" | "REJECTED")}
-                                                                className="px-2 py-1 border rounded-lg bg-white text-sm focus:ring-2 focus:ring-indigo-500"
+                                                                className="px-2 py-1 border rounded-lg bg-[var(--surface)] text-sm focus:ring-2 focus:ring-[var(--accent-primary)]"
                                                             >
                                                                 <option value="PENDING">Menunggu</option>
                                                                 <option value="PUBLISHED">Diterbitkan</option>
@@ -380,7 +380,7 @@ export default function AdminReviewsPage() {
                                                         )}
                                                         <button
                                                                 onClick={() => handleDeleteReview(review.id)}
-                                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                                className="p-2 text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
                                                                 title="Hapus ulasan"
                                                         >
                                                             <Trash2 className="h-4 w-4" />
@@ -393,22 +393,22 @@ export default function AdminReviewsPage() {
                                 </table>
                             </div>
 
-                            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                                <p className="text-sm text-gray-500">
+                            <div className="px-6 py-4 border-t border-[var(--border)] flex items-center justify-between">
+                                <p className="text-sm text-[var(--text-muted)]">
                                     Menampilkan {(page - 1) * 20 + 1} - {Math.min(page * 20, total)} dari {total} ulasan
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="px-4 py-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         Sebelumnya
                                     </button>
                                     <button
                                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                         disabled={page >= totalPages}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         Selanjutnya
                                     </button>

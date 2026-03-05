@@ -207,10 +207,10 @@ export default function AdminLandingPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--surface-hover)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-10 w-10 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading content...</p>
+                    <Loader2 className="h-10 w-10 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Loading content...</p>
                 </div>
             </div>
         );
@@ -218,14 +218,14 @@ export default function AdminLandingPage() {
 
     if (error && !hero) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center max-w-md mx-auto p-6 bg-white rounded-xl shadow-sm">
+            <div className="min-h-screen bg-[var(--surface-hover)] flex items-center justify-center">
+                <div className="text-center max-w-md mx-auto p-6 bg-[var(--surface)] rounded-xl shadow-sm">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Error Loading Content</h3>
-                    <p className="text-gray-600 mb-6">{error}</p>
+                    <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Error Loading Content</h3>
+                    <p className="text-[var(--text-secondary)] mb-6">{error}</p>
                     <Link 
                         href="/admin" 
-                        className="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="inline-flex items-center justify-center px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Dashboard
@@ -253,12 +253,12 @@ export default function AdminLandingPage() {
                                     onClick={() => setActiveSection(section.id)}
                                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                                         activeSection === section.id
-                                            ? "bg-white text-indigo-600 shadow-sm ring-1 ring-black/5"
-                                            : "text-gray-600 hover:bg-white hover:text-gray-900 hover:shadow-sm"
+                                            ? "bg-[var(--surface)] text-[var(--accent-primary)] shadow-sm ring-1 ring-black/5"
+                                            : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)] hover:shadow-sm"
                                     }`}
                                 >
                                     <div className={`p-2 rounded-lg ${
-                                        activeSection === section.id ? "bg-indigo-50" : "bg-gray-100 group-hover:bg-white"
+                                        activeSection === section.id ? "bg-[var(--accent-primary)]/10" : "bg-[var(--bg-secondary)] group-hover:bg-[var(--surface)]"
                                     }`}>
                                         <section.icon className="h-5 w-5" />
                                     </div>
@@ -272,16 +272,16 @@ export default function AdminLandingPage() {
 
                     <div className="lg:col-span-9 space-y-6">
                         {activeSection === "hero" && (
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <div className="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
+                                <div className="p-6 border-b border-[var(--border)] flex justify-between items-center bg-[var(--surface-hover)]/50">
                                     <div>
-                                        <h2 className="text-lg font-bold text-gray-900">Hero Section</h2>
-                                        <p className="text-sm text-gray-500">Customize the main banner of your landing page</p>
+                                        <h2 className="text-lg font-bold text-[var(--text-primary)]">Hero Section</h2>
+                                        <p className="text-sm text-[var(--text-muted)]">Customize the main banner of your landing page</p>
                                     </div>
                                     <button
                                         onClick={() => saveSection("hero", hero)}
                                         disabled={isSaving === "hero"}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200"
                                     >
                                         {isSaving === "hero" ? (
                                             <>
@@ -305,39 +305,39 @@ export default function AdminLandingPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-6">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Headline Title
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={hero.title}
                                                     onChange={(e) => setHero({ ...hero, title: e.target.value })}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all"
                                                     placeholder="e.g. Find Your Next Experience"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Subtitle
                                                 </label>
                                                 <textarea
                                                     value={hero.subtitle}
                                                     onChange={(e) => setHero({ ...hero, subtitle: e.target.value })}
                                                     rows={3}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all resize-none"
                                                     placeholder="e.g. Discover the best events..."
                                                 />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                         CTA Button Text
                                                     </label>
                                                     <input
                                                         type="text"
                                                         value={hero.ctaText}
                                                         onChange={(e) => setHero({ ...hero, ctaText: e.target.value })}
-                                                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                        className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                     />
                                                 </div>
                                             </div>
@@ -355,39 +355,39 @@ export default function AdminLandingPage() {
                                         </div>
                                     </div>
 
-                                    <div className="pt-6 border-t border-gray-100">
-                                        <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <div className="pt-6 border-t border-[var(--border)]">
+                                        <h3 className="text-sm font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
                                             <Search className="h-4 w-4 text-indigo-500" />
                                             Search Bar Configuration
                                         </h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Search Placeholder
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={hero.searchPlaceholder}
                                                     onChange={(e) => setHero({ ...hero, searchPlaceholder: e.target.value })}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Location Placeholder
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={hero.locationPlaceholder}
                                                     onChange={(e) => setHero({ ...hero, locationPlaceholder: e.target.value })}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-gray-100 rounded-xl p-4 border border-gray-200">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Live Preview (Approximation)</p>
+                                    <div className="bg-[var(--bg-secondary)] rounded-xl p-4 border border-[var(--border)]">
+                                        <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Live Preview (Approximation)</p>
                                         <div className="relative rounded-lg overflow-hidden h-48 flex items-center justify-center text-center text-white isolate">
                                             {hero.backgroundImage ? (
                                                 <img 
@@ -402,7 +402,7 @@ export default function AdminLandingPage() {
                                             <div className="px-4">
                                                 <h1 className="text-2xl font-bold mb-2">{hero.title}</h1>
                                                 <p className="text-sm opacity-90">{hero.subtitle}</p>
-                                                <div className="mt-4 inline-block px-4 py-2 bg-indigo-600 rounded-md text-xs font-bold">
+                                                <div className="mt-4 inline-block px-4 py-2 bg-[var(--accent-primary)] rounded-md text-xs font-bold">
                                                     {hero.ctaText}
                                                 </div>
                                             </div>
@@ -413,16 +413,16 @@ export default function AdminLandingPage() {
                         )}
 
                         {activeSection === "footer" && (
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <div className="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
+                                <div className="p-6 border-b border-[var(--border)] flex justify-between items-center bg-[var(--surface-hover)]/50">
                                     <div>
-                                        <h2 className="text-lg font-bold text-gray-900">Footer Settings</h2>
-                                        <p className="text-sm text-gray-500">Manage links, copyright and company info</p>
+                                        <h2 className="text-lg font-bold text-[var(--text-primary)]">Footer Settings</h2>
+                                        <p className="text-sm text-[var(--text-muted)]">Manage links, copyright and company info</p>
                                     </div>
                                     <button
                                         onClick={() => saveSection("footer", footer)}
                                         disabled={isSaving === "footer"}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200"
                                     >
                                         {isSaving === "footer" ? (
                                             <>
@@ -446,36 +446,36 @@ export default function AdminLandingPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-6">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Brand Name
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={footer.brandName}
                                                     onChange={(e) => setFooter({ ...footer, brandName: e.target.value })}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Tagline / Description
                                                 </label>
                                                 <textarea
                                                     value={footer.tagline}
                                                     onChange={(e) => setFooter({ ...footer, tagline: e.target.value })}
                                                     rows={3}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent resize-none"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Copyright Text
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={footer.copyrightText}
                                                     onChange={(e) => setFooter({ ...footer, copyrightText: e.target.value })}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 />
                                             </div>
                                         </div>
@@ -483,19 +483,19 @@ export default function AdminLandingPage() {
                                         <div className="space-y-6">
                                             <div>
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <label className="block text-sm font-medium text-gray-700">
+                                                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                                                         Footer Links
                                                     </label>
                                                     <button 
                                                         onClick={addFooterLink}
-                                                        className="text-xs flex items-center text-indigo-600 hover:text-indigo-700 font-medium"
+                                                        className="text-xs flex items-center text-[var(--accent-primary)] hover:text-[var(--accent-primary)] font-medium"
                                                     >
                                                         <Plus className="h-3 w-3 mr-1" /> Add Link
                                                     </button>
                                                 </div>
-                                                <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200 max-h-[300px] overflow-y-auto">
+                                                <div className="space-y-3 bg-[var(--surface-hover)] p-4 rounded-xl border border-[var(--border)] max-h-[300px] overflow-y-auto">
                                                     {footer.links.length === 0 && (
-                                                        <p className="text-sm text-gray-400 text-center py-4">No links added yet</p>
+                                                        <p className="text-sm text-[var(--text-muted)] text-center py-4">No links added yet</p>
                                                     )}
                                                     {footer.links.map((link, index) => (
                                                         <div key={index} className="flex gap-2">
@@ -504,18 +504,18 @@ export default function AdminLandingPage() {
                                                                 value={link.label}
                                                                 onChange={(e) => updateFooterLink(index, "label", e.target.value)}
                                                                 placeholder="Label"
-                                                                className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                                className="flex-1 px-3 py-1.5 text-sm border border-[var(--border)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                                                             />
                                                             <input
                                                                 type="text"
                                                                 value={link.href}
                                                                 onChange={(e) => updateFooterLink(index, "href", e.target.value)}
                                                                 placeholder="/path"
-                                                                className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                                className="flex-1 px-3 py-1.5 text-sm border border-[var(--border)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                                                             />
                                                             <button
                                                                 onClick={() => removeFooterLink(index)}
-                                                                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                                                                className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
                                                             >
                                                                 <Trash2 className="h-4 w-4" />
                                                             </button>
@@ -526,26 +526,26 @@ export default function AdminLandingPage() {
 
                                             <div>
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <label className="block text-sm font-medium text-gray-700">
+                                                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                                                         Social Media
                                                     </label>
                                                     <button 
                                                         onClick={addSocialLink}
-                                                        className="text-xs flex items-center text-indigo-600 hover:text-indigo-700 font-medium"
+                                                        className="text-xs flex items-center text-[var(--accent-primary)] hover:text-[var(--accent-primary)] font-medium"
                                                     >
                                                         <Plus className="h-3 w-3 mr-1" /> Add Social
                                                     </button>
                                                 </div>
-                                                <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200 max-h-[300px] overflow-y-auto">
+                                                <div className="space-y-3 bg-[var(--surface-hover)] p-4 rounded-xl border border-[var(--border)] max-h-[300px] overflow-y-auto">
                                                     {footer.socialLinks.length === 0 && (
-                                                        <p className="text-sm text-gray-400 text-center py-4">No social links added yet</p>
+                                                        <p className="text-sm text-[var(--text-muted)] text-center py-4">No social links added yet</p>
                                                     )}
                                                     {footer.socialLinks.map((link, index) => (
                                                         <div key={index} className="flex gap-2">
                                                             <select
                                                                 value={link.platform}
                                                                 onChange={(e) => updateSocialLink(index, "platform", e.target.value)}
-                                                                className="w-28 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                                className="w-28 px-3 py-1.5 text-sm border border-[var(--border)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                                                             >
                                                                 <option value="twitter">Twitter</option>
                                                                 <option value="facebook">Facebook</option>
@@ -559,11 +559,11 @@ export default function AdminLandingPage() {
                                                                 value={link.url}
                                                                 onChange={(e) => updateSocialLink(index, "url", e.target.value)}
                                                                 placeholder="https://..."
-                                                                className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                                className="flex-1 px-3 py-1.5 text-sm border border-[var(--border)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
                                                             />
                                                             <button
                                                                 onClick={() => removeSocialLink(index)}
-                                                                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                                                                className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
                                                             >
                                                                 <Trash2 className="h-4 w-4" />
                                                             </button>
@@ -578,16 +578,16 @@ export default function AdminLandingPage() {
                         )}
 
                         {activeSection === "seo" && (
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <div className="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden">
+                                <div className="p-6 border-b border-[var(--border)] flex justify-between items-center bg-[var(--surface-hover)]/50">
                                     <div>
-                                        <h2 className="text-lg font-bold text-gray-900">SEO & Meta Tags</h2>
-                                        <p className="text-sm text-gray-500">Optimize how your site appears in search engines and social sharing</p>
+                                        <h2 className="text-lg font-bold text-[var(--text-primary)]">SEO & Meta Tags</h2>
+                                        <p className="text-sm text-[var(--text-muted)]">Optimize how your site appears in search engines and social sharing</p>
                                     </div>
                                     <button
                                         onClick={() => saveSection("seo", seo)}
                                         disabled={isSaving === "seo"}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-colors shadow-sm shadow-indigo-200"
                                     >
                                         {isSaving === "seo" ? (
                                             <>
@@ -611,31 +611,31 @@ export default function AdminLandingPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <div className="space-y-6">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Site Title
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={seo.siteTitle}
                                                     onChange={(e) => setSeo({ ...seo, siteTitle: e.target.value })}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 />
-                                                <p className="text-xs text-gray-400 mt-1">Recommend 50-60 characters</p>
+                                                <p className="text-xs text-[var(--text-muted)] mt-1">Recommend 50-60 characters</p>
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Meta Description
                                                 </label>
                                                 <textarea
                                                     value={seo.siteDescription}
                                                     onChange={(e) => setSeo({ ...seo, siteDescription: e.target.value })}
                                                     rows={4}
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent resize-none"
                                                 />
-                                                <p className="text-xs text-gray-400 mt-1">Recommend 150-160 characters</p>
+                                                <p className="text-xs text-[var(--text-muted)] mt-1">Recommend 150-160 characters</p>
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                                     Keywords
                                                 </label>
                                                 <input
@@ -643,9 +643,9 @@ export default function AdminLandingPage() {
                                                     value={seo.siteKeywords}
                                                     onChange={(e) => setSeo({ ...seo, siteKeywords: e.target.value })}
                                                     placeholder="event, ticket, concert..."
-                                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 />
-                                                <p className="text-xs text-gray-400 mt-1">Separate with commas</p>
+                                                <p className="text-xs text-[var(--text-muted)] mt-1">Separate with commas</p>
                                             </div>
                                         </div>
                                         
@@ -659,7 +659,7 @@ export default function AdminLandingPage() {
                                                 aspectRatio="1.91/1"
                                                 className="mb-4"
                                             />
-                                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm text-gray-600">
+                                            <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 text-sm text-[var(--text-secondary)]">
                                                 <p className="font-medium mb-1">What is an OG Image?</p>
                                                 <p>This image is displayed when your website link is shared on social media platforms like Facebook, Twitter (X), and LinkedIn. Recommended size: 1200x630 pixels.</p>
                                             </div>

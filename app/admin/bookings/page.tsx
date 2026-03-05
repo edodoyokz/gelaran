@@ -74,13 +74,13 @@ interface BookingStats {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-gray-100 text-gray-700",
-    AWAITING_PAYMENT: "bg-yellow-100 text-yellow-700",
-    PAID: "bg-blue-100 text-blue-700",
-    CONFIRMED: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    REFUNDED: "bg-purple-100 text-purple-700",
-    EXPIRED: "bg-gray-100 text-gray-500",
+    PENDING: "bg-[var(--bg-secondary)] text-[var(--text-primary)]",
+    AWAITING_PAYMENT: "bg-yellow-500/10 text-yellow-600",
+    PAID: "bg-blue-500/10 text-blue-500",
+    CONFIRMED: "bg-green-500/10 text-green-600",
+    CANCELLED: "bg-red-500/10 text-red-500",
+    REFUNDED: "bg-purple-500/10 text-purple-500",
+    EXPIRED: "bg-[var(--bg-secondary)] text-[var(--text-muted)]",
 };
 
 function AdminBookingsContent() {
@@ -148,10 +148,10 @@ function AdminBookingsContent() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading bookings...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Loading bookings...</p>
                 </div>
             </div>
         );
@@ -159,11 +159,11 @@ function AdminBookingsContent() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/admin" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
+                    <Link href="/admin" className="text-[var(--accent-primary)] hover:opacity-80">
                         Back to Dashboard
                     </Link>
                 </div>
@@ -180,12 +180,12 @@ function AdminBookingsContent() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {eventIdFilter && (
-                    <div className="mb-6 bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-center justify-between">
+                    <div className="mb-6 bg-[var(--accent-primary)]/10 border border-[var(--border)] border-indigo-200 rounded-xl p-4 flex items-center justify-between">
                         <div>
                             <p className="font-medium text-indigo-800">
                                 Filtering by event: {bookings.find(b => b.event.id === eventIdFilter)?.event.title || eventIdFilter}
                             </p>
-                            <p className="text-sm text-indigo-600">
+                            <p className="text-sm text-[var(--accent-primary)]">
                                 Showing {filteredBookings.length} booking(s) for this event
                             </p>
                         </div>
@@ -195,7 +195,7 @@ function AdminBookingsContent() {
                                 setEventIdFilter("");
                                 router.replace("/admin/bookings");
                             }}
-                            className="px-4 py-2 text-sm font-medium text-indigo-700 hover:text-indigo-800 hover:bg-indigo-100 rounded-lg"
+                            className="px-4 py-2 text-sm font-medium text-[var(--accent-primary)] hover:text-indigo-800 hover:bg-indigo-100 rounded-lg"
                         >
                             Clear Filter
                         </button>
@@ -204,68 +204,68 @@ function AdminBookingsContent() {
                 
                 {stats && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div className="bg-white rounded-xl p-5 shadow-sm">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                    <Ticket className="h-5 w-5 text-indigo-600" />
+                                    <Ticket className="h-5 w-5 text-[var(--accent-primary)]" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-gray-900">{bookings.length}</p>
-                            <p className="text-sm text-gray-500">Total Bookings</p>
+                            <p className="text-2xl font-bold text-[var(--text-primary)]">{bookings.length}</p>
+                            <p className="text-sm text-[var(--text-muted)]">Total Bookings</p>
                         </div>
-                        <div className="bg-white rounded-xl p-5 shadow-sm">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
                                     <TrendingUp className="h-5 w-5 text-green-600" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-2xl font-bold text-[var(--text-primary)]">
                                 {formatCurrency(stats.totalRevenue.total)}
                             </p>
-                            <p className="text-sm text-gray-500">Total Revenue</p>
+                            <p className="text-sm text-[var(--text-muted)]">Total Revenue</p>
                         </div>
-                        <div className="bg-white rounded-xl p-5 shadow-sm">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
                                     <DollarSign className="h-5 w-5 text-purple-600" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-2xl font-bold text-[var(--text-primary)]">
                                 {formatCurrency(stats.totalRevenue.platform)}
                             </p>
-                            <p className="text-sm text-gray-500">Platform Revenue</p>
+                            <p className="text-sm text-[var(--text-muted)]">Platform Revenue</p>
                         </div>
-                        <div className="bg-white rounded-xl p-5 shadow-sm">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
                                     <Users className="h-5 w-5 text-blue-600" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-2xl font-bold text-[var(--text-primary)]">
                                 {bookings.filter((b) => b.status === "CONFIRMED" || b.status === "PAID").length}
                             </p>
-                            <p className="text-sm text-gray-500">Confirmed</p>
+                            <p className="text-sm text-[var(--text-muted)]">Confirmed</p>
                         </div>
                     </div>
                 )}
 
-                <div className="bg-white rounded-xl p-4 mb-6 flex flex-wrap gap-4">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 mb-6 flex flex-wrap gap-4">
                     <div className="flex-1 min-w-[200px] relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
                         <input
                             type="text"
                             placeholder="Search by booking code, event, or customer..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                            className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg"
                         />
                     </div>
                     <div className="flex items-center gap-2">
-                        <Filter className="h-5 w-5 text-gray-400" />
+                        <Filter className="h-5 w-5 text-[var(--text-muted)]" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border rounded-lg"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg"
                         >
                             <option value="">All Status</option>
                             <option value="PENDING">Pending</option>
@@ -278,29 +278,29 @@ function AdminBookingsContent() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b">
+                        <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Booking
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Event
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Customer
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Amount
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Status
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Date
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Actions
                                 </th>
                             </tr>
@@ -308,18 +308,18 @@ function AdminBookingsContent() {
                         <tbody className="divide-y">
                             {filteredBookings.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)]">
                                         No bookings found
                                     </td>
                                 </tr>
                             ) : (
                                 filteredBookings.map((booking) => (
-                                    <tr key={booking.id} className="hover:bg-gray-50">
+                                    <tr key={booking.id} className="hover:bg-[var(--surface-hover)]">
                                         <td className="px-6 py-4">
-                                            <p className="font-medium text-gray-900 font-mono">
+                                            <p className="font-medium text-[var(--text-primary)] font-mono">
                                                 {booking.bookingCode}
                                             </p>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-xs text-[var(--text-muted)]">
                                                 {booking.totalTickets} ticket(s)
                                             </p>
                                         </td>
@@ -331,10 +331,10 @@ function AdminBookingsContent() {
                                                     className="w-10 h-10 object-cover rounded-lg"
                                                 />
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                                                    <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">
                                                         {booking.event.title}
                                                     </p>
-                                                    <p className="text-xs text-gray-500">
+                                                    <p className="text-xs text-[var(--text-muted)]">
                                                         {booking.event.organizer.organizerProfile?.organizationName ||
                                                             booking.event.organizer.name}
                                                     </p>
@@ -342,15 +342,15 @@ function AdminBookingsContent() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <p className="text-sm text-gray-900">
+                                            <p className="text-sm text-[var(--text-primary)]">
                                                 {booking.user?.name || booking.guestName || "Guest"}
                                             </p>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-xs text-[var(--text-muted)]">
                                                 {booking.user?.email || booking.guestEmail}
                                             </p>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <p className="font-medium text-gray-900">
+                                            <p className="font-medium text-[var(--text-primary)]">
                                                 {formatCurrency(Number(booking.totalAmount))}
                                             </p>
                                         </td>
@@ -363,11 +363,11 @@ function AdminBookingsContent() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm">
-                                                <div className="flex items-center gap-1 text-gray-500">
+                                                <div className="flex items-center gap-1 text-[var(--text-muted)]">
                                                     <Calendar className="h-3 w-3" />
                                                     {new Date(booking.createdAt).toLocaleDateString("id-ID")}
                                                 </div>
-                                                <p className="text-xs text-gray-400">
+                                                <p className="text-xs text-[var(--text-muted)]">
                                                     {new Date(booking.createdAt).toLocaleTimeString("id-ID", {
                                                         hour: "2-digit",
                                                         minute: "2-digit",
@@ -378,7 +378,7 @@ function AdminBookingsContent() {
                                         <td className="px-6 py-4">
                                             <Link
                                                 href={`/admin/bookings/${booking.id}`}
-                                                className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-gray-100 inline-flex"
+                                                className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] rounded-lg hover:bg-[var(--bg-secondary)] inline-flex"
                                                 title="View Details"
                                             >
                                                 <Eye className="h-4 w-4" />
@@ -397,10 +397,10 @@ function AdminBookingsContent() {
 
 function AdminBookingsLoading() {
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
             <div className="text-center">
-                <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                <p className="text-gray-500">Loading bookings...</p>
+                <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                <p className="text-[var(--text-muted)]">Loading bookings...</p>
             </div>
         </div>
     );

@@ -101,17 +101,17 @@ interface EventsResponse {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-    DRAFT: "bg-gray-100 text-gray-700",
-    PENDING_REVIEW: "bg-yellow-100 text-yellow-700",
-    PUBLISHED: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    ENDED: "bg-blue-100 text-blue-700",
+    DRAFT: "bg-gray-500/10 text-[var(--text-muted)]",
+    PENDING_REVIEW: "bg-yellow-500/10 text-yellow-600",
+    PUBLISHED: "bg-green-500/10 text-green-600",
+    CANCELLED: "bg-red-500/10 text-red-500",
+    ENDED: "bg-blue-500/10 text-blue-500",
 };
 
 export default function AdminEventsPage() {
     const router = useRouter();
     const { showToast } = useToast();
-    
+
     const [events, setEvents] = useState<AdminEvent[]>([]);
     const [pagination, setPagination] = useState<PaginationMeta | null>(null);
     const [stats, setStats] = useState<StatsData>({
@@ -129,10 +129,10 @@ export default function AdminEventsPage() {
         cities: [],
         organizers: [],
     });
-    
+
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    
+
     const [statusFilter, setStatusFilter] = useState<string>("");
     const [categoryFilter, setCategoryFilter] = useState<string>("");
     const [organizerFilter, setOrganizerFilter] = useState<string>("");
@@ -143,18 +143,18 @@ export default function AdminEventsPage() {
     const [scheduledTo, setScheduledTo] = useState<string>("");
     const [cityFilter, setCityFilter] = useState<string>("");
     const [hasBookingsFilter, setHasBookingsFilter] = useState<string>("");
-    
+
     const [sortBy, setSortBy] = useState<string>("createdAt");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-    
+
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-    
+
     const [selectedEvents, setSelectedEvents] = useState<Set<string>>(new Set());
     const [isBulkActionLoading, setIsBulkActionLoading] = useState(false);
-    
+
     const [showAnalytics, setShowAnalytics] = useState(false);
-    
+
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
     const [rejectionReason, setRejectionReason] = useState("");
@@ -164,11 +164,11 @@ export default function AdminEventsPage() {
     const fetchEvents = useCallback(async () => {
         try {
             setIsLoading(true);
-            
+
             const params = new URLSearchParams();
             params.set('page', currentPage.toString());
             params.set('limit', itemsPerPage.toString());
-            
+
             if (statusFilter) params.set('status', statusFilter);
             if (categoryFilter) params.set('category', categoryFilter);
             if (organizerFilter) params.set('organizer', organizerFilter);
@@ -181,7 +181,7 @@ export default function AdminEventsPage() {
             if (hasBookingsFilter) params.set('hasBookings', hasBookingsFilter);
             if (sortBy) params.set('sortBy', sortBy);
             if (sortOrder) params.set('sortOrder', sortOrder);
-            
+
             const res = await fetch(`/api/admin/events?${params.toString()}`);
             const data = await res.json();
 
@@ -228,17 +228,17 @@ export default function AdminEventsPage() {
         setHasBookingsFilter("");
         setCurrentPage(1);
     };
-    
+
     const hasActiveFilters = !!(
-        statusFilter || 
-        categoryFilter || 
-        organizerFilter || 
-        search || 
-        dateFrom || 
-        dateTo || 
-        scheduledFrom || 
-        scheduledTo || 
-        cityFilter || 
+        statusFilter ||
+        categoryFilter ||
+        organizerFilter ||
+        search ||
+        dateFrom ||
+        dateTo ||
+        scheduledFrom ||
+        scheduledTo ||
+        cityFilter ||
         hasBookingsFilter
     );
 
@@ -275,7 +275,7 @@ export default function AdminEventsPage() {
             event.organizer.name,
             event.organizer.organizerProfile?.organizationName || "N/A",
             event.venue?.city || "N/A",
-            event.schedules[0]?.scheduleDate 
+            event.schedules[0]?.scheduleDate
                 ? new Date(event.schedules[0].scheduleDate).toLocaleDateString("id-ID")
                 : "N/A",
             event._count.bookings.toString(),
@@ -292,11 +292,11 @@ export default function AdminEventsPage() {
         const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
-        
+
         link.setAttribute("href", url);
         link.setAttribute("download", `events_export_${new Date().toISOString().split('T')[0]}.csv`);
         link.style.visibility = "hidden";
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -326,7 +326,7 @@ export default function AdminEventsPage() {
         try {
             setIsBulkActionLoading(true);
             const eventIds = Array.from(selectedEvents);
-            
+
             await Promise.all(
                 eventIds.map(eventId =>
                     fetch(`/api/admin/events/${eventId}`, {
@@ -353,15 +353,15 @@ export default function AdminEventsPage() {
         try {
             setIsBulkActionLoading(true);
             const eventIds = Array.from(selectedEvents);
-            
+
             await Promise.all(
                 eventIds.map(eventId =>
                     fetch(`/api/admin/events/${eventId}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ 
+                        body: JSON.stringify({
                             status: "CANCELLED",
-                            rejectionReason: bulkRejectionReason 
+                            rejectionReason: bulkRejectionReason
                         }),
                     })
                 )
@@ -438,10 +438,10 @@ export default function AdminEventsPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading events...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Loading events...</p>
                 </div>
             </div>
         );
@@ -449,11 +449,11 @@ export default function AdminEventsPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/admin" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
+                    <Link href="/admin" className="text-[var(--accent-primary)] hover:opacity-80">
                         Back to Dashboard
                     </Link>
                 </div>
@@ -463,38 +463,38 @@ export default function AdminEventsPage() {
 
     return (
         <>
-            <AdminHeader 
-                title="Event Moderation" 
+            <AdminHeader
+                title="Event Moderation"
                 subtitle={stats.pending > 0 ? `${stats.pending} event menunggu review` : undefined}
                 backHref="/admin"
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="text-sm text-gray-500 mb-1">Total Events</p>
-                        <p className="text-2xl font-bold text-gray-900">{stats.total.toLocaleString()}</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-[var(--text-muted)] mb-1">Total Events</p>
+                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.total.toLocaleString()}</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="text-sm text-gray-500 mb-1">Pending Review</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-[var(--text-muted)] mb-1">Pending Review</p>
                         <p className="text-2xl font-bold text-yellow-600">{stats.pending.toLocaleString()}</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="text-sm text-gray-500 mb-1">Published</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-[var(--text-muted)] mb-1">Published</p>
                         <p className="text-2xl font-bold text-green-600">{stats.published.toLocaleString()}</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
-                        <p className="text-2xl font-bold text-indigo-600">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+                        <p className="text-sm text-[var(--text-muted)] mb-1">Total Revenue</p>
+                        <p className="text-2xl font-bold text-[var(--accent-primary)]">
                             Rp {stats.totalRevenue.toLocaleString()}
                         </p>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 mb-6">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 mb-6">
                     <div className="flex flex-wrap gap-4 mb-4">
                         <div className="flex-1 min-w-[200px] relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
                             <input
                                 type="text"
                                 placeholder="Search events, organizers..."
@@ -503,17 +503,17 @@ export default function AdminEventsPage() {
                                     setSearch(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
                         </div>
-                        
+
                         <select
                             value={statusFilter}
                             onChange={(e) => {
                                 setStatusFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Status</option>
                             <option value="PENDING_REVIEW">Pending Review</option>
@@ -522,14 +522,14 @@ export default function AdminEventsPage() {
                             <option value="CANCELLED">Cancelled</option>
                             <option value="ENDED">Ended</option>
                         </select>
-                        
+
                         <select
                             value={categoryFilter}
                             onChange={(e) => {
                                 setCategoryFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Categories</option>
                             {filterOptions.categories.map(cat => (
@@ -538,14 +538,14 @@ export default function AdminEventsPage() {
                                 </option>
                             ))}
                         </select>
-                        
+
                         <select
                             value={organizerFilter}
                             onChange={(e) => {
                                 setOrganizerFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Organizers</option>
                             {filterOptions.organizers.map(org => (
@@ -554,54 +554,54 @@ export default function AdminEventsPage() {
                                 </option>
                             ))}
                         </select>
-                        
+
                         <select
                             value={cityFilter}
                             onChange={(e) => {
                                 setCityFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Cities</option>
                             {filterOptions.cities.map(city => (
                                 <option key={city} value={city}>{city}</option>
                             ))}
                         </select>
-                        
+
                         <select
                             value={hasBookingsFilter}
                             onChange={(e) => {
                                 setHasBookingsFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Events</option>
                             <option value="yes">Has Bookings</option>
                             <option value="no">No Bookings</option>
                         </select>
-                        
+
                         {hasActiveFilters && (
                             <button
                                 type="button"
                                 onClick={resetFilters}
-                                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border rounded-lg hover:bg-gray-50"
+                                className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)]"
                             >
                                 Clear Filters
                             </button>
                         )}
-                        
+
                         <button
                             type="button"
                             onClick={handleExportCSV}
                             disabled={events.length === 0}
-                            className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-4 py-2 text-sm bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
                             <Download className="h-4 w-4" />
                             Export CSV
                         </button>
-                        
+
                         {selectedEvents.size > 0 && (
                             <>
                                 <button
@@ -625,10 +625,10 @@ export default function AdminEventsPage() {
                             </>
                         )}
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Created:</span>
+                            <span className="text-sm text-[var(--text-secondary)]">Created:</span>
                             <input
                                 type="date"
                                 value={dateFrom}
@@ -636,9 +636,9 @@ export default function AdminEventsPage() {
                                     setDateFrom(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
-                            <span className="text-gray-400">to</span>
+                            <span className="text-[var(--text-muted)]">to</span>
                             <input
                                 type="date"
                                 value={dateTo}
@@ -646,12 +646,12 @@ export default function AdminEventsPage() {
                                     setDateTo(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Scheduled:</span>
+                            <span className="text-sm text-[var(--text-secondary)]">Scheduled:</span>
                             <input
                                 type="date"
                                 value={scheduledFrom}
@@ -659,9 +659,9 @@ export default function AdminEventsPage() {
                                     setScheduledFrom(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
-                            <span className="text-gray-400">to</span>
+                            <span className="text-[var(--text-muted)]">to</span>
                             <input
                                 type="date"
                                 value={scheduledTo}
@@ -669,26 +669,26 @@ export default function AdminEventsPage() {
                                     setScheduledTo(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b">
+                        <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
                             <tr>
                                 <th className="px-6 py-3 text-left">
                                     <input
                                         type="checkbox"
                                         checked={events.length > 0 && selectedEvents.size === events.length}
                                         onChange={toggleSelectAll}
-                                        className="rounded border-gray-300"
+                                        className="rounded border-[var(--border)]"
                                     />
                                 </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                <th
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort("title")}
                                 >
                                     <div className="flex items-center gap-1">
@@ -696,8 +696,8 @@ export default function AdminEventsPage() {
                                         <ArrowUpDown className="h-3 w-3" />
                                     </div>
                                 </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                <th
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort("organizer")}
                                 >
                                     <div className="flex items-center gap-1">
@@ -705,11 +705,11 @@ export default function AdminEventsPage() {
                                         <ArrowUpDown className="h-3 w-3" />
                                     </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Status
                                 </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                <th
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort("bookings")}
                                 >
                                     <div className="flex items-center gap-1">
@@ -717,8 +717,8 @@ export default function AdminEventsPage() {
                                         <ArrowUpDown className="h-3 w-3" />
                                     </div>
                                 </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                <th
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort("createdAt")}
                                 >
                                     <div className="flex items-center gap-1">
@@ -726,7 +726,7 @@ export default function AdminEventsPage() {
                                         <ArrowUpDown className="h-3 w-3" />
                                     </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Actions
                                 </th>
                             </tr>
@@ -734,19 +734,19 @@ export default function AdminEventsPage() {
                         <tbody className="divide-y">
                             {events.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)]">
                                         No events found
                                     </td>
                                 </tr>
                             ) : (
                                 events.map((event: AdminEvent) => (
-                                    <tr key={event.id} className="hover:bg-gray-50">
+                                    <tr key={event.id} className="hover:bg-[var(--surface-hover)]">
                                         <td className="px-6 py-4">
                                             <input
                                                 type="checkbox"
                                                 checked={selectedEvents.has(event.id)}
                                                 onChange={() => toggleSelectEvent(event.id)}
-                                                className="rounded border-gray-300"
+                                                className="rounded border-[var(--border)]"
                                             />
                                         </td>
                                         <td className="px-6 py-4">
@@ -757,17 +757,17 @@ export default function AdminEventsPage() {
                                                     className="w-12 h-12 object-cover rounded-lg"
                                                 />
                                                 <div>
-                                                    <p className="font-medium text-gray-900 line-clamp-1">
+                                                    <p className="font-medium text-[var(--text-primary)] line-clamp-1">
                                                         {event.title}
                                                     </p>
-                                                    <p className="text-sm text-gray-500">
+                                                    <p className="text-sm text-[var(--text-muted)]">
                                                         {event.category?.name}
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <p className="text-sm text-gray-900">
+                                            <p className="text-sm text-[var(--text-primary)]">
                                                 {event.organizer.organizerProfile?.organizationName ||
                                                     event.organizer.name}
                                             </p>
@@ -779,23 +779,23 @@ export default function AdminEventsPage() {
                                                 {event.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500">
+                                        <td className="px-6 py-4 text-[var(--text-muted)]">
                                             {event._count.bookings}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm">
                                                 {event.schedules[0] ? (
-                                                    <div className="flex items-center gap-1 text-gray-500">
+                                                    <div className="flex items-center gap-1 text-[var(--text-muted)]">
                                                         <Calendar className="h-3 w-3" />
                                                         {new Date(
                                                             event.schedules[0].scheduleDate
                                                         ).toLocaleDateString("id-ID")}
                                                     </div>
                                                 ) : (
-                                                    <span className="text-gray-400">No date</span>
+                                                    <span className="text-[var(--text-muted)]">No date</span>
                                                 )}
                                                 {event.venue && (
-                                                    <div className="flex items-center gap-1 text-gray-400 text-xs">
+                                                    <div className="flex items-center gap-1 text-[var(--text-muted)] text-xs">
                                                         <MapPin className="h-3 w-3" />
                                                         {event.venue.city}
                                                     </div>
@@ -806,7 +806,7 @@ export default function AdminEventsPage() {
                                             <div className="flex items-center gap-1">
                                                 <Link
                                                     href={`/admin/events/${event.id}`}
-                                                    className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-gray-100"
+                                                    className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] rounded-lg hover:bg-[var(--bg-secondary)]"
                                                     title="View Details"
                                                 >
                                                     <Eye className="h-4 w-4" />
@@ -817,7 +817,7 @@ export default function AdminEventsPage() {
                                                             type="button"
                                                             onClick={() => handleApprove(event.id)}
                                                             disabled={actionLoading === event.id}
-                                                            className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-50 disabled:opacity-50"
+                                                            className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-500/10 disabled:opacity-50"
                                                             title="Approve"
                                                         >
                                                             {actionLoading === event.id ? (
@@ -830,7 +830,7 @@ export default function AdminEventsPage() {
                                                             type="button"
                                                             onClick={() => setShowRejectModal(event.id)}
                                                             disabled={actionLoading === event.id}
-                                                            className="p-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-50 disabled:opacity-50"
+                                                            className="p-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-500/10 disabled:opacity-50"
                                                             title="Reject"
                                                         >
                                                             <XCircle className="h-4 w-4" />
@@ -847,9 +847,9 @@ export default function AdminEventsPage() {
                 </div>
 
                 {pagination && pagination.totalPages > 1 && (
-                    <div className="bg-white rounded-xl shadow-sm px-6 py-4 mt-4 flex items-center justify-between">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm px-6 py-4 mt-4 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm text-[var(--text-primary)]">
                                 Showing {((currentPage - 1) * itemsPerPage) + 1} to{" "}
                                 {Math.min(currentPage * itemsPerPage, pagination.total)} of{" "}
                                 {pagination.total} events
@@ -860,7 +860,7 @@ export default function AdminEventsPage() {
                                     setItemsPerPage(Number(e.target.value));
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-1.5 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             >
                                 <option value={10}>10 per page</option>
                                 <option value={20}>20 per page</option>
@@ -868,17 +868,17 @@ export default function AdminEventsPage() {
                                 <option value={100}>100 per page</option>
                             </select>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                             <button
                                 type="button"
                                 onClick={() => setCurrentPage(currentPage - 1)}
                                 disabled={!pagination.hasPrev}
-                                className="p-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-2 border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <ChevronLeft className="h-4 w-4" />
                             </button>
-                            
+
                             {Array.from({ length: Math.min(5, pagination.totalPages) }, (_: unknown, i: number) => {
                                 let pageNum: number;
                                 if (pagination.totalPages <= 5) {
@@ -890,28 +890,27 @@ export default function AdminEventsPage() {
                                 } else {
                                     pageNum = currentPage - 2 + i;
                                 }
-                                
+
                                 return (
                                     <button
                                         key={pageNum}
                                         type="button"
                                         onClick={() => setCurrentPage(pageNum)}
-                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                                            currentPage === pageNum
-                                                ? "bg-indigo-600 text-white"
-                                                : "border hover:bg-gray-50"
-                                        }`}
+                                        className={`px-3 py-1.5 rounded-lg text-sm font-medium ${currentPage === pageNum
+                                                ? "bg-[var(--accent-primary)] text-white"
+                                                : "border border-[var(--border)] hover:bg-[var(--surface-hover)]"
+                                            }`}
                                     >
                                         {pageNum}
                                     </button>
                                 );
                             })}
-                            
+
                             <button
                                 type="button"
                                 onClick={() => setCurrentPage(currentPage + 1)}
                                 disabled={!pagination.hasNext}
-                                className="p-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-2 border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <ChevronRight className="h-4 w-4" />
                             </button>
@@ -922,12 +921,12 @@ export default function AdminEventsPage() {
 
             {showBulkRejectModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-md w-full p-6">
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
                             Reject {selectedEvents.size} Events
                         </h3>
                         <div className="mb-4">
-                            <label htmlFor="bulk-rejection-reason" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="bulk-rejection-reason" className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                                 Alasan Penolakan
                             </label>
                             <textarea
@@ -935,7 +934,7 @@ export default function AdminEventsPage() {
                                 value={bulkRejectionReason}
                                 onChange={(e) => setBulkRejectionReason(e.target.value)}
                                 rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none"
+                                className="w-full px-4 py-3 border border-[var(--border)] rounded-lg resize-none"
                                 placeholder="Jelaskan alasan penolakan..."
                             />
                         </div>
@@ -946,7 +945,7 @@ export default function AdminEventsPage() {
                                     setShowBulkRejectModal(false);
                                     setBulkRejectionReason("");
                                 }}
-                                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50"
+                                className="flex-1 px-4 py-2.5 border border-[var(--border)] text-[var(--text-primary)] rounded-xl font-medium hover:bg-[var(--surface-hover)]"
                             >
                                 Batal
                             </button>
@@ -965,10 +964,10 @@ export default function AdminEventsPage() {
 
             {showRejectModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Tolak Event</h3>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-md w-full p-6">
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Tolak Event</h3>
                         <div className="mb-4">
-                            <label htmlFor="rejection-reason" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="rejection-reason" className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                                 Alasan Penolakan
                             </label>
                             <textarea
@@ -976,7 +975,7 @@ export default function AdminEventsPage() {
                                 value={rejectionReason}
                                 onChange={(e) => setRejectionReason(e.target.value)}
                                 rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none"
+                                className="w-full px-4 py-3 border border-[var(--border)] rounded-lg resize-none"
                                 placeholder="Jelaskan alasan penolakan..."
                             />
                         </div>
@@ -987,7 +986,7 @@ export default function AdminEventsPage() {
                                     setShowRejectModal(null);
                                     setRejectionReason("");
                                 }}
-                                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50"
+                                className="flex-1 px-4 py-2.5 border border-[var(--border)] text-[var(--text-primary)] rounded-xl font-medium hover:bg-[var(--surface-hover)]"
                             >
                                 Batal
                             </button>

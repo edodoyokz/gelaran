@@ -70,11 +70,11 @@ interface AnalyticsData {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-yellow-100 text-yellow-700",
-    CONFIRMED: "bg-blue-100 text-blue-700",
-    PAID: "bg-green-100 text-green-700",
-    CANCELLED: "bg-red-100 text-red-700",
-    REFUNDED: "bg-red-100 text-red-700",
+    PENDING: "bg-yellow-500/10 text-yellow-600",
+    CONFIRMED: "bg-blue-500/10 text-blue-500",
+    PAID: "bg-green-500/10 text-green-600",
+    CANCELLED: "bg-red-500/10 text-red-500",
+    REFUNDED: "bg-red-500/10 text-red-500",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -126,10 +126,10 @@ export default function AdminAnalyticsPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat data analitik...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat data analitik...</p>
                 </div>
             </div>
         );
@@ -137,11 +137,11 @@ export default function AdminAnalyticsPage() {
 
     if (error || !data) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error || "Data tidak tersedia"}</p>
-                    <Link href="/admin" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error || "Data tidak tersedia"}</p>
+                    <Link href="/admin" className="text-[var(--accent-primary)] hover:text-indigo-500">
                         Kembali ke Dashboard
                     </Link>
                 </div>
@@ -197,35 +197,35 @@ export default function AdminAnalyticsPage() {
                         <RevenueTrendChart data={data.revenueTrend} />
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center mb-8">
-                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                        <p className="text-gray-500">Tidak ada data trend untuk periode ini</p>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-12 text-center mb-8">
+                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-[var(--text-muted)]" />
+                        <p className="text-[var(--text-muted)]">Tidak ada data trend untuk periode ini</p>
                     </div>
                 )}
 
                 <div className="grid lg:grid-cols-2 gap-6 mb-8">
-                    <div className="bg-white rounded-xl shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Payouts</h2>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
+                        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Payouts</h2>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 bg-yellow-50 rounded-lg">
-                                <p className="text-sm text-gray-500 mb-1">Pending</p>
+                            <div className="p-4 bg-yellow-500/10 rounded-lg">
+                                <p className="text-sm text-[var(--text-muted)] mb-1">Pending</p>
                                 <p className="text-2xl font-bold text-yellow-700">
                                     {formatCurrency(data.payouts.pending.amount)}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-1">{data.payouts.pending.count} payout</p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1">{data.payouts.pending.count} payout</p>
                             </div>
-                            <div className="p-4 bg-green-50 rounded-lg">
-                                <p className="text-sm text-gray-500 mb-1">Selesai</p>
+                            <div className="p-4 bg-green-500/10 rounded-lg">
+                                <p className="text-sm text-[var(--text-muted)] mb-1">Selesai</p>
                                 <p className="text-2xl font-bold text-green-700">
                                     {formatCurrency(data.payouts.completed.amount)}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-1">{data.payouts.completed.count} payout</p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1">{data.payouts.completed.count} payout</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Status Booking</h2>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
+                        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Status Booking</h2>
                         <div className="space-y-4">
                             {data.bookingsByStatus.map((status) => {
                                 const total = data.bookingsByStatus.reduce((sum, s) => sum + s.count, 0);
@@ -262,7 +262,7 @@ export default function AdminAnalyticsPage() {
                                             </div>
                                         </div>
                                         
-                                        <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                                        <div className="w-full bg-[var(--border)] rounded-full h-2.5 overflow-hidden">
                                             <div 
                                                 className={`h-2.5 rounded-full transition-all duration-300 ${getProgressBarColor(status.status)}`}
                                                 style={{ width: `${percentage}%` }}
@@ -276,19 +276,19 @@ export default function AdminAnalyticsPage() {
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
                         <div className="p-6 border-b flex items-center justify-between">
                             <h2 className="text-lg font-semibold">Transaksi Terbaru</h2>
                             <Link
                                 href="/admin/bookings"
-                                className="text-sm text-indigo-600 hover:text-indigo-500"
+                                className="text-sm text-[var(--accent-primary)] hover:text-indigo-500"
                             >
                                 Lihat Semua
                             </Link>
                         </div>
                         <div className="divide-y max-h-[400px] overflow-y-auto">
                             {data.recentTransactions.length === 0 ? (
-                                <div className="p-12 text-center text-gray-500">
+                                <div className="p-12 text-center text-[var(--text-muted)]">
                                     <Loader2 className="h-8 w-8 mx-auto mb-4 opacity-50" />
                                     <p>Belum ada transaksi</p>
                                 </div>
@@ -297,7 +297,7 @@ export default function AdminAnalyticsPage() {
                                     <Link 
                                         href={`/admin/bookings/${tx.id}`}
                                         key={tx.id} 
-                                        className="block p-4 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                                        className="block p-4 hover:bg-[var(--surface-hover)] transition-colors border-b last:border-b-0"
                                     >
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex-1 min-w-0">
@@ -305,7 +305,7 @@ export default function AdminAnalyticsPage() {
                                                     <p className="font-medium text-[var(--text-primary)] truncate">
                                                         {tx.customerName}
                                                     </p>
-                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700 flex-shrink-0">
+                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/10 text-green-600 flex-shrink-0">
                                                         PAID
                                                     </span>
                                                 </div>
@@ -339,25 +339,25 @@ export default function AdminAnalyticsPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
                         <div className="p-6 border-b flex items-center justify-between">
                             <h2 className="text-lg font-semibold">Event Terpopuler</h2>
                             <Link
                                 href="/admin/events"
-                                className="text-sm text-indigo-600 hover:text-indigo-500"
+                                className="text-sm text-[var(--accent-primary)] hover:text-indigo-500"
                             >
                                 Lihat Semua
                             </Link>
                         </div>
                         <div className="divide-y max-h-[400px] overflow-y-auto">
                             {data.topEvents.length === 0 ? (
-                                <div className="p-12 text-center text-gray-500">
+                                <div className="p-12 text-center text-[var(--text-muted)]">
                                     <BarChart3 className="h-8 w-8 mx-auto mb-4 opacity-50" />
                                     <p>Belum ada data event</p>
                                 </div>
                             ) : (
                                 data.topEvents.map((event) => (
-                                    <div key={event.id} className="p-4 hover:bg-gray-50">
+                                    <div key={event.id} className="p-4 hover:bg-[var(--surface-hover)]">
                                         <div className="flex items-center gap-3">
                                             {event.posterImage ? (
                                                 <img
@@ -366,13 +366,13 @@ export default function AdminAnalyticsPage() {
                                                     className="w-12 h-12 rounded-lg object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                                                    <Calendar className="h-6 w-6 text-gray-400" />
+                                                <div className="w-12 h-12 bg-[var(--border)] rounded-lg flex items-center justify-center">
+                                                    <Calendar className="h-6 w-6 text-[var(--text-muted)]" />
                                                 </div>
                                             )}
                                             <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-gray-900 truncate">{event.title}</p>
-                                                <p className="text-sm text-gray-500">{event.bookingCount} booking</p>
+                                                <p className="font-medium text-[var(--text-primary)] truncate">{event.title}</p>
+                                                <p className="text-sm text-[var(--text-muted)]">{event.bookingCount} booking</p>
                                             </div>
                                         </div>
                                     </div>
@@ -399,16 +399,16 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon: Icon, color, change }: StatCardProps) {
     const colorMap: Record<string, { bg: string; icon: string }> = {
-        green: { bg: "bg-green-100", icon: "text-green-600" },
-        indigo: { bg: "bg-indigo-100", icon: "text-indigo-600" },
-        purple: { bg: "bg-purple-100", icon: "text-purple-600" },
-        blue: { bg: "bg-blue-100", icon: "text-blue-600" },
+        green: { bg: "bg-green-500/10", icon: "text-green-600" },
+        indigo: { bg: "bg-indigo-100", icon: "text-[var(--accent-primary)]" },
+        purple: { bg: "bg-purple-500/10", icon: "text-purple-600" },
+        blue: { bg: "bg-blue-500/10", icon: "text-blue-600" },
     };
 
     const colors = colorMap[color];
 
     return (
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
                 <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
                     <Icon className={`h-6 w-6 ${colors.icon}`} />
@@ -428,8 +428,8 @@ function StatCard({ title, value, icon: Icon, color, change }: StatCardProps) {
                     </div>
                 )}
             </div>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
-            <p className="text-sm text-gray-500">{title}</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)]">{value}</p>
+            <p className="text-sm text-[var(--text-muted)]">{title}</p>
         </div>
     );
 }

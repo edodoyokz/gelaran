@@ -188,7 +188,7 @@ export default async function AdminDashboard() {
         { href: "/admin/payouts", icon: CreditCard, label: "Payout Processing", sublabel: `${pendingPayouts} pending`, iconColor: "text-purple-500", bgColor: "bg-purple-500/10" },
         { href: "/admin/categories", icon: Tag, label: "Categories", sublabel: `${totalCategories} categories`, iconColor: "text-orange-500", bgColor: "bg-orange-500/10" },
         { href: "/admin/venues", icon: MapPin, label: "Venues", sublabel: `${totalVenues} venues`, iconColor: "text-teal-500", bgColor: "bg-teal-500/10" },
-        { href: "/admin/settings", icon: Settings, label: "Platform Settings", sublabel: "Configure platform", iconColor: "text-gray-500", bgColor: "bg-gray-500/10" },
+        { href: "/admin/settings", icon: Settings, label: "Platform Settings", sublabel: "Configure platform", iconColor: "text-[var(--text-muted)]", bgColor: "bg-gray-500/10" },
         { href: "/admin/complimentary-requests", icon: Gift, label: "Complimentary Requests", sublabel: `${pendingComplimentaryRequests} pending`, iconColor: "text-pink-500", bgColor: "bg-pink-500/10" },
         { href: "/admin/landing-page", icon: LayoutTemplate, label: "Landing Page", sublabel: "Hero, footer, SEO", iconColor: "text-indigo-500", bgColor: "bg-indigo-500/10" },
     ];

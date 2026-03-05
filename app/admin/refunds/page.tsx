@@ -105,42 +105,42 @@ export default function AdminRefundsPage() {
                 );
             case "APPROVED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-500 text-xs font-medium rounded-full">
                         <CheckCircle className="h-3 w-3" />
                         Disetujui
                     </span>
                 );
             case "PROCESSING":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/10 text-purple-500 text-xs font-medium rounded-full">
                         <RefreshCw className="h-3 w-3" />
                         Sedang Diproses
                     </span>
                 );
             case "COMPLETED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-600 text-xs font-medium rounded-full">
                         <CheckCircle className="h-3 w-3" />
                         Selesai
                     </span>
                 );
             case "REJECTED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-500 text-xs font-medium rounded-full">
                         <XCircle className="h-3 w-3" />
                         Ditolak
                     </span>
                 );
             case "FAILED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-medium rounded-full">
                         <AlertTriangle className="h-3 w-3" />
                         Gagal
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-medium rounded-full">
                         {status}
                     </span>
                 );
@@ -151,7 +151,7 @@ export default function AdminRefundsPage() {
         return (
             <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${
                 type === "FULL" 
-                    ? "bg-red-100 text-red-700" 
+                    ? "bg-red-500/10 text-red-500" 
                     : "bg-amber-100 text-amber-700"
             }`}>
                 {type}
@@ -165,7 +165,7 @@ export default function AdminRefundsPage() {
                     <div className="mb-6">
                     <Link
                         href="/admin"
-                        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span>Kembali ke Dashboard Admin</span>
@@ -174,32 +174,32 @@ export default function AdminRefundsPage() {
 
                 <div className="mb-6 flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Manajemen Refund</h1>
-                        <p className="text-gray-600">Kelola permintaan refund dari pelanggan.</p>
+                        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Manajemen Refund</h1>
+                        <p className="text-[var(--text-secondary)]">Kelola permintaan refund dari pelanggan.</p>
                     </div>
 
                     <div className="flex gap-3">
                         <Link
                             href="/admin/analytics"
-                            className="px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                            className="px-4 py-2 bg-[var(--surface)] rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-2 transition-colors"
                         >
-                            <Wallet className="h-4 w-4 text-indigo-600" />
+                            <Wallet className="h-4 w-4 text-[var(--accent-primary)]" />
                             <span className="text-sm">Lihat Statistik</span>
                         </Link>
                         <button
                             onClick={fetchRefunds}
-                            className="px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                            className="px-4 py-2 bg-[var(--surface)] rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-2 transition-colors"
                         >
-                            <RefreshCw className="h-4 w-4 text-gray-600" />
+                            <RefreshCw className="h-4 w-4 text-[var(--text-secondary)]" />
                             <span className="text-sm">Refresh</span>
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="p-4 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row gap-4">
+                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)] overflow-hidden">
+                    <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-hover)] flex flex-col sm:flex-row gap-4">
                         <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
                             <input
                                 type="text"
                                 placeholder="Cari refund berdasarkan kode booking, nama, email..."
@@ -208,7 +208,7 @@ export default function AdminRefundsPage() {
                                     setSearch(e.target.value);
                                     setPage(1);
                                 }}
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                             />
                         </div>
 
@@ -219,7 +219,7 @@ export default function AdminRefundsPage() {
                                     setStatusFilter(e.target.value);
                                     setPage(1);
                                 }}
-                                className="px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-indigo-500"
+                                className="px-4 py-2 border rounded-lg bg-[var(--surface)] focus:ring-2 focus:ring-[var(--accent-primary)]"
                             >
                                 <option value="">Semua Status</option>
                                 <option value="REQUESTED">Menunggu Review</option>
@@ -230,64 +230,64 @@ export default function AdminRefundsPage() {
                                 <option value="FAILED">Gagal</option>
                             </select>
 
-                            <div className="text-sm text-gray-500 flex items-center gap-1">
+                            <div className="text-sm text-[var(--text-muted)] flex items-center gap-1">
                                 <span>Total:</span>
-                                <span className="font-semibold text-gray-900">{total} refund</span>
+                                <span className="font-semibold text-[var(--text-primary)]">{total} refund</span>
                             </div>
                         </div>
                     </div>
 
                     {isLoading ? (
                         <div className="p-12 flex items-center justify-center">
-                            <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+                            <Loader2 className="h-8 w-8 text-[var(--accent-primary)] animate-spin" />
                         </div>
                     ) : error ? (
                         <div className="p-12 text-center text-red-600">
                             {error}
                         </div>
                     ) : refunds.length === 0 ? (
-                        <div className="p-12 text-center text-gray-500">
-                            <Ticket className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                        <div className="p-12 text-center text-[var(--text-muted)]">
+                            <Ticket className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
                             <p>Tidak ada refund ditemukan.</p>
                         </div>
                     ) : (
                         <>
                             <div className="overflow-x-auto">
                                 <table className="w-full">
-                                    <thead className="bg-gray-50 border-b border-gray-200">
+                                    <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Kode Booking
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Event
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Pelanggan
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Jenis
                                             </th>
-                                            <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Jumlah
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Status
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Tanggal
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                                                 Aksi
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-[var(--border)]">
                                         {refunds.map((refund) => (
                                             <>
                                                 <tr
                                                     key={refund.id}
-                                                    className="hover:bg-gray-50 transition-colors"
+                                                    className="hover:bg-[var(--surface-hover)] transition-colors"
                                                     onClick={() => {
                                                         setSelectedRefund(refund);
                                                         setShowDetails((prev) => ({ ...prev, [refund.id]: !prev[refund.id] }));
@@ -295,23 +295,23 @@ export default function AdminRefundsPage() {
                                                 >
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-2">
-                                                            <Ticket className="h-4 w-4 text-indigo-600" />
-                                                            <span className="font-mono text-sm font-medium text-gray-900">
+                                                            <Ticket className="h-4 w-4 text-[var(--accent-primary)]" />
+                                                            <span className="font-mono text-sm font-medium text-[var(--text-primary)]">
                                                                 {refund.bookingCode}
                                                             </span>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className="font-medium text-gray-900">{refund.eventName}</span>
+                                                        <span className="font-medium text-[var(--text-primary)]">{refund.eventName}</span>
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-2 text-sm">
-                                                            <User className="h-4 w-4 text-gray-400" />
+                                                            <User className="h-4 w-4 text-[var(--text-muted)]" />
                                                             <div>
-                                                                <p className="font-medium text-gray-900">
+                                                                <p className="font-medium text-[var(--text-primary)]">
                                                                     {refund.guestName || "-"}
                                                                 </p>
-                                                                <p className="text-xs text-gray-500">
+                                                                <p className="text-xs text-[var(--text-muted)]">
                                                                     {refund.guestEmail || "-"}
                                                                 </p>
                                                             </div>
@@ -321,7 +321,7 @@ export default function AdminRefundsPage() {
                                                         {getRefundTypeBadge(refund.refundType)}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <span className="font-bold text-gray-900">
+                                                        <span className="font-bold text-[var(--text-primary)]">
                                                             {formatCurrency(Number(refund.refundAmount))}
                                                         </span>
                                                     </td>
@@ -329,14 +329,14 @@ export default function AdminRefundsPage() {
                                                         {getStatusBadge(refund.status)}
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className="text-sm text-gray-600">
+                                                        <span className="text-sm text-[var(--text-secondary)]">
                                                             {formatDate(refund.requestedAt)}
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <Link
                                                             href={`/my-bookings/${refund.bookingCode}`}
-                                                            className="text-indigo-600 hover:text-indigo-700 hover:underline"
+                                                            className="text-[var(--accent-primary)] hover:text-[var(--accent-primary)] hover:underline"
                                                         >
                                                             Lihat Pesanan
                                                         </Link>
@@ -344,33 +344,33 @@ export default function AdminRefundsPage() {
                                                 </tr>
                                                 {showDetails[refund.id] && (
                                                     <tr>
-                                                        <td colSpan={8} className="px-6 py-4 bg-gray-50 border-t border-b border-l border-r border-gray-200">
+                                                        <td colSpan={8} className="px-6 py-4 bg-[var(--surface-hover)] border-t border-b border-l border-r border-[var(--border)]">
                                                             <div className="space-y-4">
                                                                 <div className="flex justify-between items-start">
                                                                     <div>
-                                                                        <h4 className="font-semibold text-gray-900 mb-2">Detail Request</h4>
+                                                                        <h4 className="font-semibold text-[var(--text-primary)] mb-2">Detail Request</h4>
                                                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                                                             <div>
-                                                                                <p className="text-gray-500 mb-1">Requester</p>
-                                                                                <p className="font-medium text-gray-900">
+                                                                                <p className="text-[var(--text-muted)] mb-1">Requester</p>
+                                                                                <p className="font-medium text-[var(--text-primary)]">
                                                                                     {refund.requesterName || "-"}
                                                                                 </p>
                                                                             </div>
                                                                             <div>
-                                                                                <p className="text-gray-500 mb-1">Diproses Oleh</p>
-                                                                                <p className="font-medium text-gray-900">
+                                                                                <p className="text-[var(--text-muted)] mb-1">Diproses Oleh</p>
+                                                                                <p className="font-medium text-[var(--text-primary)]">
                                                                                     {refund.processorName || "-"}
                                                                                 </p>
                                                                             </div>
                                                                             <div>
-                                                                                <p className="text-gray-500 mb-1">Tanggal Request</p>
-                                                                                <p className="font-medium text-gray-900">
+                                                                                <p className="text-[var(--text-muted)] mb-1">Tanggal Request</p>
+                                                                                <p className="font-medium text-[var(--text-primary)]">
                                                                                     {formatDate(refund.requestedAt)}
                                                                                 </p>
                                                                             </div>
                                                                             <div>
-                                                                                <p className="text-gray-500 mb-1">Payment Method</p>
-                                                                                <p className="font-medium text-gray-900">
+                                                                                <p className="text-[var(--text-muted)] mb-1">Payment Method</p>
+                                                                                <p className="font-medium text-[var(--text-primary)]">
                                                                                     {refund.paymentMethod || "-"}
                                                                                 </p>
                                                                             </div>
@@ -378,7 +378,7 @@ export default function AdminRefundsPage() {
                                                                     </div>
                                                                     <button
                                                                         onClick={() => setShowDetails((prev) => ({ ...prev, [refund.id]: false }))}
-                                                                        className="text-gray-400 hover:text-gray-600"
+                                                                        className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                                                                     >
                                                                         <XCircle className="h-5 w-5" />
                                                                     </button>
@@ -387,8 +387,8 @@ export default function AdminRefundsPage() {
 
                                                             {refund.reason && (
                                                                 <div>
-                                                                    <h4 className="font-semibold text-gray-900 mb-2">Alasan Refund</h4>
-                                                                    <p className="text-sm text-gray-700 bg-gray-100 p-3 rounded-lg">
+                                                                    <h4 className="font-semibold text-[var(--text-primary)] mb-2">Alasan Refund</h4>
+                                                                    <p className="text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] p-3 rounded-lg">
                                                                         {refund.reason}
                                                                     </p>
                                                                 </div>
@@ -396,8 +396,8 @@ export default function AdminRefundsPage() {
 
                                                             {refund.adminNotes && (
                                                                 <div>
-                                                                    <h4 className="font-semibold text-gray-900 mb-2">Catatan Admin</h4>
-                                                                    <p className="text-sm text-gray-700 bg-gray-100 p-3 rounded-lg">
+                                                                    <h4 className="font-semibold text-[var(--text-primary)] mb-2">Catatan Admin</h4>
+                                                                    <p className="text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] p-3 rounded-lg">
                                                                         {refund.adminNotes}
                                                                     </p>
                                                                 </div>
@@ -405,8 +405,8 @@ export default function AdminRefundsPage() {
 
                                                             {refund.completedAt && (
                                                                 <div>
-                                                                    <h4 className="font-semibold text-gray-900 mb-2">Tanggal Selesai</h4>
-                                                                    <p className="text-sm text-gray-700">
+                                                                    <h4 className="font-semibold text-[var(--text-primary)] mb-2">Tanggal Selesai</h4>
+                                                                    <p className="text-sm text-[var(--text-secondary)]">
                                                                         {formatDate(refund.completedAt)}
                                                                     </p>
                                                                 </div>
@@ -420,22 +420,22 @@ export default function AdminRefundsPage() {
                                 </table>
                             </div>
 
-                            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                                <p className="text-sm text-gray-500">
+                            <div className="px-6 py-4 border-t border-[var(--border)] flex items-center justify-between">
+                                <p className="text-sm text-[var(--text-muted)]">
                                     Menampilkan {(page - 1) * 20 + 1} - {Math.min(page * 20, total)} dari {total} refund
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="px-4 py-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         Sebelumnya
                                     </button>
                                     <button
                                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                         disabled={page >= totalPages}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         Selanjutnya
                                     </button>

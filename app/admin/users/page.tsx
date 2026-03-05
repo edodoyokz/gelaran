@@ -88,10 +88,10 @@ interface UsersResponse {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-    CUSTOMER: "bg-gray-100 text-gray-700",
-    ORGANIZER: "bg-purple-100 text-purple-700",
-    ADMIN: "bg-red-100 text-red-700",
-    SUPER_ADMIN: "bg-red-100 text-red-700",
+    CUSTOMER: "bg-[var(--bg-secondary)] text-[var(--text-primary)]",
+    ORGANIZER: "bg-purple-500/10 text-purple-500",
+    ADMIN: "bg-red-500/10 text-red-500",
+    SUPER_ADMIN: "bg-red-500/10 text-red-500",
 };
 
 export default function AdminUsersPage() {
@@ -223,9 +223,9 @@ export default function AdminUsersPage() {
     
     const getSortIcon = (column: string) => {
         if (sortBy !== column) {
-            return <span className="text-gray-300">⇅</span>;
+            return <span className="text-[var(--text-muted)]">⇅</span>;
         }
-        return sortOrder === 'asc' ? <span className="text-indigo-600">↑</span> : <span className="text-indigo-600">↓</span>;
+        return sortOrder === 'asc' ? <span className="text-[var(--accent-primary)]">↑</span> : <span className="text-[var(--accent-primary)]">↓</span>;
     };
 
     const handleVerify = async (userId: string, verify: boolean) => {
@@ -418,10 +418,10 @@ export default function AdminUsersPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading users...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Loading users...</p>
                 </div>
             </div>
         );
@@ -429,11 +429,11 @@ export default function AdminUsersPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/admin" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
+                    <Link href="/admin" className="text-[var(--accent-primary)] hover:opacity-80">
                         Back to Dashboard
                     </Link>
                 </div>
@@ -449,9 +449,9 @@ export default function AdminUsersPage() {
         const endItem = Math.min(page * itemsPerPage, total);
         
         return (
-            <div className="flex items-center justify-between px-6 py-4 border-t bg-white">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] border border-[var(--border)]">
                 <div className="flex items-center gap-4">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[var(--text-secondary)]">
                         Showing <span className="font-medium">{startItem}</span> to{" "}
                         <span className="font-medium">{endItem}</span> of{" "}
                         <span className="font-medium">{total}</span> users
@@ -463,7 +463,7 @@ export default function AdminUsersPage() {
                             setItemsPerPage(Number(e.target.value));
                             setCurrentPage(1);
                         }}
-                        className="px-3 py-1 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="px-3 py-1 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                     >
                         <option value={10}>10 per page</option>
                         <option value={20}>20 per page</option>
@@ -477,7 +477,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => setCurrentPage(1)}
                         disabled={!hasPrev}
-                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         First
                     </button>
@@ -485,7 +485,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => setCurrentPage(page - 1)}
                         disabled={!hasPrev}
-                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Previous
                     </button>
@@ -508,10 +508,10 @@ export default function AdminUsersPage() {
                                     key={pageNum}
                                     type="button"
                                     onClick={() => setCurrentPage(pageNum)}
-                                    className={`px-3 py-1 text-sm border rounded-lg ${
+                                    className={`px-3 py-1 text-sm border border-[var(--border)] rounded-lg ${
                                         page === pageNum
-                                            ? "bg-indigo-600 text-white border-indigo-600"
-                                            : "hover:bg-gray-50"
+                                            ? "bg-[var(--accent-primary)] text-white border-indigo-600"
+                                            : "hover:bg-[var(--surface-hover)]"
                                     }`}
                                 >
                                     {pageNum}
@@ -524,7 +524,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => setCurrentPage(page + 1)}
                         disabled={!hasNext}
-                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Next
                     </button>
@@ -532,7 +532,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => setCurrentPage(totalPages)}
                         disabled={!hasNext}
-                        className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Last
                     </button>
@@ -550,47 +550,47 @@ export default function AdminUsersPage() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-                        <p className="text-sm text-gray-500">Total Users</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</p>
+                        <p className="text-sm text-[var(--text-muted)]">Total Users</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-gray-900">{stats.customers}</p>
-                        <p className="text-sm text-gray-500">Customers</p>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.customers}</p>
+                        <p className="text-sm text-[var(--text-muted)]">Customers</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
                         <p className="text-2xl font-bold text-purple-600">{stats.organizers}</p>
-                        <p className="text-sm text-gray-500">Organizers</p>
+                        <p className="text-sm text-[var(--text-muted)]">Organizers</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
                         <p className="text-2xl font-bold text-red-600">{stats.admins}</p>
-                        <p className="text-sm text-gray-500">Admins</p>
+                        <p className="text-sm text-[var(--text-muted)]">Admins</p>
                     </div>
-                    <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
                         <p className="text-2xl font-bold text-green-600">{stats.activeLastMonth}</p>
-                        <p className="text-sm text-gray-500">Active (30d)</p>
+                        <p className="text-sm text-[var(--text-muted)]">Active (30d)</p>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm mb-6 overflow-hidden">
                     <button
                         type="button"
                         onClick={() => setShowAnalytics(!showAnalytics)}
-                        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                        className="w-full px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
                     >
-                        <h2 className="text-lg font-semibold text-gray-900">User Analytics</h2>
+                        <h2 className="text-lg font-semibold text-[var(--text-primary)]">User Analytics</h2>
                         {showAnalytics ? (
-                            <ChevronUp className="h-5 w-5 text-gray-500" />
+                            <ChevronUp className="h-5 w-5 text-[var(--text-muted)]" />
                         ) : (
-                            <ChevronDown className="h-5 w-5 text-gray-500" />
+                            <ChevronDown className="h-5 w-5 text-[var(--text-muted)]" />
                         )}
                     </button>
                     
                     {showAnalytics && (
-                        <div className="p-6 border-t bg-gray-50">
+                        <div className="p-6 border-t border-[var(--border)] bg-[var(--surface-hover)]">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                                <div className="bg-white rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Role Distribution</h3>
+                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Role Distribution</h3>
                                     <ResponsiveContainer width="100%" height={250}>
                                         <PieChart>
                                             <Pie
@@ -614,8 +614,8 @@ export default function AdminUsersPage() {
                                     </ResponsiveContainer>
                                 </div>
 
-                                <div className="bg-white rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Verification Status</h3>
+                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Verification Status</h3>
                                     <ResponsiveContainer width="100%" height={250}>
                                         <PieChart>
                                             <Pie
@@ -641,8 +641,8 @@ export default function AdminUsersPage() {
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-lg p-4 shadow-sm">
-                                <h3 className="text-sm font-medium text-gray-700 mb-4">User Growth (Last 30 Days)</h3>
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
+                                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">User Growth (Last 30 Days)</h3>
                                 <ResponsiveContainer width="100%" height={300}>
                                     <LineChart data={charts.userGrowth}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -674,8 +674,8 @@ export default function AdminUsersPage() {
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                                <div className="bg-white rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Gender Distribution</h3>
+                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Gender Distribution</h3>
                                     <ResponsiveContainer width="100%" height={250}>
                                         <PieChart>
                                             <Pie
@@ -699,8 +699,8 @@ export default function AdminUsersPage() {
                                     </ResponsiveContainer>
                                 </div>
 
-                                <div className="bg-white rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-700 mb-4">Age Distribution</h3>
+                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
+                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Age Distribution</h3>
                                     <ResponsiveContainer width="100%" height={250}>
                                         <BarChart data={charts.ageDistribution}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -714,8 +714,8 @@ export default function AdminUsersPage() {
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-lg p-4 shadow-sm mt-6">
-                                <h3 className="text-sm font-medium text-gray-700 mb-4">Top 10 Cities</h3>
+                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm mt-6">
+                                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Top 10 Cities</h3>
                                 <ResponsiveContainer width="100%" height={300}>
                                     <BarChart data={charts.topCities} layout="vertical">
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -734,7 +734,7 @@ export default function AdminUsersPage() {
                 <div className="flex justify-between items-center mb-4">
                     {selectedUsers.size > 0 ? (
                         <div className="flex items-center gap-3">
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-[var(--text-secondary)]">
                                 {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
                             </span>
                             <button
@@ -764,7 +764,7 @@ export default function AdminUsersPage() {
                             <button
                                 type="button"
                                 onClick={() => setSelectedUsers(new Set())}
-                                className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 border rounded-lg"
+                                className="px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] rounded-lg"
                             >
                                 Clear Selection
                             </button>
@@ -775,17 +775,17 @@ export default function AdminUsersPage() {
                     <button
                         type="button"
                         onClick={handleExportCSV}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 transition-colors"
                     >
                         <Download className="h-4 w-4" />
                         Export to CSV
                     </button>
                 </div>
 
-                <div className="bg-white rounded-xl p-4 mb-6">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 mb-6">
                     <div className="flex flex-wrap gap-4 mb-4">
                         <div className="flex-1 min-w-[200px] relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
                             <input
                                 type="text"
                                 placeholder="Search by name or email..."
@@ -794,7 +794,7 @@ export default function AdminUsersPage() {
                                     setSearch(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
                         </div>
                         
@@ -804,7 +804,7 @@ export default function AdminUsersPage() {
                                 setRoleFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Roles</option>
                             <option value="CUSTOMER">Customer</option>
@@ -818,7 +818,7 @@ export default function AdminUsersPage() {
                                 setVerificationFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Verification</option>
                             <option value="verified">Verified</option>
@@ -831,7 +831,7 @@ export default function AdminUsersPage() {
                                 setStatusFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Status</option>
                             <option value="active">Active</option>
@@ -844,7 +844,7 @@ export default function AdminUsersPage() {
                                 setActivityFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                         >
                             <option value="">All Activity</option>
                             <option value="hasBookings">Has Bookings</option>
@@ -856,7 +856,7 @@ export default function AdminUsersPage() {
                             <button
                                 type="button"
                                 onClick={resetFilters}
-                                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 border rounded-lg hover:bg-gray-50"
+                                className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)]"
                             >
                                 Clear Filters
                             </button>
@@ -865,7 +865,7 @@ export default function AdminUsersPage() {
                     
                     <div className="flex flex-wrap gap-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Joined:</span>
+                            <span className="text-sm text-[var(--text-secondary)]">Joined:</span>
                             <input
                                 type="date"
                                 value={dateFrom}
@@ -873,9 +873,9 @@ export default function AdminUsersPage() {
                                     setDateFrom(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
-                            <span className="text-gray-400">to</span>
+                            <span className="text-[var(--text-muted)]">to</span>
                             <input
                                 type="date"
                                 value={dateTo}
@@ -883,26 +883,26 @@ export default function AdminUsersPage() {
                                     setDateTo(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm overflow-hidden">
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b">
+                        <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
                             <tr>
                                 <th className="px-6 py-3">
                                     <input
                                         type="checkbox"
                                         checked={selectedUsers.size === users.length && users.length > 0}
                                         onChange={toggleSelectAll}
-                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]"
                                     />
                                 </th>
                                 <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort('name')}
                                 >
                                     <div className="flex items-center gap-2">
@@ -910,14 +910,14 @@ export default function AdminUsersPage() {
                                         {getSortIcon('name')}
                                     </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Role
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Status
                                 </th>
                                 <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort('bookings')}
                                 >
                                     <div className="flex items-center gap-2">
@@ -926,7 +926,7 @@ export default function AdminUsersPage() {
                                     </div>
                                 </th>
                                 <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
+                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
                                     onClick={() => handleSort('createdAt')}
                                 >
                                     <div className="flex items-center gap-2">
@@ -934,7 +934,7 @@ export default function AdminUsersPage() {
                                         {getSortIcon('createdAt')}
                                     </div>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
                                     Actions
                                 </th>
                             </tr>
@@ -942,7 +942,7 @@ export default function AdminUsersPage() {
                         <tbody className="divide-y">
                             {users.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)]">
                                         No users found
                                     </td>
                                 </tr>
@@ -950,7 +950,7 @@ export default function AdminUsersPage() {
                                 users.map((u) => (
                                     <tr
                                         key={u.id}
-                                        className={`hover:bg-gray-50 ${u.deletedAt ? "opacity-50" : ""}`}
+                                        className={`hover:bg-[var(--surface-hover)] ${u.deletedAt ? "opacity-50" : ""}`}
                                     >
                                         <td className="px-6 py-4">
                                             <input
@@ -958,12 +958,12 @@ export default function AdminUsersPage() {
                                                 checked={selectedUsers.has(u.id)}
                                                 onChange={() => toggleSelectUser(u.id)}
                                                 disabled={u.role === 'SUPER_ADMIN'}
-                                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
+                                                className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] disabled:opacity-50"
                                             />
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                                                <div className="w-10 h-10 bg-[var(--border)] rounded-full flex items-center justify-center overflow-hidden">
                                                     {u.avatarUrl ? (
                                                         <img
                                                             src={u.avatarUrl}
@@ -971,14 +971,14 @@ export default function AdminUsersPage() {
                                                             className="w-10 h-10 rounded-full object-cover"
                                                         />
                                                     ) : (
-                                                        <span className="text-gray-500 font-medium">
+                                                        <span className="text-[var(--text-muted)] font-medium">
                                                             {u.name?.charAt(0).toUpperCase() || "?"}
                                                         </span>
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-900">{u.name}</p>
-                                                    <p className="text-sm text-gray-500">{u.email}</p>
+                                                    <p className="font-medium text-[var(--text-primary)]">{u.name}</p>
+                                                    <p className="text-sm text-[var(--text-muted)]">{u.email}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -990,7 +990,7 @@ export default function AdminUsersPage() {
                                                 {u.role}
                                             </span>
                                             {u.organizerProfile && (
-                                                <p className="text-xs text-gray-500 mt-1">
+                                                <p className="text-xs text-[var(--text-muted)] mt-1">
                                                     {u.organizerProfile.organizationName}
                                                 </p>
                                             )}
@@ -1007,13 +1007,13 @@ export default function AdminUsersPage() {
                                                     Verified
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1 text-gray-400 text-sm">
+                                                <span className="inline-flex items-center gap-1 text-[var(--text-muted)] text-sm">
                                                     <UserX className="h-4 w-4" />
                                                     Unverified
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                        <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
                                             <div>
                                                 {u._count.bookings} bookings
                                             </div>
@@ -1021,14 +1021,14 @@ export default function AdminUsersPage() {
                                                 <div>{u._count.events} events</div>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                        <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
                                             {new Date(u.createdAt).toLocaleDateString("id-ID")}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-1">
                                                 <Link
                                                     href={`/admin/users/${u.id}`}
-                                                    className="p-2 text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-indigo-50"
+                                                    className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] rounded-lg hover:bg-[var(--accent-primary)]/10"
                                                     title="View Details"
                                                 >
                                                     <Eye className="h-4 w-4" />
@@ -1040,7 +1040,7 @@ export default function AdminUsersPage() {
                                                                 type="button"
                                                                 onClick={() => handleVerify(u.id, true)}
                                                                 disabled={actionLoading === u.id}
-                                                                className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-50 disabled:opacity-50"
+                                                                className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-500/10 disabled:opacity-50"
                                                                 title="Verify User"
                                                             >
                                                                 {actionLoading === u.id ? (
@@ -1055,7 +1055,7 @@ export default function AdminUsersPage() {
                                                                 type="button"
                                                                 onClick={() => handleSuspend(u.id, true)}
                                                                 disabled={actionLoading === u.id}
-                                                                className="p-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-50 disabled:opacity-50"
+                                                                className="p-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-500/10 disabled:opacity-50"
                                                                 title="Suspend User"
                                                             >
                                                                 <Ban className="h-4 w-4" />
@@ -1065,7 +1065,7 @@ export default function AdminUsersPage() {
                                                                 type="button"
                                                                 onClick={() => handleSuspend(u.id, false)}
                                                                 disabled={actionLoading === u.id}
-                                                                className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-50 disabled:opacity-50"
+                                                                className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-500/10 disabled:opacity-50"
                                                                 title="Reactivate User"
                                                             >
                                                                 <CheckCircle className="h-4 w-4" />
