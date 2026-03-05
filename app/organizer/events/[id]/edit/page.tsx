@@ -137,10 +137,10 @@ export default function EditEventPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat data event...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat data event...</p>
                 </div>
             </div>
         );
@@ -148,11 +148,11 @@ export default function EditEventPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/organizer/events" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
+                    <Link href="/organizer/events" className="text-[var(--accent-primary)] hover:text-indigo-500">
                         Kembali ke daftar event
                     </Link>
                 </div>
@@ -161,19 +161,19 @@ export default function EditEventPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 pb-12">
-            <header className="bg-white border-b sticky top-0 z-10">
+        <div className="min-h-screen bg-[var(--bg-secondary)] pb-12">
+            <header className="bg-[var(--surface)] border-b sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
                     <div className="flex items-center gap-4">
                         <Link 
                             href={`/organizer/events/${eventId}`}
-                            className="text-gray-500 hover:text-gray-700 transition-colors"
+                            className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-gray-900">Edit Event</h1>
-                            <p className="text-sm text-gray-500">Perbarui informasi event Anda</p>
+                            <h1 className="text-xl font-bold text-[var(--text-primary)]">Edit Event</h1>
+                            <p className="text-sm text-[var(--text-muted)]">Perbarui informasi event Anda</p>
                         </div>
                     </div>
                 </div>
@@ -182,19 +182,19 @@ export default function EditEventPage() {
             <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {formError && (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                        <div className="bg-red-500/10 border border-red-200 rounded-lg p-4 flex items-start gap-3">
                             <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                             <p className="text-sm text-red-600">{formError}</p>
                         </div>
                     )}
 
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b bg-gray-50">
-                            <h2 className="text-lg font-semibold text-gray-900">Informasi Dasar</h2>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 border-b bg-[var(--surface-hover)]">
+                            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Informasi Dasar</h2>
                         </div>
                         <div className="p-6 space-y-6">
                             <div>
-                                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="title" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                     Nama Event <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -202,14 +202,14 @@ export default function EditEventPage() {
                                     id="title"
                                     value={form.title}
                                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                    className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                     placeholder="Contoh: Konser Musik Meriah 2024"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="shortDescription" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                     Deskripsi Singkat
                                 </label>
                                 <textarea
@@ -217,17 +217,17 @@ export default function EditEventPage() {
                                     rows={2}
                                     value={form.shortDescription}
                                     onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
-                                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                    className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                     placeholder="Ringkasan singkat tentang event Anda (maks 200 karakter)"
                                     maxLength={200}
                                 />
-                                <p className="text-xs text-gray-500 mt-1 text-right">
+                                <p className="text-xs text-[var(--text-muted)] mt-1 text-right">
                                     {form.shortDescription.length}/200
                                 </p>
                             </div>
 
                             <div>
-                                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="description" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                     Deskripsi Lengkap <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
@@ -235,7 +235,7 @@ export default function EditEventPage() {
                                     rows={8}
                                     value={form.description}
                                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                    className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                     placeholder="Jelaskan detail event Anda selengkap mungkin..."
                                     required
                                 />
@@ -243,9 +243,9 @@ export default function EditEventPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b bg-gray-50">
-                            <h2 className="text-lg font-semibold text-gray-900">Media</h2>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 border-b bg-[var(--surface-hover)]">
+                            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Media</h2>
                         </div>
                         <div className="p-6 space-y-8">
                             <ImageUploadField
@@ -268,20 +268,20 @@ export default function EditEventPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b bg-gray-50">
-                            <h2 className="text-lg font-semibold text-gray-900">Tipe & Lokasi</h2>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 border-b bg-[var(--surface-hover)]">
+                            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Tipe & Lokasi</h2>
                         </div>
                         <div className="p-6 space-y-6">
                             <div>
-                                <label htmlFor="eventType" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="eventType" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                     Tipe Event <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     id="eventType"
                                     value={form.eventType}
                                     onChange={(e) => setForm({ ...form, eventType: e.target.value as "OFFLINE" | "ONLINE" | "HYBRID" })}
-                                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                    className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                 >
                                     <option value="OFFLINE">Offline (Tatap Muka)</option>
                                     <option value="ONLINE">Online (Daring)</option>
@@ -291,7 +291,7 @@ export default function EditEventPage() {
 
                             {(form.eventType === "ONLINE" || form.eventType === "HYBRID") && (
                                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                    <label htmlFor="onlineMeetingUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="onlineMeetingUrl" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                         Link Meeting <span className="text-red-500">*</span>
                                     </label>
                                     <input
@@ -299,11 +299,11 @@ export default function EditEventPage() {
                                         id="onlineMeetingUrl"
                                         value={form.onlineMeetingUrl}
                                         onChange={(e) => setForm({ ...form, onlineMeetingUrl: e.target.value })}
-                                        className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                        className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                         placeholder="https://zoom.us/j/..."
                                         required
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-[var(--text-muted)] mt-1">
                                         Link meeting untuk peserta online
                                     </p>
                                 </div>
@@ -311,13 +311,13 @@ export default function EditEventPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b bg-gray-50">
-                            <h2 className="text-lg font-semibold text-gray-900">Kebijakan</h2>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 border-b bg-[var(--surface-hover)]">
+                            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Kebijakan</h2>
                         </div>
                         <div className="p-6 space-y-6">
                             <div>
-                                <label htmlFor="termsAndConditions" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="termsAndConditions" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                     Syarat & Ketentuan
                                 </label>
                                 <textarea
@@ -325,13 +325,13 @@ export default function EditEventPage() {
                                     rows={4}
                                     value={form.termsAndConditions}
                                     onChange={(e) => setForm({ ...form, termsAndConditions: e.target.value })}
-                                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                    className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                     placeholder="Tuliskan syarat dan ketentuan untuk peserta..."
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="refundPolicy" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="refundPolicy" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                     Kebijakan Pengembalian Dana (Refund)
                                 </label>
                                 <textarea
@@ -339,24 +339,24 @@ export default function EditEventPage() {
                                     rows={4}
                                     value={form.refundPolicy}
                                     onChange={(e) => setForm({ ...form, refundPolicy: e.target.value })}
-                                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-shadow"
+                                    className="w-full rounded-lg border-[var(--border)] focus:border-[var(--accent-primary)] focus:ring-[var(--accent-primary)] transition-shadow"
                                     placeholder="Jelaskan kebijakan refund jika ada..."
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-4 sticky bottom-4 p-4 bg-white/80 backdrop-blur-sm rounded-xl border shadow-lg border-gray-200">
+                    <div className="flex items-center justify-end gap-4 sticky bottom-4 p-4 bg-[var(--surface)]/80 backdrop-blur-sm rounded-xl border shadow-lg border-[var(--border)]">
                         <Link
                             href={`/organizer/events/${eventId}`}
-                            className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                            className="px-6 py-2.5 border border-[var(--border)] text-[var(--text-secondary)] font-medium rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
                         >
                             Batal
                         </Link>
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--accent-primary)] text-white font-medium rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
                         >
                             {isSaving ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />

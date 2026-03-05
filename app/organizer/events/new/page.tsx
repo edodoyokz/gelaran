@@ -259,12 +259,12 @@ export default function CreateEventPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <header className="bg-white border-b sticky top-0 z-20">
+            <header className="bg-[var(--surface)] border-b sticky top-0 z-20">
                 <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
-                    <Link href="/organizer/events" className="text-gray-500 hover:text-gray-700">
+                    <Link href="/organizer/events" className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
-                    <h1 className="text-xl font-bold text-gray-900">Buat Event Baru</h1>
+                    <h1 className="text-xl font-bold text-[var(--text-primary)]">Buat Event Baru</h1>
                 </div>
             </header>
 
@@ -279,8 +279,8 @@ export default function CreateEventPage() {
                                             currentStep > step.id
                                                 ? "bg-green-500 text-white"
                                                 : currentStep === step.id
-                                                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
-                                                : "bg-gray-200 text-gray-500"
+                                                ? "bg-[var(--accent-primary)] text-white shadow-lg shadow-indigo-200"
+                                                : "bg-[var(--border)] text-[var(--text-muted)]"
                                         }`}
                                     >
                                         {currentStep > step.id ? (
@@ -291,7 +291,7 @@ export default function CreateEventPage() {
                                     </div>
                                     <span
                                         className={`text-xs mt-2 font-medium hidden sm:block ${
-                                            currentStep >= step.id ? "text-gray-900" : "text-gray-400"
+                                            currentStep >= step.id ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"
                                         }`}
                                     >
                                         {step.title}
@@ -300,7 +300,7 @@ export default function CreateEventPage() {
                                 {index < STEPS.length - 1 && (
                                     <div
                                         className={`w-8 sm:w-16 h-1 mx-2 rounded ${
-                                            currentStep > step.id ? "bg-green-500" : "bg-gray-200"
+                                            currentStep > step.id ? "bg-green-500" : "bg-[var(--border)]"
                                         }`}
                                     />
                                 )}
@@ -309,19 +309,19 @@ export default function CreateEventPage() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                <div className="bg-[var(--surface)] rounded-2xl shadow-xl p-6 sm:p-8">
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm">
+                        <div className="mb-6 p-4 bg-red-500/10 border border-red-200 text-red-600 rounded-xl text-sm">
                             {error}
                         </div>
                     )}
 
                     {currentStep === 1 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Informasi Dasar</h2>
+                            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Informasi Dasar</h2>
 
                             <div>
-                                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="title" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                     Judul Event *
                                 </label>
                                 <input
@@ -329,13 +329,13 @@ export default function CreateEventPage() {
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all"
                                     placeholder="Contoh: Tech Conference Jakarta 2026"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="shortDesc" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="shortDesc" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                     Deskripsi Singkat
                                 </label>
                                 <input
@@ -344,14 +344,14 @@ export default function CreateEventPage() {
                                     value={shortDescription}
                                     onChange={(e) => setShortDescription(e.target.value)}
                                     maxLength={200}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all"
                                     placeholder="Ringkasan singkat event (maks. 200 karakter)"
                                 />
-                                <p className="text-xs text-gray-400 mt-1">{shortDescription.length}/200</p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1">{shortDescription.length}/200</p>
                             </div>
 
                             <div>
-                                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="description" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                     Deskripsi Lengkap *
                                 </label>
                                 <textarea
@@ -359,21 +359,21 @@ export default function CreateEventPage() {
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     rows={5}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                                    className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all resize-none"
                                     placeholder="Jelaskan detail event kamu..."
                                 />
                             </div>
 
                             <div className="grid sm:grid-cols-2 gap-6">
                                 <div>
-                                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="category" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                         Kategori *
                                     </label>
                                     <select
                                         id="category"
                                         value={categoryId}
                                         onChange={(e) => setCategoryId(e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all"
                                     >
                                         <option value="">Pilih Kategori</option>
                                         {categories.map((cat) => (
@@ -385,7 +385,7 @@ export default function CreateEventPage() {
                                 </div>
 
                                 <div>
-                                    <label htmlFor="eventType" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="eventType" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                         Tipe Event *
                                     </label>
                                     <div className="grid grid-cols-3 gap-2">
@@ -396,8 +396,8 @@ export default function CreateEventPage() {
                                                 onClick={() => setEventType(type)}
                                                 className={`py-3 px-4 rounded-xl border text-sm font-medium transition-all ${
                                                     eventType === type
-                                                        ? "bg-indigo-600 text-white border-indigo-600"
-                                                        : "bg-white text-gray-700 border-gray-300 hover:border-indigo-300"
+                                                        ? "bg-[var(--accent-primary)] text-white border-indigo-600"
+                                                        : "bg-[var(--surface)] text-[var(--text-secondary)] border-[var(--border)] hover:border-indigo-300"
                                                 }`}
                                             >
                                                 {type === "OFFLINE" && <MapPin className="h-4 w-4 mx-auto mb-1" />}
@@ -415,11 +415,11 @@ export default function CreateEventPage() {
                     {currentStep === 2 && (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold text-gray-900">Jadwal Event</h2>
+                                <h2 className="text-2xl font-bold text-[var(--text-primary)]">Jadwal Event</h2>
                                 <button
                                     type="button"
                                     onClick={addSchedule}
-                                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-medium hover:bg-indigo-100 transition-colors"
+                                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] rounded-xl text-sm font-medium hover:bg-indigo-100 transition-colors"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Jadwal
@@ -427,9 +427,9 @@ export default function CreateEventPage() {
                             </div>
 
                             {schedules.map((schedule, index) => (
-                                <div key={schedule.id} className="p-5 bg-gray-50 rounded-xl border border-gray-200">
+                                <div key={schedule.id} className="p-5 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="font-medium text-gray-700">Jadwal {index + 1}</span>
+                                        <span className="font-medium text-[var(--text-secondary)]">Jadwal {index + 1}</span>
                                         {schedules.length > 1 && (
                                             <button
                                                 type="button"
@@ -443,7 +443,7 @@ export default function CreateEventPage() {
 
                                     <div className="grid sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label htmlFor={`schedule-title-${schedule.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`schedule-title-${schedule.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Judul Sesi (opsional)
                                             </label>
                                             <input
@@ -451,12 +451,12 @@ export default function CreateEventPage() {
                                                 type="text"
                                                 value={schedule.title}
                                                 onChange={(e) => updateSchedule(schedule.id, "title", e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 placeholder="Contoh: Day 1 - Workshop"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor={`schedule-date-${schedule.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`schedule-date-${schedule.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Tanggal *
                                             </label>
                                             <input
@@ -464,11 +464,11 @@ export default function CreateEventPage() {
                                                 type="date"
                                                 value={schedule.scheduleDate}
                                                 onChange={(e) => updateSchedule(schedule.id, "scheduleDate", e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor={`schedule-start-${schedule.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`schedule-start-${schedule.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Waktu Mulai *
                                             </label>
                                             <input
@@ -476,11 +476,11 @@ export default function CreateEventPage() {
                                                 type="time"
                                                 value={schedule.startTime}
                                                 onChange={(e) => updateSchedule(schedule.id, "startTime", e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor={`schedule-end-${schedule.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`schedule-end-${schedule.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Waktu Selesai *
                                             </label>
                                             <input
@@ -488,7 +488,7 @@ export default function CreateEventPage() {
                                                 type="time"
                                                 value={schedule.endTime}
                                                 onChange={(e) => updateSchedule(schedule.id, "endTime", e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             />
                                         </div>
                                     </div>
@@ -499,13 +499,13 @@ export default function CreateEventPage() {
 
                     {currentStep === 3 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Lokasi Event</h2>
+                            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Lokasi Event</h2>
 
                             {eventType !== "ONLINE" && (
                                 <div className="space-y-4">
-                                    <h3 className="font-medium text-gray-700">Venue</h3>
+                                    <h3 className="font-medium text-[var(--text-secondary)]">Venue</h3>
                                     <div>
-                                        <label htmlFor="venueName" className="block text-sm text-gray-600 mb-1">
+                                        <label htmlFor="venueName" className="block text-sm text-[var(--text-secondary)] mb-1">
                                             Nama Venue *
                                         </label>
                                         <input
@@ -513,12 +513,12 @@ export default function CreateEventPage() {
                                             type="text"
                                             value={venueName}
                                             onChange={(e) => setVenueName(e.target.value)}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             placeholder="Contoh: Jakarta Convention Center"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="venueAddress" className="block text-sm text-gray-600 mb-1">
+                                        <label htmlFor="venueAddress" className="block text-sm text-[var(--text-secondary)] mb-1">
                                             Alamat
                                         </label>
                                         <input
@@ -526,13 +526,13 @@ export default function CreateEventPage() {
                                             type="text"
                                             value={venueAddress}
                                             onChange={(e) => setVenueAddress(e.target.value)}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             placeholder="Jl. Jend. Gatot Subroto No.1"
                                         />
                                     </div>
                                     <div className="grid sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label htmlFor="venueCity" className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor="venueCity" className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Kota *
                                             </label>
                                             <input
@@ -540,12 +540,12 @@ export default function CreateEventPage() {
                                                 type="text"
                                                 value={venueCity}
                                                 onChange={(e) => setVenueCity(e.target.value)}
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 placeholder="Jakarta"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor="venueProvince" className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor="venueProvince" className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Provinsi
                                             </label>
                                             <input
@@ -553,7 +553,7 @@ export default function CreateEventPage() {
                                                 type="text"
                                                 value={venueProvince}
                                                 onChange={(e) => setVenueProvince(e.target.value)}
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 placeholder="DKI Jakarta"
                                             />
                                         </div>
@@ -562,13 +562,13 @@ export default function CreateEventPage() {
                             )}
 
                             {eventType !== "OFFLINE" && (
-                                <div className="space-y-4 p-5 bg-blue-50 rounded-xl border border-blue-200">
+                                <div className="space-y-4 p-5 bg-blue-500/10 rounded-xl border border-blue-500/20">
                                     <h3 className="font-medium text-blue-700 flex items-center gap-2">
                                         <Globe className="h-5 w-5" />
                                         Detail Online
                                     </h3>
                                     <div>
-                                        <label htmlFor="onlineUrl" className="block text-sm text-gray-600 mb-1">
+                                        <label htmlFor="onlineUrl" className="block text-sm text-[var(--text-secondary)] mb-1">
                                             URL Meeting *
                                         </label>
                                         <input
@@ -576,7 +576,7 @@ export default function CreateEventPage() {
                                             type="url"
                                             value={onlineMeetingUrl}
                                             onChange={(e) => setOnlineMeetingUrl(e.target.value)}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             placeholder="https://zoom.us/j/xxxxx atau https://meet.google.com/xxx"
                                         />
                                     </div>
@@ -588,11 +588,11 @@ export default function CreateEventPage() {
                     {currentStep === 4 && (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold text-gray-900">Tipe Tiket</h2>
+                                <h2 className="text-2xl font-bold text-[var(--text-primary)]">Tipe Tiket</h2>
                                 <button
                                     type="button"
                                     onClick={addTicket}
-                                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 text-indigo-600 rounded-xl text-sm font-medium hover:bg-indigo-100 transition-colors"
+                                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] rounded-xl text-sm font-medium hover:bg-indigo-100 transition-colors"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Tiket
@@ -600,9 +600,9 @@ export default function CreateEventPage() {
                             </div>
 
                             {ticketTypes.map((ticket, index) => (
-                                <div key={ticket.id} className="p-5 bg-gray-50 rounded-xl border border-gray-200">
+                                <div key={ticket.id} className="p-5 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="font-medium text-gray-700">Tiket {index + 1}</span>
+                                        <span className="font-medium text-[var(--text-secondary)]">Tiket {index + 1}</span>
                                         {ticketTypes.length > 1 && (
                                             <button
                                                 type="button"
@@ -616,7 +616,7 @@ export default function CreateEventPage() {
 
                                     <div className="grid sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label htmlFor={`ticket-name-${ticket.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`ticket-name-${ticket.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Nama Tiket *
                                             </label>
                                             <input
@@ -624,12 +624,12 @@ export default function CreateEventPage() {
                                                 type="text"
                                                 value={ticket.name}
                                                 onChange={(e) => updateTicket(ticket.id, "name", e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                                 placeholder="Contoh: VIP, Regular, Early Bird"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor={`ticket-qty-${ticket.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`ticket-qty-${ticket.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Kuota *
                                             </label>
                                             <input
@@ -638,11 +638,11 @@ export default function CreateEventPage() {
                                                 value={ticket.totalQuantity}
                                                 onChange={(e) => updateTicket(ticket.id, "totalQuantity", parseInt(e.target.value) || 0)}
                                                 min={1}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor={`ticket-price-${ticket.id}`} className="block text-sm text-gray-600 mb-1">
+                                            <label htmlFor={`ticket-price-${ticket.id}`} className="block text-sm text-[var(--text-secondary)] mb-1">
                                                 Harga (Rp)
                                             </label>
                                             <input
@@ -652,7 +652,7 @@ export default function CreateEventPage() {
                                                 onChange={(e) => updateTicket(ticket.id, "basePrice", parseInt(e.target.value) || 0)}
                                                 min={0}
                                                 disabled={ticket.isFree}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100"
+                                                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent disabled:bg-[var(--bg-secondary)]"
                                             />
                                         </div>
                                         <div className="flex items-center">
@@ -661,9 +661,9 @@ export default function CreateEventPage() {
                                                     type="checkbox"
                                                     checked={ticket.isFree}
                                                     onChange={(e) => updateTicket(ticket.id, "isFree", e.target.checked)}
-                                                    className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                    className="w-5 h-5 rounded border-[var(--border)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]"
                                                 />
-                                                <span className="text-sm text-gray-700">Tiket Gratis</span>
+                                                <span className="text-sm text-[var(--text-secondary)]">Tiket Gratis</span>
                                             </label>
                                         </div>
                                     </div>
@@ -674,10 +674,10 @@ export default function CreateEventPage() {
 
                     {currentStep === 5 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Media</h2>
+                            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Media</h2>
 
                             <div>
-                                <label htmlFor="posterImage" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="posterImage" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                     URL Poster Image
                                 </label>
                                 <input
@@ -685,14 +685,14 @@ export default function CreateEventPage() {
                                     type="url"
                                     value={posterImage}
                                     onChange={(e) => setPosterImage(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                     placeholder="https://example.com/poster.jpg"
                                 />
-                                <p className="text-xs text-gray-400 mt-1">Gambar utama event (rasio 3:4 recommended)</p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1">Gambar utama event (rasio 3:4 recommended)</p>
                             </div>
 
                             <div>
-                                <label htmlFor="bannerImage" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="bannerImage" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                     URL Banner Image
                                 </label>
                                 <input
@@ -700,17 +700,17 @@ export default function CreateEventPage() {
                                     type="url"
                                     value={bannerImage}
                                     onChange={(e) => setBannerImage(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                     placeholder="https://example.com/banner.jpg"
                                 />
-                                <p className="text-xs text-gray-400 mt-1">Banner untuk halaman detail (rasio 16:9 recommended)</p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1">Banner untuk halaman detail (rasio 16:9 recommended)</p>
                             </div>
 
                             {(posterImage || bannerImage) && (
                                 <div className="grid sm:grid-cols-2 gap-4">
                                     {posterImage && (
                                         <div>
-                                            <p className="text-sm text-gray-600 mb-2">Preview Poster</p>
+                                            <p className="text-sm text-[var(--text-secondary)] mb-2">Preview Poster</p>
                                             <img
                                                 src={posterImage}
                                                 alt="Poster preview"
@@ -721,7 +721,7 @@ export default function CreateEventPage() {
                                     )}
                                     {bannerImage && (
                                         <div>
-                                            <p className="text-sm text-gray-600 mb-2">Preview Banner</p>
+                                            <p className="text-sm text-[var(--text-secondary)] mb-2">Preview Banner</p>
                                             <img
                                                 src={bannerImage}
                                                 alt="Banner preview"
@@ -737,10 +737,10 @@ export default function CreateEventPage() {
 
                     {currentStep === 6 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6">Pengaturan & Review</h2>
+                            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Pengaturan & Review</h2>
 
                             <div>
-                                <span className="block text-sm font-medium text-gray-700 mb-2">Visibilitas Event</span>
+                                <span className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Visibilitas Event</span>
                                 <div className="grid sm:grid-cols-3 gap-3">
                                     {([
                                         { value: "PUBLIC", label: "Publik", icon: Globe, desc: "Semua orang bisa lihat" },
@@ -753,13 +753,13 @@ export default function CreateEventPage() {
                                             onClick={() => setVisibility(opt.value)}
                                             className={`p-4 rounded-xl border text-left transition-all ${
                                                 visibility === opt.value
-                                                    ? "bg-indigo-50 border-indigo-300 ring-2 ring-indigo-200"
-                                                    : "bg-white border-gray-200 hover:border-gray-300"
+                                                    ? "bg-[var(--accent-primary)]/10 border-indigo-300 ring-2 ring-indigo-200"
+                                                    : "bg-[var(--surface)] border-[var(--border)] hover:border-[var(--border)]"
                                             }`}
                                         >
-                                            <opt.icon className={`h-5 w-5 mb-2 ${visibility === opt.value ? "text-indigo-600" : "text-gray-400"}`} />
-                                            <p className="font-medium text-gray-900">{opt.label}</p>
-                                            <p className="text-xs text-gray-500">{opt.desc}</p>
+                                            <opt.icon className={`h-5 w-5 mb-2 ${visibility === opt.value ? "text-[var(--accent-primary)]" : "text-[var(--text-muted)]"}`} />
+                                            <p className="font-medium text-[var(--text-primary)]">{opt.label}</p>
+                                            <p className="text-xs text-[var(--text-muted)]">{opt.desc}</p>
                                         </button>
                                     ))}
                                 </div>
@@ -767,7 +767,7 @@ export default function CreateEventPage() {
 
                             {visibility === "PASSWORD_PROTECTED" && (
                                 <div>
-                                    <label htmlFor="accessPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="accessPassword" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                         Password Akses *
                                     </label>
                                     <input
@@ -775,14 +775,14 @@ export default function CreateEventPage() {
                                         type="text"
                                         value={accessPassword}
                                         onChange={(e) => setAccessPassword(e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
                                         placeholder="Masukkan password untuk akses event"
                                     />
                                 </div>
                             )}
 
                             <div>
-                                <label htmlFor="terms" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="terms" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                                     Syarat & Ketentuan
                                 </label>
                                 <textarea
@@ -790,20 +790,20 @@ export default function CreateEventPage() {
                                     value={termsAndConditions}
                                     onChange={(e) => setTermsAndConditions(e.target.value)}
                                     rows={4}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                    className="w-full px-4 py-3 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent resize-none"
                                     placeholder="Tulis syarat dan ketentuan event (opsional)"
                                 />
                             </div>
 
                             <div className="p-5 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
-                                <h3 className="font-semibold text-gray-900 mb-4">Ringkasan Event</h3>
+                                <h3 className="font-semibold text-[var(--text-primary)] mb-4">Ringkasan Event</h3>
                                 <div className="space-y-2 text-sm">
-                                    <p><span className="text-gray-500">Judul:</span> <span className="font-medium">{title || "-"}</span></p>
-                                    <p><span className="text-gray-500">Tipe:</span> <span className="font-medium">{eventType}</span></p>
-                                    <p><span className="text-gray-500">Kategori:</span> <span className="font-medium">{categories.find(c => c.id === categoryId)?.name || "-"}</span></p>
-                                    <p><span className="text-gray-500">Jadwal:</span> <span className="font-medium">{schedules.length} sesi</span></p>
-                                    <p><span className="text-gray-500">Tipe Tiket:</span> <span className="font-medium">{ticketTypes.length} tipe</span></p>
-                                    <p><span className="text-gray-500">Visibilitas:</span> <span className="font-medium">{visibility}</span></p>
+                                    <p><span className="text-[var(--text-muted)]">Judul:</span> <span className="font-medium">{title || "-"}</span></p>
+                                    <p><span className="text-[var(--text-muted)]">Tipe:</span> <span className="font-medium">{eventType}</span></p>
+                                    <p><span className="text-[var(--text-muted)]">Kategori:</span> <span className="font-medium">{categories.find(c => c.id === categoryId)?.name || "-"}</span></p>
+                                    <p><span className="text-[var(--text-muted)]">Jadwal:</span> <span className="font-medium">{schedules.length} sesi</span></p>
+                                    <p><span className="text-[var(--text-muted)]">Tipe Tiket:</span> <span className="font-medium">{ticketTypes.length} tipe</span></p>
+                                    <p><span className="text-[var(--text-muted)]">Visibilitas:</span> <span className="font-medium">{visibility}</span></p>
                                 </div>
                             </div>
                         </div>
@@ -814,7 +814,7 @@ export default function CreateEventPage() {
                             type="button"
                             onClick={prevStep}
                             disabled={currentStep === 1}
-                            className="inline-flex items-center gap-2 px-5 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="inline-flex items-center gap-2 px-5 py-3 border border-[var(--border)] text-[var(--text-secondary)] rounded-xl font-medium hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Sebelumnya
@@ -824,7 +824,7 @@ export default function CreateEventPage() {
                             <button
                                 type="button"
                                 onClick={nextStep}
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--accent-primary)] text-white rounded-xl font-medium hover:opacity-90 transition-colors shadow-lg shadow-indigo-200"
                             >
                                 Selanjutnya
                                 <ArrowRight className="h-4 w-4" />

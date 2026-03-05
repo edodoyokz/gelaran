@@ -186,7 +186,7 @@ export default function GateManagementPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-primary)]" />
             </div>
         );
     }
@@ -195,11 +195,11 @@ export default function GateManagementPage() {
         return (
             <div className="p-8 text-center">
                 <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h2 className="text-xl font-bold text-gray-900">Terjadi Kesalahan</h2>
-                <p className="text-gray-600 mt-2">{error || "Data tidak ditemukan"}</p>
+                <h2 className="text-xl font-bold text-[var(--text-primary)]">Terjadi Kesalahan</h2>
+                <p className="text-[var(--text-secondary)] mt-2">{error || "Data tidak ditemukan"}</p>
                 <button 
                     onClick={() => window.location.reload()}
-                    className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                    className="mt-4 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90"
                 >
                     Coba Lagi
                 </button>
@@ -216,38 +216,38 @@ export default function GateManagementPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50/50 pb-24">
-            <div className="bg-white border-b border-gray-100 sticky top-0 z-10 px-4 py-4 md:px-8">
+        <div className="min-h-screen bg-[var(--surface-hover)]/50 pb-24">
+            <div className="bg-[var(--surface)] border-b border-[var(--border)] sticky top-0 z-10 px-4 py-4 md:px-8">
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link 
                             href={`/organizer/events/${eventId}`}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
+                            className="p-2 hover:bg-[var(--surface-hover)] rounded-full transition-colors text-[var(--text-secondary)]"
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-gray-900">Manajemen Gate & POS</h1>
-                            <p className="text-sm text-gray-500">Kelola akses masuk dan penjualan on-site</p>
+                            <h1 className="text-xl font-bold text-[var(--text-primary)]">Manajemen Gate & POS</h1>
+                            <p className="text-sm text-[var(--text-muted)]">Kelola akses masuk dan penjualan on-site</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <main className="max-w-5xl mx-auto px-4 py-8 md:px-8 space-y-8">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-start gap-6">
-                    <div className="w-24 h-32 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)] p-6 flex items-start gap-6">
+                    <div className="w-24 h-32 bg-[var(--bg-secondary)] rounded-lg flex-shrink-0 overflow-hidden">
                         {event.posterImage ? (
                             <img src={event.posterImage} alt={event.title} className="w-full h-full object-cover" />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <div className="w-full h-full flex items-center justify-center text-[var(--text-muted)]">
                                 <QrCode className="w-8 h-8" />
                             </div>
                         )}
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 mb-1">{event.title}</h2>
-                        <div className="space-y-1 text-sm text-gray-600">
+                        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">{event.title}</h2>
+                        <div className="space-y-1 text-sm text-[var(--text-secondary)]">
                             <p className="flex items-center gap-2">
                                 <Clock className="w-4 h-4 text-indigo-500" />
                                 {event.schedules[0] ? formatDate(event.schedules[0].scheduleDate) : 'Jadwal belum ditentukan'}
@@ -257,15 +257,15 @@ export default function GateManagementPage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <div className="flex items-center gap-2 text-gray-500 mb-2">
+                    <div className="bg-[var(--surface)] p-4 rounded-xl shadow-sm border border-[var(--border)]">
+                        <div className="flex items-center gap-2 text-[var(--text-muted)] mb-2">
                             <Users className="w-4 h-4" />
                             <span className="text-sm font-medium">Total Tiket</span>
                         </div>
-                        <p className="text-2xl font-bold text-gray-900">{stats.totalSold}</p>
+                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.totalSold}</p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <div className="flex items-center gap-2 text-gray-500 mb-2">
+                    <div className="bg-[var(--surface)] p-4 rounded-xl shadow-sm border border-[var(--border)]">
+                        <div className="flex items-center gap-2 text-[var(--text-muted)] mb-2">
                             <CheckCircle className="w-4 h-4 text-emerald-500" />
                             <span className="text-sm font-medium">Check-in</span>
                         </div>
@@ -274,15 +274,15 @@ export default function GateManagementPage() {
                             <span className="text-sm text-emerald-600/80 mb-1">({stats.checkInPercentage}%)</span>
                         </div>
                     </div>
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <div className="flex items-center gap-2 text-gray-500 mb-2">
+                    <div className="bg-[var(--surface)] p-4 rounded-xl shadow-sm border border-[var(--border)]">
+                        <div className="flex items-center gap-2 text-[var(--text-muted)] mb-2">
                             <DoorOpen className="w-4 h-4 text-orange-500" />
                             <span className="text-sm font-medium">Belum Masuk</span>
                         </div>
                         <p className="text-2xl font-bold text-orange-600">{stats.remaining}</p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <div className="flex items-center gap-2 text-gray-500 mb-2">
+                    <div className="bg-[var(--surface)] p-4 rounded-xl shadow-sm border border-[var(--border)]">
+                        <div className="flex items-center gap-2 text-[var(--text-muted)] mb-2">
                             <Smartphone className="w-4 h-4 text-blue-500" />
                             <span className="text-sm font-medium">Sales On-site</span>
                         </div>
@@ -292,15 +292,15 @@ export default function GateManagementPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                     {/* Gate Scanner Session */}
-                    <div className="bg-white rounded-xl shadow-sm border border-indigo-100 overflow-hidden">
-                        <div className="p-4 border-b border-indigo-100 bg-indigo-50/50 flex items-center justify-between">
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-indigo-100 overflow-hidden">
+                        <div className="p-4 border-b border-indigo-100 bg-[var(--accent-primary)]/10/50 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                    <Camera className="w-5 h-5 text-indigo-600" />
+                                    <Camera className="w-5 h-5 text-[var(--accent-primary)]" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">Gate Scanner</h3>
-                                    <p className="text-xs text-gray-500">Akses untuk check-in peserta</p>
+                                    <h3 className="font-semibold text-[var(--text-primary)]">Gate Scanner</h3>
+                                    <p className="text-xs text-[var(--text-muted)]">Akses untuk check-in peserta</p>
                                 </div>
                             </div>
                             {gateSession?.isActive && (
@@ -312,8 +312,8 @@ export default function GateManagementPage() {
                         <div className="p-6 space-y-4">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium text-gray-700">Batas Perangkat</label>
-                                    <span className="text-sm text-gray-500">
+                                    <label className="text-sm font-medium text-[var(--text-secondary)]">Batas Perangkat</label>
+                                    <span className="text-sm text-[var(--text-muted)]">
                                         {gateSession?.activeDevices.length || 0}/{gateDeviceLimit}
                                     </span>
                                 </div>
@@ -323,7 +323,7 @@ export default function GateManagementPage() {
                                     max="20"
                                     value={gateDeviceLimit}
                                     onChange={(e) => setGateDeviceLimit(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)] outline-none transition-all"
                                 />
                             </div>
 
@@ -331,7 +331,7 @@ export default function GateManagementPage() {
                                 type="button"
                                 onClick={() => handleGeneratePin("GATE")}
                                 disabled={isGenerating}
-                                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                                className="w-full py-2.5 bg-[var(--accent-primary)] hover:opacity-90 text-white font-medium rounded-lg shadow-sm shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
                             >
                                 {isGenerating ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -354,17 +354,17 @@ export default function GateManagementPage() {
                             )}
 
                             {gateSession?.activeDevices && gateSession.activeDevices.length > 0 && (
-                                <div className="pt-4 border-t border-gray-100">
-                                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Perangkat Aktif</p>
+                                <div className="pt-4 border-t border-[var(--border)]">
+                                    <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">Perangkat Aktif</p>
                                     <div className="space-y-2">
                                         {gateSession.activeDevices.map((device) => (
-                                            <div key={device.id} className="flex items-center gap-3 p-2 rounded-lg bg-indigo-50">
+                                            <div key={device.id} className="flex items-center gap-3 p-2 rounded-lg bg-[var(--accent-primary)]/10">
                                                 <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                                    <Smartphone className="w-4 h-4 text-indigo-600" />
+                                                    <Smartphone className="w-4 h-4 text-[var(--accent-primary)]" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-900 truncate">{device.staffName}</p>
-                                                    <p className="text-xs text-gray-500 truncate">{device.userAgent}</p>
+                                                    <p className="text-sm font-medium text-[var(--text-primary)] truncate">{device.staffName}</p>
+                                                    <p className="text-xs text-[var(--text-muted)] truncate">{device.userAgent}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -375,15 +375,15 @@ export default function GateManagementPage() {
                     </div>
 
                     {/* POS Kasir Session */}
-                    <div className="bg-white rounded-xl shadow-sm border border-emerald-100 overflow-hidden">
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-emerald-100 overflow-hidden">
                         <div className="p-4 border-b border-emerald-100 bg-emerald-50/50 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
                                     <ShoppingCart className="w-5 h-5 text-emerald-600" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">POS Kasir</h3>
-                                    <p className="text-xs text-gray-500">Akses untuk penjualan on-site</p>
+                                    <h3 className="font-semibold text-[var(--text-primary)]">POS Kasir</h3>
+                                    <p className="text-xs text-[var(--text-muted)]">Akses untuk penjualan on-site</p>
                                 </div>
                             </div>
                             {posSession?.isActive && (
@@ -395,8 +395,8 @@ export default function GateManagementPage() {
                         <div className="p-6 space-y-4">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium text-gray-700">Batas Perangkat</label>
-                                    <span className="text-sm text-gray-500">
+                                    <label className="text-sm font-medium text-[var(--text-secondary)]">Batas Perangkat</label>
+                                    <span className="text-sm text-[var(--text-muted)]">
                                         {posSession?.activeDevices.length || 0}/{posDeviceLimit}
                                     </span>
                                 </div>
@@ -406,7 +406,7 @@ export default function GateManagementPage() {
                                     max="20"
                                     value={posDeviceLimit}
                                     onChange={(e) => setPosDeviceLimit(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                                    className="w-full px-3 py-2 border border-[var(--border)] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                                 />
                             </div>
 
@@ -437,8 +437,8 @@ export default function GateManagementPage() {
                             )}
 
                             {posSession?.activeDevices && posSession.activeDevices.length > 0 && (
-                                <div className="pt-4 border-t border-gray-100">
-                                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Perangkat Aktif</p>
+                                <div className="pt-4 border-t border-[var(--border)]">
+                                    <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">Perangkat Aktif</p>
                                     <div className="space-y-2">
                                         {posSession.activeDevices.map((device) => (
                                             <div key={device.id} className="flex items-center gap-3 p-2 rounded-lg bg-emerald-50">
@@ -446,8 +446,8 @@ export default function GateManagementPage() {
                                                     <Smartphone className="w-4 h-4 text-emerald-600" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-900 truncate">{device.staffName}</p>
-                                                    <p className="text-xs text-gray-500 truncate">{device.userAgent}</p>
+                                                    <p className="text-sm font-medium text-[var(--text-primary)] truncate">{device.staffName}</p>
+                                                    <p className="text-xs text-[var(--text-muted)] truncate">{device.userAgent}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -459,16 +459,16 @@ export default function GateManagementPage() {
                 </div>
             </main>
 
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 z-20">
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-[var(--surface)] border-t border-[var(--border)] z-20">
                 <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
                     <div className="hidden md:block">
-                        <p className="text-sm font-medium text-gray-900">Mode Organizer</p>
-                        <p className="text-xs text-gray-500">Buka Gate/POS tanpa login PIN</p>
+                        <p className="text-sm font-medium text-[var(--text-primary)]">Mode Organizer</p>
+                        <p className="text-xs text-[var(--text-muted)]">Buka Gate/POS tanpa login PIN</p>
                     </div>
                     <div className="flex-1 md:flex-none flex gap-3">
                         <Link
                             href={`/gate?direct=true&eventId=${eventId}`}
-                            className="flex-1 md:flex-none md:w-auto px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                            className="flex-1 md:flex-none md:w-auto px-5 py-3 bg-[var(--accent-primary)] hover:opacity-90 text-white font-medium rounded-xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
                         >
                             <Camera className="w-5 h-5" />
                             <span className="hidden sm:inline">Gate Scanner</span>
@@ -495,11 +495,11 @@ export default function GateManagementPage() {
 
             {showStaffModal && generatedPin && eventSlug && generatedSessionType && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+                    <div className="bg-[var(--surface)] rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
                         <div className={`p-6 text-white ${generatedSessionType === "GATE" ? "bg-gradient-to-br from-indigo-600 to-purple-600" : "bg-gradient-to-br from-emerald-600 to-teal-600"}`}>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <div className="w-12 h-12 bg-[var(--surface)]/20 rounded-xl flex items-center justify-center">
                                         {generatedSessionType === "GATE" ? <Camera className="w-6 h-6" /> : <ShoppingCart className="w-6 h-6" />}
                                     </div>
                                     <div>
@@ -509,7 +509,7 @@ export default function GateManagementPage() {
                                 </div>
                                 <button 
                                     onClick={() => setShowStaffModal(false)}
-                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                    className="p-2 hover:bg-[var(--surface)]/10 rounded-lg transition-colors"
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
@@ -519,36 +519,36 @@ export default function GateManagementPage() {
                         
                         <div className="p-6 space-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Event</label>
+                                <label className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Kode Event</label>
                                 <div className="flex items-center gap-2">
-                                    <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-gray-900">
+                                    <div className="flex-1 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg px-4 py-3 font-mono text-[var(--text-primary)]">
                                         {eventSlug}
                                     </div>
-                                    <button onClick={copyEventSlug} className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors">
+                                    <button onClick={copyEventSlug} className="p-3 text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-lg border border-[var(--border)] transition-colors">
                                         <Copy className="w-5 h-5" />
                                     </button>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">PIN Akses</label>
+                                <label className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">PIN Akses</label>
                                 <div className="flex items-center gap-2">
-                                    <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[0.3em] text-gray-900">
+                                    <div className="flex-1 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[0.3em] text-[var(--text-primary)]">
                                         {showPin ? formatPin(generatedPin) : "••••-••••"}
                                     </div>
-                                    <button onClick={() => setShowPin(!showPin)} className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors">
+                                    <button onClick={() => setShowPin(!showPin)} className="p-3 text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-lg border border-[var(--border)] transition-colors">
                                         {showPin ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                     </button>
-                                    <button onClick={copyPin} className="p-3 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg border border-gray-200 transition-colors">
+                                    <button onClick={copyPin} className="p-3 text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-lg border border-[var(--border)] transition-colors">
                                         <Copy className="w-5 h-5" />
                                     </button>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">URL Akses</label>
+                                <label className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">URL Akses</label>
                                 <div className="flex items-center gap-2">
-                                    <div className={`flex-1 border rounded-lg px-4 py-3 text-sm truncate flex items-center gap-2 ${generatedSessionType === "GATE" ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-emerald-50 border-emerald-200 text-emerald-700"}`}>
+                                    <div className={`flex-1 border rounded-lg px-4 py-3 text-sm truncate flex items-center gap-2 ${generatedSessionType === "GATE" ? "bg-[var(--accent-primary)]/10 border-indigo-200 text-[var(--accent-primary)]" : "bg-emerald-50 border-emerald-200 text-emerald-700"}`}>
                                         {generatedSessionType === "GATE" ? <Camera className="w-4 h-4 flex-shrink-0" /> : <ShoppingCart className="w-4 h-4 flex-shrink-0" />}
                                         {typeof window !== 'undefined' ? `${window.location.origin}/${generatedSessionType === "GATE" ? "gate" : "pos"}/access` : ''}
                                     </div>
@@ -556,22 +556,22 @@ export default function GateManagementPage() {
                                         href={`/${generatedSessionType === "GATE" ? "gate" : "pos"}/access`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className={`p-3 rounded-lg border transition-colors ${generatedSessionType === "GATE" ? "text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 border-indigo-200" : "text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 border-emerald-200"}`}
+                                        className={`p-3 rounded-lg border transition-colors ${generatedSessionType === "GATE" ? "text-indigo-500 hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 border-indigo-200" : "text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 border-emerald-200"}`}
                                     >
                                         <ExternalLink className="w-5 h-5" />
                                     </a>
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-gray-100 space-y-3">
+                            <div className="pt-4 border-t border-[var(--border)] space-y-3">
                                 <button
                                     onClick={() => copyCredentials(generatedSessionType)}
-                                    className={`w-full py-3 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2 ${generatedSessionType === "GATE" ? "bg-indigo-600 hover:bg-indigo-700" : "bg-emerald-600 hover:bg-emerald-700"}`}
+                                    className={`w-full py-3 text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2 ${generatedSessionType === "GATE" ? "bg-[var(--accent-primary)] hover:opacity-90" : "bg-emerald-600 hover:bg-emerald-700"}`}
                                 >
                                     <Copy className="w-4 h-4" />
                                     Salin Kredensial
                                 </button>
-                                <p className="text-xs text-center text-gray-500">
+                                <p className="text-xs text-center text-[var(--text-muted)]">
                                     ⚠️ PIN hanya ditampilkan sekali. Pastikan sudah disalin.
                                 </p>
                             </div>

@@ -47,10 +47,10 @@ export default async function OrganizerWalletPage() {
 
     return (
         <div className="min-h-screen">
-            <header className="bg-white border-b sticky top-0 z-10">
+            <header className="bg-[var(--surface)] border-b sticky top-0 z-10">
                 <div className="px-6 py-4">
-                    <h1 className="text-2xl font-bold text-gray-900">Wallet</h1>
-                    <p className="text-gray-500 text-sm">Kelola saldo dan penarikan dana</p>
+                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">Wallet</h1>
+                    <p className="text-[var(--text-muted)] text-sm">Kelola saldo dan penarikan dana</p>
                 </div>
             </header>
 
@@ -64,14 +64,14 @@ export default async function OrganizerWalletPage() {
                     <div className="flex gap-4">
                         <Link
                             href="/organizer/wallet/withdraw"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--surface)] text-[var(--accent-primary)] rounded-xl font-medium hover:bg-[var(--surface-hover)] transition-colors"
                         >
                             <ArrowUpRight className="h-5 w-5" />
                             Tarik Dana
                         </Link>
                         <Link
                             href="/organizer/wallet/bank-account"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 text-white rounded-xl font-medium hover:bg-white/30 transition-colors"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--surface)]/20 text-white rounded-xl font-medium hover:bg-[var(--surface)]/30 transition-colors"
                         >
                             <CreditCard className="h-5 w-5" />
                             Rekening Bank
@@ -80,39 +80,39 @@ export default async function OrganizerWalletPage() {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm border border-[var(--border)]">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
                                 <ArrowDownLeft className="h-6 w-6 text-green-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Total Pendapatan</p>
-                                <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalEarned)}</p>
+                                <p className="text-sm text-[var(--text-muted)]">Total Pendapatan</p>
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">{formatCurrency(totalEarned)}</p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm border border-[var(--border)]">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
                                 <ArrowUpRight className="h-6 w-6 text-purple-600" />
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Total Ditarik</p>
-                                <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalWithdrawn)}</p>
+                                <p className="text-sm text-[var(--text-muted)]">Total Ditarik</p>
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">{formatCurrency(totalWithdrawn)}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)]">
                     <div className="px-6 py-4 border-b flex items-center justify-between">
                         <h2 className="text-lg font-semibold flex items-center gap-2">
-                            <CreditCard className="h-5 w-5 text-gray-500" />
+                            <CreditCard className="h-5 w-5 text-[var(--text-muted)]" />
                             Rekening Bank
                         </h2>
                         <Link
                             href="/organizer/wallet/bank-account"
-                            className="text-indigo-600 text-sm font-medium hover:text-indigo-500 flex items-center gap-1"
+                            className="text-[var(--accent-primary)] text-sm font-medium hover:text-indigo-500 flex items-center gap-1"
                         >
                             <Plus className="h-4 w-4" />
                             Tambah
@@ -121,11 +121,11 @@ export default async function OrganizerWalletPage() {
                     <div className="divide-y">
                         {profile.bankAccounts.length === 0 ? (
                             <div className="p-8 text-center">
-                                <CreditCard className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-500 mb-4">Belum ada rekening bank</p>
+                                <CreditCard className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                                <p className="text-[var(--text-muted)] mb-4">Belum ada rekening bank</p>
                                 <Link
                                     href="/organizer/wallet/bank-account"
-                                    className="inline-flex items-center gap-2 text-indigo-600 font-medium"
+                                    className="inline-flex items-center gap-2 text-[var(--accent-primary)] font-medium"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Rekening
@@ -136,18 +136,18 @@ export default async function OrganizerWalletPage() {
                                 <div key={account.id} className="px-6 py-4 flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                            <CreditCard className="h-5 w-5 text-indigo-600" />
+                                            <CreditCard className="h-5 w-5 text-[var(--accent-primary)]" />
                                         </div>
                                         <div>
-                                            <p className="font-medium text-gray-900">{account.bankName}</p>
-                                            <p className="text-sm text-gray-500">
+                                            <p className="font-medium text-[var(--text-primary)]">{account.bankName}</p>
+                                            <p className="text-sm text-[var(--text-muted)]">
                                                 {account.accountNumber} • {account.accountHolderName}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         {account.isPrimary && (
-                                            <span className="px-2.5 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
+                                            <span className="px-2.5 py-1 bg-indigo-100 text-[var(--accent-primary)] text-xs font-medium rounded-full">
                                                 Utama
                                             </span>
                                         )}
@@ -161,25 +161,25 @@ export default async function OrganizerWalletPage() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)]">
                     <div className="px-6 py-4 border-b">
                         <h2 className="text-lg font-semibold">Riwayat Penarikan</h2>
                     </div>
                     <div className="divide-y">
                         {profile.payouts.length === 0 ? (
                             <div className="p-8 text-center">
-                                <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-500">Belum ada riwayat penarikan</p>
+                                <Clock className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                                <p className="text-[var(--text-muted)]">Belum ada riwayat penarikan</p>
                             </div>
                         ) : (
                             profile.payouts.map((payout) => (
                                 <div key={payout.id} className="px-6 py-4 flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${payout.status === "COMPLETED"
-                                                ? "bg-green-100"
+                                                ? "bg-green-500/10"
                                                 : payout.status === "REQUESTED" || payout.status === "PROCESSING"
-                                                    ? "bg-yellow-100"
-                                                    : "bg-red-100"
+                                                    ? "bg-yellow-500/10"
+                                                    : "bg-red-500/10"
                                             }`}>
                                             {payout.status === "COMPLETED" ? (
                                                 <CheckCircle className="h-5 w-5 text-green-600" />
@@ -188,8 +188,8 @@ export default async function OrganizerWalletPage() {
                                             )}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-gray-900">{payout.payoutCode}</p>
-                                            <p className="text-sm text-gray-500">
+                                            <p className="font-medium text-[var(--text-primary)]">{payout.payoutCode}</p>
+                                            <p className="text-sm text-[var(--text-muted)]">
                                                 {new Date(payout.requestedAt).toLocaleDateString("id-ID", {
                                                     day: "numeric",
                                                     month: "short",
@@ -199,14 +199,14 @@ export default async function OrganizerWalletPage() {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-medium text-gray-900">{formatCurrency(Number(payout.netAmount))}</p>
+                                        <p className="font-medium text-[var(--text-primary)]">{formatCurrency(Number(payout.netAmount))}</p>
                                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${payout.status === "COMPLETED"
-                                                ? "bg-green-100 text-green-700"
+                                                ? "bg-green-500/10 text-green-700"
                                                 : payout.status === "REQUESTED"
-                                                    ? "bg-yellow-100 text-yellow-700"
+                                                    ? "bg-yellow-500/10 text-yellow-700"
                                                     : payout.status === "PROCESSING"
-                                                        ? "bg-blue-100 text-blue-700"
-                                                        : "bg-red-100 text-red-700"
+                                                        ? "bg-blue-500/10 text-blue-700"
+                                                        : "bg-red-500/10 text-red-700"
                                             }`}>
                                             {payout.status === "COMPLETED" ? "Selesai" : 
                                              payout.status === "REQUESTED" ? "Menunggu" :

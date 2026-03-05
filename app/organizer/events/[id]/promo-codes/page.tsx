@@ -171,10 +171,10 @@ export default function EventPromoCodesPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat promo codes...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat promo codes...</p>
                 </div>
             </div>
         );
@@ -182,11 +182,11 @@ export default function EventPromoCodesPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href={`/organizer/events/${eventId}`} className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
+                    <Link href={`/organizer/events/${eventId}`} className="text-[var(--accent-primary)] hover:text-indigo-500">
                         Kembali ke Event
                     </Link>
                 </div>
@@ -195,26 +195,26 @@ export default function EventPromoCodesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
+        <div className="min-h-screen bg-[var(--bg-secondary)]">
+            <header className="bg-[var(--surface)] border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <Link
                                 href={`/organizer/events/${eventId}`}
-                                className="text-gray-500 hover:text-gray-700"
+                                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                             >
                                 <Tag className="h-5 w-5" />
                             </Link>
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Kode Promo</h1>
-                                <p className="text-sm text-gray-500 mt-1">{event?.title || "Event"}</p>
+                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">Kode Promo</h1>
+                                <p className="text-sm text-[var(--text-muted)] mt-1">{event?.title || "Event"}</p>
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={() => setShowCreateModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90"
                         >
                             <Plus className="h-4 w-4" />
                             Buat Promo Code
@@ -225,56 +225,56 @@ export default function EventPromoCodesPage() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid sm:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                <Tag className="h-5 w-5 text-indigo-600" />
+                                <Tag className="h-5 w-5 text-[var(--accent-primary)]" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">{promoCodes.length}</p>
-                                <p className="text-sm text-gray-500">Total Promo</p>
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">{promoCodes.length}</p>
+                                <p className="text-sm text-[var(--text-muted)]">Total Promo</p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
                                 <Check className="h-5 w-5 text-green-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">
                                     {promoCodes.filter((p) => p.isActive).length}
                                 </p>
-                                <p className="text-sm text-gray-500">Aktif</p>
+                                <p className="text-sm text-[var(--text-muted)]">Aktif</p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                            <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
                                 <X className="h-5 w-5 text-red-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">
                                     {promoCodes.filter((p) => !p.isActive || isExpired(p)).length}
                                 </p>
-                                <p className="text-sm text-gray-500">Non-aktif/Kadaluarsa</p>
+                                <p className="text-sm text-[var(--text-muted)]">Non-aktif/Kadaluarsa</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {promoCodes.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                        <Tag className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Belum ada promo code</h3>
-                        <p className="text-gray-500 mb-6">
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-12 text-center">
+                        <Tag className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Belum ada promo code</h3>
+                        <p className="text-[var(--text-muted)] mb-6">
                             Buat promo code untuk menarik lebih banyak pembeli ke event Anda.
                         </p>
                         <button
                             type="button"
                             onClick={() => setShowCreateModal(true)}
-                            className="inline-flex items-center gap-2 text-indigo-600 font-medium"
+                            className="inline-flex items-center gap-2 text-[var(--accent-primary)] font-medium"
                         >
                             <Plus className="h-4 w-4" />
                             Buat Promo Code Pertama
@@ -290,22 +290,22 @@ export default function EventPromoCodesPage() {
                             return (
                                 <div
                                     key={promo.id}
-                                    className={`bg-white rounded-xl shadow-sm p-6 ${
+                                    className={`bg-[var(--surface)] rounded-xl shadow-sm p-6 ${
                                         !promo.isActive || expired ? "opacity-60" : ""
                                     }`}
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="flex items-center gap-2 bg-indigo-50 px-4 py-2 rounded-lg">
-                                                <Tag className="h-5 w-5 text-indigo-600" />
-                                                <span className="font-bold text-xl text-gray-900">
+                                            <div className="flex items-center gap-2 bg-[var(--accent-primary)]/10 px-4 py-2 rounded-lg">
+                                                <Tag className="h-5 w-5 text-[var(--accent-primary)]" />
+                                                <span className="font-bold text-xl text-[var(--text-primary)]">
                                                     {promo.code}
                                                 </span>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={() => copyCode(promo.code)}
-                                                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-lg"
                                                 title="Salin Kode"
                                             >
                                                 <Copy className="h-4 w-4" />
@@ -313,17 +313,17 @@ export default function EventPromoCodesPage() {
                                         </div>
                                         <div className="flex items-center gap-1">
                                             {expired && (
-                                                <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                                                <span className="px-2 py-1 bg-red-500/10 text-red-700 text-xs rounded-full">
                                                     Kadaluarsa
                                                 </span>
                                             )}
                                             {notStarted && !expired && (
-                                                <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                                                <span className="px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs rounded-full">
                                                     Belum Aktif
                                                 </span>
                                             )}
                                             {!promo.isActive && !expired && !notStarted && (
-                                                <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">
+                                                <span className="px-2 py-1 bg-yellow-500/10 text-yellow-700 text-xs rounded-full">
                                                     Non-aktif
                                                 </span>
                                             )}
@@ -331,7 +331,7 @@ export default function EventPromoCodesPage() {
                                                 type="button"
                                                 onClick={() => handleDelete(promo.id)}
                                                 disabled={actionLoading === promo.id}
-                                                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                                                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-500/10 rounded-lg disabled:opacity-50"
                                                 title="Hapus"
                                             >
                                                 {actionLoading === promo.id ? (
@@ -344,19 +344,19 @@ export default function EventPromoCodesPage() {
                                     </div>
 
                                     {promo.description && (
-                                        <p className="text-gray-600 mb-4">{promo.description}</p>
+                                        <p className="text-[var(--text-secondary)] mb-4">{promo.description}</p>
                                     )}
 
                                     <div className="grid sm:grid-cols-2 gap-4 mb-4">
                                         <div className="flex items-center gap-2">
                                             {promo.discountType === "PERCENTAGE" ? (
-                                                <Percent className="h-5 w-5 text-indigo-600" />
+                                                <Percent className="h-5 w-5 text-[var(--accent-primary)]" />
                                             ) : (
                                                 <DollarSign className="h-5 w-5 text-green-600" />
                                             )}
                                             <div>
-                                                <p className="text-sm text-gray-500">Diskon</p>
-                                                <p className="font-semibold text-gray-900">
+                                                <p className="text-sm text-[var(--text-muted)]">Diskon</p>
+                                                <p className="font-semibold text-[var(--text-primary)]">
                                                     {promo.discountType === "PERCENTAGE"
                                                         ? `${promo.discountValue}%`
                                                         : formatCurrency(promo.discountValue)}
@@ -367,8 +367,8 @@ export default function EventPromoCodesPage() {
                                             <div className="flex items-center gap-2">
                                                 <TrendingUp className="h-5 w-5 text-purple-600" />
                                                 <div>
-                                                    <p className="text-sm text-gray-500">Min. Order</p>
-                                                    <p className="font-semibold text-gray-900">
+                                                    <p className="text-sm text-[var(--text-muted)]">Min. Order</p>
+                                                    <p className="font-semibold text-[var(--text-primary)]">
                                                         {formatCurrency(promo.minOrderAmount)}
                                                     </p>
                                                 </div>
@@ -378,8 +378,8 @@ export default function EventPromoCodesPage() {
 
                                     <div className="flex items-center gap-4 text-sm mb-4">
                                         <div className="flex items-center gap-2">
-                                            <Calendar className="h-4 w-4 text-gray-400" />
-                                            <span className="text-gray-500">
+                                            <Calendar className="h-4 w-4 text-[var(--text-muted)]" />
+                                            <span className="text-[var(--text-muted)]">
                                                 {new Date(promo.validFrom).toLocaleDateString("id-ID")} -{" "}
                                                 {new Date(promo.validUntil).toLocaleDateString("id-ID")}
                                             </span>
@@ -388,19 +388,19 @@ export default function EventPromoCodesPage() {
 
                                     <div className="border-t pt-4">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm text-gray-500">
+                                            <span className="text-sm text-[var(--text-muted)]">
                                                 Penggunaan: {promo._count.usages}
                                                 {promo.usageLimitTotal && ` / ${promo.usageLimitTotal}`}
                                             </span>
-                                            <span className="text-sm font-medium text-gray-900">
+                                            <span className="text-sm font-medium text-[var(--text-primary)]">
                                                 {usagePct}%
                                             </span>
                                         </div>
                                         {promo.usageLimitTotal && (
-                                            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
                                                 <div
                                                     className={`h-full rounded-full transition-all ${
-                                                        usagePct >= 90 ? "bg-red-500" : usagePct >= 50 ? "bg-yellow-500" : "bg-indigo-600"
+                                                        usagePct >= 90 ? "bg-red-500" : usagePct >= 50 ? "bg-yellow-500" : "bg-[var(--accent-primary)]"
                                                     }`}
                                                     style={{ width: `${usagePct}%` }}
                                                 />
@@ -446,20 +446,20 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
-                    <h3 className="text-lg font-bold text-gray-900">Buat Promo Code Baru</h3>
+            <div className="bg-[var(--surface)] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-[var(--surface)] z-10">
+                    <h3 className="text-lg font-bold text-[var(--text-primary)]">Buat Promo Code Baru</h3>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                     >
                         <X className="h-6 w-6" />
                     </button>
                 </div>
                 <form onSubmit={onSubmit} className="p-6 space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Kode Promo</label>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Kode Promo</label>
                         <input
                             name="code"
                             type="text"
@@ -469,12 +469,12 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                             pattern="[A-Z0-9_-]+"
                             title="Hanya huruf kapital, angka, dan underscore/tanda hubung"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-[var(--text-muted)] mt-1">
                             Hanya huruf kapital, angka, underscore (_), dan tanda hubung (-)
                         </p>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi (Opsional)</label>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Deskripsi (Opsional)</label>
                         <textarea
                             name="description"
                             rows={2}
@@ -484,14 +484,14 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Tipe Diskon</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Tipe Diskon</label>
                             <select name="discountType" required className="w-full px-3 py-2 border rounded-lg">
                                 <option value="PERCENTAGE">Persentase (%)</option>
                                 <option value="FIXED_AMOUNT">Nominal Tetap (Rp)</option>
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nilai Diskon</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Nilai Diskon</label>
                             <input
                                 name="discountValue"
                                 type="number"
@@ -505,7 +505,7 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                 Maksimal Diskon (Rp) - Opsional
                             </label>
                             <input
@@ -518,7 +518,7 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                 Minimum Order (Rp) - Opsional
                             </label>
                             <input
@@ -533,7 +533,7 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                 Limit Total - Opsional
                             </label>
                             <input
@@ -545,7 +545,7 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                                 Limit per User - Opsional
                             </label>
                             <input
@@ -559,7 +559,7 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Berlaku Mulai</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Berlaku Mulai</label>
                             <input
                                 name="validFrom"
                                 type="datetime-local"
@@ -569,7 +569,7 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Berlaku Sampai</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Berlaku Sampai</label>
                             <input
                                 name="validUntil"
                                 type="datetime-local"
@@ -580,21 +580,21 @@ function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: 
                         </div>
                     </div>
                     <label className="flex items-center gap-2">
-                        <input name="isActive" type="checkbox" defaultChecked={true} className="rounded border-gray-300" />
-                        <span className="text-sm text-gray-700">Aktifkan promo code segera</span>
+                        <input name="isActive" type="checkbox" defaultChecked={true} className="rounded border-[var(--border)]" />
+                        <span className="text-sm text-[var(--text-secondary)]">Aktifkan promo code segera</span>
                     </label>
                     <div className="pt-4 flex gap-3">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                            className="flex-1 px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)]"
                         >
                             Batal
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                            className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50"
                         >
                             {isSubmitting ? "Membuat..." : "Buat Promo Code"}
                         </button>

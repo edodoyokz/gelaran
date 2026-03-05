@@ -40,9 +40,9 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-    MANAGER: "bg-purple-100 text-purple-700",
-    SCANNER: "bg-blue-100 text-blue-700",
-    FINANCE: "bg-green-100 text-green-700",
+    MANAGER: "bg-purple-500/10 text-purple-700",
+    SCANNER: "bg-blue-500/10 text-blue-700",
+    FINANCE: "bg-green-500/10 text-green-700",
 };
 
 export default function OrganizerTeamPage() {
@@ -130,10 +130,10 @@ export default function OrganizerTeamPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat tim...</p>
+                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
+                    <p className="text-[var(--text-muted)]">Memuat tim...</p>
                 </div>
             </div>
         );
@@ -141,11 +141,11 @@ export default function OrganizerTeamPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-gray-900 font-medium mb-2">{error}</p>
-                    <Link href="/organizer" className="text-indigo-600 hover:text-indigo-500">
+                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
+                    <Link href="/organizer" className="text-[var(--accent-primary)] hover:text-indigo-500">
                         Kembali ke Dashboard
                     </Link>
                 </div>
@@ -154,23 +154,23 @@ export default function OrganizerTeamPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white border-b">
+        <div className="min-h-screen bg-[var(--bg-secondary)]">
+            <header className="bg-[var(--surface)] border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <Link href="/organizer" className="text-gray-500 hover:text-gray-700">
+                            <Link href="/organizer" className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
                                 <Users className="h-5 w-5" />
                             </Link>
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Manajemen Tim</h1>
-                                <p className="text-sm text-gray-500 mt-1">Kelola akses anggota tim Anda</p>
+                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">Manajemen Tim</h1>
+                                <p className="text-sm text-[var(--text-muted)] mt-1">Kelola akses anggota tim Anda</p>
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={() => setShowInviteModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90"
                         >
                             <UserPlus className="h-4 w-4" />
                             Undang Anggota
@@ -181,65 +181,65 @@ export default function OrganizerTeamPage() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid sm:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                <Users className="h-5 w-5 text-indigo-600" />
+                                <Users className="h-5 w-5 text-[var(--accent-primary)]" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">{team.length}</p>
-                                <p className="text-sm text-gray-500">Total Anggota</p>
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">{team.length}</p>
+                                <p className="text-sm text-[var(--text-muted)]">Total Anggota</p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
                                 <CheckCircle className="h-5 w-5 text-green-600" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">{team.filter((m) => m.isActive).length}</p>
-                                <p className="text-sm text-gray-500">Aktif</p>
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">{team.filter((m) => m.isActive).length}</p>
+                                <p className="text-sm text-[var(--text-muted)]">Aktif</p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <Shield className="h-5 w-5 text-gray-600" />
+                            <div className="w-10 h-10 bg-[var(--bg-secondary)] rounded-lg flex items-center justify-center">
+                                <Shield className="h-5 w-5 text-[var(--text-secondary)]" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-2xl font-bold text-[var(--text-primary)]">
                                     {team.filter((m) => m.role === "MANAGER").length}
                                 </p>
-                                <p className="text-sm text-gray-500">Manager</p>
+                                <p className="text-sm text-[var(--text-muted)]">Manager</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {team.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                        <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Belum ada anggota tim</h3>
-                        <p className="text-gray-500 mb-6">Mulai dengan mengundang anggota untuk membantu mengelola event Anda.</p>
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-12 text-center">
+                        <Users className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Belum ada anggota tim</h3>
+                        <p className="text-[var(--text-muted)] mb-6">Mulai dengan mengundang anggota untuk membantu mengelola event Anda.</p>
                         <button
                             type="button"
                             onClick={() => setShowInviteModal(true)}
-                            className="inline-flex items-center gap-2 text-indigo-600 font-medium"
+                            className="inline-flex items-center gap-2 text-[var(--accent-primary)] font-medium"
                         >
                             <UserPlus className="h-4 w-4" />
                             Undang Anggota Pertama
                         </button>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
                         <div className="divide-y">
                             {team.map((member) => (
-                                <div key={member.id} className="p-6 hover:bg-gray-50">
+                                <div key={member.id} className="p-6 hover:bg-[var(--surface-hover)]">
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            <div className="w-12 h-12 bg-[var(--border)] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
                                                 {member.user.avatarUrl ? (
                                                     <img
                                                         src={member.user.avatarUrl}
@@ -247,30 +247,30 @@ export default function OrganizerTeamPage() {
                                                         className="w-12 h-12 rounded-full object-cover"
                                                     />
                                                 ) : (
-                                                    <span className="text-gray-500 font-medium">
+                                                    <span className="text-[var(--text-muted)] font-medium">
                                                         {member.user.name?.charAt(0).toUpperCase() || "?"}
                                                     </span>
                                                 )}
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="font-semibold text-gray-900">{member.user.name}</h3>
+                                                    <h3 className="font-semibold text-[var(--text-primary)]">{member.user.name}</h3>
                                                     <span
                                                         className={`px-2 py-0.5 text-xs font-medium rounded-full ${ROLE_COLORS[member.role]}`}
                                                     >
                                                         {ROLE_LABELS[member.role]}
                                                     </span>
                                                     {!member.isActive && (
-                                                        <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
+                                                        <span className="px-2 py-0.5 bg-red-500/10 text-red-700 text-xs rounded-full">
                                                             Non-aktif
                                                         </span>
                                                     )}
                                                 </div>
-                                                <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
                                                     <Mail className="h-3.5 w-3.5" />
                                                     <span>{member.user.email}</span>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-xs text-gray-400 mt-2">
+                                                <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mt-2">
                                                     <Clock className="h-3 w-3.5" />
                                                     <span>Bergabung: {new Date(member.acceptedAt).toLocaleDateString("id-ID")}</span>
                                                 </div>
@@ -280,7 +280,7 @@ export default function OrganizerTeamPage() {
                                             type="button"
                                             onClick={() => handleRemove(member.id)}
                                             disabled={actionLoading === member.id}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                                            className="p-2 text-[var(--text-muted)] hover:text-red-600 hover:bg-red-500/10 rounded-lg disabled:opacity-50"
                                             title="Hapus Anggota"
                                         >
                                             {actionLoading === member.id ? (
@@ -299,11 +299,11 @@ export default function OrganizerTeamPage() {
 
             {showInviteModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Undang Anggota Tim</h3>
+                    <div className="bg-[var(--surface)] rounded-2xl max-w-md w-full p-6">
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Undang Anggota Tim</h3>
                         <form onSubmit={handleInvite} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Email</label>
                                 <input
                                     name="email"
                                     type="email"
@@ -313,7 +313,7 @@ export default function OrganizerTeamPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Role</label>
                                 <select
                                     name="role"
                                     required
@@ -329,14 +329,14 @@ export default function OrganizerTeamPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowInviteModal(false)}
-                                    className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                                    className="flex-1 px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)]"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                                    className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50"
                                 >
                                     {isSubmitting ? "Mengirim..." : "Undang"}
                                 </button>

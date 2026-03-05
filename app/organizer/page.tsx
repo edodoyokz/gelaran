@@ -24,7 +24,7 @@ import { redirect } from "next/navigation";
 import { OrganizerHeader } from "@/components/organizer/OrganizerHeader";
 
 const STATUS_COLORS: Record<string, string> = {
-    DRAFT: "bg-gray-500/10 text-gray-500",
+    DRAFT: "bg-gray-500/10 text-[var(--text-muted)]",
     PENDING_REVIEW: "bg-[var(--warning-bg)] text-[var(--warning-text)]",
     PUBLISHED: "bg-[var(--success-bg)] text-[var(--success-text)]",
     CANCELLED: "bg-[var(--error-bg)] text-[var(--error-text)]",
@@ -163,7 +163,7 @@ export default async function OrganizerDashboard() {
         purple: { bg: "bg-purple-500/10", icon: "text-purple-500", hover: "hover:bg-purple-500/5" },
         green: { bg: "bg-emerald-500/10", icon: "text-emerald-500", hover: "hover:bg-emerald-500/5" },
         blue: { bg: "bg-blue-500/10", icon: "text-blue-500", hover: "hover:bg-blue-500/5" },
-        gray: { bg: "bg-gray-500/10", icon: "text-gray-500", hover: "hover:bg-gray-500/5" },
+        gray: { bg: "bg-gray-500/10", icon: "text-[var(--text-muted)]", hover: "hover:bg-gray-500/5" },
     };
 
     return (
@@ -258,7 +258,7 @@ export default async function OrganizerDashboard() {
                                     <Clock className="h-5 w-5" />
                                     Event Mendatang (7 Hari)
                                 </h2>
-                                <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                                <span className="text-xs bg-[var(--surface)]/20 px-2 py-1 rounded-full">
                                     {upcomingEvents.length} event
                                 </span>
                             </div>
@@ -274,7 +274,7 @@ export default async function OrganizerDashboard() {
                                         <Link
                                             key={event.id}
                                             href={`/organizer/events/${event.id}`}
-                                            className="flex items-center gap-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                                            className="flex items-center gap-3 p-3 bg-[var(--surface)]/10 rounded-lg hover:bg-[var(--surface)]/20 transition-colors"
                                         >
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium truncate">{event.title}</p>
@@ -286,7 +286,7 @@ export default async function OrganizerDashboard() {
                                             </div>
                                             {daysUntil !== null && (
                                                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                                                    daysUntil <= 1 ? "bg-red-500" : daysUntil <= 3 ? "bg-yellow-500" : "bg-white/20"
+                                                    daysUntil <= 1 ? "bg-red-500" : daysUntil <= 3 ? "bg-yellow-500" : "bg-[var(--surface)]/20"
                                                 }`}>
                                                     {daysUntil === 0 ? "Hari Ini" : daysUntil === 1 ? "Besok" : `${daysUntil} hari`}
                                                 </span>
