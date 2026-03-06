@@ -183,7 +183,7 @@ export default function HomePage() {
     ];
 
     return (
-        <div className="font-sans text-gray-900 bg-gray-50/50 min-h-screen selection:bg-indigo-100 selection:text-indigo-900">
+        <div className="font-sans text-[var(--text-primary)] bg-[var(--bg-primary)] min-h-screen selection:bg-[var(--accent-primary)]/20 selection:text-[var(--accent-primary)] transition-colors duration-300">
             <Navbar />
             <Hero />
 
@@ -196,7 +196,7 @@ export default function HomePage() {
                                     <Link
                                         key={`featured-${event.id}`}
                                         href={`/events/${event.slug}`}
-                                        className="min-w-[320px] md:min-w-[420px] lg:min-w-[520px] relative rounded-2xl overflow-hidden group"
+                                        className="min-w-[320px] md:min-w-[420px] lg:min-w-[520px] relative rounded-2xl overflow-hidden group border border-[var(--border)]"
                                     >
                                         <img
                                             src={event.posterImage || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"}
@@ -205,11 +205,11 @@ export default function HomePage() {
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20" />
                                         <div className="absolute inset-0 p-5 flex flex-col justify-end">
-                                            <span className="inline-flex w-fit items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-semibold mb-2">
+                                            <span className="inline-flex w-fit items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-semibold mb-2 backdrop-blur-sm">
                                                 <Flame size={12} /> Featured Event
                                             </span>
-                                            <h3 className="text-white text-lg md:text-xl font-bold line-clamp-2">{event.title}</h3>
-                                            <p className="text-white/85 text-sm line-clamp-1">{formatLocation(event)}</p>
+                                            <h3 className="text-white text-lg md:text-xl font-bold line-clamp-2 drop-shadow-md">{event.title}</h3>
+                                            <p className="text-white/85 text-sm line-clamp-1 drop-shadow-sm">{formatLocation(event)}</p>
                                         </div>
                                     </Link>
                                 ))}
@@ -218,7 +218,7 @@ export default function HomePage() {
                     </section>
                 )}
 
-                <div className="bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-lg shadow-gray-200/50 p-3 md:p-4 mb-8 md:mb-12 border border-gray-100">
+                <div className="bg-[var(--surface-elevated)]/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-lg shadow-[var(--shadow-lg)] p-3 md:p-4 mb-8 md:mb-12 border border-[var(--border)]">
                     <div className="flex overflow-x-auto pb-1 gap-2 md:gap-3 no-scrollbar">
                         {displayCategories.map((cat) => (
                             <CategoryPill
@@ -235,10 +235,10 @@ export default function HomePage() {
                 <section className="mb-12 md:mb-16">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
                         <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-1">Event Populer</h2>
-                            <p className="text-gray-500 text-sm">Jangan lewatkan event yang sedang trending.</p>
+                            <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Event Populer</h2>
+                            <p className="text-[var(--text-muted)] text-sm">Jangan lewatkan event yang sedang trending.</p>
                         </div>
-                        <Link href="/events" className="group text-indigo-600 text-sm font-bold flex items-center hover:text-indigo-700 transition-colors bg-indigo-50 px-4 py-2 rounded-full hover:bg-indigo-100 self-start sm:self-auto">
+                        <Link href="/events" className="group text-[var(--accent-primary)] text-sm font-bold flex items-center hover:text-[var(--accent-primary-hover)] transition-colors bg-[var(--accent-primary)]/5 px-4 py-2 rounded-full hover:bg-[var(--accent-primary)]/10 self-start sm:self-auto">
                             Lihat Semua
                             <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
                         </Link>
@@ -246,17 +246,17 @@ export default function HomePage() {
 
                     {isLoading ? (
                         <div className="flex items-center justify-center py-24">
-                            <Loader2 className="h-10 w-10 text-indigo-600 animate-spin" />
+                            <Loader2 className="h-10 w-10 text-[var(--accent-primary)] animate-spin" />
                         </div>
                     ) : filteredEvents.length === 0 ? (
-                        <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-gray-200">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Calendar className="text-gray-400" size={32} />
+                        <div className="text-center py-24 bg-[var(--surface)] rounded-3xl border border-dashed border-[var(--border)]">
+                            <div className="w-16 h-16 bg-[var(--bg-tertiary)] rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Calendar className="text-[var(--text-muted)]" size={32} />
                             </div>
-                            <p className="text-gray-500 font-medium text-lg">Belum ada event tersedia untuk kategori ini.</p>
+                            <p className="text-[var(--text-secondary)] font-medium text-lg">Belum ada event tersedia untuk kategori ini.</p>
                             <button
                                 onClick={() => setSelectedCategory("all")}
-                                className="mt-4 text-indigo-600 font-bold hover:underline"
+                                className="mt-4 text-[var(--accent-primary)] font-bold hover:underline"
                             >
                                 Lihat semua event
                             </button>
@@ -287,14 +287,14 @@ export default function HomePage() {
 
                 {topEvents.length > 0 && (
                     <>
-                        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-12" />
+                        <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-12" />
                         <section className="mb-12 md:mb-16">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
                                 <div>
-                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-1">Top Events</h2>
-                                    <p className="text-gray-500 text-sm">Paling sering dikunjungi dan lagi hype minggu ini.</p>
+                                    <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Top Events</h2>
+                                    <p className="text-[var(--text-muted)] text-sm">Paling sering dikunjungi dan lagi hype minggu ini.</p>
                                 </div>
-                                <Link href="/events?sort=viewCount-desc" className="group text-indigo-600 text-sm font-bold flex items-center hover:text-indigo-700 transition-colors bg-indigo-50 px-4 py-2 rounded-full hover:bg-indigo-100 self-start sm:self-auto">
+                                <Link href="/events?sort=viewCount-desc" className="group text-[var(--accent-primary)] text-sm font-bold flex items-center hover:text-[var(--accent-primary-hover)] transition-colors bg-[var(--accent-primary)]/5 px-4 py-2 rounded-full hover:bg-[var(--accent-primary)]/10 self-start sm:self-auto">
                                     Lihat Ranking
                                     <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
                                 </Link>
@@ -333,12 +333,12 @@ export default function HomePage() {
                     <section className="mb-12">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
                             <div>
-                                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-1">Online Event</h2>
-                                <p className="text-gray-500 text-sm">Ikuti event seru dari mana saja.</p>
+                                <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Online Event</h2>
+                                <p className="text-[var(--text-muted)] text-sm">Ikuti event seru dari mana saja.</p>
                             </div>
                             <Link
                                 href="/events?eventType=ONLINE"
-                                className="group text-indigo-600 text-sm font-bold flex items-center hover:text-indigo-700 transition-colors bg-indigo-50 px-4 py-2 rounded-full hover:bg-indigo-100 self-start sm:self-auto"
+                                className="group text-[var(--accent-primary)] text-sm font-bold flex items-center hover:text-[var(--accent-primary-hover)] transition-colors bg-[var(--accent-primary)]/5 px-4 py-2 rounded-full hover:bg-[var(--accent-primary)]/10 self-start sm:self-auto"
                             >
                                 Lihat Semua
                                 <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
@@ -372,24 +372,24 @@ export default function HomePage() {
                     <section className="mb-4">
                         <div className="flex items-end justify-between gap-3 mb-6">
                             <div>
-                                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight mb-1">Review Terbaik Pengguna</h2>
-                                <p className="text-gray-500 text-sm">Ulasan positif dari pengguna untuk meningkatkan kepercayaan.</p>
+                                <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Review Terbaik Pengguna</h2>
+                                <p className="text-[var(--text-muted)] text-sm">Ulasan positif dari pengguna untuk meningkatkan kepercayaan.</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {reviewHighlights.slice(0, 6).map((review) => (
-                                <div key={review.id} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                                    <div className="flex items-center gap-1 text-yellow-500 mb-3">
+                                <div key={review.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+                                    <div className="flex items-center gap-1 text-[var(--warning-text)] mb-3">
                                         {Array.from({ length: 5 }).map((_, i) => (
                                             <Star key={`${review.id}-${i}`} size={14} fill={i < review.rating ? "currentColor" : "none"} />
                                         ))}
                                     </div>
-                                    <p className="text-gray-700 text-sm leading-relaxed line-clamp-4">
+                                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed line-clamp-4">
                                         “{review.reviewText}”
                                     </p>
-                                    <div className="mt-4 pt-4 border-t border-gray-100">
-                                        <p className="text-sm font-semibold text-gray-900">{review.user.name}</p>
-                                        <Link href={`/events/${review.event.slug}`} className="text-xs text-indigo-600 hover:text-indigo-700">
+                                    <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                                        <p className="text-sm font-semibold text-[var(--text-primary)]">{review.user.name}</p>
+                                        <Link href={`/events/${review.event.slug}`} className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)]">
                                             {review.event.title}
                                         </Link>
                                     </div>

@@ -27,7 +27,7 @@ export function Hero() {
 
     useEffect(() => {
         if (loaded) return;
-        
+
         const loadContent = async () => {
             try {
                 const res = await fetch("/api/site-content?keys=hero");
@@ -48,7 +48,7 @@ export function Hero() {
     return (
         <div className="relative min-h-[520px] md:min-h-[580px] w-full bg-slate-900 overflow-hidden pt-16 md:pt-20">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 opacity-90 z-0" />
-            
+
             <img
                 src={content.backgroundImage}
                 alt="Hero Background"
@@ -72,50 +72,50 @@ export function Hero() {
                 </div>
 
                 <div className="w-full max-w-[92%] md:max-w-4xl mt-8 md:mt-10">
-                    <div className="bg-white/95 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-2xl shadow-indigo-500/20 p-3 md:p-2 flex flex-col md:flex-row gap-2 md:gap-0 items-center border border-white/20">
-                        <div className="flex-1 flex items-center w-full px-3 py-2.5 md:py-3 bg-gray-50 md:bg-transparent rounded-xl md:rounded-none md:border-r border-gray-200 group transition-colors hover:bg-white">
-                            <Search className="text-indigo-500 mr-3 shrink-0" size={20} />
+                    <div className="bg-[var(--surface-elevated)]/95 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-xl p-3 md:p-2 flex flex-col md:flex-row gap-2 md:gap-0 items-center border border-[var(--border)]">
+                        <div className="flex-1 flex items-center w-full px-3 py-2.5 md:py-3 bg-[var(--bg-tertiary)] md:bg-transparent rounded-xl md:rounded-none md:border-r border-[var(--border)] group transition-colors hover:bg-[var(--surface-hover)]">
+                            <Search className="text-[var(--accent-primary)] mr-3 shrink-0" size={20} />
                             <div className="flex flex-col text-left w-full">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">
                                     Cari Event
                                 </label>
                                 <input
                                     type="text"
                                     placeholder={content.searchPlaceholder}
-                                    className="w-full outline-none text-gray-900 font-semibold placeholder-gray-400 bg-transparent text-sm md:text-base"
+                                    className="w-full outline-none text-[var(--text-primary)] font-semibold placeholder-[var(--text-muted)] bg-transparent text-sm md:text-base focus:placeholder-transparent"
                                 />
                             </div>
                         </div>
 
-                        <div className="flex-1 flex items-center w-full px-3 py-2.5 md:py-3 bg-gray-50 md:bg-transparent rounded-xl md:rounded-none md:border-r border-gray-200 group transition-colors hover:bg-white">
-                            <MapPin className="text-indigo-500 mr-3 shrink-0" size={20} />
+                        <div className="flex-1 flex items-center w-full px-3 py-2.5 md:py-3 bg-[var(--bg-tertiary)] md:bg-transparent rounded-xl md:rounded-none md:border-r border-[var(--border)] group transition-colors hover:bg-[var(--surface-hover)]">
+                            <MapPin className="text-[var(--accent-primary)] mr-3 shrink-0" size={20} />
                             <div className="flex flex-col text-left w-full">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">
                                     Lokasi
                                 </label>
                                 <input
                                     type="text"
                                     placeholder={content.locationPlaceholder}
-                                    className="w-full outline-none text-gray-900 font-semibold placeholder-gray-400 bg-transparent text-sm md:text-base"
+                                    className="w-full outline-none text-[var(--text-primary)] font-semibold placeholder-[var(--text-muted)] bg-transparent text-sm md:text-base focus:placeholder-transparent"
                                 />
                             </div>
                         </div>
 
-                        <div className="flex-1 flex items-center w-full px-3 py-2.5 md:py-3 bg-gray-50 md:bg-transparent rounded-xl md:rounded-none group transition-colors hover:bg-white">
-                            <Calendar className="text-indigo-500 mr-3 shrink-0" size={20} />
+                        <div className="flex-1 flex items-center w-full px-3 py-2.5 md:py-3 bg-[var(--bg-tertiary)] md:bg-transparent rounded-xl md:rounded-none group transition-colors hover:bg-[var(--surface-hover)]">
+                            <Calendar className="text-[var(--accent-primary)] mr-3 shrink-0" size={20} />
                             <div className="flex flex-col text-left w-full">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
+                                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">
                                     Tanggal
                                 </label>
                                 <input
                                     type="text"
                                     placeholder="Semua Tanggal"
-                                    className="w-full outline-none text-gray-900 font-semibold placeholder-gray-400 bg-transparent text-sm md:text-base"
+                                    className="w-full outline-none text-[var(--text-primary)] font-semibold placeholder-[var(--text-muted)] bg-transparent text-sm md:text-base focus:placeholder-transparent"
                                 />
                             </div>
                         </div>
 
-                        <button className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 md:py-3 px-8 rounded-xl md:rounded-xl transition-all shadow-lg shadow-indigo-500/30 transform active:scale-95 flex items-center justify-center gap-2 min-h-[48px] md:min-h-[52px] text-sm md:text-base">
+                        <button className="w-full md:w-auto bg-[var(--accent-gradient)] hover:brightness-110 text-white font-bold py-3 md:py-3 px-8 rounded-xl md:rounded-xl transition-all shadow-glow transform active:scale-95 flex items-center justify-center gap-2 min-h-[48px] md:min-h-[52px] text-sm md:text-base">
                             <span>{content.ctaText}</span>
                             <ArrowRight size={18} />
                         </button>
