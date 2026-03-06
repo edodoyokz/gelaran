@@ -80,12 +80,12 @@ interface Pagination {
 }
 
 const STATUS_CONFIG: Record<string, { color: string; bgColor: string; icon: typeof CheckCircle; label: string }> = {
-    PENDING: { color: "text-[var(--warning)]", bgColor: "bg-[var(--warning-bg)]", icon: Clock, label: "Menunggu" },
-    AWAITING_PAYMENT: { color: "text-orange-500", bgColor: "bg-orange-100 dark:bg-orange-900/30", icon: Clock, label: "Menunggu Pembayaran" },
-    PAID: { color: "text-[var(--info)]", bgColor: "bg-[var(--info-bg)]", icon: CheckCircle, label: "Dibayar" },
-    CONFIRMED: { color: "text-[var(--success)]", bgColor: "bg-[var(--success-bg)]", icon: CheckCircle, label: "Dikonfirmasi" },
-    CANCELLED: { color: "text-[var(--error)]", bgColor: "bg-[var(--error-bg)]", icon: XCircle, label: "Dibatalkan" },
-    REFUNDED: { color: "text-purple-500", bgColor: "bg-purple-100 dark:bg-purple-900/30", icon: XCircle, label: "Dikembalikan" },
+    PENDING: { color: "text-[var(--warning-text)]", bgColor: "bg-[var(--warning-bg)]", icon: Clock, label: "Menunggu" },
+    AWAITING_PAYMENT: { color: "text-[var(--warning-text)]", bgColor: "bg-[var(--warning-bg)]", icon: Clock, label: "Menunggu Pembayaran" }, // changed from amber
+    PAID: { color: "text-[var(--info-text)]", bgColor: "bg-[var(--info-bg)]", icon: CheckCircle, label: "Dibayar" },
+    CONFIRMED: { color: "text-[var(--success-text)]", bgColor: "bg-[var(--success-bg)]", icon: CheckCircle, label: "Dikonfirmasi" },
+    CANCELLED: { color: "text-[var(--error-text)]", bgColor: "bg-[var(--error-bg)]", icon: XCircle, label: "Dibatalkan" },
+    REFUNDED: { color: "text-[var(--text-muted)]", bgColor: "bg-[var(--bg-tertiary)]", icon: XCircle, label: "Dikembalikan" }, // changed from purple
     EXPIRED: { color: "text-[var(--text-muted)]", bgColor: "bg-[var(--bg-tertiary)]", icon: XCircle, label: "Kadaluarsa" },
 };
 
@@ -275,11 +275,10 @@ export default function MyBookingsPage() {
                                     key={tab.value}
                                     type="button"
                                     onClick={() => handleTabChange(tab.value)}
-                                    className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
-                                        activeTab === tab.value
-                                            ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
-                                            : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
-                                    }`}
+                                    className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === tab.value
+                                        ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
+                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+                                        }`}
                                 >
                                     <Icon className="h-4 w-4" />
                                     {tab.label}
@@ -311,7 +310,7 @@ export default function MyBookingsPage() {
 
             {filteredBookings.length === 0 ? (
                 <div className="card p-12 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-20 h-20 bg-[var(--accent-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                         <Ticket className="h-10 w-10 text-[var(--accent-primary)]" />
                     </div>
                     <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Tidak ada pesanan ditemukan</h3>
@@ -320,7 +319,7 @@ export default function MyBookingsPage() {
                             ? "Kamu belum memiliki pesanan."
                             : `Tidak ada pesanan dengan status ini.`}
                     </p>
-                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
+                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2 shadow-glow">
                         <Sparkles className="h-4 w-4" />
                         Jelajahi Event
                         <ChevronRight className="h-4 w-4" />
@@ -397,11 +396,10 @@ export default function MyBookingsPage() {
                                                     {booking.bookedTickets.slice(0, 3).map((ticket) => (
                                                         <span
                                                             key={ticket.id}
-                                                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
-                                                                ticket.isCheckedIn
-                                                                    ? "bg-[var(--success-bg)] text-[var(--success-text)]"
-                                                                    : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
-                                                            }`}
+                                                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${ticket.isCheckedIn
+                                                                ? "bg-[var(--success-bg)] text-[var(--success-text)]"
+                                                                : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+                                                                }`}
                                                         >
                                                             <Ticket className="h-3 w-3" />
                                                             {ticket.ticketType.name}
@@ -505,11 +503,10 @@ export default function MyBookingsPage() {
                                         <button
                                             type="button"
                                             onClick={() => setCurrentPage(page)}
-                                            className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
-                                                currentPage === page
-                                                    ? "bg-[var(--accent-primary)] text-white"
-                                                    : "hover:bg-[var(--surface-hover)] text-[var(--text-secondary)]"
-                                            }`}
+                                            className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${currentPage === page
+                                                ? "bg-[var(--accent-primary)] text-white"
+                                                : "hover:bg-[var(--surface-hover)] text-[var(--text-secondary)]"
+                                                }`}
                                         >
                                             {page}
                                         </button>

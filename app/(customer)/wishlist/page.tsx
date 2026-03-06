@@ -168,7 +168,7 @@ export default function WishlistPage() {
 
             {wishlists.length === 0 ? (
                 <div className="card p-12 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-20 h-20 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                         <Heart className="h-10 w-10 text-rose-500" />
                     </div>
                     <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
@@ -177,7 +177,7 @@ export default function WishlistPage() {
                     <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
                         Simpan event yang kamu minati untuk ditemukan dengan mudah nanti.
                     </p>
-                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
+                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2 shadow-glow">
                         <Sparkles className="h-4 w-4" />
                         Jelajahi Event
                         <ExternalLink className="h-4 w-4" />
@@ -213,13 +213,13 @@ export default function WishlistPage() {
                                     type="button"
                                     onClick={() => handleRemove(item.event.id)}
                                     disabled={removingId === item.event.id}
-                                    className="absolute top-3 right-3 p-2.5 bg-white/90 dark:bg-black/50 backdrop-blur-sm rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-colors disabled:opacity-50 shadow-lg"
+                                    className="absolute top-3 right-3 p-2.5 bg-[var(--surface-overlay)] text-rose-500 hover:bg-[var(--surface-hover)] dark:hover:bg-rose-900/30 transition-colors disabled:opacity-50 shadow-lg rounded-xl backdrop-blur-sm"
                                     title="Hapus dari wishlist"
                                 >
                                     {removingId === item.event.id ? (
                                         <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
-                                        <Heart className="h-5 w-5 fill-current" />
+                                        <Heart className="h-5 w-5 fill-current border border-white dark:border-rose-300" />
                                     )}
                                 </button>
 

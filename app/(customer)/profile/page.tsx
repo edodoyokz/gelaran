@@ -173,7 +173,7 @@ export default function ProfilePage() {
 
             setSuccess("Profil berhasil diperbarui!");
             await fetchProfile();
-            
+
             setTimeout(() => setSuccess(null), 3000);
         } catch (err: any) {
             setError(err.message || "Gagal memperbarui profil");
@@ -300,7 +300,7 @@ export default function ProfilePage() {
             <div className="card p-6 sm:p-8">
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                     <div className="relative group">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-[var(--accent-gradient)] shadow-xl relative">
                             {profile?.avatarUrl ? (
                                 <Image
                                     src={profile.avatarUrl}
@@ -310,7 +310,7 @@ export default function ProfilePage() {
                                 />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                    <span className="text-4xl font-bold text-white">
+                                    <span className="text-4xl font-bold text-white drop-shadow-md">
                                         {profile?.name.charAt(0).toUpperCase()}
                                     </span>
                                 </div>
@@ -404,11 +404,10 @@ export default function ProfilePage() {
                                         key={tab.key}
                                         type="button"
                                         onClick={() => setActiveTab(tab.key)}
-                                        className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
-                                            activeTab === tab.key
-                                                ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
-                                                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
-                                        }`}
+                                        className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === tab.key
+                                            ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
+                                            : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+                                            }`}
                                     >
                                         <Icon className="h-4 w-4" />
                                         {tab.label}
@@ -609,8 +608,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
-                    <Link 
-                        href="/dashboard" 
+                    <Link
+                        href="/dashboard"
                         className="btn-secondary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center text-center"
                     >
                         Batal
@@ -618,7 +617,7 @@ export default function ProfilePage() {
                     <button
                         type="submit"
                         disabled={isSaving}
-                        className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
+                        className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center flex items-center gap-2 shadow-glow"
                     >
                         {isSaving ? (
                             <>

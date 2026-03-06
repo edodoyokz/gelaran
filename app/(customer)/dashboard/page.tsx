@@ -86,11 +86,11 @@ interface DashboardData {
 
 const STATUS_COLORS: Record<string, string> = {
     PENDING: "bg-[var(--warning-bg)] text-[var(--warning-text)]",
-    AWAITING_PAYMENT: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+    AWAITING_PAYMENT: "bg-[var(--warning-bg)] text-[var(--warning-text)]", // changed from amber
     PAID: "bg-[var(--info-bg)] text-[var(--info-text)]",
     CONFIRMED: "bg-[var(--success-bg)] text-[var(--success-text)]",
     CANCELLED: "bg-[var(--error-bg)] text-[var(--error-text)]",
-    REFUNDED: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    REFUNDED: "bg-[var(--bg-tertiary)] text-[var(--text-muted)]", // changed from purple
     EXPIRED: "bg-[var(--bg-tertiary)] text-[var(--text-muted)]",
 };
 
@@ -555,7 +555,7 @@ export default function CustomerDashboardPage() {
 
             {data.upcomingBookings.length === 0 && data.recentBookings.length === 0 && (
                 <div className="card p-8 sm:p-12 text-center max-w-lg mx-auto">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                         <Ticket className="h-10 w-10 text-[var(--accent-primary)]" />
                     </div>
                     <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
@@ -566,7 +566,7 @@ export default function CustomerDashboardPage() {
                     </p>
                     <Link
                         href="/events"
-                        className="btn btn-primary w-full sm:w-auto inline-flex justify-center rounded-full py-3 px-6 shadow-lg shadow-indigo-500/20"
+                        className="btn btn-primary w-full sm:w-auto inline-flex justify-center rounded-full py-3 px-6 shadow-glow"
                     >
                         <Sparkles className="h-5 w-5 mr-2" />
                         Jelajahi Event
