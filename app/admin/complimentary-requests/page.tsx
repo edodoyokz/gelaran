@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Loader2, CheckCircle2, XCircle, Gift, Calendar } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Loader2, CheckCircle2, XCircle, Gift, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 
@@ -56,7 +55,7 @@ export default function AdminComplimentaryRequestsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isActionLoading, setIsActionLoading] = useState<string | null>(null);
 
-    const loadRequests = async () => {
+    const loadRequests = useCallback(async () => {
         try {
             setIsLoading(true);
             const params = new URLSearchParams();
@@ -72,11 +71,11 @@ export default function AdminComplimentaryRequestsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [statusFilter]);
 
     useEffect(() => {
         loadRequests();
-    }, [statusFilter]);
+    }, [statusFilter, loadRequests]);
 
     const reviewRequest = async (requestId: string, action: "APPROVE" | "REJECT") => {
         try {

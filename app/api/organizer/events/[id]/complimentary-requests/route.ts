@@ -1,9 +1,23 @@
+import { Prisma } from "@prisma/client";
 import { type NextRequest } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
+import {
+    findComplimentarySubmissionConflict,
+    mapComplimentaryRequestSummary,
+    type ComplimentarySubmissionConflict,
+    normalizeGuestEmail,
+} from "@/lib/complimentary-flow";
 import { createClient } from "@/lib/supabase/server";
 import type { Event, User } from "@/types/prisma";
+
+class ComplimentarySubmissionConflictError extends Error {
+    constructor(public readonly conflict: ComplimentarySubmissionConflict) {
+        super(conflict.message);
+        this.name = "ComplimentarySubmissionConflictError";
+    }
+}
 
 type OrganizerAccessResult =
     | { organizer: User; event: Event }
@@ -92,16 +106,18 @@ export async function GET(
         });
 
         return successResponse(
-            requests.map((req) => ({
-                ...req,
-                items: req.items.map((item) => ({
-                    ...item,
-                    ticketType: {
-                        ...item.ticketType,
-                        basePrice: Number(item.ticketType.basePrice),
-                    },
-                })),
-            }))
+            requests.map((requestRecord) =>
+                mapComplimentaryRequestSummary({
+                    ...requestRecord,
+                    items: requestRecord.items.map((item) => ({
+                        ...item,
+                        ticketType: {
+                            ...item.ticketType,
+                            basePrice: Number(item.ticketType.basePrice),
+                        },
+                    })),
+                })
+            )
         );
     } catch (error) {
         console.error("Error fetching complimentary requests:", error);
@@ -139,6 +155,7 @@ export async function POST(
         }
 
         const data = parsed.data;
+        const guestEmail = normalizeGuestEmail(data.guestEmail);
         const ticketTypeIds = data.items.map((item) => item.ticketTypeId);
         const uniqueTicketTypeIds = Array.from(new Set(ticketTypeIds));
 
@@ -183,66 +200,91 @@ export async function POST(
 
         const requestedTotal = data.items.reduce((sum, item) => sum + item.quantity, 0);
 
-        const createdRequest = await prisma.$transaction(async (tx) => {
-            const requestRecord = await tx.complimentaryTicketRequest.create({
-                data: {
+        const createdRequest = await prisma.$transaction(
+            async (tx) => {
+                const submissionConflict = await findComplimentarySubmissionConflict(tx, {
                     eventId: id,
-                    eventScheduleId: data.eventScheduleId || null,
-                    requestedById: result.organizer.id,
-                    reason: data.reason || null,
-                    guestName: data.guestName,
-                    guestEmail: data.guestEmail,
-                    guestPhone: data.guestPhone || null,
-                    requestedTotal,
-                    status: "PENDING",
-                    items: {
-                        create: data.items.map((item) => ({
-                            ticketTypeId: item.ticketTypeId,
-                            quantity: item.quantity,
-                        })),
+                    guestEmail,
+                });
+
+                if (submissionConflict) {
+                    throw new ComplimentarySubmissionConflictError(submissionConflict);
+                }
+
+                const requestRecord = await tx.complimentaryTicketRequest.create({
+                    data: {
+                        eventId: id,
+                        eventScheduleId: data.eventScheduleId || null,
+                        requestedById: result.organizer.id,
+                        reason: data.reason || null,
+                        guestName: data.guestName,
+                        guestEmail,
+                        guestPhone: data.guestPhone || null,
+                        requestedTotal,
+                        status: "PENDING",
+                        items: {
+                            create: data.items.map((item) => ({
+                                ticketTypeId: item.ticketTypeId,
+                                quantity: item.quantity,
+                            })),
+                        },
                     },
-                },
-                include: {
-                    items: {
-                        include: {
-                            ticketType: {
-                                select: { id: true, name: true, basePrice: true, isFree: true },
+                    include: {
+                        reviewedBy: { select: { id: true, name: true, email: true } },
+                        bookings: {
+                            select: {
+                                id: true,
+                                bookingCode: true,
+                                status: true,
+                                createdAt: true,
+                            },
+                            orderBy: { createdAt: "desc" },
+                            take: 1,
+                        },
+                        items: {
+                            include: {
+                                ticketType: {
+                                    select: { id: true, name: true, basePrice: true, isFree: true },
+                                },
                             },
                         },
                     },
-                },
-            });
-
-            const admins = await tx.user.findMany({
-                where: {
-                    role: { in: ["ADMIN", "SUPER_ADMIN"] },
-                    isActive: true,
-                    deletedAt: null,
-                },
-                select: { id: true },
-            });
-
-            if (admins.length > 0) {
-                await tx.notification.createMany({
-                    data: admins.map((admin) => ({
-                        userId: admin.id,
-                        type: "COMPLIMENTARY_REQUEST_SUBMITTED",
-                        title: "Permintaan tiket complimentary baru",
-                        message: `${result.event.title}: ${requestedTotal} tiket menunggu approval`,
-                        data: {
-                            requestId: requestRecord.id,
-                            eventId: id,
-                            organizerId: result.organizer.id,
-                        },
-                    })),
                 });
-            }
 
-            return requestRecord;
-        });
+                const admins = await tx.user.findMany({
+                    where: {
+                        role: { in: ["ADMIN", "SUPER_ADMIN"] },
+                        isActive: true,
+                        deletedAt: null,
+                    },
+                    select: { id: true },
+                });
+
+                if (admins.length > 0) {
+                    await tx.notification.createMany({
+                        data: admins.map((admin) => ({
+                            userId: admin.id,
+                            type: "COMPLIMENTARY_REQUEST_SUBMITTED",
+                            title: "Permintaan tiket complimentary baru",
+                            message: `${result.event.title}: ${requestedTotal} tiket menunggu approval`,
+                            data: {
+                                requestId: requestRecord.id,
+                                eventId: id,
+                                organizerId: result.organizer.id,
+                            },
+                        })),
+                    });
+                }
+
+                return requestRecord;
+            },
+            {
+                isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+            }
+        );
 
         return successResponse(
-            {
+            mapComplimentaryRequestSummary({
                 ...createdRequest,
                 items: createdRequest.items.map((item) => ({
                     ...item,
@@ -251,11 +293,23 @@ export async function POST(
                         basePrice: Number(item.ticketType.basePrice),
                     },
                 })),
-            },
+            }),
             undefined,
             201
         );
     } catch (error) {
+        if (error instanceof ComplimentarySubmissionConflictError) {
+            return errorResponse(error.conflict.message, 409, {
+                code: error.conflict.code,
+            });
+        }
+
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2034") {
+            return errorResponse("Concurrent complimentary request detected. Please retry.", 409, {
+                code: "COMPLIMENTARY_REQUEST_CONFLICT",
+            });
+        }
+
         console.error("Error creating complimentary request:", error);
         return errorResponse("Failed to create complimentary request", 500);
     }

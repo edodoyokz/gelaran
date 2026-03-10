@@ -2,6 +2,7 @@ import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
+import { mapComplimentaryRequestSummary } from "@/lib/complimentary-flow";
 
 type VerifyAdminResult =
     | { admin: { id: string } }
@@ -100,16 +101,18 @@ export async function GET(request: NextRequest) {
         ]);
 
         return successResponse(
-            requests.map((request) => ({
-                ...request,
-                items: request.items.map((item) => ({
-                    ...item,
-                    ticketType: {
-                        ...item.ticketType,
-                        basePrice: Number(item.ticketType.basePrice),
-                    },
-                })),
-            })),
+            requests.map((requestRecord) =>
+                mapComplimentaryRequestSummary({
+                    ...requestRecord,
+                    items: requestRecord.items.map((item) => ({
+                        ...item,
+                        ticketType: {
+                            ...item.ticketType,
+                            basePrice: Number(item.ticketType.basePrice),
+                        },
+                    })),
+                })
+            ),
             {
                 page,
                 limit,

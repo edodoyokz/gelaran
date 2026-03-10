@@ -3,7 +3,15 @@ import { z } from "zod";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
+import { getComplimentaryApprovalError, getComplimentaryReviewTransitionError } from "@/lib/complimentary-flow";
 import { generateBookingCode } from "@/lib/utils";
+
+class ComplimentaryFlowConflictError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ComplimentaryFlowConflictError";
+    }
+}
 
 type VerifyAdminResult =
     | { admin: { id: string } }
@@ -55,23 +63,11 @@ export async function PUT(
             });
         }
 
+        const { action, note } = parsed.data;
         const requestRecord = await prisma.complimentaryTicketRequest.findUnique({
             where: { id: requestId },
             include: {
                 event: { select: { id: true, title: true } },
-                items: {
-                    include: {
-                        ticketType: {
-                            select: {
-                                id: true,
-                                name: true,
-                                totalQuantity: true,
-                                soldQuantity: true,
-                                reservedQuantity: true,
-                            },
-                        },
-                    },
-                },
             },
         });
 
@@ -79,16 +75,28 @@ export async function PUT(
             return errorResponse("Request not found", 404);
         }
 
-        if (requestRecord.status !== "PENDING") {
-            return errorResponse("Request already reviewed", 400);
-        }
-
-        const { action, note } = parsed.data;
-
         if (action === "REJECT") {
             const rejected = await prisma.$transaction(async (tx) => {
-                const updated = await tx.complimentaryTicketRequest.update({
+                const transition = await tx.complimentaryTicketRequest.findUnique({
                     where: { id: requestId },
+                    select: { status: true },
+                });
+
+                if (!transition) {
+                    throw new ComplimentaryFlowConflictError("Request not found");
+                }
+
+                const transitionError = getComplimentaryReviewTransitionError({
+                    currentStatus: transition.status,
+                    action,
+                });
+
+                if (transitionError) {
+                    throw new ComplimentaryFlowConflictError(transitionError);
+                }
+
+                const updateResult = await tx.complimentaryTicketRequest.updateMany({
+                    where: { id: requestId, status: "PENDING" },
                     data: {
                         status: "REJECTED",
                         reviewedById: auth.admin.id,
@@ -96,6 +104,18 @@ export async function PUT(
                         reviewedAt: new Date(),
                     },
                 });
+
+                if (updateResult.count !== 1) {
+                    throw new ComplimentaryFlowConflictError("Only pending complimentary requests can be reviewed");
+                }
+
+                const updated = await tx.complimentaryTicketRequest.findUnique({
+                    where: { id: requestId },
+                });
+
+                if (!updated) {
+                    throw new ComplimentaryFlowConflictError("Request not found");
+                }
 
                 await tx.notification.create({
                     data: {
@@ -124,42 +144,80 @@ export async function PUT(
             return successResponse(rejected);
         }
 
-        for (const item of requestRecord.items) {
-            const available =
-                item.ticketType.totalQuantity - item.ticketType.soldQuantity - item.ticketType.reservedQuantity;
-            if (item.quantity > available) {
-                return errorResponse(
-                    `Quota tidak cukup untuk ${item.ticketType.name}. Tersedia ${available}`,
-                    400
-                );
-            }
-        }
-
         const bookingCode = generateBookingCode();
 
         const approved = await prisma.$transaction(async (tx) => {
-            const approvedRequest = await tx.complimentaryTicketRequest.update({
+            const approvalRequest = await tx.complimentaryTicketRequest.findUnique({
                 where: { id: requestId },
+                include: {
+                    items: {
+                        include: {
+                            ticketType: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    totalQuantity: true,
+                                    soldQuantity: true,
+                                    reservedQuantity: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            if (!approvalRequest) {
+                throw new ComplimentaryFlowConflictError("Request not found");
+            }
+
+            const existingBooking = await tx.booking.findFirst({
+                where: { complimentaryRequestId: requestId },
+                select: { id: true },
+            });
+
+            const approvalError = getComplimentaryApprovalError({
+                currentStatus: approvalRequest.status,
+                existingBookingId: existingBooking?.id,
+                items: approvalRequest.items.map((item) => ({
+                    ticketTypeName: item.ticketType.name,
+                    quantity: item.quantity,
+                    available:
+                        item.ticketType.totalQuantity -
+                        item.ticketType.soldQuantity -
+                        item.ticketType.reservedQuantity,
+                })),
+            });
+
+            if (approvalError) {
+                throw new ComplimentaryFlowConflictError(approvalError);
+            }
+
+            const updateResult = await tx.complimentaryTicketRequest.updateMany({
+                where: { id: requestId, status: "PENDING" },
                 data: {
                     status: "APPROVED",
                     reviewedById: auth.admin.id,
                     reviewedNote: note || null,
                     reviewedAt: new Date(),
-                    approvedTotal: requestRecord.requestedTotal,
+                    approvedTotal: approvalRequest.requestedTotal,
                 },
             });
+
+            if (updateResult.count !== 1) {
+                throw new ComplimentaryFlowConflictError("Only pending complimentary requests can be reviewed");
+            }
 
             const booking = await tx.booking.create({
                 data: {
                     bookingCode,
                     userId: null,
-                    eventId: requestRecord.eventId,
-                    eventScheduleId: requestRecord.eventScheduleId,
-                    complimentaryRequestId: requestRecord.id,
-                    guestName: requestRecord.guestName || null,
-                    guestEmail: requestRecord.guestEmail || null,
-                    guestPhone: requestRecord.guestPhone || null,
-                    totalTickets: requestRecord.requestedTotal,
+                    eventId: approvalRequest.eventId,
+                    eventScheduleId: approvalRequest.eventScheduleId,
+                    complimentaryRequestId: approvalRequest.id,
+                    guestName: approvalRequest.guestName || null,
+                    guestEmail: approvalRequest.guestEmail?.trim().toLowerCase() || null,
+                    guestPhone: approvalRequest.guestPhone || null,
+                    totalTickets: approvalRequest.requestedTotal,
                     subtotal: 0,
                     discountAmount: 0,
                     taxAmount: 0,
@@ -177,7 +235,7 @@ export async function PUT(
             });
 
             let sequence = 1;
-            for (const item of requestRecord.items) {
+            for (const item of approvalRequest.items) {
                 for (let i = 0; i < item.quantity; i++) {
                     const uniqueCode = `${bookingCode}-C${String(sequence).padStart(3, "0")}`;
                     sequence += 1;
@@ -224,11 +282,20 @@ export async function PUT(
                 },
             });
 
-            return { approvedRequest, booking };
+            return {
+                requestId: approvalRequest.id,
+                status: "APPROVED" as const,
+                reviewedAt: new Date(),
+                reviewedNote: note || null,
+                booking,
+            };
         });
 
         return successResponse({
-            ...approved.approvedRequest,
+            id: approved.requestId,
+            status: approved.status,
+            reviewedAt: approved.reviewedAt,
+            reviewedNote: approved.reviewedNote,
             booking: {
                 id: approved.booking.id,
                 bookingCode: approved.booking.bookingCode,
@@ -236,6 +303,10 @@ export async function PUT(
             },
         });
     } catch (error) {
+        if (error instanceof ComplimentaryFlowConflictError) {
+            return errorResponse(error.message, error.message === "Request not found" ? 404 : 409);
+        }
+
         console.error("Error reviewing complimentary request:", error);
         return errorResponse("Failed to review complimentary request", 500);
     }
