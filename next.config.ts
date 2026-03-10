@@ -1,4 +1,9 @@
+import { getServerEnv } from "./lib/env";
 import type { NextConfig } from "next";
+
+getServerEnv();
+
+const skipNextTypecheck = process.env.CI_BUILD_SKIP_NEXT_TYPECHECK === "true";
 
 const nextConfig: NextConfig = {
   images: {
@@ -9,6 +14,12 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  typescript: {
+    ignoreBuildErrors: skipNextTypecheck,
+  },
+  experimental: {
+    webpackBuildWorker: false,
   },
 };
 
