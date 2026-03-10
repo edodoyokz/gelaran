@@ -1,15 +1,24 @@
-import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
-import prisma from "@/lib/prisma/client";
 import { z } from "zod";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
+import prisma from "@/lib/prisma/client";
+import { successResponse, errorResponse } from "@/lib/api/response";
+import { createRequestLogger } from "@/lib/logging/logger";
+import { attachRequestIdHeader, createRequestContext } from "@/lib/logging/request";
+import {
+    getOrCreatePlatformSettingsRow,
+    mergePlatformSettings,
+    savePlatformSettings,
+    toPlatformSettingsAuditJson,
+    toPlatformSettingsResponse,
+} from "@/lib/platform-settings";
+import { createClient } from "@/lib/supabase/server";
 
 type AdminResult = { admin: { id: string; role: string } } | { error: string; status: number };
 
 async function verifySuperAdmin(): Promise<AdminResult> {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user || !user.email) {
         return { error: "Unauthorized", status: 401 };
@@ -26,74 +35,6 @@ async function verifySuperAdmin(): Promise<AdminResult> {
     return { admin: { id: admin.id, role: admin.role } };
 }
 
-const SETTINGS_FILE = path.join(process.cwd(), "data", "platform-settings.json");
-
-interface PlatformSettings {
-    platformName: string;
-    platformEmail: string;
-    platformPhone: string;
-    platformFeePercentage: number;
-    minWithdrawalAmount: number;
-    maxTicketsPerOrder: number;
-    bookingExpiryMinutes: number;
-    enableEmailNotifications: boolean;
-    enableSmsNotifications: boolean;
-    maintenanceMode: boolean;
-    paymentGateways: {
-        midtrans: boolean;
-        xendit: boolean;
-    };
-}
-
-const DEFAULT_SETTINGS: PlatformSettings = {
-    platformName: "Gelaran",
-    platformEmail: "support@bsc-ticketing.com",
-    platformPhone: "+62 21 1234567",
-    platformFeePercentage: 5,
-    minWithdrawalAmount: 100000,
-    maxTicketsPerOrder: 10,
-    bookingExpiryMinutes: 60,
-    enableEmailNotifications: true,
-    enableSmsNotifications: false,
-    maintenanceMode: false,
-    paymentGateways: {
-        midtrans: true,
-        xendit: false,
-    },
-};
-
-async function getSettings(): Promise<PlatformSettings> {
-    try {
-        const data = await readFile(SETTINGS_FILE, "utf-8");
-        return { ...DEFAULT_SETTINGS, ...JSON.parse(data) };
-    } catch {
-        return DEFAULT_SETTINGS;
-    }
-}
-
-async function saveSettings(settings: PlatformSettings): Promise<void> {
-    const dir = path.dirname(SETTINGS_FILE);
-    const { mkdir } = await import("fs/promises");
-    await mkdir(dir, { recursive: true });
-    await writeFile(SETTINGS_FILE, JSON.stringify(settings, null, 2), "utf-8");
-}
-
-export async function GET() {
-    try {
-        const authResult = await verifySuperAdmin();
-
-        if ("error" in authResult) {
-            return errorResponse(authResult.error, authResult.status);
-        }
-
-        const settings = await getSettings();
-        return successResponse(settings);
-    } catch (error) {
-        console.error("Error fetching settings:", error);
-        return errorResponse("Failed to fetch settings", 500);
-    }
-}
-
 const updateSettingsSchema = z.object({
     platformName: z.string().min(1).max(100).optional(),
     platformEmail: z.string().email().optional(),
@@ -105,36 +46,112 @@ const updateSettingsSchema = z.object({
     enableEmailNotifications: z.boolean().optional(),
     enableSmsNotifications: z.boolean().optional(),
     maintenanceMode: z.boolean().optional(),
-    paymentGateways: z.object({
-        midtrans: z.boolean(),
-        xendit: z.boolean(),
-    }).optional(),
+    paymentGateways: z
+        .object({
+            midtrans: z.boolean(),
+            xendit: z.boolean(),
+        })
+        .optional(),
 });
 
-export async function PUT(request: Request) {
+export async function GET(request: Request) {
+    const requestContext = createRequestContext(request, "/api/admin/settings");
+    const logger = createRequestLogger(requestContext);
+    const fail = (message: string, code = 400, details?: Record<string, unknown>) => {
+        logger.warn("admin.settings.request_failed", message, {
+            statusCode: code,
+            details,
+        });
+
+        return attachRequestIdHeader(
+            errorResponse(message, code, details),
+            requestContext.requestId
+        );
+    };
+    const ok = <T>(data: T, status = 200) =>
+        attachRequestIdHeader(successResponse(data, undefined, status), requestContext.requestId);
+
     try {
+        logger.info("admin.settings.read_requested", "Platform settings requested");
         const authResult = await verifySuperAdmin();
 
         if ("error" in authResult) {
-            return errorResponse(authResult.error, authResult.status);
+            return fail(authResult.error, authResult.status);
+        }
+
+        const settingsRow = await getOrCreatePlatformSettingsRow(prisma);
+        const settings = toPlatformSettingsResponse(settingsRow);
+
+        logger.info("admin.settings.read_succeeded", "Platform settings loaded", {
+            settingsId: settingsRow.id,
+        });
+
+        return ok(settings);
+    } catch (error) {
+        logger.error("admin.settings.read_failed", "Failed to fetch platform settings", error);
+        return fail("Failed to fetch settings", 500);
+    }
+}
+
+export async function PUT(request: Request) {
+    const requestContext = createRequestContext(request, "/api/admin/settings");
+    const logger = createRequestLogger(requestContext);
+    const fail = (message: string, code = 400, details?: Record<string, unknown>) => {
+        logger.warn("admin.settings.request_failed", message, {
+            statusCode: code,
+            details,
+        });
+
+        return attachRequestIdHeader(
+            errorResponse(message, code, details),
+            requestContext.requestId
+        );
+    };
+    const ok = <T>(data: T, status = 200) =>
+        attachRequestIdHeader(successResponse(data, undefined, status), requestContext.requestId);
+
+    try {
+        logger.info("admin.settings.update_requested", "Platform settings update requested");
+        const authResult = await verifySuperAdmin();
+
+        if ("error" in authResult) {
+            return fail(authResult.error, authResult.status);
         }
 
         const body = await request.json();
         const parsed = updateSettingsSchema.safeParse(body);
 
         if (!parsed.success) {
-            return errorResponse("Validation error", 400, {
+            return fail("Validation error", 400, {
                 errors: parsed.error.flatten().fieldErrors,
             });
         }
 
-        const currentSettings = await getSettings();
-        const newSettings = { ...currentSettings, ...parsed.data };
-        await saveSettings(newSettings);
+        const currentRow = await getOrCreatePlatformSettingsRow(prisma);
+        const currentSettings = toPlatformSettingsResponse(currentRow);
+        const nextSettings = mergePlatformSettings(currentSettings, parsed.data);
+        const updatedRow = await savePlatformSettings(prisma, nextSettings);
+        const updatedSettings = toPlatformSettingsResponse(updatedRow);
 
-        return successResponse(newSettings);
+        await prisma.auditLog.create({
+            data: {
+                userId: authResult.admin.id,
+                action: "UPDATE",
+                entityType: "PlatformSettings",
+                entityId: updatedRow.id,
+                oldValues: toPlatformSettingsAuditJson(currentSettings),
+                newValues: toPlatformSettingsAuditJson(updatedSettings),
+            },
+        });
+
+        logger.info("admin.settings.update_succeeded", "Platform settings updated", {
+            settingsId: updatedRow.id,
+            adminId: authResult.admin.id,
+        });
+
+        return ok(updatedSettings);
     } catch (error) {
-        console.error("Error updating settings:", error);
-        return errorResponse("Failed to update settings", 500);
+        logger.error("admin.settings.update_failed", "Failed to update platform settings", error);
+        return fail("Failed to update settings", 500);
     }
 }

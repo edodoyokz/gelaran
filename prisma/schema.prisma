@@ -780,6 +780,27 @@ model CommissionSetting {
   @@map("commission_settings")
 }
 
+model PlatformSettings {
+  id                            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  settingsKey                   String   @unique @default("default") @map("settings_key")
+  platformName                  String   @map("platform_name")
+  platformEmail                 String   @map("platform_email")
+  platformPhone                 String   @map("platform_phone")
+  platformFeePercentage         Decimal  @map("platform_fee_percentage") @db.Decimal(5, 2)
+  minWithdrawalAmount           Decimal  @map("min_withdrawal_amount") @db.Decimal(15, 2)
+  maxTicketsPerOrder            Int      @map("max_tickets_per_order")
+  bookingExpiryMinutes          Int      @map("booking_expiry_minutes")
+  enableEmailNotifications      Boolean  @default(true) @map("enable_email_notifications")
+  enableSmsNotifications        Boolean  @default(false) @map("enable_sms_notifications")
+  maintenanceMode               Boolean  @default(false) @map("maintenance_mode")
+  paymentGatewayMidtransEnabled Boolean  @default(true) @map("payment_gateway_midtrans_enabled")
+  paymentGatewayXenditEnabled   Boolean  @default(false) @map("payment_gateway_xendit_enabled")
+  createdAt                     DateTime @default(now()) @map("created_at")
+  updatedAt                     DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_settings")
+}
+
 model AuditLog {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId     String?  @map("user_id") @db.Uuid
