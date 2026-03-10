@@ -1,14 +1,17 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
+import { getServerEnv } from "@/lib/env";
 import { sendBookingConfirmationEmail } from "@/lib/email/send";
 import { generateOrderId } from "@/lib/midtrans/client";
 import type { PrismaTransactionClient } from "@/types/prisma";
 
+const env = getServerEnv();
+
 export async function POST(request: NextRequest) {
     try {
         // SECURITY: Reject if demo mode not enabled in production
-        if (process.env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT !== "true") {
+        if (!env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT) {
             return errorResponse("Demo payment is disabled", 403);
         }
 

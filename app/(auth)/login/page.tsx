@@ -3,7 +3,19 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, Loader2, UserCircle, Briefcase, ShoppingBag, Shield } from "lucide-react";
+import {
+    Eye,
+    EyeOff,
+    Mail,
+    Lock,
+    Loader2,
+    UserCircle,
+    Briefcase,
+    ShoppingBag,
+    Shield,
+} from "lucide-react";
+import { getAuthDemoConfig } from "@/lib/demo-mode";
+import { getPublicEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/client";
 
 const DEMO_ACCOUNTS = [
@@ -12,9 +24,7 @@ const DEMO_ACCOUNTS = [
         icon: Shield,
         color: "bg-red-100 text-red-600 border-red-200",
         hoverColor: "hover:bg-red-200",
-        accounts: [
-            { email: "admin@gelaran.id", name: "Admin Gelaran Solo", role: "SUPER_ADMIN" }
-        ]
+        accounts: [{ email: "admin@gelaran.id", name: "Admin Gelaran Solo", role: "SUPER_ADMIN" }],
     },
     {
         category: "Organizers",
@@ -26,8 +36,8 @@ const DEMO_ACCOUNTS = [
             { email: "info@gormanahan.solo.go.id", name: "GOR Manahan", role: "ORGANIZER" },
             { email: "hello@solocreativehub.id", name: "Solo Creative Hub", role: "ORGANIZER" },
             { email: "contact@solomusicfest.id", name: "Solo Music Fest", role: "ORGANIZER" },
-            { email: "party@solonightlife.id", name: "Solo Nightlife", role: "ORGANIZER" }
-        ]
+            { email: "party@solonightlife.id", name: "Solo Nightlife", role: "ORGANIZER" },
+        ],
     },
     {
         category: "Customers",
@@ -37,12 +47,13 @@ const DEMO_ACCOUNTS = [
         accounts: [
             { email: "budi.santoso@email.com", name: "Budi Santoso", role: "CUSTOMER" },
             { email: "siti.nur@email.com", name: "Siti Nurhaliza", role: "CUSTOMER" },
-            { email: "ahmad.rizki@email.com", name: "Ahmad Rizki", role: "CUSTOMER" }
-        ]
-    }
-];
+            { email: "ahmad.rizki@email.com", name: "Ahmad Rizki", role: "CUSTOMER" },
+        ],
+    },
+] as const;
 
 const DEFAULT_PASSWORD = "password123";
+const authDemoConfig = getAuthDemoConfig(getPublicEnv().NEXT_PUBLIC_APP_STAGE);
 
 function LoginForm() {
     const router = useRouter();
@@ -54,9 +65,14 @@ function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [showDemoMode, setShowDemoMode] = useState(true);
+    const [showDemoMode, setShowDemoMode] = useState(authDemoConfig.defaultExpanded);
 
     const handleQuickLogin = async (demoEmail: string) => {
+        if (!authDemoConfig.enabled) {
+            setError("Demo login hanya tersedia di local development");
+            return;
+        }
+
         setEmail(demoEmail);
         setPassword(DEFAULT_PASSWORD);
         setIsLoading(true);
@@ -123,76 +139,78 @@ function LoginForm() {
 
     return (
         <div className="space-y-6">
-            {/* Demo Mode Toggle */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div className="flex items-start">
-                    <div className="flex-shrink-0">
-                        <UserCircle className="h-5 w-5 text-yellow-600" />
-                    </div>
-                    <div className="ml-3 flex-1">
-                        <h3 className="text-sm font-medium text-yellow-800">Demo Mode</h3>
-                        <p className="mt-1 text-xs text-yellow-700">
-                            Klik tombol akun di bawah untuk login cepat. Password: <code className="bg-yellow-100 px-1 rounded">password123</code>
-                        </p>
-                        <button
-                            type="button"
-                            onClick={() => setShowDemoMode(!showDemoMode)}
-                            className="mt-2 text-xs font-medium text-yellow-800 hover:text-yellow-900 underline"
-                        >
-                            {showDemoMode ? "Sembunyikan" : "Tampilkan"} Akun Demo
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Quick Login Demo Accounts */}
-            {showDemoMode && (
-                <div className="space-y-4">
-                    {DEMO_ACCOUNTS.map((group) => (
-                        <div key={group.category} className="bg-white border rounded-lg p-4">
-                            <div className="flex items-center gap-2 mb-3">
-                                <group.icon className="h-5 w-5 text-gray-600" />
-                                <h3 className="font-semibold text-gray-900">{group.category}</h3>
+            {authDemoConfig.enabled ? (
+                <>
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div className="flex items-start">
+                            <div className="flex-shrink-0">
+                                <UserCircle className="h-5 w-5 text-yellow-600" />
                             </div>
-                            <div className="grid gap-2">
-                                {group.accounts.map((account) => (
-                                    <button
-                                        key={account.email}
-                                        type="button"
-                                        onClick={() => handleQuickLogin(account.email)}
-                                        disabled={isLoading}
-                                        className={`w-full text-left px-4 py-3 border rounded-lg transition-colors ${group.color} ${group.hoverColor} disabled:opacity-50 disabled:cursor-not-allowed`}
-                                    >
-                                        <div className="font-medium text-sm">{account.name}</div>
-                                        <div className="text-xs opacity-75 mt-0.5">{account.email}</div>
-                                    </button>
-                                ))}
+                            <div className="ml-3 flex-1">
+                                <h3 className="text-sm font-medium text-yellow-800">Demo Mode</h3>
+                                <p className="mt-1 text-xs text-yellow-700">
+                                    Klik tombol akun di bawah untuk login cepat. Password:{" "}
+                                    <code className="bg-yellow-100 px-1 rounded">password123</code>
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowDemoMode(!showDemoMode)}
+                                    className="mt-2 text-xs font-medium text-yellow-800 hover:text-yellow-900 underline"
+                                >
+                                    {showDemoMode ? "Sembunyikan" : "Tampilkan"} Akun Demo
+                                </button>
                             </div>
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
 
-            {/* Divider */}
-            <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-gray-50 text-gray-500">atau login manual</span>
-                </div>
-            </div>
+                    {showDemoMode ? (
+                        <div className="space-y-4">
+                            {DEMO_ACCOUNTS.map((group) => (
+                                <div key={group.category} className="bg-white border rounded-lg p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <group.icon className="h-5 w-5 text-gray-600" />
+                                        <h3 className="font-semibold text-gray-900">{group.category}</h3>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        {group.accounts.map((account) => (
+                                            <button
+                                                key={account.email}
+                                                type="button"
+                                                onClick={() => handleQuickLogin(account.email)}
+                                                disabled={isLoading}
+                                                className={`w-full text-left px-4 py-3 border rounded-lg transition-colors ${group.color} ${group.hoverColor} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                            >
+                                                <div className="font-medium text-sm">{account.name}</div>
+                                                <div className="text-xs opacity-75 mt-0.5">
+                                                    {account.email}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
 
-            {/* Manual Login Form */}
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-gray-50 text-gray-500">atau login manual</span>
+                        </div>
+                    </div>
+                </>
+            ) : null}
+
             <form className="space-y-4" onSubmit={handleSubmit}>
-                {error && (
+                {error ? (
                     <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
                         {error}
                     </div>
-                )}
+                ) : null}
 
                 <div className="space-y-4">
-                    {/* Email */}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                             Email
@@ -215,7 +233,6 @@ function LoginForm() {
                         </div>
                     </div>
 
-                    {/* Password */}
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                             Password
@@ -250,7 +267,6 @@ function LoginForm() {
                     </div>
                 </div>
 
-                {/* Forgot Password */}
                 <div className="flex items-center justify-end">
                     <Link
                         href="/forgot-password"
@@ -260,7 +276,6 @@ function LoginForm() {
                     </Link>
                 </div>
 
-                {/* Submit Button */}
                 <button
                     type="submit"
                     disabled={isLoading}
@@ -284,31 +299,29 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl w-full space-y-8">
-                {/* Header */}
                 <div className="text-center">
                     <Link href="/" className="text-3xl font-bold text-indigo-600">
                         Gelaran<span className="text-gray-800">Solo</span>
                     </Link>
-                    <h2 className="mt-6 text-2xl font-bold text-gray-900">
-                        Masuk ke akun kamu
-                    </h2>
+                    <h2 className="mt-6 text-2xl font-bold text-gray-900">Masuk ke akun kamu</h2>
                     <p className="mt-2 text-sm text-gray-600">
                         Belum punya akun?{" "}
-                        <Link
-                            href="/register"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
-                        >
+                        <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                             Daftar sekarang
                         </Link>
                     </p>
                 </div>
 
-                {/* Form wrapped in Suspense */}
-                <Suspense fallback={<div className="h-64 flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-indigo-600" /></div>}>
+                <Suspense
+                    fallback={
+                        <div className="h-64 flex items-center justify-center">
+                            <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
+                        </div>
+                    }
+                >
                     <LoginForm />
                 </Suspense>
 
-                {/* Footer */}
                 <p className="text-center text-xs text-gray-500 mt-8">
                     Dengan masuk, kamu menyetujui{" "}
                     <Link href="/terms" className="text-indigo-600 hover:underline">
