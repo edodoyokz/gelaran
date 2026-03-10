@@ -14,9 +14,11 @@ import {
     Loader2,
     RefreshCw,
 } from "lucide-react";
+import { getGateResultDisplay, type GateDisplayResultCode } from "@/lib/gate/result-display";
 
 interface CheckInResult {
-    result: "SUCCESS" | "ALREADY_CHECKED_IN" | "INVALID" | "WRONG_EVENT";
+    result: GateDisplayResultCode;
+    message?: string;
     ticket?: {
         ticketType: string;
         attendeeName: string;
@@ -156,7 +158,7 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
             }, 2000);
             
         } catch {
-            setLastResult({ result: "INVALID" });
+            setLastResult({ result: "INVALID", message: "Gagal membaca hasil scan." });
             playSound("error");
         } finally {
             setIsProcessing(false);
@@ -242,10 +244,11 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
     }, [lastResult]);
 
     const getResultColor = (result: CheckInResult["result"]) => {
-        switch (result) {
-            case "SUCCESS":
+        const display = getGateResultDisplay(result);
+        switch (display.tone) {
+            case "success":
                 return "text-green-400";
-            case "ALREADY_CHECKED_IN":
+            case "warning":
                 return "text-yellow-400";
             default:
                 return "text-red-400";
@@ -253,10 +256,11 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
     };
 
     const getResultBgColor = (result: CheckInResult["result"]) => {
-        switch (result) {
-            case "SUCCESS":
+        const display = getGateResultDisplay(result);
+        switch (display.tone) {
+            case "success":
                 return "bg-green-900/50 border-green-700";
-            case "ALREADY_CHECKED_IN":
+            case "warning":
                 return "bg-yellow-900/50 border-yellow-700";
             default:
                 return "bg-red-900/50 border-red-700";
@@ -269,22 +273,16 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
                 return <CheckCircle className="h-12 w-12 text-green-500" />;
             case "ALREADY_CHECKED_IN":
                 return <AlertCircle className="h-12 w-12 text-yellow-500" />;
+            case "ACCESS_DENIED":
+            case "SESSION_INACTIVE":
+                return <AlertCircle className="h-12 w-12 text-red-500" />;
             default:
                 return <XCircle className="h-12 w-12 text-red-500" />;
         }
     };
 
     const getResultText = (result: CheckInResult["result"]) => {
-        switch (result) {
-            case "SUCCESS":
-                return "Check-in Berhasil!";
-            case "ALREADY_CHECKED_IN":
-                return "Sudah Check-in";
-            case "WRONG_EVENT":
-                return "Event Berbeda";
-            default:
-                return "Tiket Tidak Valid";
-        }
+        return getGateResultDisplay(result).title;
     };
 
     return (
@@ -441,6 +439,11 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
                                         {lastResult.ticket.ticketType}
                                     </p>
                                 </div>
+                            )}
+                            {(lastResult.message || getGateResultDisplay(lastResult.result).description) && (
+                                <p className="text-sm text-gray-400 mt-1">
+                                    {lastResult.message || getGateResultDisplay(lastResult.result).description}
+                                </p>
                             )}
                             {lastResult.checkedInAt && (
                                 <p className="text-sm text-gray-400 mt-1">

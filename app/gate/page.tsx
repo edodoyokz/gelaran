@@ -15,6 +15,7 @@ import {
     Keyboard,
     Settings,
 } from "lucide-react";
+import { getGateResultDisplay, type GateDisplayResultCode } from "@/lib/gate/result-display";
 
 const QRScanner = dynamic(() => import("@/components/gate/QRScanner"), {
     ssr: false,
@@ -42,7 +43,8 @@ interface Stats {
 }
 
 interface CheckInResult {
-    result: "SUCCESS" | "ALREADY_CHECKED_IN" | "INVALID" | "WRONG_EVENT";
+    result: GateDisplayResultCode;
+    message?: string;
     ticket?: {
         ticketType: string;
         attendeeName: string;
@@ -52,6 +54,22 @@ interface CheckInResult {
     };
     checkedInAt?: string;
 }
+
+type CheckInApiPayload = {
+    success?: boolean;
+    data?: {
+        result?: GateDisplayResultCode;
+        message?: string;
+        ticket?: CheckInResult["ticket"];
+    };
+    error?: {
+        message?: string;
+        details?: {
+            result?: GateDisplayResultCode;
+            checkedInAt?: string;
+        };
+    };
+};
 
 export default function GatePage() {
     const router = useRouter();
@@ -114,9 +132,42 @@ export default function GatePage() {
         router.push("/gate/access");
     };
 
+    const mapCheckInResponse = (payload: CheckInApiPayload): CheckInResult => {
+        if (payload?.success) {
+            return {
+                result: payload.data?.result || "SUCCESS",
+                message: payload.data?.message,
+                ticket: payload.data?.ticket,
+                checkedInAt: payload.data?.ticket?.checkedInAt,
+            };
+        }
+
+        return {
+            result: payload?.error?.details?.result || "INVALID",
+            checkedInAt: payload?.error?.details?.checkedInAt,
+            message: payload?.error?.message,
+        };
+    };
+
+    const getResultIcon = (result: GateDisplayResultCode) => {
+        if (result === "SUCCESS") {
+            return <CheckCircle className="h-12 w-12 text-emerald-500" />;
+        }
+
+        if (result === "ALREADY_CHECKED_IN") {
+            return <AlertCircle className="h-12 w-12 text-yellow-500" />;
+        }
+
+        if (result === "ACCESS_DENIED" || result === "SESSION_INACTIVE") {
+            return <AlertCircle className="h-12 w-12 text-red-500" />;
+        }
+
+        return <XCircle className="h-12 w-12 text-red-500" />;
+    };
+
     const handleQRCheckIn = useCallback(async (code: string): Promise<CheckInResult> => {
         if (!deviceToken) {
-            return { result: "INVALID" };
+            return { result: "ACCESS_DENIED", message: "Akses gate tidak valid. Silakan login ulang." };
         }
 
         try {
@@ -131,15 +182,9 @@ export default function GatePage() {
 
             const data = await res.json();
 
-            if (data.success) {
-                return { result: "SUCCESS", ticket: data.data.ticket };
-            }
-            return {
-                result: data.error?.data?.result || "INVALID",
-                checkedInAt: data.error?.data?.checkedInAt,
-            };
+            return mapCheckInResponse(data);
         } catch {
-            return { result: "INVALID" };
+            return { result: "INVALID", message: "Gagal menghubungi layanan check-in." };
         }
     }, [deviceToken]);
 
@@ -162,17 +207,14 @@ export default function GatePage() {
             
             const data = await res.json();
             
-            if (data.success) {
-                setScanResult({ result: "SUCCESS", ticket: data.data.ticket });
+            const result = mapCheckInResponse(data);
+            setScanResult(result);
+
+            if (result.result === "SUCCESS") {
                 fetchEventData(deviceToken);
-            } else {
-                setScanResult({
-                    result: data.error?.data?.result || "INVALID",
-                    checkedInAt: data.error?.data?.checkedInAt,
-                });
             }
         } catch {
-            setScanResult({ result: "INVALID" });
+            setScanResult({ result: "INVALID", message: "Gagal menghubungi layanan check-in." });
         } finally {
             setIsScanning(false);
             setTicketCode("");
@@ -262,7 +304,11 @@ export default function GatePage() {
                 <div className="space-y-6">
                     <QRScanner
                         onCheckIn={handleQRCheckIn}
-                        onScanComplete={() => deviceToken && fetchEventData(deviceToken)}
+                        onScanComplete={(result) => {
+                            if (deviceToken && result.result === "SUCCESS") {
+                                fetchEventData(deviceToken);
+                            }
+                        }}
                     />
 
                     <div className="relative">
@@ -306,60 +352,50 @@ export default function GatePage() {
                         </button>
                     </form>
 
-                    {scanResult && (
-                        <div
-                            className={`rounded-xl p-6 ${
-                                scanResult.result === "SUCCESS"
-                                    ? "bg-emerald-900/50 border border-emerald-700"
-                                    : scanResult.result === "ALREADY_CHECKED_IN"
-                                    ? "bg-yellow-900/50 border border-yellow-700"
-                                    : "bg-red-900/50 border border-red-700"
-                            }`}
-                        >
-                            <div className="flex items-center gap-3 mb-4">
-                                {scanResult.result === "SUCCESS" ? (
-                                    <CheckCircle className="h-12 w-12 text-emerald-500" />
-                                ) : scanResult.result === "ALREADY_CHECKED_IN" ? (
-                                    <AlertCircle className="h-12 w-12 text-yellow-500" />
-                                ) : (
-                                    <XCircle className="h-12 w-12 text-red-500" />
+                    {scanResult && (() => {
+                        const display = getGateResultDisplay(scanResult.result);
+                        const toneClasses =
+                            display.tone === "success"
+                                ? "bg-emerald-900/50 border border-emerald-700"
+                                : display.tone === "warning"
+                                ? "bg-yellow-900/50 border border-yellow-700"
+                                : "bg-red-900/50 border border-red-700";
+                        const titleClasses =
+                            display.tone === "success"
+                                ? "text-emerald-400"
+                                : display.tone === "warning"
+                                ? "text-yellow-400"
+                                : "text-red-400";
+
+                        return (
+                            <div className={`rounded-xl p-6 ${toneClasses}`}>
+                                <div className="flex items-center gap-3 mb-4">
+                                    {getResultIcon(scanResult.result)}
+                                    <div>
+                                        <h3 className={`text-xl font-bold ${titleClasses}`}>{display.title}</h3>
+                                        <p className="text-sm text-gray-300 mt-1">
+                                            {scanResult.message || display.description}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {scanResult.ticket && (
+                                    <div className="space-y-2 text-gray-300">
+                                        <p><span className="text-gray-500">Nama:</span> {scanResult.ticket.attendeeName}</p>
+                                        <p><span className="text-gray-500">Tiket:</span> {scanResult.ticket.ticketType}</p>
+                                        <p><span className="text-gray-500">Booking:</span> {scanResult.ticket.bookingCode}</p>
+                                        <p><span className="text-gray-500">Event:</span> {scanResult.ticket.eventTitle}</p>
+                                    </div>
                                 )}
-                                <div>
-                                    <h3
-                                        className={`text-xl font-bold ${
-                                            scanResult.result === "SUCCESS"
-                                                ? "text-emerald-400"
-                                                : scanResult.result === "ALREADY_CHECKED_IN"
-                                                ? "text-yellow-400"
-                                                : "text-red-400"
-                                        }`}
-                                    >
-                                        {scanResult.result === "SUCCESS"
-                                            ? "Check-in Berhasil!"
-                                            : scanResult.result === "ALREADY_CHECKED_IN"
-                                            ? "Sudah Check-in"
-                                            : scanResult.result === "WRONG_EVENT"
-                                            ? "Event Berbeda"
-                                            : "Tiket Tidak Valid"}
-                                    </h3>
-                                </div>
+
+                                {scanResult.checkedInAt && (
+                                    <p className="text-gray-400 text-sm mt-4">
+                                        Check-in pada: {new Date(scanResult.checkedInAt).toLocaleString("id-ID")}
+                                    </p>
+                                )}
                             </div>
-
-                            {scanResult.ticket && (
-                                <div className="space-y-2 text-gray-300">
-                                    <p><span className="text-gray-500">Nama:</span> {scanResult.ticket.attendeeName}</p>
-                                    <p><span className="text-gray-500">Tiket:</span> {scanResult.ticket.ticketType}</p>
-                                    <p><span className="text-gray-500">Booking:</span> {scanResult.ticket.bookingCode}</p>
-                                </div>
-                            )}
-
-                            {scanResult.checkedInAt && (
-                                <p className="text-gray-400 text-sm mt-4">
-                                    Check-in pada: {new Date(scanResult.checkedInAt).toLocaleString("id-ID")}
-                                </p>
-                            )}
-                        </div>
-                    )}
+                        );
+                    })()}
                 </div>
             </main>
         </div>
