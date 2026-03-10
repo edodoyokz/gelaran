@@ -7,18 +7,24 @@ async function verifyRLS() {
   console.log("🔍 Verifying RLS Status...\n");
 
   try {
-    const result: any = await prisma.$queryRaw`
-      SELECT 
-        schemaname, 
-        tablename, 
+    const result = await prisma.$queryRaw<
+      Array<{
+        schemaname: string;
+        tablename: string;
+        rowsecurity: boolean;
+      }>
+    >`
+      SELECT
+        schemaname,
+        tablename,
         rowsecurity
       FROM pg_tables
       WHERE schemaname = 'public'
       ORDER BY tablename;
     `;
 
-    const enabled = result.filter((r: any) => r.rowsecurity === true);
-    const disabled = result.filter((r: any) => r.rowsecurity === false);
+    const enabled = result.filter((r) => r.rowsecurity === true);
+    const disabled = result.filter((r) => r.rowsecurity === false);
 
     console.log(`✅ RLS Enabled: ${enabled.length} tables`);
     console.log(`❌ RLS Disabled: ${disabled.length} tables\n`);

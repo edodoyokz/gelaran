@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireOrganizer } from "@/lib/auth/route-auth";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -16,31 +16,45 @@ interface TeamMember {
   acceptedAt: Date | null;
 }
 
-export async function GET(request: NextRequest) {
+interface OrganizerAccessResult {
+  organizerProfile: {
+    id: string;
+    organizationName: string | null;
+  };
+  userId: string;
+}
+
+async function getOrganizerAccess(): Promise<OrganizerAccessResult | { error: string; status: 401 | 403 | 404 }> {
+  const authResult = await requireOrganizer();
+
+  if ("error" in authResult) {
+    return authResult;
+  }
+
+  const organizerProfile = await prisma.organizerProfile.findUnique({
+    where: { userId: authResult.user.id },
+    select: { id: true, organizationName: true },
+  });
+
+  if (!organizerProfile) {
+    return { error: "Organizer profile not found", status: 404 };
+  }
+
+  return { organizerProfile, userId: authResult.user.id };
+}
+
+export async function GET(_request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const access = await getOrganizerAccess();
 
-    if (!user) {
+    if ("error" in access) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: access.error === "Unauthorized" ? "Authentication required" : access.error } },
+        { status: access.status }
       );
     }
 
-    const organizerProfile = await prisma.organizerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true },
-    });
-
-    if (!organizerProfile) {
-      return NextResponse.json(
-        { success: false, error: { message: "Organizer profile not found" } },
-        { status: 404 }
-      );
-    }
+    const { organizerProfile } = access;
 
     const teamMembers = await prisma.organizerTeamMember.findMany({
       where: { organizerProfileId: organizerProfile.id },
@@ -97,29 +111,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const access = await getOrganizerAccess();
 
-    if (!user) {
+    if ("error" in access) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: access.error === "Unauthorized" ? "Authentication required" : access.error } },
+        { status: access.status }
       );
     }
 
-    const organizerProfile = await prisma.organizerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true, organizationName: true },
-    });
-
-    if (!organizerProfile) {
-      return NextResponse.json(
-        { success: false, error: { message: "Organizer profile not found" } },
-        { status: 404 }
-      );
-    }
+    const { organizerProfile, userId } = access;
 
     const invitedUser = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (invitedUser.id === user.id) {
+    if (invitedUser.id === userId) {
       return NextResponse.json(
         { success: false, error: { message: "Cannot add yourself as team member" } },
         { status: 400 }
@@ -238,29 +239,16 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const access = await getOrganizerAccess();
 
-    if (!user) {
+    if ("error" in access) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: access.error === "Unauthorized" ? "Authentication required" : access.error } },
+        { status: access.status }
       );
     }
 
-    const organizerProfile = await prisma.organizerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true },
-    });
-
-    if (!organizerProfile) {
-      return NextResponse.json(
-        { success: false, error: { message: "Organizer profile not found" } },
-        { status: 404 }
-      );
-    }
+    const { organizerProfile } = access;
 
     const existingMember = await prisma.organizerTeamMember.findFirst({
       where: { id: memberId, organizerProfileId: organizerProfile.id },
@@ -315,29 +303,16 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const access = await getOrganizerAccess();
 
-    if (!user) {
+    if ("error" in access) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: access.error === "Unauthorized" ? "Authentication required" : access.error } },
+        { status: access.status }
       );
     }
 
-    const organizerProfile = await prisma.organizerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true },
-    });
-
-    if (!organizerProfile) {
-      return NextResponse.json(
-        { success: false, error: { message: "Organizer profile not found" } },
-        { status: 404 }
-      );
-    }
+    const { organizerProfile } = access;
 
     const member = await prisma.organizerTeamMember.findFirst({
       where: { id: memberId, organizerProfileId: organizerProfile.id },

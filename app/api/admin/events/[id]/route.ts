@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/route-auth";
 import { z } from "zod";
 import type { User } from "@/types/prisma";
 import { resend, FROM_EMAIL } from "@/lib/email/client";
@@ -103,18 +103,17 @@ async function notifyFollowers(event: PublishedEventData): Promise<void> {
 }
 
 async function verifyAdmin(): Promise<AdminResult> {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const authResult = await requireAdmin();
 
-    if (!user || !user.email) {
-        return { error: "Unauthorized", status: 401 };
+    if ("error" in authResult) {
+        return authResult;
     }
 
     const admin = await prisma.user.findUnique({
-        where: { email: user.email },
+        where: { id: authResult.user.id },
     });
 
-    if (!admin || !["ADMIN", "SUPER_ADMIN"].includes(admin.role)) {
+    if (!admin) {
         return { error: "Admin access required", status: 403 };
     }
 
@@ -363,7 +362,7 @@ export async function GET(
             0
         );
 
-        const { bookings: _bookings, ...eventData } = event;
+        const eventData = event;
         const responseData = {
             ...eventData,
             revenue: {

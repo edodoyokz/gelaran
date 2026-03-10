@@ -1,27 +1,26 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireOrganizer } from "@/lib/auth/route-auth";
 import { createEventSchema } from "@/lib/validators";
 import { generateSlug } from "@/lib/storage/upload";
 import type { PrismaTransactionClient } from "@/types/prisma";
 
 export async function POST(request: NextRequest) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireOrganizer();
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const organizer = await prisma.user.findUnique({
-            where: { email: user.email! },
+            where: { id: authResult.user.id },
             include: { organizerProfile: true },
         });
 
-        if (!organizer || organizer.role !== "ORGANIZER") {
-            return errorResponse("Only organizers can create events", 403);
+        if (!organizer) {
+            return errorResponse("Organizer access required", 403);
         }
 
         const body = await request.json();
@@ -35,7 +34,7 @@ export async function POST(request: NextRequest) {
 
         const data = parsed.data;
 
-        let baseSlug = generateSlug(data.title);
+        const baseSlug = generateSlug(data.title);
         let slug = baseSlug;
         let counter = 1;
         
@@ -156,19 +155,18 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireOrganizer();
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const organizer = await prisma.user.findUnique({
-            where: { email: user.email! },
+            where: { id: authResult.user.id },
         });
 
-        if (!organizer || organizer.role !== "ORGANIZER") {
-            return errorResponse("Only organizers can access this", 403);
+        if (!organizer) {
+            return errorResponse("Organizer access required", 403);
         }
 
         const searchParams = request.nextUrl.searchParams;

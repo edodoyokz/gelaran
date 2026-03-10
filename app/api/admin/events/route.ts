@@ -1,22 +1,16 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/route-auth";
+
+const EVENT_STATUS_VALUES = ["DRAFT", "PENDING_REVIEW", "PUBLISHED", "CANCELLED", "ENDED"] as const;
 
 export async function GET(request: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireAdmin();
 
-        if (!user || !user.email) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const admin = await prisma.user.findUnique({
-            where: { email: user.email },
-        });
-
-        if (!admin || !["ADMIN", "SUPER_ADMIN"].includes(admin.role)) {
-            return errorResponse("Admin access required", 403);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const url = new URL(request.url);
@@ -37,12 +31,13 @@ export async function GET(request: Request) {
         const hasBookingsFilter = url.searchParams.get('hasBookings') || '';
         
         const sortBy = url.searchParams.get('sortBy') || 'createdAt';
-        const sortOrder = url.searchParams.get('sortOrder') || 'desc';
+        const sortOrder: Prisma.SortOrder =
+            url.searchParams.get('sortOrder') === 'asc' ? 'asc' : 'desc';
 
-        const where: any = { deletedAt: null };
-        
-        if (statusFilter) {
-            where.status = statusFilter;
+        const where: Prisma.EventWhereInput = { deletedAt: null };
+
+        if (statusFilter && EVENT_STATUS_VALUES.includes(statusFilter as (typeof EVENT_STATUS_VALUES)[number])) {
+            where.status = statusFilter as (typeof EVENT_STATUS_VALUES)[number];
         }
         
         if (categoryFilter) {
@@ -62,9 +57,10 @@ export async function GET(request: Request) {
         }
         
         if (dateFrom || dateTo) {
-            where.createdAt = {};
-            if (dateFrom) where.createdAt.gte = dateFrom;
-            if (dateTo) where.createdAt.lte = dateTo;
+            where.createdAt = {
+                ...(dateFrom ? { gte: dateFrom } : {}),
+                ...(dateTo ? { lte: dateTo } : {}),
+            };
         }
         
         if (scheduledFrom || scheduledTo) {
@@ -90,8 +86,8 @@ export async function GET(request: Request) {
             where.bookings = { none: {} };
         }
 
-        const orderBy: any = {};
-        
+        const orderBy: Prisma.EventOrderByWithRelationInput = {};
+
         if (sortBy === 'title' || sortBy === 'createdAt' || sortBy === 'status') {
             orderBy[sortBy] = sortOrder;
         } else if (sortBy === 'bookings') {
@@ -275,7 +271,13 @@ export async function GET(request: Request) {
                     count: c._count.events 
                 })),
                 cities: cities.map((c: { city: string }) => c.city),
-                organizers: organizers.map((o: any) => ({
+                organizers: organizers.map((o: {
+                    id: string;
+                    name: string;
+                    organizerProfile?: {
+                        organizationName: string | null;
+                    } | null;
+                }) => ({
                     id: o.id,
                     name: o.name,
                     organizationName: o.organizerProfile?.organizationName || null,

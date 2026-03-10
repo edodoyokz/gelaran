@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireRoles } from "@/lib/auth/route-auth";
 import crypto from "crypto";
 import type { Decimal } from "@prisma/client/runtime/library";
 
@@ -12,7 +12,7 @@ interface DeviceRecord {
     userAgent: string | null;
 }
 
-interface TicketTypeRecord {
+interface _TicketTypeRecord {
     id: string;
     name: string;
     basePrice: Decimal;
@@ -35,20 +35,19 @@ interface RouteContext {
 
 export async function GET(request: NextRequest, context: RouteContext) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireRoles(["ORGANIZER", "ADMIN", "SUPER_ADMIN"], "Forbidden");
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const { id: eventId } = await context.params;
 
         const dbUser = await prisma.user.findUnique({
-            where: { email: user.email! },
+            where: { id: authResult.user.id },
         });
 
-        if (!dbUser || !["ORGANIZER", "ADMIN", "SUPER_ADMIN"].includes(dbUser.role)) {
+        if (!dbUser) {
             return errorResponse("Forbidden", 403);
         }
 
@@ -178,11 +177,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
 export async function POST(request: NextRequest, context: RouteContext) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireRoles(["ORGANIZER", "ADMIN", "SUPER_ADMIN"], "Forbidden");
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const { id: eventId } = await context.params;
@@ -194,10 +192,10 @@ export async function POST(request: NextRequest, context: RouteContext) {
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { email: user.email! },
+            where: { id: authResult.user.id },
         });
 
-        if (!dbUser || !["ORGANIZER", "ADMIN", "SUPER_ADMIN"].includes(dbUser.role)) {
+        if (!dbUser) {
             return errorResponse("Forbidden", 403);
         }
 
@@ -260,11 +258,10 @@ export async function POST(request: NextRequest, context: RouteContext) {
 
 export async function DELETE(request: NextRequest, context: RouteContext) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireRoles(["ORGANIZER", "ADMIN", "SUPER_ADMIN"], "Forbidden");
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const { id: eventId } = await context.params;
@@ -278,10 +275,10 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
         const revokeSessionType: "GATE" | "POS" = sessionTypeParam as "GATE" | "POS";
 
         const dbUser = await prisma.user.findUnique({
-            where: { email: user.email! },
+            where: { id: authResult.user.id },
         });
 
-        if (!dbUser || !["ORGANIZER", "ADMIN", "SUPER_ADMIN"].includes(dbUser.role)) {
+        if (!dbUser) {
             return errorResponse("Forbidden", 403);
         }
 

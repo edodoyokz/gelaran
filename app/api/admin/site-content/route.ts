@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/route-auth";
 
 const DEFAULT_CONTENT: Record<string, unknown> = {
     hero: {
@@ -32,22 +32,13 @@ const DEFAULT_CONTENT: Record<string, unknown> = {
 };
 
 async function verifyAdmin(): Promise<{ admin: { id: string; role: string } } | { error: string; status: number }> {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const authResult = await requireAdmin();
 
-    if (!user || !user.email) {
-        return { error: "Unauthorized", status: 401 };
+    if ("error" in authResult) {
+        return authResult;
     }
 
-    const admin = await prisma.user.findUnique({
-        where: { email: user.email },
-    });
-
-    if (!admin || (admin.role !== "ADMIN" && admin.role !== "SUPER_ADMIN")) {
-        return { error: "Admin access required", status: 403 };
-    }
-
-    return { admin: { id: admin.id, role: admin.role } };
+    return { admin: { id: authResult.user.id, role: authResult.user.role } };
 }
 
 export async function GET() {
@@ -60,7 +51,7 @@ export async function GET() {
             );
         }
 
-        let contentMap: Record<string, unknown> = { ...DEFAULT_CONTENT };
+        const contentMap: Record<string, unknown> = { ...DEFAULT_CONTENT };
 
         try {
             const contents = await prisma.siteContent.findMany({

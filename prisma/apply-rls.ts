@@ -29,8 +29,8 @@ async function applyRLS() {
         if (executed % 10 === 0) {
           console.log(`  ✓ Executed ${executed}/${statements.length} statements`);
         }
-      } catch (error: any) {
-        if (error.message.includes("already exists")) {
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("already exists")) {
           console.log(`  ⚠ Skipping: ${statement.substring(0, 50)}... (already exists)`);
         } else {
           console.error(`  ✗ Error on statement: ${statement.substring(0, 100)}...`);

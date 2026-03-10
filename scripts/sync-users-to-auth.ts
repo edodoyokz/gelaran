@@ -1,16 +1,13 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { createClient } from "@supabase/supabase-js";
+import { getServerEnv } from "../lib/env";
 
 const prisma = new PrismaClient();
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error("❌ Missing Supabase credentials in .env");
-  process.exit(1);
-}
+const env = getServerEnv();
+const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = env.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
@@ -42,8 +39,7 @@ async function syncUsersToAuth() {
 
     for (const user of users) {
       try {
-        const { data: existingUser, error: checkError } =
-          await supabase.auth.admin.getUserById(user.id);
+        const { data: existingUser } = await supabase.auth.admin.getUserById(user.id);
 
         if (existingUser?.user) {
           console.log(`  ⏭️  Skipped: ${user.email} (already exists in Auth)`);
@@ -51,7 +47,7 @@ async function syncUsersToAuth() {
           continue;
         }
 
-        const { data, error } = await supabase.auth.admin.createUser({
+        const { error } = await supabase.auth.admin.createUser({
           id: user.id,
           email: user.email,
           password: DEFAULT_PASSWORD,
@@ -69,8 +65,9 @@ async function syncUsersToAuth() {
           console.log(`  ✅ Created: ${user.email} (${user.role})`);
           created++;
         }
-      } catch (err: any) {
-        console.error(`  ❌ Exception for ${user.email}:`, err.message);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        console.error(`  ❌ Exception for ${user.email}:`, errorMessage);
         errors++;
       }
     }

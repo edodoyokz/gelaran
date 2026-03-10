@@ -1,22 +1,16 @@
+import type { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/route-auth";
+
+const USER_ROLE_VALUES = ["SUPER_ADMIN", "ADMIN", "ORGANIZER", "CUSTOMER", "SCANNER"] as const;
 
 export async function GET(request: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireAdmin();
 
-        if (!user || !user.email) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const admin = await prisma.user.findUnique({
-            where: { email: user.email },
-        });
-
-        if (!admin || (admin.role !== "ADMIN" && admin.role !== "SUPER_ADMIN")) {
-            return errorResponse("Admin access required", 403);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const url = new URL(request.url);
@@ -37,14 +31,15 @@ export async function GET(request: Request) {
         
         // Sort params
         const sortBy = url.searchParams.get('sortBy') || 'createdAt';
-        const sortOrder = url.searchParams.get('sortOrder') || 'desc';
+        const sortOrder: Prisma.SortOrder =
+            url.searchParams.get('sortOrder') === 'asc' ? 'asc' : 'desc';
 
         // Build where clause dynamically
-        const where: any = {};
+        const where: Prisma.UserWhereInput = {};
         
         // Role filter
-        if (roleFilter) {
-            where.role = roleFilter;
+        if (roleFilter && USER_ROLE_VALUES.includes(roleFilter as (typeof USER_ROLE_VALUES)[number])) {
+            where.role = roleFilter as (typeof USER_ROLE_VALUES)[number];
         }
         
         // Verification filter
@@ -71,9 +66,10 @@ export async function GET(request: Request) {
         
         // Date range filter
         if (dateFrom || dateTo) {
-            where.createdAt = {};
-            if (dateFrom) where.createdAt.gte = dateFrom;
-            if (dateTo) where.createdAt.lte = dateTo;
+            where.createdAt = {
+                ...(dateFrom ? { gte: dateFrom } : {}),
+                ...(dateTo ? { lte: dateTo } : {}),
+            };
         }
         
         // Activity filter
@@ -89,7 +85,7 @@ export async function GET(request: Request) {
         }
 
         // Build orderBy clause
-        const orderBy: any = {};
+        const orderBy: Prisma.UserOrderByWithRelationInput = {};
         
         if (sortBy === 'name' || sortBy === 'email' || sortBy === 'createdAt') {
             orderBy[sortBy] = sortOrder;
