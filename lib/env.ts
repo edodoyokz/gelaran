@@ -3,6 +3,14 @@ import { z } from "zod";
 const appStageSchema = z.enum(["local", "beta", "production"]);
 const nodeEnvSchema = z.enum(["development", "test", "production"]);
 const booleanStringSchema = z.enum(["true", "false"]);
+const emptyStringToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
+    z.preprocess((value) => {
+        if (typeof value === "string" && value.trim() === "") {
+            return undefined;
+        }
+
+        return value;
+    }, schema.optional());
 
 const publicEnvSchema = z.object({
     NODE_ENV: nodeEnvSchema.default("development"),
@@ -24,6 +32,10 @@ const serverEnvSchema = publicEnvSchema.extend({
     EMAIL_FROM: z.string().min(1, "EMAIL_FROM is required"),
     MIDTRANS_IS_PRODUCTION: booleanStringSchema.default("false"),
     MIDTRANS_SERVER_KEY: z.string().min(1).optional(),
+    CRON_SECRET: emptyStringToUndefined(z.string().min(1, "CRON_SECRET cannot be empty")),
+    OPS_ALERT_WEBHOOK_URL: emptyStringToUndefined(
+        z.string().url("OPS_ALERT_WEBHOOK_URL must be a valid URL")
+    ),
 });
 
 export type PublicEnvSource = z.input<typeof publicEnvSchema>;
@@ -50,6 +62,8 @@ export type ServerEnv = PublicEnv & {
     EMAIL_FROM: string;
     MIDTRANS_IS_PRODUCTION: boolean;
     MIDTRANS_SERVER_KEY?: string;
+    CRON_SECRET?: string;
+    OPS_ALERT_WEBHOOK_URL?: string;
 };
 
 let cachedPublicEnv: PublicEnv | undefined;

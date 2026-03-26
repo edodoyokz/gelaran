@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
+import { isCronAuthorized } from "@/lib/cron-auth";
+import { rateLimiters, getClientIdentifier } from "@/lib/rate-limit";
+import { getServerEnv } from "@/lib/env";
 
 interface PastEvent {
   id: string;
@@ -11,11 +14,18 @@ interface PastEvent {
   }>;
 }
 
-const CRON_SECRET = process.env.CRON_SECRET;
+const env = getServerEnv();
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  // Rate limiting for cron endpoints
+  const clientId = getClientIdentifier(request.headers);
+  const rateLimit = rateLimiters.cron.check(clientId);
+  
+  if (!rateLimit.success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+  
+  if (!isCronAuthorized(request, env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

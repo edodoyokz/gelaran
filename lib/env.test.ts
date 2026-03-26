@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parsePublicEnv, parseServerEnv, type ServerEnvSource } from "./env.ts";
+import { parsePublicEnv, parseServerEnv, type ServerEnvSource } from "./env";
 
 function createValidServerEnv(): ServerEnvSource {
     return {
@@ -17,6 +17,8 @@ function createValidServerEnv(): ServerEnvSource {
         NEXT_PUBLIC_ENABLE_DEMO_PAYMENT: "false",
         NEXT_PUBLIC_PAYMENTS_ENABLED: "false",
         MIDTRANS_IS_PRODUCTION: "false",
+        CRON_SECRET: undefined,
+        OPS_ALERT_WEBHOOK_URL: undefined,
     } as const;
 }
 
@@ -34,8 +36,8 @@ test("missing required server env fails with actionable error", () => {
 });
 
 test("payment-enabled mode requires Midtrans credentials", () => {
-    const env: ServerEnvSource = {
-        ...createValidServerEnv(),
+  const env: ServerEnvSource = {
+    ...createValidServerEnv(),
         NEXT_PUBLIC_APP_STAGE: "production",
         NEXT_PUBLIC_PAYMENTS_ENABLED: "true",
     };
@@ -49,15 +51,37 @@ test("demo payment flag is rejected outside local stage", () => {
         NEXT_PUBLIC_ENABLE_DEMO_PAYMENT: "true",
     };
 
-    assert.throws(
-        () => parseServerEnv(env),
-        /NEXT_PUBLIC_ENABLE_DEMO_PAYMENT can only be true in local stage/
-    );
+  assert.throws(
+    () => parseServerEnv(env),
+    /NEXT_PUBLIC_ENABLE_DEMO_PAYMENT can only be true in local stage/
+  );
+});
+
+test("optional server env fields allow empty values without failing validation", () => {
+  const env = parseServerEnv({
+    ...createValidServerEnv(),
+    CRON_SECRET: "",
+    OPS_ALERT_WEBHOOK_URL: "",
+  });
+
+  assert.equal(env.CRON_SECRET, undefined);
+  assert.equal(env.OPS_ALERT_WEBHOOK_URL, undefined);
+});
+
+test("optional server env fields are preserved when provided", () => {
+  const env = parseServerEnv({
+    ...createValidServerEnv(),
+    CRON_SECRET: "top-secret",
+    OPS_ALERT_WEBHOOK_URL: "https://alerts.example.test/hook",
+  });
+
+  assert.equal(env.CRON_SECRET, "top-secret");
+  assert.equal(env.OPS_ALERT_WEBHOOK_URL, "https://alerts.example.test/hook");
 });
 
 test("public env derives default Midtrans snap URL", () => {
-    const env = parsePublicEnv({
-        NODE_ENV: "test",
+  const env = parsePublicEnv({
+    NODE_ENV: "test",
         NEXT_PUBLIC_APP_STAGE: "local",
         NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
         NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon-key",

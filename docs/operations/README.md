@@ -42,7 +42,8 @@ docs/operations/
 ├── rollback-procedure.md            # How to rollback if issues occur
 ├── smoke-tests.md                   # Tests to verify system health
 ├── incident-response.md             # Incident handling procedures
-└── operator-ownership.md            # Roles, responsibilities, contacts
+├── operator-ownership.md            # Roles, responsibilities, contacts
+└── storage-policy.md                # Supabase storage constraints and policy notes
 ```
 
 ## Version History
@@ -142,9 +143,9 @@ Have a suggestion for improving these operational docs?
 
 ### Technical Documentation
 - [Project README](../../README.md)
-- [API Documentation](../../docs/api/README.md)
-- [Database Schema](../../docs/database/README.md)
-- [Architecture Overview](../../docs/architecture/README.md)
+- [Documentation Index](../README.md)
+- [Local Development Guide](../setup/local-development.md)
+- [Product Requirements Summary](../product/requirements.md)
 
 ### External Documentation
 - [Vercel Deployment Guide](https://vercel.com/docs)

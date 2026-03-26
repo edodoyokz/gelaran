@@ -13,6 +13,7 @@ const defaults = {
   NEXT_PUBLIC_PAYMENTS_ENABLED: "false",
   NEXT_PUBLIC_ENABLE_DEMO_PAYMENT: "false",
   MIDTRANS_IS_PRODUCTION: "false",
+  CRON_SECRET: "ci-cron-secret",
   CI_BUILD_SKIP_NEXT_TYPECHECK: "true",
   CI_BUILD_DISABLE_WEBPACK_WORKER: "true",
 };

@@ -1,15 +1,27 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { snap, generateOrderId } from "@/lib/midtrans/client";
-import { generateBookingCode } from "@/lib/utils";
+import { createAuditLogger } from "@/lib/audit-log";
+import { getServerEnv } from "@/lib/env";
+import { createPaymentProvider } from "@/lib/payments/provider";
+import { generateOrderId } from "@/lib/midtrans/client";
+import { createRequestContext } from "@/lib/logging/request";
+import { createPosBookingCode, decidePosSellRetryAction } from "@/lib/payments/pos-retry";
 import type { Decimal } from "@prisma/client/runtime/library";
 import type { PrismaTransactionClient } from "@/types/prisma";
 import { SeatError, SeatErrorResponse, createSeatErrorResponse, getHttpStatusForError } from "./errors";
 
+const env = getServerEnv();
+const paymentProvider = createPaymentProvider();
+
 interface TicketRequest {
     ticketTypeId: string;
     quantity: number;
+}
+
+interface SeatConflictError extends Error {
+    seatErrorResponse?: SeatErrorResponse;
 }
 
 interface TicketTypeForSale {
@@ -25,6 +37,7 @@ interface TicketTypeForSale {
 
 export async function POST(request: NextRequest) {
     try {
+        const requestContext = createRequestContext(request, "/api/pos/sell");
         const deviceToken = request.headers.get("x-device-token");
 
         if (!deviceToken) {
@@ -122,7 +135,7 @@ export async function POST(request: NextRequest) {
         // Handle seat-based booking
         const seatSelection = seatIds && seatIds.length > 0;
         let totalTickets = 0;
-        let seatDetails: Array<{
+        const seatDetails: Array<{
             seatId: string;
             ticketTypeId: string;
             unitPrice: number;
@@ -202,7 +215,7 @@ export async function POST(request: NextRequest) {
                     seatId: seat.id,
                     ticketTypeId: seat.ticketTypeId,
                     unitPrice,
-                    version: (seat as any).version, // Capture current version for optimistic locking
+                    version: seat.version,
                 });
             }
 
@@ -219,7 +232,227 @@ export async function POST(request: NextRequest) {
         const organizerRevenue = subtotal - platformFee;
         const platformRevenue = platformFee;
 
-        const bookingCode = generateBookingCode();
+        const bookingCode = createPosBookingCode(requestContext.requestId);
+
+        const existingBooking = await prisma.booking.findUnique({
+            where: { bookingCode },
+            include: {
+                bookedTickets: {
+                    select: {
+                        id: true,
+                        uniqueCode: true,
+                        unitPrice: true,
+                        ticketType: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                transaction: {
+                    select: {
+                        id: true,
+                        transactionCode: true,
+                        status: true,
+                        expiresAt: true,
+                        gatewayResponse: true,
+                    },
+                },
+            },
+        });
+
+        const retryDecision = decidePosSellRetryAction({
+            requestId: requestContext.requestId,
+            now: new Date(),
+            existingBooking: existingBooking
+                ? {
+                    id: existingBooking.id,
+                    bookingCode: existingBooking.bookingCode,
+                    status: existingBooking.status,
+                    paymentStatus: existingBooking.paymentStatus,
+                    expiresAt: existingBooking.expiresAt,
+                    transaction: existingBooking.transaction
+                        ? {
+                            id: existingBooking.transaction.id,
+                            status: existingBooking.transaction.status,
+                            expiresAt: existingBooking.transaction.expiresAt,
+                            gatewayResponse:
+                                existingBooking.transaction.gatewayResponse &&
+                                    typeof existingBooking.transaction.gatewayResponse === "object" &&
+                                    !Array.isArray(existingBooking.transaction.gatewayResponse)
+                                    ? existingBooking.transaction.gatewayResponse as Record<string, unknown>
+                                    : null,
+                        }
+                        : null,
+                }
+                : null,
+        });
+
+        if (existingBooking && retryDecision.action === "return-existing-booking") {
+            return successResponse({
+                bookingCode: existingBooking.bookingCode,
+                bookingId: existingBooking.id,
+                status: existingBooking.status,
+                totalAmount: Number(existingBooking.totalAmount),
+                tickets: existingBooking.bookedTickets.map((ticket) => ({
+                    id: ticket.id,
+                    uniqueCode: ticket.uniqueCode,
+                    ticketType: ticket.ticketType.name,
+                    unitPrice: Number(ticket.unitPrice),
+                })),
+                reused: true,
+            });
+        }
+
+        if (existingBooking && retryDecision.action === "reuse-payment-intent") {
+            return successResponse({
+                bookingCode: existingBooking.bookingCode,
+                bookingId: existingBooking.id,
+                status: existingBooking.status,
+                totalAmount: Number(existingBooking.totalAmount),
+                paymentToken: retryDecision.token,
+                paymentUrl: retryDecision.redirectUrl,
+                orderId: existingBooking.transaction?.transactionCode ?? null,
+                tickets: existingBooking.bookedTickets.map((ticket) => ({
+                    id: ticket.id,
+                    uniqueCode: ticket.uniqueCode,
+                    ticketType: ticket.ticketType.name,
+                    unitPrice: Number(ticket.unitPrice),
+                })),
+                reused: true,
+            });
+        }
+
+        if (existingBooking && retryDecision.action === "reject") {
+            const message =
+                retryDecision.reason === "booking-expired"
+                    ? "Booking POS ini sudah kedaluwarsa dan tidak bisa dibuatkan pembayaran baru"
+                    : "Booking POS ini sudah dibayar";
+
+            return errorResponse(message, 409);
+        }
+
+        if (existingBooking && retryDecision.action === "refresh-payment-intent") {
+            const itemDetails = existingBooking.bookedTickets.map((ticket) => ({
+                id: ticket.id,
+                name: ticket.ticketType.name,
+                price: Number(ticket.unitPrice),
+                quantity: 1,
+            }));
+
+            const orderId = generateOrderId(existingBooking.bookingCode);
+            const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+            const parameter = {
+                transaction_details: {
+                    order_id: orderId,
+                    gross_amount: Number(existingBooking.totalAmount),
+                },
+                item_details: itemDetails,
+                customer_details: {
+                    first_name: existingBooking.guestName || "Guest",
+                    email: existingBooking.guestEmail || "guest@gelaran.id",
+                    phone: existingBooking.guestPhone || "",
+                },
+                callbacks: {
+                    finish: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-success?booking=${existingBooking.bookingCode}`,
+                    error: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-failed?booking=${existingBooking.bookingCode}`,
+                    pending: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-pending?booking=${existingBooking.bookingCode}`,
+                },
+                expiry: {
+                    unit: "minutes",
+                    duration: 15,
+                },
+            };
+
+            const auditLogger = createAuditLogger(prisma);
+            const ipAddress = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip");
+            const userAgent = request.headers.get("user-agent");
+
+            const placeholderTransaction = existingBooking.transaction
+                ? await prisma.transaction.update({
+                    where: { id: existingBooking.transaction.id },
+                    data: {
+                        transactionCode: orderId,
+                        paymentGateway: "MIDTRANS",
+                        paymentMethod: "SNAP_POS",
+                        amount: existingBooking.totalAmount,
+                        status: "PROCESSING",
+                        gatewayResponse: Prisma.JsonNull,
+                        gatewayTransactionId: null,
+                        failureReason: null,
+                        paidAt: null,
+                        paymentChannel: null,
+                        expiresAt,
+                    },
+                    select: { id: true },
+                })
+                : await prisma.transaction.create({
+                    data: {
+                        bookingId: existingBooking.id,
+                        transactionCode: orderId,
+                        paymentGateway: "MIDTRANS",
+                        paymentMethod: "SNAP_POS",
+                        amount: existingBooking.totalAmount,
+                        status: "PROCESSING",
+                        expiresAt,
+                    },
+                    select: { id: true },
+                });
+
+            try {
+                const snapTransaction = await paymentProvider.createTransaction(parameter);
+                await prisma.transaction.update({
+                    where: { id: placeholderTransaction.id },
+                    data: {
+                        status: "PENDING",
+                        expiresAt,
+                        gatewayResponse: {
+                            token: snapTransaction.token,
+                            redirect_url: snapTransaction.redirect_url,
+                            order_id: orderId,
+                            source: "pos",
+                            created_at: new Date().toISOString(),
+                        },
+                    },
+                });
+
+                await auditLogger.logPaymentOrderCreated({
+                    transactionId: placeholderTransaction.id,
+                    bookingId: existingBooking.id,
+                    transactionCode: orderId,
+                    paymentMethod: "SNAP_POS",
+                    amount: Number(existingBooking.totalAmount),
+                    mode: "repaired",
+                    ipAddress,
+                    userAgent,
+                });
+
+                return successResponse({
+                    bookingCode: existingBooking.bookingCode,
+                    bookingId: existingBooking.id,
+                    status: existingBooking.status,
+                    totalAmount: Number(existingBooking.totalAmount),
+                    paymentToken: snapTransaction.token,
+                    paymentUrl: snapTransaction.redirect_url,
+                    orderId,
+                    tickets: existingBooking.bookedTickets.map((ticket) => ({
+                        id: ticket.id,
+                        uniqueCode: ticket.uniqueCode,
+                        ticketType: ticket.ticketType.name,
+                        unitPrice: Number(ticket.unitPrice),
+                    })),
+                    reused: true,
+                });
+            } catch (paymentError) {
+                await prisma.transaction.update({
+                    where: { id: placeholderTransaction.id },
+                    data: {
+                        failureReason: paymentError instanceof Error ? paymentError.message : "Failed to create Midtrans transaction",
+                    },
+                }).catch(() => undefined);
+                throw paymentError;
+            }
+        }
 
         const booking = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
             const newBooking = await tx.booking.create({
@@ -264,11 +497,11 @@ export async function POST(request: NextRequest) {
                         where: {
                             id: seatDetail.seatId,
                             status: 'AVAILABLE',
-                            version: seatDetail.version as any, // Optimistic lock: only update if version hasn't changed
+                            version: seatDetail.version,
                         },
                         data: {
                             status: 'BOOKED',
-                            version: { increment: 1 } as any, // Increment version
+                            version: { increment: 1 },
                         },
                     });
 
@@ -286,7 +519,7 @@ export async function POST(request: NextRequest) {
 
                         // Throw with error response for proper handling
                         const error = new Error(errorResponse.message);
-                        (error as any).seatErrorResponse = errorResponse;
+                        (error as SeatConflictError).seatErrorResponse = errorResponse;
                         throw error;
                     }
 
@@ -384,6 +617,7 @@ export async function POST(request: NextRequest) {
         }
 
         const orderId = generateOrderId(bookingCode);
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
         const itemDetails = ticketDetails.map((detail: { ticketTypeId: string; quantity: number; unitPrice: number; name: string }) => ({
             id: detail.ticketTypeId,
@@ -432,37 +666,82 @@ export async function POST(request: NextRequest) {
             },
         };
 
-        const snapTransaction = await snap.createTransaction(parameter);
+        if (!env.NEXT_PUBLIC_PAYMENTS_ENABLED) {
+            return errorResponse("Payments are disabled during the current stage", 503);
+        }
 
-        await prisma.transaction.create({
+        const auditLogger = createAuditLogger(prisma);
+        const ipAddress = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip");
+        const userAgent = request.headers.get("user-agent");
+        const placeholderTransaction = await prisma.transaction.create({
             data: {
                 bookingId: booking.booking.id,
                 transactionCode: orderId,
                 paymentGateway: "MIDTRANS",
                 paymentMethod: "SNAP_POS",
                 amount: totalAmount,
-                status: "PENDING",
-                expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+                status: "PROCESSING",
+                expiresAt,
+            },
+            select: {
+                id: true,
             },
         });
 
-        return successResponse({
-            bookingCode: booking.booking.bookingCode,
-            bookingId: booking.booking.id,
-            status: "AWAITING_PAYMENT",
-            totalAmount,
-            paymentToken: snapTransaction.token,
-            paymentUrl: snapTransaction.redirect_url,
-            orderId,
-            tickets: booking.tickets,
-            autoCheckIn,
-        });
+        try {
+            const snapTransaction = await paymentProvider.createTransaction(parameter);
+            await prisma.transaction.update({
+                where: { id: placeholderTransaction.id },
+                data: {
+                    status: "PENDING",
+                    expiresAt,
+                    gatewayResponse: {
+                        token: snapTransaction.token,
+                        redirect_url: snapTransaction.redirect_url,
+                        order_id: orderId,
+                        source: "pos",
+                        created_at: new Date().toISOString(),
+                    },
+                },
+            });
+
+            await auditLogger.logPaymentOrderCreated({
+                transactionId: placeholderTransaction.id,
+                bookingId: booking.booking.id,
+                transactionCode: orderId,
+                paymentMethod: "SNAP_POS",
+                amount: totalAmount,
+                mode: "created",
+                ipAddress,
+                userAgent,
+            });
+
+            return successResponse({
+                bookingCode: booking.booking.bookingCode,
+                bookingId: booking.booking.id,
+                status: "AWAITING_PAYMENT",
+                totalAmount,
+                paymentToken: snapTransaction.token,
+                paymentUrl: snapTransaction.redirect_url,
+                orderId,
+                tickets: booking.tickets,
+                autoCheckIn,
+            });
+        } catch (paymentError) {
+            await prisma.transaction.update({
+                where: { id: placeholderTransaction.id },
+                data: {
+                    failureReason: paymentError instanceof Error ? paymentError.message : "Failed to create Midtrans transaction",
+                },
+            }).catch(() => undefined);
+            throw paymentError;
+        }
     } catch (error) {
         console.error("POS sell error:", error);
 
         // Handle optimistic locking conflicts with specific error response
-        if (error instanceof Error && (error as any).seatErrorResponse) {
-            const seatError = (error as any).seatErrorResponse as SeatErrorResponse;
+        if (error instanceof Error && (error as SeatConflictError).seatErrorResponse) {
+            const seatError = (error as SeatConflictError).seatErrorResponse as SeatErrorResponse;
             return NextResponse.json<SeatErrorResponse>(
                 seatError,
                 { status: getHttpStatusForError(seatError.error) }

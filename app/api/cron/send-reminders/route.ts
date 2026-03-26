@@ -2,19 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { resend, FROM_EMAIL } from "@/lib/email/client";
 import { eventReminderHtml, eventReminderText } from "@/lib/email/templates";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { isCronAuthorized } from "@/lib/cron-auth";
+import { rateLimiters, getClientIdentifier } from "@/lib/rate-limit";
+import { getServerEnv } from "@/lib/env";
 
-const CRON_SECRET = process.env.CRON_SECRET;
+const env = getServerEnv();
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+  // Rate limiting for cron endpoints
+  const clientId = getClientIdentifier(request.headers);
+  const rateLimit = rateLimiters.cron.check(clientId);
+  
+  if (!rateLimit.success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+  
+  if (!isCronAuthorized(request, env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const now = new Date();
-    const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
+    const _oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
     const twentyFourHoursFromNow = new Date(
       now.getTime() + 24 * 60 * 60 * 1000
     );
