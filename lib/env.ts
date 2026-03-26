@@ -183,7 +183,17 @@ export function parseServerEnv(rawEnv: ServerEnvSource | EnvSource): ServerEnv {
 
 export function getPublicEnv() {
     if (!cachedPublicEnv) {
-        cachedPublicEnv = parsePublicEnv(process.env as EnvSource);
+        cachedPublicEnv = parsePublicEnv({
+            NODE_ENV: process.env.NODE_ENV,
+            NEXT_PUBLIC_APP_STAGE: process.env.NEXT_PUBLIC_APP_STAGE,
+            NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+            NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+            NEXT_PUBLIC_ENABLE_DEMO_PAYMENT: process.env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT,
+            NEXT_PUBLIC_PAYMENTS_ENABLED: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED,
+            NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
+            NEXT_PUBLIC_MIDTRANS_SNAP_URL: process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL,
+        });
     }
 
     return cachedPublicEnv;
