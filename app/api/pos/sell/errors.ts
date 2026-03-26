@@ -34,7 +34,7 @@ export interface SeatErrorResponse {
     message: string;
     seatId?: string;
     seatLabel?: string;
-    details?: any;
+    details?: Record<string, unknown>;
 }
 
 /**
@@ -45,7 +45,7 @@ export function createSeatErrorResponse(
     message: string,
     seatId?: string,
     seatLabel?: string,
-    details?: any
+    details?: Record<string, unknown>
 ): SeatErrorResponse {
     return {
         error,

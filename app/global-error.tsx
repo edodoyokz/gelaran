@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 import { AlertOctagon, RefreshCw, Home } from "lucide-react";
 
@@ -149,7 +150,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                                 Try Again
                             </button>
 
-                            <a
+                            <Link
                                 href="/"
                                 style={{
                                     display: "inline-flex",
@@ -182,7 +183,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                             >
                                 <Home style={{ width: "1.25rem", height: "1.25rem" }} />
                                 Go to Homepage
-                            </a>
+                            </Link>
                         </div>
 
                         <p
@@ -195,7 +196,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                             }}
                         >
                             If this problem persists, please{" "}
-                            <a
+                            <Link
                                 href="/contact"
                                 style={{
                                     color: "#4f46e5",
@@ -204,7 +205,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                                 }}
                             >
                                 contact support
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>

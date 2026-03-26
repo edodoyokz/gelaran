@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MapPin, Armchair, Loader2, Info, CheckCircle } from "lucide-react";
 
 interface Seat {
@@ -84,7 +84,7 @@ export function POSSeatSelector({
     const [hoveredSeat, setHoveredSeat] = useState<{ seat: Seat; section: Section; row: Row; ticketType?: TicketType } | null>(null);
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
-    const fetchVenueMap = async () => {
+    const fetchVenueMap = useCallback(async () => {
         try {
             setIsLoading(true);
             const res = await fetch(`/api/events/${eventSlug}/venue-map`);
@@ -92,34 +92,37 @@ export function POSSeatSelector({
 
             if (result.success) {
                 setData(result.data);
-                // Auto-expand first section only on initial load
-                if (!expandedSection && result.data.sections?.length > 0) {
-                    setExpandedSection(result.data.sections[0].id);
-                }
+                setExpandedSection((currentSection) => {
+                    if (currentSection || !result.data.sections?.length) {
+                        return currentSection;
+                    }
+
+                    return result.data.sections[0].id;
+                });
             } else {
                 setError(result.error?.message || "Gagal memuat denah");
             }
-        } catch (err) {
+        } catch (_err) {
             setError("Gagal memuat denah venue");
         } finally {
             setIsLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchVenueMap();
     }, [eventSlug]);
 
-    // Poll seat availability every 5 seconds
+     
     useEffect(() => {
-        if (!eventSlug) return;
+        fetchVenueMap();
+    }, [fetchVenueMap]);
 
+    // Poll seat availability every 5 seconds
+     
+    useEffect(() => {
         const interval = setInterval(() => {
-            fetchVenueMap(); // Refresh seat availability
+            fetchVenueMap();
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [eventSlug]);
+    }, [fetchVenueMap]);
 
     const handleSeatClick = (seat: Seat) => {
         if (seat.status !== "AVAILABLE") return;

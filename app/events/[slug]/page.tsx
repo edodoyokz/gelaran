@@ -135,7 +135,7 @@ async function getEvent(slug: string): Promise<EventData | null> {
         prisma.event.update({
             where: { id: event.id },
             data: { viewCount: { increment: 1 } },
-        }).catch(() => {});
+        }).catch(() => { });
 
         return {
             id: event.id,
@@ -164,14 +164,14 @@ async function getEvent(slug: string): Promise<EventData | null> {
                 description: event.organizer.organizerProfile?.organizationDescription ?? null,
                 isVerified: event.organizer.organizerProfile?.isVerified ?? false,
             },
-            schedules: event.schedules.map((s: any) => ({
+            schedules: event.schedules.map((s: { id: string; title: string | null; scheduleDate: Date; startTime: Date; endTime: Date }) => ({
                 id: s.id,
                 title: s.title,
                 scheduleDate: s.scheduleDate.toISOString(),
                 startTime: s.startTime.toISOString(),
                 endTime: s.endTime.toISOString(),
             })),
-            ticketTypes: event.ticketTypes.map((tt: any) => ({
+            ticketTypes: event.ticketTypes.map((tt: { id: string; name: string; description: string | null; basePrice: number | { toNumber: () => number }; totalQuantity: number; soldQuantity: number; reservedQuantity: number; minPerOrder: number; maxPerOrder: number; isFree: boolean }) => ({
                 id: tt.id,
                 name: tt.name,
                 description: tt.description,

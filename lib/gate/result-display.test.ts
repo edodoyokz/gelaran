@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { getGateResultDisplay } from "./result-display.ts";
+import { getGateResultDisplay } from "./result-display";
 
 test("maps SUCCESS to positive operator feedback", () => {
   const display = getGateResultDisplay("SUCCESS");

@@ -12,12 +12,12 @@ import {
     ArrowLeft,
     Calendar,
     MapPin,
-    Clock,
     Zap,
     CheckCircle2,
     X
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { canCreatePaidOrder } from "@/lib/payments/stage-guard";
 
 interface TicketSelection {
     ticketTypeId: string;
@@ -74,13 +74,14 @@ function CheckoutContent() {
     const [pendingBookingCode, setPendingBookingCode] = useState<string | null>(null);
 
     const isDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT === "true";
+    const isPaymentsEnabled = process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true";
 
     const isSeatCheckout = !!seatsParam;
 
     const [guestEmail, setGuestEmail] = useState("");
     const [guestName, setGuestName] = useState("");
     const [guestPhone, setGuestPhone] = useState("");
-    const [isUserLoaded, setIsUserLoaded] = useState(false);
+    const [_isUserLoaded, setIsUserLoaded] = useState(false);
     const [pricingData, setPricingData] = useState<{
         subtotal: number;
         discountAmount: number;
@@ -119,6 +120,8 @@ function CheckoutContent() {
         }
 
         fetchUserProfile();
+     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -198,7 +201,9 @@ function CheckoutContent() {
             }
         }
 
+         
         fetchEventAndSeats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventSlug, ticketsParam, seatsParam, router]);
 
     useEffect(() => {
@@ -278,6 +283,7 @@ function CheckoutContent() {
     const platformFee = pricingData?.platformFee ?? 0;
     const tax = pricingData?.taxAmount ?? 0;
     const total = pricingData?.totalAmount ?? (subtotal + platformFee + tax);
+    const isPaidCheckoutBlocked = !canCreatePaidOrder(total, isPaymentsEnabled);
     const totalTickets = isSeatCheckout
         ? lockedSeats.length
         : tickets.reduce((sum, t) => sum + t.quantity, 0);
@@ -347,6 +353,12 @@ function CheckoutContent() {
             // If free, redirect to success
             if (total === 0) {
                 router.push(`/checkout/success?booking=${bookingData.data.bookingCode}`);
+                return;
+            }
+
+            if (!canCreatePaidOrder(total, isPaymentsEnabled)) {
+                setError("Pembayaran online belum tersedia di tahap ini. Silakan pilih tiket gratis atau hubungi penyelenggara.");
+                setIsProcessing(false);
                 return;
             }
 
@@ -664,7 +676,7 @@ function CheckoutContent() {
                             <button
                                 type="button"
                                 onClick={handleCheckout}
-                                disabled={totalTickets === 0 || isProcessing}
+                                disabled={totalTickets === 0 || isProcessing || isPaidCheckoutBlocked}
                                 className="mt-6 w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {isProcessing ? (
@@ -675,7 +687,7 @@ function CheckoutContent() {
                                 ) : (
                                     <>
                                         <CreditCard className="h-5 w-5" />
-                                        {total === 0 ? "Pesan Gratis" : "Bayar Sekarang"}
+                                        {total === 0 ? "Pesan Gratis" : isPaidCheckoutBlocked ? "Pembayaran Belum Tersedia" : "Bayar Sekarang"}
                                     </>
                                 )}
                             </button>

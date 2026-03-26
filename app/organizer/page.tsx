@@ -6,22 +6,19 @@ import {
     TrendingUp,
     Plus,
     BarChart3,
-    ArrowUpRight,
     CreditCard,
     Settings,
-    QrCode,
     Clock,
-    CheckCircle,
     AlertCircle,
     ArrowRight,
     Ticket,
-    Eye,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { OrganizerHeader } from "@/components/organizer/OrganizerHeader";
+
 
 const STATUS_COLORS: Record<string, string> = {
     DRAFT: "bg-gray-500/10 text-[var(--text-muted)]",

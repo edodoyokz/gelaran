@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
     TrendingUp,
     DollarSign,
@@ -12,8 +13,6 @@ import {
     Loader2,
     AlertCircle,
     BarChart3,
-    PieChart,
-    Download,
 } from "lucide-react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { DateRangeFilter, type DateRangePreset } from "@/components/admin/DateRangeFilter";
@@ -360,10 +359,12 @@ export default function AdminAnalyticsPage() {
                                     <div key={event.id} className="p-4 hover:bg-[var(--surface-hover)]">
                                         <div className="flex items-center gap-3">
                                             {event.posterImage ? (
-                                                <img
+                                                <Image
                                                     src={event.posterImage}
                                                     alt={event.title}
-                                                    className="w-12 h-12 rounded-lg object-cover"
+                                                    width={48}
+                                                    height={48}
+                                                    className="rounded-lg object-cover"
                                                 />
                                             ) : (
                                                 <div className="w-12 h-12 bg-[var(--border)] rounded-lg flex items-center justify-center">

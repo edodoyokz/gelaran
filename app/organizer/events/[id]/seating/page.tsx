@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useEffect, Fragment } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
     ArrowLeft,
     Plus,
     Edit2,
     Trash2,
-    Save,
     X,
     LayoutGrid,
     Armchair,
@@ -16,20 +15,14 @@ import {
     ChevronRight,
     Loader2,
     AlertCircle,
-    CheckCircle2,
-    Info,
-    MoreHorizontal,
-    Settings,
     MousePointer2,
     Maximize2,
     Minimize2,
-    Users,
-    Grid2X2,
-    Image as ImageIcon,
+    Image as
     Move,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { VenueCanvas, ImageTracer, SectionTypeSelector } from "@/components/organizer/venue-editor";
+import { VenueCanvas, ImageTracer } from "@/components/organizer/venue-editor";
 
 interface VenueSection {
     id: string;
@@ -97,7 +90,6 @@ const STATUS_LEGEND = [
 
 export default function SeatingChartPage() {
     const params = useParams();
-    const router = useRouter();
     const eventId = params.id as string;
 
     const [event, setEvent] = useState<EventData | null>(null);
@@ -114,7 +106,7 @@ export default function SeatingChartPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
-    const [activeRowId, setActiveRowId] = useState<string | null>(null);
+    const [_activeRowId, _setActiveRowId] = useState<string | null>(null);
     const [editorMode, setEditorMode] = useState<"list" | "visual">("list");
     const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
 
@@ -158,6 +150,7 @@ export default function SeatingChartPage() {
 
     useEffect(() => {
         fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventId]);
 
     const handleSaveSection = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -189,7 +182,7 @@ export default function SeatingChartPage() {
             } else {
                 alert(data.error?.message || "Gagal menyimpan section");
             }
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         } finally {
             setIsSubmitting(false);
@@ -205,7 +198,7 @@ export default function SeatingChartPage() {
             const data = await res.json();
             if (data.success) fetchData();
             else alert(data.error?.message || "Gagal menghapus");
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         }
     };
@@ -263,7 +256,7 @@ export default function SeatingChartPage() {
             } else {
                 alert(data.error?.message || "Gagal menyimpan row");
             }
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         } finally {
             setIsSubmitting(false);
@@ -279,7 +272,7 @@ export default function SeatingChartPage() {
             const data = await res.json();
             if (data.success) fetchData();
             else alert(data.error?.message || "Gagal menghapus");
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         }
     };
@@ -313,7 +306,7 @@ export default function SeatingChartPage() {
             } else {
                 alert(data.error?.message || "Gagal menyimpan seat");
             }
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         } finally {
             setIsSubmitting(false);
@@ -329,7 +322,7 @@ export default function SeatingChartPage() {
             const data = await res.json();
             if (data.success) fetchData();
             else alert(data.error?.message || "Gagal menghapus");
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         }
     };

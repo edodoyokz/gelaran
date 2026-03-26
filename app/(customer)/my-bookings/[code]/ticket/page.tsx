@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     ArrowLeft,
     Download,
@@ -14,8 +15,6 @@ import {
     MapPin,
     Calendar,
     Ticket,
-    User,
-    Mail,
     QrCode,
     Loader2,
 } from "lucide-react";
@@ -47,17 +46,6 @@ interface EventSchedule {
     endTime: string;
     description: string | null;
     locationOverride: string | null;
-}
-
-interface Venue {
-    id: string;
-    name: string;
-    address: string;
-    city: string;
-    province: string;
-    latitude: number | null;
-    longitude: number | null;
-    googlePlaceId: string | null;
 }
 
 interface BookingEvent {
@@ -94,7 +82,7 @@ function TicketPageContent() {
     const [error, setError] = useState<string | null>(null);
     const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-    const fetchBooking = async () => {
+    const fetchBooking = useCallback(async () => {
         try {
             const res = await fetch(`/api/my-bookings/${bookingCode}`);
             const data = await res.json();
@@ -110,11 +98,11 @@ function TicketPageContent() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [bookingCode]);
 
     useEffect(() => {
         fetchBooking();
-    }, [bookingCode]);
+    }, [bookingCode, fetchBooking]);
 
     const handleDownloadTicket = async (ticketId: string) => {
         try {
@@ -378,9 +366,11 @@ function TicketPageContent() {
                                     <div className="w-full lg:w-80 flex flex-col gap-6">
                                         <div className="bg-white rounded-2xl border-2 border-indigo-200 p-6 flex flex-col items-center justify-center">
                                             {ticket.qrCodeUrl ? (
-                                                <img
+                                                <Image
                                                     src={ticket.qrCodeUrl}
                                                     alt={`QR Code ${ticket.uniqueCode}`}
+                                                    width={256}
+                                                    height={256}
                                                     className="w-64 h-64"
                                                 />
                                             ) : (

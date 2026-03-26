@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
     ShoppingCart,
     CheckCircle,
-    XCircle,
+
     AlertCircle,
     LogOut,
     RefreshCw,
@@ -43,7 +43,7 @@ interface SeatErrorResponse {
     message: string;
     seatId?: string;
     seatLabel?: string;
-    details?: any;
+    details?: unknown;
 }
 
 // Helper function untuk mendapatkan user-friendly error message
@@ -76,6 +76,12 @@ function getUserFriendlyErrorMessage(errorResponse: SeatErrorResponse): string {
         default:
             return errorResponse.message || "Gagal membuat pesanan";
     }
+}
+
+function createSellRequestId() {
+    return typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `pos-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 interface TicketType {
@@ -142,7 +148,7 @@ export default function POSPage() {
 
     const [selectedTickets, setSelectedTickets] = useState<Record<string, number>>({});
     const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-    const [seatMode, setSeatMode] = useState(false);
+    const [, setSeatMode] = useState(false);
     const [buyerName, setBuyerName] = useState("");
     const [buyerPhone, setBuyerPhone] = useState("");
     const [buyerEmail, setBuyerEmail] = useState("");
@@ -150,6 +156,7 @@ export default function POSPage() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [sellResult, setSellResult] = useState<SellResult | null>(null);
     const [sellError, setSellError] = useState<string | null>(null);
+    const [sellRequestId, setSellRequestId] = useState(() => createSellRequestId());
 
     const fetchEventData = useCallback(async (token: string) => {
         try {
@@ -219,20 +226,21 @@ export default function POSPage() {
             const newValue = Math.max(0, Math.min(max, current + delta));
 
             if (newValue === 0) {
-                const { [ticketTypeId]: _, ...rest } = prev;
+                const { [ticketTypeId]: _removed, ...rest } = prev;
                 return rest;
             }
             return { ...prev, [ticketTypeId]: newValue };
         });
     };
 
-    const handleSeatSelect = (seatId: string, seat: any) => {
+    const handleSeatSelect = (seatId: string, seat: { ticketTypeId?: string | null }) => {
         setSelectedSeats((prev) => [...prev, seatId]);
         // Auto-select ticket type based on seat's ticket type
         if (seat.ticketTypeId) {
+            const ttId = seat.ticketTypeId;
             setSelectedTickets((prev) => ({
                 ...prev,
-                [seat.ticketTypeId]: (prev[seat.ticketTypeId] || 0) + 1,
+                [ttId]: (prev[ttId] || 0) + 1,
             }));
         }
     };
@@ -288,6 +296,7 @@ export default function POSPage() {
                 headers: {
                     "Content-Type": "application/json",
                     "x-device-token": deviceToken,
+                    "x-request-id": sellRequestId,
                 },
                 body: JSON.stringify({
                     tickets,
@@ -353,6 +362,7 @@ export default function POSPage() {
         setBuyerName("");
         setBuyerPhone("");
         setBuyerEmail("");
+        setSellRequestId(createSellRequestId());
     };
 
     const handlePrint = () => {

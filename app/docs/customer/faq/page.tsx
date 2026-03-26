@@ -1,5 +1,4 @@
 import { Breadcrumb } from "@/components/docs/Breadcrumb";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 const faqs = [
     {

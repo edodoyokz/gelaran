@@ -77,20 +77,67 @@ type CheckInLogRecord = {
     scannedCode: string;
 };
 
+type DeviceAccessFindArgs = {
+    where: { deviceToken: string };
+    include: {
+        session: {
+            select: {
+                eventId: true;
+                isActive: true;
+                sessionType: true;
+            };
+        };
+    };
+};
+
+type DeviceAccessUpdateArgs = {
+    where: { id: string };
+    data: { lastActiveAt: Date };
+};
+
+type BookedTicketFindArgs = {
+    where: { uniqueCode: string };
+    include: {
+        booking: {
+            include: {
+                event: {
+                    select: {
+                        id: true;
+                        title: true;
+                    };
+                };
+            };
+        };
+        ticketType: {
+            select: { name: true };
+        };
+    };
+};
+
+type BookedTicketUpdateArgs = {
+    where: { id: string };
+    data: { isCheckedIn: boolean; checkedInAt: Date };
+};
+
+type CheckInLogCreateArgs = {
+    data: CheckInLogRecord;
+};
+
+type UpdatedCheckInTicketRecord = {
+    checkedInAt: Date | null;
+};
+
 type GateCheckInPrisma = {
     deviceAccess: {
-        findUnique: (args: Record<string, unknown>) => Promise<DeviceAccessRecord | null>;
-        update: (args: { where: { id: string }; data: { lastActiveAt: Date } }) => Promise<unknown>;
+        findUnique: (args: DeviceAccessFindArgs) => Promise<DeviceAccessRecord | null>;
+        update: (args: DeviceAccessUpdateArgs) => Promise<unknown>;
     };
     bookedTicket: {
-        findUnique: (args: Record<string, unknown>) => Promise<BookedTicketRecord | null>;
-        update: (args: {
-            where: { id: string };
-            data: { isCheckedIn: boolean; checkedInAt: Date };
-        }) => Promise<BookedTicketRecord>;
+        findUnique: (args: BookedTicketFindArgs) => Promise<BookedTicketRecord | null>;
+        update: (args: BookedTicketUpdateArgs) => Promise<UpdatedCheckInTicketRecord>;
     };
     checkInLog: {
-        create: (args: { data: CheckInLogRecord }) => Promise<unknown>;
+        create: (args: CheckInLogCreateArgs) => Promise<unknown>;
     };
 };
 
@@ -99,13 +146,30 @@ type GateCheckInDeps = {
     prisma?: GateCheckInPrisma;
 };
 
-async function resolvePrismaClient(provided?: GateCheckInPrisma) {
+async function resolvePrismaClient(provided?: GateCheckInPrisma): Promise<GateCheckInPrisma> {
     if (provided) {
         return provided;
     }
 
     const prismaModule = await import("../prisma/client");
-    return prismaModule.default as GateCheckInPrisma;
+    const prisma = prismaModule.default;
+
+    return {
+        deviceAccess: {
+            findUnique: async (args: DeviceAccessFindArgs) => prisma.deviceAccess.findUnique(args),
+            update: async (args: DeviceAccessUpdateArgs) => prisma.deviceAccess.update(args),
+        },
+        bookedTicket: {
+            findUnique: async (args: BookedTicketFindArgs) => prisma.bookedTicket.findUnique(args),
+            update: async (args: BookedTicketUpdateArgs) => prisma.bookedTicket.update({
+                ...args,
+                select: { checkedInAt: true },
+            }),
+        },
+        checkInLog: {
+            create: async (args: CheckInLogCreateArgs) => prisma.checkInLog.create(args),
+        },
+    };
 }
 
 function success(ticket: GateCheckInTicket): GateCheckInOutcome {
@@ -285,6 +349,6 @@ export async function checkInTicket(
         attendeeName: bookedTicket.booking.guestName || "Guest",
         bookingCode: bookedTicket.booking.bookingCode,
         eventTitle: bookedTicket.booking.event.title,
-        checkedInAt: updatedTicket.checkedInAt,
+        checkedInAt: updatedTicket.checkedInAt ?? currentTime,
     });
 }

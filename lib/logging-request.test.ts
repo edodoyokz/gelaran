@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { attachRequestIdHeader, createRequestContext } from "./logging/request.ts";
+import { attachRequestIdHeader, createRequestContext } from "./logging/request";
 
 test("createRequestContext reuses incoming x-request-id", () => {
     const request = new Request("https://example.com/api/bookings", {

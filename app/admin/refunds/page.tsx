@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import Link from "next/link";
 import {
     ArrowLeft,
@@ -13,7 +13,6 @@ import {
     User,
     Wallet,
     Ticket,
-    Download,
     Loader2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -38,7 +37,7 @@ interface Refund {
     processorName: string | null;
 }
 
-interface RefundResponse {
+interface _RefundResponse {
     refunds: Refund[];
     pagination: {
         total: number;
@@ -57,10 +56,9 @@ export default function AdminRefundsPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [total, setTotal] = useState(0);
-    const [selectedRefund, setSelectedRefund] = useState<Refund | null>(null);
     const [showDetails, setShowDetails] = useState<Record<string, boolean>>({});
 
-    const fetchRefunds = async () => {
+    const fetchRefunds = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
@@ -88,11 +86,11 @@ export default function AdminRefundsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [page, search, statusFilter]);
 
     useEffect(() => {
         fetchRefunds();
-    }, [page, search, statusFilter]);
+    }, [page, search, statusFilter, fetchRefunds]);
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -289,7 +287,6 @@ export default function AdminRefundsPage() {
                                                     key={refund.id}
                                                     className="hover:bg-[var(--surface-hover)] transition-colors"
                                                     onClick={() => {
-                                                        setSelectedRefund(refund);
                                                         setShowDetails((prev) => ({ ...prev, [refund.id]: !prev[refund.id] }));
                                                     }}
                                                 >

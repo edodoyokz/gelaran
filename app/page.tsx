@@ -162,7 +162,7 @@ export default function HomePage() {
                 if (reviewHighlightsData.success) {
                     setReviewHighlights(reviewHighlightsData.data);
                 }
-            } catch (error) {
+            } catch (_error) {
                 console.error("Data load failed");
             } finally {
                 setIsLoading(false);

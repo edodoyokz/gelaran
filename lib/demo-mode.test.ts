@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getAuthDemoConfig } from "./demo-mode.ts";
+import { getAuthDemoConfig } from "./demo-mode";
 
 test("auth demo shortcuts enabled in local stage", () => {
     assert.deepEqual(getAuthDemoConfig("local"), {

@@ -6,7 +6,6 @@ import {
     View,
     StyleSheet,
     Image,
-    Font,
 } from "@react-pdf/renderer";
 import { VOUCHER_TERMS } from "./voucher-content";
 import { TicketPdfData } from "./ticket-template";
@@ -235,6 +234,7 @@ export function EVoucherTemplate({ ticket }: { ticket: EVoucherData }) {
                     <View style={styles.qrContainer}>
                         <Text style={styles.ticketIdText}>{ticket.ticketCode}</Text>
                         {ticket.qrCodeDataUrl ? (
+                            // eslint-disable-next-line jsx-a11y/alt-text
                             <Image src={ticket.qrCodeDataUrl} style={{ width: 120, height: 120, marginBottom: 5 }} />
                         ) : (
                             <View style={styles.qrCodeBox}>
@@ -263,12 +263,12 @@ export function EVoucherTemplate({ ticket }: { ticket: EVoucherData }) {
                                 {section.title.en}
                             </Text>
 
-                            {section.items.map((item: any, i) => (
+                            {section.items.map((item: { id: string; en: string; subItems?: Array<{ id: string; en: string }> }, i) => (
                                 <View key={i} style={styles.termItem}>
                                     <Text style={styles.termTextId}>{item.id}</Text>
                                     <Text style={styles.termTextEn}>{item.en}</Text>
 
-                                    {item.subItems && item.subItems.map((sub: any, s: number) => (
+                                    {item.subItems && item.subItems.map((sub, s: number) => (
                                         <View key={s} style={{ flexDirection: 'row', marginLeft: 15, marginBottom: 4 }}>
                                             <Text style={{ fontSize: 8, marginRight: 5 }}>•</Text>
                                             <View style={{ flex: 1 }}>

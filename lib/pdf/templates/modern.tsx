@@ -224,6 +224,7 @@ export function ModernTemplate({ ticket, config }: ModernTemplateProps) {
       <Page size="A5" orientation="landscape" style={styles.page}>
         <View style={styles.header}>
           {config.assets.logoUrl ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
             <Image src={config.assets.logoUrl} style={{ width: 120, height: 40 }} />
           ) : (
             <Text style={styles.logo}>Gelaran</Text>

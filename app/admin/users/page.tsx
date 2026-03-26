@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     Search,
     UserCheck,
@@ -10,7 +11,6 @@ import {
     Shield,
     Loader2,
     AlertCircle,
-    Filter,
     Ban,
     CheckCircle,
     Eye,
@@ -78,13 +78,6 @@ interface ChartsData {
     genderDistribution: ChartDataPoint[];
     ageDistribution: ChartDataPoint[];
     topCities: ChartDataPoint[];
-}
-
-interface UsersResponse {
-    users: AdminUser[];
-    pagination: PaginationMeta;
-    stats: StatsData;
-    charts: ChartsData;
 }
 
 const ROLE_COLORS: Record<string, string> = {
@@ -965,10 +958,12 @@ export default function AdminUsersPage() {
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 bg-[var(--border)] rounded-full flex items-center justify-center overflow-hidden">
                                                     {u.avatarUrl ? (
-                                                        <img
+                                                        <Image
                                                             src={u.avatarUrl}
                                                             alt=""
-                                                            className="w-10 h-10 rounded-full object-cover"
+                                                            width={40}
+                                                            height={40}
+                                                            className="rounded-full object-cover"
                                                         />
                                                     ) : (
                                                         <span className="text-[var(--text-muted)] font-medium">

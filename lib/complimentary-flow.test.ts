@@ -5,7 +5,7 @@ import {
   getComplimentaryApprovalError,
   getComplimentaryReviewTransitionError,
   mapComplimentaryRequestSummary,
-} from "./complimentary-flow.ts";
+} from "./complimentary-flow";
 
 test("findComplimentarySubmissionConflict rejects when pending request exists for same event and guest email", async () => {
   const conflict = await findComplimentarySubmissionConflict(

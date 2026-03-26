@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     Loader2,
     AlertCircle,
@@ -355,10 +356,12 @@ export default function AdminUserDetailPage({
                             <div className="p-6 text-center border-b">
                                 <div className="w-24 h-24 bg-[var(--border)] rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
                                     {userData.avatarUrl ? (
-                                        <img
+                                        <Image
                                             src={userData.avatarUrl}
                                             alt=""
-                                            className="w-24 h-24 rounded-full object-cover"
+                                            width={96}
+                                            height={96}
+                                            className="rounded-full object-cover"
                                         />
                                     ) : (
                                         <User className="h-12 w-12 text-[var(--text-muted)]" />
@@ -686,10 +689,12 @@ export default function AdminUserDetailPage({
                                         <div className="flex items-start gap-4">
                                             <div className="w-16 h-16 bg-[var(--border)] rounded-xl flex items-center justify-center overflow-hidden">
                                                 {userData.organizerProfile.organizationLogo ? (
-                                                    <img
+                                                    <Image
                                                         src={userData.organizerProfile.organizationLogo}
                                                         alt=""
-                                                        className="w-16 h-16 object-cover"
+                                                        width={64}
+                                                        height={64}
+                                                        className="object-cover"
                                                     />
                                                 ) : (
                                                     <Building2 className="h-8 w-8 text-[var(--text-muted)]" />

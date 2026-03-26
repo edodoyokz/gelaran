@@ -51,14 +51,12 @@ declare module "midtrans-client" {
         token: string;
         redirect_url: string;
     }
-
-    class Snap {
+    export class Snap {
         constructor(config: MidtransConfig);
         createTransaction(options: SnapTransactionOptions): Promise<SnapTransaction>;
         createTransactionToken(options: SnapTransactionOptions): Promise<string>;
     }
-
-    class CoreApi {
+    export class CoreApi {
         constructor(config: MidtransConfig);
         charge(parameter: object): Promise<object>;
         capture(parameter: object): Promise<object>;

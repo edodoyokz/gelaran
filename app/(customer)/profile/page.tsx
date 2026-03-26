@@ -175,8 +175,9 @@ export default function ProfilePage() {
             await fetchProfile();
 
             setTimeout(() => setSuccess(null), 3000);
-        } catch (err: any) {
-            setError(err.message || "Gagal memperbarui profil");
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : "Gagal memperbarui profil";
+            setError(errorMessage);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } finally {
             setIsSaving(false);

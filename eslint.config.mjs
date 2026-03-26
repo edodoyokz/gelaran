@@ -24,6 +24,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    ".worktrees/**",
     "next-env.d.ts",
     // Utility scripts:
     "check_events.js",

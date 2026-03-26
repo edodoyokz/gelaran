@@ -2,23 +2,46 @@
 // Midtrans payment gateway configuration
 
 import midtransClient from "midtrans-client";
+import { getServerEnv } from "@/lib/env";
 
-// Sandbox/Production switch
-const isProduction = process.env.MIDTRANS_IS_PRODUCTION === "true";
+function getPaymentCredentials() {
+    const env = getServerEnv();
 
-// Snap client for frontend payment popup
-export const snap = new midtransClient.Snap({
-    isProduction,
-    serverKey: process.env.MIDTRANS_SERVER_KEY!,
-    clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY!,
-});
+    if (!env.NEXT_PUBLIC_PAYMENTS_ENABLED) {
+        throw new Error("Payments are disabled for the current stage");
+    }
 
-// Core API client for backend operations
-export const coreApi = new midtransClient.CoreApi({
-    isProduction,
-    serverKey: process.env.MIDTRANS_SERVER_KEY!,
-    clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY!,
-});
+    if (!env.MIDTRANS_SERVER_KEY || !env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY) {
+        throw new Error("Midtrans configuration is incomplete");
+    }
+
+    return {
+        serverKey: env.MIDTRANS_SERVER_KEY,
+        clientKey: env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
+    };
+}
+
+export function getSnap() {
+    const env = getServerEnv();
+    const { serverKey, clientKey } = getPaymentCredentials();
+
+    return new midtransClient.Snap({
+        isProduction: env.MIDTRANS_IS_PRODUCTION,
+        serverKey,
+        clientKey,
+    });
+}
+
+export function getCoreApi() {
+    const env = getServerEnv();
+    const { serverKey, clientKey } = getPaymentCredentials();
+
+    return new midtransClient.CoreApi({
+        isProduction: env.MIDTRANS_IS_PRODUCTION,
+        serverKey,
+        clientKey,
+    });
+}
 
 // Generate unique order ID
 export function generateOrderId(bookingCode: string): string {

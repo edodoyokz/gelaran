@@ -1,7 +1,10 @@
 import { type NextRequest } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma/client";
+import { createAuditLogger } from "@/lib/audit-log";
 import { successResponse, errorResponse } from "@/lib/api/response";
+import { createRequestLogger } from "@/lib/logging/logger";
+import { attachRequestIdHeader, createRequestContext } from "@/lib/logging/request";
 import { createClient } from "@/lib/supabase/server";
 import { getComplimentaryApprovalError, getComplimentaryReviewTransitionError } from "@/lib/complimentary-flow";
 import { generateBookingCode } from "@/lib/utils";
@@ -47,18 +50,32 @@ export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ requestId: string }> }
 ) {
+    const requestContext = createRequestContext(request, "/api/admin/complimentary-requests/[requestId]");
+    const logger = createRequestLogger(requestContext);
+    const auditLogger = createAuditLogger(prisma);
+    const ipAddress = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip");
+    const userAgent = request.headers.get("user-agent");
+    const fail = (message: string, code = 400, details?: Record<string, unknown>) =>
+        attachRequestIdHeader(errorResponse(message, code, details), requestContext.requestId);
+    const ok = <T>(data: T, status = 200) =>
+        attachRequestIdHeader(successResponse(data, undefined, status), requestContext.requestId);
+
     try {
         const { requestId } = await params;
+        logger.info("complimentary.review.request_received", "Complimentary review request received", {
+            requestId,
+        });
+
         const auth = await verifyAdminByEmail();
         if ("error" in auth) {
-            return errorResponse(auth.error, auth.status);
+            return fail(auth.error, auth.status);
         }
 
         const body = await request.json();
         const parsed = reviewSchema.safeParse(body);
 
         if (!parsed.success) {
-            return errorResponse("Validation error", 400, {
+            return fail("Validation error", 400, {
                 errors: parsed.error.flatten().fieldErrors,
             });
         }
@@ -72,7 +89,7 @@ export async function PUT(
         });
 
         if (!requestRecord) {
-            return errorResponse("Request not found", 404);
+            return fail("Request not found", 404);
         }
 
         if (action === "REJECT") {
@@ -141,7 +158,24 @@ export async function PUT(
                 return updated;
             });
 
-            return successResponse(rejected);
+            await auditLogger.log({
+                action: "COMPLIMENTARY_REVIEW_STATUS_CHANGED",
+                entityType: "ComplimentaryTicketRequest",
+                entityId: requestRecord.id,
+                userId: auth.admin.id,
+                ipAddress,
+                userAgent,
+                newValues: {
+                    action,
+                    status: "REJECTED",
+                },
+            });
+
+            logger.info("complimentary.review.rejected", "Complimentary request rejected", {
+                requestId,
+            });
+
+            return ok(rejected);
         }
 
         const bookingCode = generateBookingCode();
@@ -291,7 +325,26 @@ export async function PUT(
             };
         });
 
-        return successResponse({
+        await auditLogger.log({
+            action: "COMPLIMENTARY_REVIEW_STATUS_CHANGED",
+            entityType: "ComplimentaryTicketRequest",
+            entityId: requestRecord.id,
+            userId: auth.admin.id,
+            ipAddress,
+            userAgent,
+            newValues: {
+                action,
+                status: approved.status,
+                bookingCode: approved.booking.bookingCode,
+            },
+        });
+
+        logger.info("complimentary.review.approved", "Complimentary request approved", {
+            requestId,
+            bookingCode: approved.booking.bookingCode,
+        });
+
+        return ok({
             id: approved.requestId,
             status: approved.status,
             reviewedAt: approved.reviewedAt,
@@ -304,10 +357,13 @@ export async function PUT(
         });
     } catch (error) {
         if (error instanceof ComplimentaryFlowConflictError) {
-            return errorResponse(error.message, error.message === "Request not found" ? 404 : 409);
+            logger.warn("complimentary.review.conflict", "Complimentary review conflict", {
+                reason: error.message,
+            });
+            return fail(error.message, error.message === "Request not found" ? 404 : 409);
         }
 
-        console.error("Error reviewing complimentary request:", error);
-        return errorResponse("Failed to review complimentary request", 500);
+        logger.error("complimentary.review.failed", "Complimentary review failed", error);
+        return fail("Failed to review complimentary request", 500);
     }
 }

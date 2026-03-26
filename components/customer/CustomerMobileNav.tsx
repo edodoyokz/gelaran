@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Ticket, Sparkles, Heart, User } from "lucide-react";
-import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
     { href: "/dashboard", icon: Home, label: "Beranda" },
@@ -15,18 +14,12 @@ const NAV_ITEMS = [
 
 export function CustomerMobileNav() {
     const pathname = usePathname();
-    const [mounted, setMounted] = useState(false);
-    const [activeIndex, setActiveIndex] = useState(0);
-
-    useEffect(() => {
-        setMounted(true);
-        const index = NAV_ITEMS.findIndex(
+    const activeIndex = Math.max(
+        0,
+        NAV_ITEMS.findIndex(
             (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
-        );
-        if (index !== -1) setActiveIndex(index);
-    }, [pathname]);
-
-    if (!mounted) return null;
+        )
+    );
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden">
@@ -41,7 +34,7 @@ export function CustomerMobileNav() {
                         }}
                     />
 
-                    {NAV_ITEMS.map((item, index) => {
+                    {NAV_ITEMS.map((item) => {
                         const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
                         if (item.isCenter) {

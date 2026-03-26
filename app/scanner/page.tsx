@@ -37,7 +37,7 @@ interface CheckInStats {
 
 function ScannerContent() {
     const searchParams = useSearchParams();
-    const router = useRouter();
+    const _router = useRouter();
     const eventId = searchParams.get("event");
 
     const [ticketCode, setTicketCode] = useState("");

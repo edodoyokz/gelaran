@@ -80,7 +80,7 @@ export function VenueMapViewer({
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [expandedSection, setExpandedSection] = useState<string | null>(null);
-    const [zoomLevel, setZoomLevel] = useState(1);
+    const [zoomLevel, _setZoomLevel] = useState(1);
 
     useEffect(() => {
         const fetchVenueMap = async () => {
@@ -98,7 +98,7 @@ export function VenueMapViewer({
                 } else {
                     setError(result.error?.message || "Gagal memuat denah");
                 }
-            } catch (err) {
+            } catch (_err) {
                 setError("Gagal memuat denah venue");
             } finally {
                 setIsLoading(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
     ArrowLeft,
@@ -10,7 +10,6 @@ import {
     Clock,
     XCircle,
     AlertTriangle,
-    ChevronDown,
     ChevronUp,
     User,
 } from "lucide-react";
@@ -26,12 +25,6 @@ interface Refund {
     requestedAt: string;
     processedAt: string | null;
     completedAt: string | null;
-}
-
-interface RefundResponse {
-    refunds: Refund[];
-    refundPolicy: string | null;
-    canRequestRefund: boolean;
 }
 
 interface BookingSummary {
@@ -61,7 +54,7 @@ function RefundPageContent() {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchRefundData = async () => {
+    const fetchRefundData = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
@@ -94,11 +87,11 @@ function RefundPageContent() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [bookingCode]);
 
     useEffect(() => {
         fetchRefundData();
-    }, [bookingCode]);
+    }, [bookingCode, fetchRefundData]);
 
     const handleSubmitRefund = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -493,7 +486,7 @@ function RefundPageContent() {
                                     <div>
                                         <p className="font-medium text-gray-900">Syarat & Ketentuan</p>
                                         <p className="text-gray-600">
-                                            Refund hanya dapat diajukan untuk pesanan berstatus "PAID" atau "CONFIRMED".
+                                            Refund hanya dapat diajukan untuk pesanan berstatus &quot;PAID&quot; atau &quot;CONFIRMED&quot;.
                                         </p>
                                     </div>
                                 </div>

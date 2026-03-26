@@ -17,7 +17,7 @@ async function migrateCommissionToDatabase() {
       const settings = JSON.parse(data);
       platformFeePercentage = settings.platformFeePercentage || 5;
       console.log(`✓ Found platform fee in JSON: ${platformFeePercentage}%`);
-    } catch (error) {
+    } catch {
       console.log(`⚠ No JSON file found, using default: ${platformFeePercentage}%`);
     }
 

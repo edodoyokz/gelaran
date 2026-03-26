@@ -93,7 +93,7 @@ export function CommissionOverride({ organizerId, organizationName }: Commission
         const data = await res.json()
         showToast(data.error?.message || 'Failed to save commission', 'error')
       }
-    } catch (error) {
+    } catch (_error) {
       showToast('Network error', 'error')
     } finally {
       setIsSaving(false)
@@ -119,7 +119,7 @@ export function CommissionOverride({ organizerId, organizationName }: Commission
       } else {
         showToast('Failed to reset commission', 'error')
       }
-    } catch (error) {
+    } catch (_error) {
       showToast('Network error', 'error')
     } finally {
       setIsSaving(false)

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import {
     Search,
     Ticket,
@@ -325,10 +326,12 @@ function AdminBookingsContent() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <img
+                                                <Image
                                                     src={booking.event.posterImage || "/placeholder.jpg"}
                                                     alt=""
-                                                    className="w-10 h-10 object-cover rounded-lg"
+                                                    width={40}
+                                                    height={40}
+                                                    className="object-cover rounded-lg"
                                                 />
                                                 <div>
                                                     <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">

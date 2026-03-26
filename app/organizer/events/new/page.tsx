@@ -77,7 +77,7 @@ export default function CreateEventPage() {
         { id: generateId(), title: "", scheduleDate: "", startTime: "09:00", endTime: "17:00" },
     ]);
 
-    const [venueOption, setVenueOption] = useState<"new" | "online">("new");
+    const [venueOption, _setVenueOption] = useState<"new" | "online">("new");
     const [venueName, setVenueName] = useState("");
     const [venueAddress, setVenueAddress] = useState("");
     const [venueCity, setVenueCity] = useState("");

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 // Prisma-compatible types for Vercel deployment
 // These types mirror @prisma/client types but work without prisma generate
 
@@ -59,5 +60,4 @@ export namespace Prisma {
 }
 
 // Transaction client type - used for prisma.$transaction(async (tx) => {...})
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PrismaTransactionClient = Omit<typeof import("@/lib/prisma/client").default, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;

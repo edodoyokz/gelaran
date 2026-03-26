@@ -46,7 +46,7 @@ export default function OrganizerSettingsPage() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const [user, setUser] = useState<UserData | null>(null);
+    const [_user, setUser] = useState<UserData | null>(null);
     const [profile, setProfile] = useState<OrganizerProfile | null>(null);
 
     const [organizationName, setOrganizationName] = useState("");

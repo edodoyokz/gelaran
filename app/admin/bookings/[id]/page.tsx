@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 import {
-    ArrowLeft,
     Loader2,
     AlertCircle,
     Calendar,
@@ -12,7 +12,6 @@ import {
     User,
     Mail,
     Phone,
-    Ticket,
     CreditCard,
     Clock,
     CheckCircle,
@@ -271,10 +270,12 @@ export default function AdminBookingDetailPage() {
                             </div>
 
                             <div className="flex items-center gap-4 p-4 bg-[var(--surface-hover)] rounded-lg mb-6">
-                                <img
+                                <Image
                                     src={booking.event.posterImage || "/placeholder.jpg"}
                                     alt=""
-                                    className="w-20 h-20 object-cover rounded-lg"
+                                    width={80}
+                                    height={80}
+                                    className="object-cover rounded-lg"
                                 />
                                 <div>
                                     <Link

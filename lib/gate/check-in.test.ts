@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { checkInTicket } from "./check-in.ts";
+import { checkInTicket } from "./check-in";
 
 type DeviceAccessRecord = {
     id: string;

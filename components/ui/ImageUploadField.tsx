@@ -33,7 +33,7 @@ export function ImageUploadField({
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFile = async (file: File) => {
+    const handleFile = useCallback(async (file: File) => {
         if (disabled || isUploading) return;
 
         setError(null);
@@ -59,7 +59,7 @@ export function ImageUploadField({
         } finally {
             setIsUploading(false);
         }
-    };
+    }, [disabled, isUploading, maxSizeMB, onChange, bucket, folder]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -86,7 +86,7 @@ export function ImageUploadField({
         if (files && files.length > 0) {
             handleFile(files[0]);
         }
-    }, [disabled]);
+    }, [disabled, handleFile]);
 
     const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;

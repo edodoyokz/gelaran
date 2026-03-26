@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 import {
     Loader2,
     AlertCircle,
@@ -847,11 +848,12 @@ export default function AdminEventDetailPage() {
                     <div className="lg:col-span-2 space-y-6">
                         <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
                             {(event.bannerImage || event.posterImage) && (
-                                <div className="h-48 bg-[var(--border)]">
-                                    <img
+                                <div className="h-48 bg-[var(--border)] relative">
+                                    <Image
                                         src={event.bannerImage || event.posterImage || ""}
                                         alt=""
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
                                     />
                                 </div>
                             )}

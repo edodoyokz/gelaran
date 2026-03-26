@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import {
     ArrowLeft,
-    Ticket,
     Calendar,
     MapPin,
     Loader2,
@@ -18,7 +18,6 @@ import {
     Download,
     Copy,
     ExternalLink,
-    User,
     CreditCard,
     Ban,
     RefreshCw,
@@ -509,10 +508,11 @@ export default function BookingDetailPage({
                         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                             <div className="relative h-48 bg-gradient-to-br from-indigo-500 to-purple-600">
                                 {booking.event.bannerImage && (
-                                    <img
+                                    <Image
                                         src={booking.event.bannerImage}
                                         alt={booking.event.title}
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
                                     />
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -581,10 +581,12 @@ export default function BookingDetailPage({
 
                                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                                     {booking.event.organizer.organizerProfile?.organizationLogo ? (
-                                        <img
+                                        <Image
                                             src={booking.event.organizer.organizerProfile.organizationLogo}
                                             alt={booking.event.organizer.organizerProfile.organizationName}
-                                            className="w-10 h-10 rounded-full object-cover"
+                                            width={40}
+                                            height={40}
+                                            className="rounded-full object-cover"
                                         />
                                     ) : (
                                         <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">

@@ -38,7 +38,7 @@ async function main() {
     const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
     console.log(`🔑 Using default password: ${DEFAULT_PASSWORD}`);
 
-    const taxRate = await prisma.taxRate.create({
+    await prisma.taxRate.create({
         data: {
             name: "PPN Indonesia",
             code: "PPN-11",
@@ -46,16 +46,16 @@ async function main() {
             taxType: "PERCENTAGE",
             isInclusive: false,
             isDefault: true,
-            isActive: true
-        }
+            isActive: true,
+        },
     });
 
-    const defaultCommission = await prisma.commissionSetting.create({
+    await prisma.commissionSetting.create({
         data: {
             commissionType: "PERCENTAGE",
             commissionValue: 5.0,
-            isActive: true
-        }
+            isActive: true,
+        },
     });
 
     console.log("✅ Created tax rate and commission setting");
@@ -556,7 +556,7 @@ Wajib datang untuk pecinta musik indie!`,
         include: { schedules: true },
     });
 
-    const eventParty = await prisma.event.create({
+    await prisma.event.create({
         data: {
             organizerId: organizerParty.id,
             categoryId: categories[4].id,
@@ -609,7 +609,7 @@ Limited seats - Book now!`,
         include: { schedules: true },
     });
 
-    console.log("✅ Created 5 events");
+    console.log("Created 5 events");
 
     const ticketWayang = await Promise.all([
         prisma.ticketType.create({
@@ -636,7 +636,7 @@ Limited seats - Book now!`,
         }),
     ]);
 
-    const ticketBasket = await Promise.all([
+    await Promise.all([
         prisma.ticketType.create({
             data: {
                 eventId: eventBasket.id,
@@ -686,7 +686,7 @@ Limited seats - Book now!`,
         }),
     ]);
 
-    const ticketGigs = await Promise.all([
+    await Promise.all([
         prisma.ticketType.create({
             data: {
                 eventId: eventGigs.id,
@@ -711,34 +711,9 @@ Limited seats - Book now!`,
         }),
     ]);
 
-    const ticketParty = await Promise.all([
-        prisma.ticketType.create({
-            data: {
-                eventId: eventParty.id,
-                name: "Regular Pass",
-                description: "All you can eat & drink included",
-                basePrice: 500000,
-                totalQuantity: 100,
-                maxPerOrder: 5,
-                isFree: false,
-            },
-        }),
-        prisma.ticketType.create({
-            data: {
-                eventId: eventParty.id,
-                name: "VIP Pass",
-                description: "VIP lounge access + premium drinks + reserved table",
-                basePrice: 1000000,
-                totalQuantity: 30,
-                maxPerOrder: 10,
-                isFree: false,
-            },
-        }),
-    ]);
-
     console.log("✅ Created ticket types for all events");
 
-    const bookingWayang = await prisma.booking.create({
+    await prisma.booking.create({
         data: {
             userId: customers[0].id,
             eventId: eventWayang.id,
@@ -776,52 +751,7 @@ Limited seats - Book now!`,
         },
     });
 
-    const bookingBasket = await prisma.booking.create({
-        data: {
-            userId: customers[1].id,
-            eventId: eventBasket.id,
-            bookingCode: "GEL-BASKET-001",
-            guestName: customers[1].name,
-            guestEmail: customers[1].email,
-            guestPhone: customers[1].phone!,
-            totalTickets: 3,
-            subtotal: 225000,
-            platformFee: 11250,
-            taxAmount: 24750,
-            totalAmount: 249750,
-            platformRevenue: 11250,
-            organizerRevenue: 213750,
-            paymentStatus: "PAID",
-            status: "CONFIRMED",
-            bookedTickets: {
-                create: [
-                    {
-                        ticketTypeId: ticketBasket[0].id,
-                        uniqueCode: "TICK-BAS-001-01",
-                        unitPrice: 75000,
-                        finalPrice: 75000,
-                        status: "ACTIVE",
-                    },
-                    {
-                        ticketTypeId: ticketBasket[0].id,
-                        uniqueCode: "TICK-BAS-001-02",
-                        unitPrice: 75000,
-                        finalPrice: 75000,
-                        status: "ACTIVE",
-                    },
-                    {
-                        ticketTypeId: ticketBasket[0].id,
-                        uniqueCode: "TICK-BAS-001-03",
-                        unitPrice: 75000,
-                        finalPrice: 75000,
-                        status: "ACTIVE",
-                    },
-                ],
-            },
-        },
-    });
-
-    const bookingSeminar = await prisma.booking.create({
+    await prisma.booking.create({
         data: {
             userId: customers[2].id,
             eventId: eventSeminar.id,
@@ -845,44 +775,6 @@ Limited seats - Book now!`,
                         uniqueCode: "TICK-SEM-001-01",
                         unitPrice: 150000,
                         finalPrice: 150000,
-                        status: "ACTIVE",
-                    },
-                ],
-            },
-        },
-    });
-
-    const bookingGigs = await prisma.booking.create({
-        data: {
-            userId: customers[0].id,
-            eventId: eventGigs.id,
-            bookingCode: "GEL-GIGS-001",
-            guestName: customers[0].name,
-            guestEmail: customers[0].email,
-            guestPhone: customers[0].phone!,
-            totalTickets: 2,
-            subtotal: 400000,
-            platformFee: 20000,
-            taxAmount: 44000,
-            totalAmount: 444000,
-            platformRevenue: 20000,
-            organizerRevenue: 380000,
-            paymentStatus: "PAID",
-            status: "CONFIRMED",
-            bookedTickets: {
-                create: [
-                    {
-                        ticketTypeId: ticketGigs[0].id,
-                        uniqueCode: "TICK-GIG-001-01",
-                        unitPrice: 200000,
-                        finalPrice: 200000,
-                        status: "ACTIVE",
-                    },
-                    {
-                        ticketTypeId: ticketGigs[0].id,
-                        uniqueCode: "TICK-GIG-001-02",
-                        unitPrice: 200000,
-                        finalPrice: 200000,
                         status: "ACTIVE",
                     },
                 ],

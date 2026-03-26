@@ -15,11 +15,8 @@ interface TicketTransferRecord {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function generateNewTicketCode(): string {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 10).toUpperCase();
-  return `TKT-${timestamp}-${random}`;
-}
+
+
 
 export async function POST(
   request: NextRequest,
@@ -174,11 +171,11 @@ export async function POST(
     const schedule = eventSchedule;
     const eventDate = schedule
       ? new Date(schedule.scheduleDate).toLocaleDateString("id-ID", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
       : "TBA";
 
     try {

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     TrendingUp,
     TrendingDown,
@@ -397,10 +398,12 @@ export default function AdminFinancePage() {
                                 data.topEvents.map((event, index) => (
                                     <div key={event.id} className="px-6 py-4 flex items-center gap-4">
                                         <span className="text-lg font-bold text-[var(--text-muted)] w-6">{index + 1}</span>
-                                        <img
+                                        <Image
                                             src={event.posterImage || "/placeholder.jpg"}
                                             alt=""
-                                            className="w-12 h-12 object-cover rounded-lg"
+                                            width={48}
+                                            height={48}
+                                            className="object-cover rounded-lg"
                                         />
                                         <div className="flex-1 min-w-0">
                                             <p className="font-medium text-[var(--text-primary)] line-clamp-1">{event.title}</p>

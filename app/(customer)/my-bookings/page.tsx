@@ -17,7 +17,6 @@ import {
     ChevronRight,
     Download,
     Search,
-    Filter,
     Sparkles,
 } from "lucide-react";
 

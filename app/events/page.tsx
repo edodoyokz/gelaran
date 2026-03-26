@@ -11,7 +11,6 @@ import {
     Loader2,
     Grid,
     List,
-    ChevronDown,
     X,
     Tag,
     SlidersHorizontal,
@@ -620,7 +619,7 @@ function EventsContent() {
 
                             {pagination && pagination.totalPages > 1 && (
                                 <div className="flex justify-center gap-2 mt-8">
-                                    {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                                    {Array.from({ length: pagination.totalPages }, (__unused, i) => i + 1).map((page) => (
                                         <Link
                                             key={page}
                                             href={`/events?${new URLSearchParams({

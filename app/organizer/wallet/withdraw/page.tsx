@@ -24,7 +24,7 @@ interface BankAccount {
 }
 
 export default function WithdrawPage() {
-    const router = useRouter();
+    const _router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);

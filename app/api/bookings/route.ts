@@ -1,6 +1,8 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
+import { createRequestLogger } from "@/lib/logging/logger";
+import { attachRequestIdHeader, createRequestContext } from "@/lib/logging/request";
 import { createBookingSchema } from "@/lib/validators";
 import { createClient } from "@/lib/supabase/server";
 import { generateBookingCode } from "@/lib/utils";
@@ -22,7 +24,24 @@ interface TicketTypeRecord {
 }
 
 export async function POST(request: NextRequest) {
+    const requestContext = createRequestContext(request, "/api/bookings");
+    const logger = createRequestLogger(requestContext);
+    const fail = (message: string, code = 400, details?: Record<string, unknown>) => {
+        logger.warn("bookings.request_failed", message, {
+            statusCode: code,
+            details,
+        });
+
+        return attachRequestIdHeader(
+            errorResponse(message, code, details),
+            requestContext.requestId
+        );
+    };
+    const ok = <T>(data: T, status = 200) =>
+        attachRequestIdHeader(successResponse(data, undefined, status), requestContext.requestId);
+
     try {
+        logger.info("bookings.request_received", "Create booking request received");
         // Get authenticated user (optional for guest checkout)
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -32,7 +51,7 @@ export async function POST(request: NextRequest) {
         const parsed = createBookingSchema.safeParse(body);
 
         if (!parsed.success) {
-            return errorResponse("Invalid booking data", 400, parsed.error.flatten().fieldErrors);
+            return fail("Invalid booking data", 400, parsed.error.flatten().fieldErrors);
         }
 
         const {
@@ -49,7 +68,7 @@ export async function POST(request: NextRequest) {
 
         // Require either user or guest info
         if (!user && !guestEmail) {
-            return errorResponse("Email is required for guest checkout", 400);
+            return fail("Email is required for guest checkout", 400);
         }
 
         // Get event with ticket types
@@ -63,7 +82,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (!event) {
-            return errorResponse("Event not found", 404);
+            return fail("Event not found", 404);
         }
 
         const seatSelection = seatIds && seatIds.length > 0;
@@ -83,7 +102,7 @@ export async function POST(request: NextRequest) {
 
         if (seatSelection) {
             if (!seatSessionId) {
-                return errorResponse("Seat session is required", 400);
+                return fail("Seat session is required", 400);
             }
 
             const seats = await prisma.seat.findMany({
@@ -95,7 +114,7 @@ export async function POST(request: NextRequest) {
             });
 
             if (seats.length !== seatIds.length) {
-                return errorResponse("One or more seats not found", 404);
+                return fail("One or more seats not found", 404);
             }
 
             const now = new Date();
@@ -103,15 +122,15 @@ export async function POST(request: NextRequest) {
 
             for (const seat of seats) {
                 if (seat.row.section.eventId !== eventId) {
-                    return errorResponse("Seat does not belong to this event", 400);
+                    return fail("Seat does not belong to this event", 400);
                 }
 
                 if (!seat.ticketTypeId || !seat.ticketType) {
-                    return errorResponse("Seat is missing ticket type", 400);
+                    return fail("Seat is missing ticket type", 400);
                 }
 
                 if (seat.status === "BOOKED" || seat.status === "BLOCKED") {
-                    return errorResponse("One or more seats are not available", 400);
+                    return fail("One or more seats are not available", 400);
                 }
 
                 if (
@@ -120,7 +139,7 @@ export async function POST(request: NextRequest) {
                     !seat.lockedUntil ||
                     seat.lockedUntil < now
                 ) {
-                    return errorResponse("Seat is not locked", 400);
+                    return fail("Seat is not locked", 400);
                 }
 
                 const unitPrice = seat.priceOverride
@@ -149,29 +168,29 @@ export async function POST(request: NextRequest) {
             const requestedTicketKeys = Object.keys(requestedTicketCounts);
 
             if (seatTicketKeys.length !== requestedTicketKeys.length) {
-                return errorResponse("Ticket selection mismatch", 400);
+                return fail("Ticket selection mismatch", 400);
             }
 
             for (const ticketTypeId of seatTicketKeys) {
                 const seatCount = seatTicketCounts[ticketTypeId];
                 const requestedCount = requestedTicketCounts[ticketTypeId];
                 if (seatCount !== requestedCount) {
-                    return errorResponse("Ticket selection mismatch", 400);
+                    return fail("Ticket selection mismatch", 400);
                 }
             }
 
             for (const ticketTypeId of seatTicketKeys) {
                 const ticketType = event.ticketTypes.find((t: TicketTypeRecord) => t.id === ticketTypeId);
                 if (!ticketType) {
-                    return errorResponse(`Ticket type ${ticketTypeId} not found`, 400);
+                    return fail(`Ticket type ${ticketTypeId} not found`, 400);
                 }
 
                 const quantity = seatTicketCounts[ticketTypeId];
                 if (quantity < ticketType.minPerOrder) {
-                    return errorResponse(`Minimum ${ticketType.minPerOrder} tickets required for ${ticketType.name}`, 400);
+                    return fail(`Minimum ${ticketType.minPerOrder} tickets required for ${ticketType.name}`, 400);
                 }
                 if (quantity > ticketType.maxPerOrder) {
-                    return errorResponse(`Maximum ${ticketType.maxPerOrder} tickets allowed for ${ticketType.name}`, 400);
+                    return fail(`Maximum ${ticketType.maxPerOrder} tickets allowed for ${ticketType.name}`, 400);
                 }
 
                 const unitPrice = ticketType.isFree ? 0 : Number(ticketType.basePrice);
@@ -187,19 +206,19 @@ export async function POST(request: NextRequest) {
                 const ticketType = event.ticketTypes.find((t: TicketTypeRecord) => t.id === ticketRequest.ticketTypeId);
 
                 if (!ticketType) {
-                    return errorResponse(`Ticket type ${ticketRequest.ticketTypeId} not found`, 400);
+                    return fail(`Ticket type ${ticketRequest.ticketTypeId} not found`, 400);
                 }
 
                 const available = ticketType.totalQuantity - ticketType.soldQuantity - ticketType.reservedQuantity;
                 if (ticketRequest.quantity > available) {
-                    return errorResponse(`Only ${available} tickets available for ${ticketType.name}`, 400);
+                    return fail(`Only ${available} tickets available for ${ticketType.name}`, 400);
                 }
 
                 if (ticketRequest.quantity < ticketType.minPerOrder) {
-                    return errorResponse(`Minimum ${ticketType.minPerOrder} tickets required for ${ticketType.name}`, 400);
+                    return fail(`Minimum ${ticketType.minPerOrder} tickets required for ${ticketType.name}`, 400);
                 }
                 if (ticketRequest.quantity > ticketType.maxPerOrder) {
-                    return errorResponse(`Maximum ${ticketType.maxPerOrder} tickets allowed for ${ticketType.name}`, 400);
+                    return fail(`Maximum ${ticketType.maxPerOrder} tickets allowed for ${ticketType.name}`, 400);
                 }
 
                 const unitPrice = ticketType.isFree ? 0 : Number(ticketType.basePrice);
@@ -216,10 +235,10 @@ export async function POST(request: NextRequest) {
         }
 
         if (totalTickets < event.minTicketsPerOrder) {
-            return errorResponse(`Minimum ${event.minTicketsPerOrder} tickets per order`, 400);
+            return fail(`Minimum ${event.minTicketsPerOrder} tickets per order`, 400);
         }
         if (totalTickets > event.maxTicketsPerOrder) {
-            return errorResponse(`Maximum ${event.maxTicketsPerOrder} tickets per order`, 400);
+            return fail(`Maximum ${event.maxTicketsPerOrder} tickets per order`, 400);
         }
 
         // Apply promo code if provided
@@ -240,11 +259,11 @@ export async function POST(request: NextRequest) {
 
             if (promo) {
                 if (promo.usageLimitTotal && promo.usedCount >= promo.usageLimitTotal) {
-                    return errorResponse("Promo code usage limit reached", 400);
+                    return fail("Promo code usage limit reached", 400);
                 }
 
                 if (promo.minOrderAmount && subtotal < Number(promo.minOrderAmount)) {
-                    return errorResponse(`Minimum order ${promo.minOrderAmount} required for this promo`, 400);
+                    return fail(`Minimum order ${promo.minOrderAmount} required for this promo`, 400);
                 }
 
                 if (promo.discountType === "PERCENTAGE") {
@@ -427,15 +446,22 @@ export async function POST(request: NextRequest) {
             return newBooking;
         });
 
-        return successResponse({
+        logger.info("bookings.created", "Booking created", {
+            bookingId: booking.id,
+            bookingCode: booking.bookingCode,
+            eventId,
+            totalAmount: Number(booking.totalAmount),
+        });
+
+        return ok({
             id: booking.id,
             bookingCode: booking.bookingCode,
             totalAmount: Number(booking.totalAmount),
             status: booking.status,
             expiresAt: booking.expiresAt,
-        }, undefined, 201);
+        }, 201);
     } catch (error) {
-        console.error("Error creating booking:", error);
-        return errorResponse("Failed to create booking", 500);
+        logger.error("bookings.create_failed", "Failed to create booking", error);
+        return fail("Failed to create booking", 500);
     }
 }

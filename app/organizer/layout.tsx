@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma/client";
 import { OrganizerLayoutWrapper } from "@/components/organizer/OrganizerLayoutWrapper";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
+
 export default async function OrganizerLayout({
     children,
 }: {

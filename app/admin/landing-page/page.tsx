@@ -3,20 +3,15 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     LayoutTemplate,
     Search,
-    Type,
-    Image as ImageIcon,
     Save,
     Loader2,
     CheckCircle,
     Globe,
     Link as LinkIcon,
-    Facebook,
-    Twitter,
-    Instagram,
-    Youtube,
     Plus,
     Trash2,
     AlertCircle,
@@ -59,11 +54,7 @@ interface SeoContent {
     ogImage: string;
 }
 
-interface SiteContent {
-    hero: HeroContent;
-    footer: FooterContent;
-    seo: SeoContent;
-}
+type SiteContentSection = HeroContent | FooterContent | SeoContent;
 
 const DEFAULT_HERO: HeroContent = {
     title: "Find Your Next Experience",
@@ -131,7 +122,7 @@ export default function AdminLandingPage() {
         fetchContent();
     }, [fetchContent]);
 
-    const saveSection = async (key: string, value: any) => {
+    const saveSection = async (key: string, value: SiteContentSection) => {
         try {
             setIsSaving(key);
             setSuccess(null);
@@ -390,10 +381,11 @@ export default function AdminLandingPage() {
                                         <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Live Preview (Approximation)</p>
                                         <div className="relative rounded-lg overflow-hidden h-48 flex items-center justify-center text-center text-white isolate">
                                             {hero.backgroundImage ? (
-                                                <img 
-                                                    src={hero.backgroundImage} 
-                                                    alt="Hero Preview" 
-                                                    className="absolute inset-0 w-full h-full object-cover -z-10" 
+                                                <Image
+                                                    src={hero.backgroundImage}
+                                                    alt="Hero Preview"
+                                                    fill
+                                                    className="object-cover -z-10"
                                                 />
                                             ) : (
                                                 <div className="absolute inset-0 bg-gray-900 -z-10" />

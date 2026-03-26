@@ -9,12 +9,9 @@ import {
     Shield,
     Clock,
     CheckCircle,
-    XCircle,
     Loader2,
     AlertCircle,
-    Edit2,
     Trash2,
-    MoreVertical,
 } from "lucide-react";
 
 interface TeamMember {

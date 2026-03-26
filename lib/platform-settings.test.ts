@@ -4,7 +4,7 @@ import {
   DEFAULT_PLATFORM_SETTINGS,
   mergePlatformSettings,
   toPlatformSettingsResponse,
-} from "./platform-settings.ts";
+} from "./platform-settings";
 
 test("mergePlatformSettings deep merges nested payment gateways", () => {
   const merged = mergePlatformSettings(DEFAULT_PLATFORM_SETTINGS, {

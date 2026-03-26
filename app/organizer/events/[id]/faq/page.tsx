@@ -3,13 +3,20 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 
+interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+}
+
 export default function EventFaqManagementPage() {
   const params = useParams()
-  const [faqs, setFaqs] = useState<any[]>([])
+  const [faqs, setFaqs] = useState<FAQ[]>([])
   const [newQuestion, setNewQuestion] = useState('')
   const [newAnswer, setNewAnswer] = useState('')
   const [isAdding, setIsAdding] = useState(false)
-  
+
   const fetchFaqs = useCallback(async () => {
     const response = await fetch(`/api/organizer/events/${params.id}/faq`)
     if (response.ok) {
@@ -17,15 +24,15 @@ export default function EventFaqManagementPage() {
       setFaqs(data)
     }
   }, [params.id])
-  
+
   useEffect(() => {
     fetchFaqs()
   }, [fetchFaqs])
-  
+
   const handleAddFaq = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsAdding(true)
-    
+
     try {
       const response = await fetch(`/api/organizer/events/${params.id}/faq`, {
         method: 'POST',
@@ -35,26 +42,26 @@ export default function EventFaqManagementPage() {
           answer: newAnswer
         })
       })
-      
+
       if (response.ok) {
         setNewQuestion('')
         setNewAnswer('')
         await fetchFaqs()
       }
-    } catch (error) {
+    } catch (_error) {
       alert('Failed to add FAQ')
     } finally {
       setIsAdding(false)
     }
   }
-  
+
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-8">Manage Event FAQs</h1>
-      
+
       <div className="bg-[var(--surface)] border rounded-lg p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Add New FAQ</h2>
-        
+
         <form onSubmit={handleAddFaq} className="space-y-4">
           <div>
             <label htmlFor="faq-question" className="block text-sm font-medium mb-2">Question</label>
@@ -67,7 +74,7 @@ export default function EventFaqManagementPage() {
               required
             />
           </div>
-          
+
           <div>
             <label htmlFor="faq-answer" className="block text-sm font-medium mb-2">Answer</label>
             <textarea
@@ -79,7 +86,7 @@ export default function EventFaqManagementPage() {
               required
             />
           </div>
-          
+
           <button
             type="submit"
             disabled={isAdding}
@@ -89,10 +96,10 @@ export default function EventFaqManagementPage() {
           </button>
         </form>
       </div>
-      
+
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Existing FAQs</h2>
-        
+
         {faqs.map((faq, index) => (
           <div key={faq.id} className="border rounded-lg p-4">
             <h3 className="font-semibold mb-2">

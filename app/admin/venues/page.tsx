@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     Search,
     MapPin,
@@ -362,10 +363,11 @@ export default function AdminVenuesPage() {
                             >
                                 <div className="h-40 bg-gradient-to-br from-indigo-500 to-purple-600 relative">
                                     {venue.imageUrl ? (
-                                        <img
+                                        <Image
                                             src={venue.imageUrl}
                                             alt={venue.name}
-                                            className="w-full h-full object-cover"
+                                            fill
+                                            className="object-cover"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">

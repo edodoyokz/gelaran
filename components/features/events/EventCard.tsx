@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Heart, Star, Calendar, Clock } from "lucide-react";
+import { MapPin, Heart, Star, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface EventCardProps {

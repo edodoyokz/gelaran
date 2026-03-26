@@ -56,7 +56,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isOpen]);
+    }, [isOpen, handleCancel]);
 
     return (
         <ConfirmContext.Provider value={{ confirm }}>

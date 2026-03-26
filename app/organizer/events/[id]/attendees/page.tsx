@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
     ArrowLeft,
@@ -12,10 +12,9 @@ import {
     Clock,
     User,
     Mail,
-    Phone,
     Loader2,
 } from "lucide-react";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 interface Attendee {
     id: string;
@@ -31,7 +30,7 @@ interface Attendee {
     createdAt: string;
 }
 
-interface AttendeeResponse {
+interface _AttendeeResponse {
     attendees: Attendee[];
     pagination: {
         total: number;
@@ -48,7 +47,6 @@ interface AttendeeResponse {
 
 export default function EventAttendeesPage() {
     const params = useParams();
-    const router = useRouter();
     const eventId = params.id as string;
 
     const [attendees, setAttendees] = useState<Attendee[]>([]);
@@ -96,6 +94,8 @@ export default function EventAttendeesPage() {
 
     useEffect(() => {
         fetchAttendees();
+     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventId, page, search, statusFilter, checkedInFilter]);
 
     const handleExport = () => {

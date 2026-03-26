@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { 
-    ArrowLeft, QrCode, Users, ShieldCheck, Copy, Eye, EyeOff, 
+    ArrowLeft, QrCode, Users, Copy, Eye, EyeOff, 
     RefreshCw, Loader2, Smartphone, Clock, AlertTriangle, 
-    CheckCircle, XCircle, DoorOpen, Settings, X, ExternalLink, Ticket, ShoppingCart, Camera,
+    CheckCircle, XCircle, DoorOpen, X, ExternalLink, ShoppingCart, Camera,
 } from "lucide-react";
 
 interface EventData {
@@ -50,7 +50,6 @@ interface PageData {
 
 export default function GateManagementPage() {
     const params = useParams();
-    const router = useRouter();
     const eventId = params.id as string;
 
     const [loading, setLoading] = useState(true);
@@ -89,7 +88,7 @@ export default function GateManagementPage() {
             } else {
                 setError(json.error || "Gagal memuat data");
             }
-        } catch (err) {
+        } catch {
             setError("Terjadi kesalahan jaringan");
         } finally {
             setLoading(false);
@@ -122,7 +121,7 @@ export default function GateManagementPage() {
             } else {
                 showToast(json.error?.message || "Gagal membuat PIN", "error");
             }
-        } catch (err) {
+        } catch {
             showToast("Terjadi kesalahan jaringan", "error");
         } finally {
             setIsGenerating(false);
@@ -146,7 +145,7 @@ export default function GateManagementPage() {
             } else {
                 showToast(json.error || "Gagal mencabut akses", "error");
             }
-        } catch (err) {
+        } catch {
             showToast("Terjadi kesalahan jaringan", "error");
         } finally {
             setIsRevoking(null);

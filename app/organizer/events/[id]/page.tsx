@@ -17,7 +17,6 @@ import {
     ExternalLink,
     CheckCircle,
     XCircle,
-    MoreVertical,
     Plus,
     Trash2,
     RefreshCw,
@@ -211,7 +210,7 @@ export default function EventDetailPage() {
             }
 
             refetchEvent();
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         } finally {
             setIsPublishing(false);
@@ -232,7 +231,7 @@ export default function EventDetailPage() {
             }
 
             router.push("/organizer/events");
-        } catch (err) {
+        } catch {
             alert("Terjadi kesalahan");
         } finally {
             setIsDeleting(false);
@@ -684,7 +683,7 @@ function TicketsTab({ event, onRefresh }: { event: EventData; onRefresh: () => v
             }
 
             onRefresh();
-        } catch (error) {
+        } catch {
             alert("Terjadi kesalahan saat menghapus tiket");
         } finally {
             setIsDeleting(null);
@@ -726,7 +725,7 @@ function TicketsTab({ event, onRefresh }: { event: EventData; onRefresh: () => v
 
             setEditingTicket(null);
             onRefresh();
-        } catch (error) {
+        } catch {
             alert("Terjadi kesalahan saat menyimpan tiket");
         } finally {
             setIsLoading(false);
@@ -1168,7 +1167,7 @@ function SchedulesTab({ event, onRefresh }: { event: EventData; onRefresh: () =>
             }
 
             onRefresh();
-        } catch (error) {
+        } catch {
             alert("Terjadi kesalahan saat menghapus jadwal");
         } finally {
             setIsDeleting(null);
@@ -1210,7 +1209,7 @@ function SchedulesTab({ event, onRefresh }: { event: EventData; onRefresh: () =>
             setIsModalOpen(false);
             setEditingSchedule(null);
             onRefresh();
-        } catch (error) {
+        } catch {
             alert("Terjadi kesalahan saat menyimpan jadwal");
         } finally {
             setIsLoading(false);
@@ -1385,6 +1384,8 @@ function ComplimentaryTab({ event }: { event: EventData }) {
 
     useEffect(() => {
         fetchRequests();
+     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [event.id]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -1576,7 +1577,7 @@ function PromoCodesTab({ event }: { event: EventData }) {
             if (data.success) {
                 setPromoCodes(data.data);
             }
-        } catch (error) {
+        } catch {
             console.error("Failed to fetch promo codes");
         } finally {
             setIsLoading(false);
@@ -1584,7 +1585,9 @@ function PromoCodesTab({ event }: { event: EventData }) {
     };
 
     useEffect(() => {
+         
         fetchPromoCodes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [event.id]);
 
     const handleDelete = async (promoId: string) => {

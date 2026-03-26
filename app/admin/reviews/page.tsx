@@ -1,20 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
     ArrowLeft,
     Search,
     CheckCircle,
     XCircle,
-    Eye,
     EyeOff,
     Loader2,
     AlertTriangle,
     Star,
     Trash2,
-    ChevronDown,
-    ChevronUp,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast-provider";
@@ -43,16 +41,6 @@ interface Review {
     };
 }
 
-interface ReviewsResponse {
-    reviews: Review[];
-    pagination: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-    };
-}
-
 export default function AdminReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -63,11 +51,10 @@ export default function AdminReviewsPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [total, setTotal] = useState(0);
-    const [selectedReview, setSelectedReview] = useState<Review | null>(null);
     const { showToast } = useToast();
     const { confirm } = useConfirm();
 
-    const fetchReviews = async () => {
+    const fetchReviews = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
@@ -96,11 +83,11 @@ export default function AdminReviewsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [page, search, statusFilter, eventIdFilter]);
 
     useEffect(() => {
         fetchReviews();
-    }, [page, search, statusFilter, eventIdFilter]);
+    }, [page, search, statusFilter, eventIdFilter, fetchReviews]);
 
     const handleStatusChange = async (reviewId: string, newStatus: "PENDING" | "PUBLISHED" | "HIDDEN" | "REJECTED") => {
         try {
@@ -317,10 +304,12 @@ export default function AdminReviewsPage() {
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {review.user.avatarUrl ? (
-                                                            <img
+                                                            <Image
                                                                 src={review.user.avatarUrl}
                                                                 alt={review.user.name}
-                                                                className="w-10 h-10 rounded-full object-cover"
+                                                                width={40}
+                                                                height={40}
+                                                                className="rounded-full object-cover"
                                                             />
                                                         ) : (
                                                             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">

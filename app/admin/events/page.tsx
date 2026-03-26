@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
     Search,
     Eye,
@@ -12,7 +13,6 @@ import {
     MapPin,
     Loader2,
     AlertCircle,
-    Filter,
     ArrowUpDown,
     ChevronLeft,
     ChevronRight,
@@ -93,13 +93,6 @@ interface FilterOptions {
     organizers: Array<{ id: string; name: string; organizationName: string | null }>;
 }
 
-interface EventsResponse {
-    events: AdminEvent[];
-    pagination: PaginationMeta;
-    stats: StatsData;
-    filterOptions: FilterOptions;
-}
-
 const STATUS_COLORS: Record<string, string> = {
     DRAFT: "bg-gray-500/10 text-[var(--text-muted)]",
     PENDING_REVIEW: "bg-yellow-500/10 text-yellow-600",
@@ -152,8 +145,6 @@ export default function AdminEventsPage() {
 
     const [selectedEvents, setSelectedEvents] = useState<Set<string>>(new Set());
     const [isBulkActionLoading, setIsBulkActionLoading] = useState(false);
-
-    const [showAnalytics, setShowAnalytics] = useState(false);
 
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
@@ -751,10 +742,12 @@ export default function AdminEventsPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <img
+                                                <Image
                                                     src={event.posterImage || "/placeholder.jpg"}
                                                     alt=""
-                                                    className="w-12 h-12 object-cover rounded-lg"
+                                                    width={48}
+                                                    height={48}
+                                                    className="object-cover rounded-lg"
                                                 />
                                                 <div>
                                                     <p className="font-medium text-[var(--text-primary)] line-clamp-1">

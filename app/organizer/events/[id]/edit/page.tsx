@@ -127,8 +127,8 @@ export default function EditEventPage() {
 
             router.push(`/organizer/events/${eventId}`);
             router.refresh();
-        } catch (err: any) {
-            setFormError(err.message || "Terjadi kesalahan saat menyimpan");
+        } catch (err: unknown) {
+            setFormError(err instanceof Error ? err.message : "Terjadi kesalahan saat menyimpan");
             window.scrollTo({ top: 0, behavior: "smooth" });
         } finally {
             setIsSaving(false);
@@ -165,7 +165,7 @@ export default function EditEventPage() {
             <header className="bg-[var(--surface)] border-b sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
                     <div className="flex items-center gap-4">
-                        <Link 
+                        <Link
                             href={`/organizer/events/${eventId}`}
                             className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
                         >

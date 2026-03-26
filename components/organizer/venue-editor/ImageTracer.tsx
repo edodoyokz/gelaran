@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, ChangeEvent } from "react";
-import { Upload, Trash2, ZoomIn, ZoomOut, RotateCw, Loader2 } from "lucide-react";
+import { Upload, Trash2, Loader2 } from "lucide-react";
 
 interface ImageTracerProps {
     eventId: string;

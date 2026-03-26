@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
     Tag,
     Plus,
-    Edit2,
     Trash2,
     Copy,
     Loader2,
@@ -45,7 +44,6 @@ interface EventData {
 
 export default function EventPromoCodesPage() {
     const params = useParams();
-    const router = useRouter();
     const eventId = params.id as string;
 
     const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
@@ -53,7 +51,7 @@ export default function EventPromoCodesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [editingPromo, setEditingPromo] = useState<PromoCode | null>(null);
+    const [_editingPromo, _setEditingPromo] = useState<PromoCode | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -435,7 +433,7 @@ interface CreatePromoModalProps {
     isSubmitting: boolean;
 }
 
-function CreatePromoModal({ eventId, isOpen, onClose, onSubmit, isSubmitting }: CreatePromoModalProps) {
+function CreatePromoModal({ eventId: _eventId, isOpen, onClose, onSubmit, isSubmitting }: CreatePromoModalProps) {
     if (!isOpen) return null;
 
     const now = new Date();

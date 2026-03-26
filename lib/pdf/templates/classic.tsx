@@ -198,6 +198,7 @@ export function ClassicTemplate({ ticket, config }: ClassicTemplateProps) {
       <Page size="A5" orientation="portrait" style={styles.page}>
         <View style={styles.header}>
           {config.assets.logoUrl ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
             <Image src={config.assets.logoUrl} style={{ width: 100, height: 35, alignSelf: "center" }} />
           ) : (
             <Text style={styles.logo}>Gelaran</Text>
@@ -216,7 +217,7 @@ export function ClassicTemplate({ ticket, config }: ClassicTemplateProps) {
             <Text style={styles.infoLabel}>Lokasi</Text>
             <Text style={styles.infoValue}>{ticket.eventLocation}</Text>
           </View>
-            <View style={[styles.infoRow, { marginBottom: 0, borderBottomWidth: 0, paddingBottom: 0 }]}>
+          <View style={[styles.infoRow, { marginBottom: 0, borderBottomWidth: 0, paddingBottom: 0 }]}>
             <Text style={styles.infoLabel}>Tipe Acara</Text>
             <Text style={styles.infoValue}>{ticket.eventType}</Text>
           </View>

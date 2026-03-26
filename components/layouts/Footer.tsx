@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 
 interface FooterLink {
     label: string;

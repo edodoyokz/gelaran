@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
     DndContext,
     DragEndEvent,
@@ -12,14 +12,12 @@ import {
     ZoomOut,
     Move,
     Grid3X3,
-    Image as ImageIcon,
-    RotateCw,
+    Image as
     Eye,
     EyeOff,
     Armchair,
     Users,
 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
 
 // Types
 interface VenueSection {
@@ -129,14 +127,14 @@ function DraggableSection({
 
 // Main Canvas Component
 export function VenueCanvas({
-    eventId,
+    eventId: _eventId,
     sections,
-    ticketTypes,
+    ticketTypes: _ticketTypes,
     backgroundImage,
     onSectionMove,
-    onSectionResize,
+    onSectionResize: _onSectionResize,
     onSectionClick,
-    onSectionRotate,
+    onSectionRotate: _onSectionRotate,
     selectedSectionId,
 }: VenueCanvasProps) {
     const [scale, setScale] = useState(1);

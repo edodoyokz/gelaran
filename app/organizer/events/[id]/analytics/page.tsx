@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
     BarChart3,
@@ -15,7 +15,6 @@ import {
     Loader2,
     AlertCircle,
     Download,
-    RefreshCw,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -55,12 +54,11 @@ interface EventData {
 
 export default function EventAnalyticsPage() {
     const params = useParams();
-    const router = useRouter();
     const eventId = params.id as string;
 
     const [analytics, setAnalytics] = useState<EventAnalytics | null>(null);
     const [ticketStats, setTicketStats] = useState<TicketTypeStats[]>([]);
-    const [dailySales, setDailySales] = useState<DailySales[]>([]);
+    const [_dailySales, _setDailySales] = useState<DailySales[]>([]);
     const [event, setEvent] = useState<EventData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
