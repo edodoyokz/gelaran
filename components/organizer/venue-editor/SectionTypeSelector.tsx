@@ -93,7 +93,7 @@ export function SectionTypeSelector({
 
             {/* Help text based on selection */}
             <div className="flex items-start gap-2 p-2 bg-gray-50 rounded-lg text-xs text-gray-600">
-                <HelpCircle size={14} className="mt-0.5 flex-shrink-0" />
+                <HelpCircle size={14} className="mt-0.5 shrink-0" />
                 {value === "SEATED" && (
                     <span>Customer akan memilih kursi spesifik saat checkout. Cocok untuk konser, teater, bioskop.</span>
                 )}

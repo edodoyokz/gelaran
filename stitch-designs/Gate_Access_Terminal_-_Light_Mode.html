@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gate Terminal - Gelaran</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3f4948",
+                        "on-background": "#002020",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "inverse-on-surface": "#b8fdfc",
+                        "tertiary-container": "#654b00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-tertiary-container": "#f1b803",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "tertiary": "#483500",
+                        "surface-dim": "#a1e6e5",
+                        "primary": "#672200",
+                        "tertiary-fixed": "#ffdf9a",
+                        "secondary": "#00696b",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#aaefee",
+                        "surface-tint": "#a63b00",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#e2fffe",
+                        "secondary-fixed": "#7bf5f8",
+                        "primary-container": "#8d3100",
+                        "on-surface": "#002020",
+                        "surface-container-low": "#c1fffe",
+                        "secondary-container": "#7bf5f8",
+                        "primary-fixed": "#ffdbce",
+                        "error": "#ba1a1a",
+                        "background": "#e2fffe",
+                        "on-primary-fixed": "#370e00",
+                        "surface-container-highest": "#aaefee",
+                        "surface-container-high": "#aff5f4",
+                        "surface": "#e2fffe",
+                        "outline-variant": "#bec8c8",
+                        "outline": "#6f7978",
+                        "on-secondary-fixed": "#002021",
+                        "on-secondary-container": "#007072",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#003737",
+                        "on-primary-container": "#ffae8e",
+                        "inverse-primary": "#ffb598",
+                        "surface-container": "#b5faf9",
+                        "primary-fixed-dim": "#ffb598",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#251a00"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-full w-64 fixed left-0 top-0 hidden lg:flex flex-col bg-teal-50 dark:bg-teal-950 border-r border-teal-100 dark:border-teal-900 z-40">
+<div class="flex flex-col py-6 gap-4 h-full">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-serif font-bold text-teal-900">Gate 4 Status</h1>
+<p class="font-sans text-sm text-teal-700">North Entrance</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<!-- Dashboard Active -->
+<a class="flex items-center gap-3 px-4 py-3 text-orange-600 dark:text-orange-400 font-bold border-r-4 border-orange-600 bg-white dark:bg-teal-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-sm uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+<span class="font-sans text-sm uppercase tracking-wider">Live Feed</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-sans text-sm uppercase tracking-wider">Staff Roster</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-sans text-sm uppercase tracking-wider">Analytics</span>
+</a>
+</nav>
+<div class="mt-auto px-6 py-4">
+<button class="w-full py-3 bg-primary-container text-white font-sans font-medium uppercase tracking-wider rounded-md active:scale-95 transition-all">
+                    Shift Summary
+                </button>
+</div>
+<div class="px-3 border-t border-teal-100 dark:border-teal-900 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+<span class="font-sans text-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-sans text-sm">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="lg:pl-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-0 lg:left-64 z-50 bg-white dark:bg-slate-900 shadow-sm dark:shadow-none h-16 px-6 flex justify-between items-center border-b border-teal-50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-serif font-bold text-teal-900 dark:text-teal-50">Gate Terminal</span>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 font-sans font-medium uppercase tracking-wider text-sm transition-colors" href="#">Events</a>
+<a class="text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 pb-1 font-bold font-sans uppercase tracking-wider text-sm" href="#">Gates</a>
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 font-sans font-medium uppercase tracking-wider text-sm transition-colors" href="#">Shifts</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-2">
+<button class="p-2 text-teal-700 hover:bg-teal-50 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-teal-700 hover:bg-teal-50 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-px bg-teal-100 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-sans font-bold text-teal-900 uppercase tracking-tighter">Budi Santoso</p>
+<p class="text-[10px] text-teal-600 uppercase">Supervisor</p>
+</div>
+<img alt="Staff Profile Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-teal-100" data-alt="professional headshot of a middle-aged asian man with a friendly expression and short dark hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8LFawW_KFkijEnjb5Z_qKIRt87uDprpn2gbxVWkwp-9_QPZYRMszeh0B4-pQKL1tAwNjYf1acLAkWoovsAuqcZTYWQVefhBOWjnnVa0in8RssVmDe66yTR00roIuCjR7jRaxc_gQ6JLnpA96lGAsG6W43HKHbgNGNnvPRITIjn5g1x_rFKED38J4zR1FrJJ2hUw0QRfmXdS0_iPM7_k5YQxEJz_tRcFJQQgHpTVdfQNW2yy3lngXoQzlugyFo24JbZCea-5-EXP8"/>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="mt-16 p-8 flex flex-col gap-12 w-full max-w-[1600px] mx-auto">
+<!-- Hero Header Section -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-6">
+<div>
+<span class="font-sans text-sm font-medium uppercase tracking-widest text-teal-800 mb-2 block">Selamat Datang</span>
+<h2 class="text-5xl font-serif text-teal-900 leading-tight">Wilujeng Rawuh</h2>
+<div class="mt-4 flex items-center gap-4">
+<span class="inline-flex items-center px-3 py-1 rounded-sm bg-tertiary-fixed-dim text-on-tertiary-fixed text-xs font-bold uppercase tracking-widest">
+                            Active: Shift A
+                        </span>
+<span class="text-teal-600 font-sans text-sm">Terminal Operasional Gate 04</span>
+</div>
+</div>
+<button class="bg-[#F95D00] hover:bg-primary-container text-white px-10 py-5 rounded-md flex items-center gap-4 shadow-xl active:scale-95 transition-all group">
+<span class="font-sans font-bold text-lg uppercase tracking-wider">Start Check-in</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</section>
+<!-- Operational Bento Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Main Content Column -->
+<div class="col-span-12 xl:col-span-8 flex flex-col gap-12">
+<!-- Event Selector Section -->
+<section>
+<div class="mb-6">
+<span class="font-sans text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Quick Select</span>
+<h3 class="text-2xl font-serif text-teal-900">Current Events</h3>
+<div class="h-0.5 w-6 bg-primary mt-2"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Event Card 1 -->
+<div class="relative group cursor-pointer overflow-hidden rounded-xl border-none surface-container-low p-1">
+<div class="bg-white p-6 rounded-lg flex justify-between items-center transition-all group-hover:bg-teal-50">
+<div class="flex flex-col">
+<span class="font-sans text-[10px] font-bold text-orange-600 uppercase tracking-widest mb-1">Ongoing</span>
+<h4 class="font-headline text-xl text-teal-900">Solo Keroncong Festival</h4>
+<p class="font-sans text-sm text-on-surface-variant mt-1">Stadion Manahan, Solo</p>
+</div>
+<span class="material-symbols-outlined text-teal-300 group-hover:text-orange-600 transition-colors" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="relative group cursor-pointer overflow-hidden rounded-xl surface-container-low p-1">
+<div class="bg-white p-6 rounded-lg flex justify-between items-center transition-all group-hover:bg-teal-50">
+<div class="flex flex-col opacity-60">
+<span class="font-sans text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1">Upcoming</span>
+<h4 class="font-headline text-xl text-teal-900">Wayang Orang Sriwedari</h4>
+<p class="font-sans text-sm text-on-surface-variant mt-1">Gedung Wayang Orang</p>
+</div>
+<span class="material-symbols-outlined text-teal-100" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Assigned Gate Cards -->
+<section>
+<div class="mb-6 flex justify-between items-end">
+<div>
+<span class="font-sans text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Live Management</span>
+<h3 class="text-2xl font-serif text-teal-900">Assigned Gates</h3>
+<div class="h-0.5 w-6 bg-primary mt-2"></div>
+</div>
+<button class="text-teal-700 font-sans text-sm font-bold uppercase tracking-wider flex items-center gap-1 hover:text-orange-600 transition-colors">
+                                View All <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Gate Card 01 -->
+<div class="bg-surface-container-low rounded-xl p-6 flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline text-3xl text-teal-900">Gate 01</h4>
+<p class="font-sans text-sm text-teal-800 uppercase tracking-wider font-medium">VIP Entrance</p>
+</div>
+<span class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-tighter">Open</span>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold font-sans text-teal-900 uppercase mb-2">
+<span>Throughput</span>
+<span>450 / 600 Scanned</span>
+</div>
+<div class="h-2 bg-teal-100 rounded-full overflow-hidden">
+<div class="h-full bg-orange-600 rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<div class="flex items-center gap-4 pt-2">
+<div class="flex -space-x-2">
+<img alt="avatar" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="close-up portrait of a young professional smiling staff member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBpfwOs1FP85q-k1yt0LQU2Gx8RTY45KRz6kQDooSI5jmW3ei3QWk9IIBmgYYtX-J8NdPtzKHuqzoJdNpFqy3DU-6MupyGTrWxfwai6j9N13GjgyJDBgNFcYv9nxkCml8V9g5PxAOyoczwQGgwwOlE1Yb6f-ox6AVuAIu9OP42dcONLnqJjrWEA8vUgQqGK_zg5yuZGvq2DZ90d5Lhg2Ic4zusNSYCX1Sfx9s5Lp6hgGIT-PAw-Gk4ucF9ytcCzW4NH2cxOJV7USw"/>
+<img alt="avatar" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="close-up portrait of a young male operator wearing a headset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMChs7Zei_7lRBvgxyqG7ChggZB3QuCwBVvv6hTa8n96HnzI1FURJVLUjIN26i_pHzCJ8DaiF3U12r7UPYKBwFE7ALuSfNVYaqe97JFf-DgN8ApcjM_bVrwooea4bkZKsW9vwuznPJGd0ccSTlofL712LgUXh5A-WVy3UtFMoVwz4LkQ_jqFO8uP4xQs2uHyyTusrad6ZMA-gpQVe3MoCXmLnTBkKJtoMlfcAbLKAio4sFRREF4tk19zgxgh8AosneYhLGhmkK_kg"/>
+</div>
+<span class="text-[10px] font-sans text-teal-600 font-bold uppercase">2 Staff on duty</span>
+</div>
+</div>
+<!-- Gate Card 02 -->
+<div class="bg-surface-container-low rounded-xl p-6 flex flex-col gap-6 border border-teal-100/50">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline text-3xl text-teal-900">Gate 02</h4>
+<p class="font-sans text-sm text-teal-800 uppercase tracking-wider font-medium">Public Entrance A</p>
+</div>
+<span class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded-full uppercase tracking-tighter">Open</span>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold font-sans text-teal-900 uppercase mb-2">
+<span>Throughput</span>
+<span>120 / 1500 Scanned</span>
+</div>
+<div class="h-2 bg-teal-100 rounded-full overflow-hidden">
+<div class="h-full bg-teal-500 rounded-full" style="width: 8%"></div>
+</div>
+</div>
+<div class="flex items-center gap-4 pt-2">
+<div class="flex -space-x-2">
+<img alt="avatar" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="professional headshot of a female staff member in a neutral uniform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuJfQR4-dzHEjkW8rBU1rZVI-T2aRDUoGQITmPjXe81rdB7gIb4BAbHjASpxtPGW0Tz51QbkhmgT0J2EBpyr20ZL9wPv3EeuX6a-CDl2W6JKX_KIHHOsut2gAOH8pSXFuSlpbEte4dQQ7fHxDEa7wdkF7Yjy7_DP_6tTHoCXo5CroEN4EUuqW4sUOzDvmE7N7oKzNU6p4wJpsZ7cRs4XlC3HeCb9G6kxyOLmELiO9LZG-XWvWM6MRgW2yBrFiNGRQ8N55C7R3g8rE"/>
+</div>
+<span class="text-[10px] font-sans text-teal-600 font-bold uppercase">1 Staff on duty</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Statistics Sidebar -->
+<div class="col-span-12 xl:col-span-4 flex flex-col gap-8">
+<section class="bg-teal-900 text-white rounded-xl p-8 sticky top-24 shadow-2xl">
+<div class="mb-8 border-b border-teal-800 pb-4">
+<span class="font-sans text-xs font-bold uppercase tracking-widest text-teal-400 mb-1 block">Real-time Telemetry</span>
+<h3 class="text-2xl font-serif text-teal-50">Terminal Analytics</h3>
+</div>
+<div class="space-y-10">
+<!-- Stat 1 -->
+<div>
+<div class="flex justify-between items-baseline mb-3">
+<span class="font-sans text-sm text-teal-300">Total Scanned</span>
+<span class="font-serif text-3xl text-orange-400">570</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-sans uppercase font-bold text-teal-500">of 2,100 expected</span>
+<div class="flex-1 h-1 bg-teal-800 rounded-full">
+<div class="h-full bg-teal-400" style="width: 27%"></div>
+</div>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="flex justify-between items-center py-4 bg-teal-800/30 px-4 rounded-lg">
+<div class="flex flex-col">
+<span class="font-sans text-xs text-teal-300 uppercase tracking-widest mb-1">Peak Flow Rate</span>
+<span class="font-serif text-2xl">14.2 <span class="text-xs font-sans text-teal-400 uppercase">v/min</span></span>
+</div>
+<span class="material-symbols-outlined text-orange-500 text-4xl" data-icon="trending_up">trending_up</span>
+</div>
+<!-- Stat 3 -->
+<div>
+<span class="font-sans text-xs text-teal-300 uppercase tracking-widest mb-3 block">Wait Time Analysis</span>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-teal-950 p-4 rounded flex flex-col items-center">
+<span class="font-sans text-[10px] text-teal-500 uppercase font-bold mb-1">Current Avg</span>
+<span class="font-serif text-xl">4.5m</span>
+</div>
+<div class="bg-teal-950 p-4 rounded flex flex-col items-center border border-orange-600/30">
+<span class="font-sans text-[10px] text-teal-500 uppercase font-bold mb-1">Status</span>
+<span class="font-serif text-xl text-orange-400">Fast</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Map Placeholder -->
+<div class="mt-12 overflow-hidden rounded-lg aspect-video relative group">
+<img alt="Terminal Map" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" data-alt="abstract architectural blueprint map with highlighted gate zones in teal and orange markers" data-location="Solo, Indonesia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1Z-xUbmSW2G706Nh9-jkaW3jDe7JBQ0uX26qIrubFyQuBCpJrs1MrtvXQAn0CUNLlXWCf7wlzvaq5E9XPRo_dSF4ANQI1MFGafrb-z8FP3tZBtoHEtpD1KJePENbNkNcZtQqZHi0NvKj4duQrdiTLZnhfBnsR9YVNqoaC7XNXGmNhdHZmgkwVhWzxKa-BmuXdOyLy8lflh3LTF57gL-Oe6ht2ZEi7b8uhN7WqQudOxGj36mBD_GI0cJqdZ0xth9mNmZ7Z6cDMu9U"/>
+<div class="absolute inset-0 bg-gradient-to-t from-teal-950 to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="text-[10px] font-sans font-bold uppercase tracking-widest text-teal-400">Gate 04 Perimeter</span>
+<p class="text-xs text-white">Live Monitoring Active</p>
+</div>
+<div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+</body></html>

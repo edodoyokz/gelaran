@@ -13,7 +13,7 @@ import {
 
 export default function NotFound() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
             <div className="max-w-2xl mx-auto text-center">
                 <div className="relative mb-8">
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -41,7 +41,7 @@ export default function NotFound() {
                             <circle cx="100" cy="140" r="8" fill="currentColor" />
                         </svg>
                         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
-                            <span className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                            <span className="text-8xl font-black text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">
                                 404
                             </span>
                         </div>

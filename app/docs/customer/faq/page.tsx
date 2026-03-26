@@ -65,7 +65,7 @@ export default function CustomerFAQDocsPage() {
             </div>
 
             {/* Still need help */}
-            <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl mb-12">
+            <div className="p-6 bg-linear-to-br from-indigo-50 to-blue-50 rounded-xl mb-12">
                 <h3 className="font-bold text-slate-900 mb-2">Masih ada pertanyaan?</h3>
                 <p className="text-slate-600 mb-4">
                     Jika pertanyaan Anda belum terjawab, silakan hubungi tim support kami.

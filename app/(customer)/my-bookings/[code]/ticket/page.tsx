@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense, useCallback } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -9,7 +10,6 @@ import {
     Share2,
     Copy,
     CheckCircle,
-    XCircle,
     Clock,
     AlertTriangle,
     MapPin,
@@ -19,6 +19,12 @@ import {
     Loader2,
 } from "lucide-react";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
+import {
+    CustomerHero,
+    CustomerInfoList,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface TicketType {
     id: string;
@@ -72,6 +78,12 @@ interface BookingData {
     bookedTickets: BookedTicket[];
 }
 
+const TICKET_STATUS_META: Record<string, { label: string; tone: "success" | "danger" | "warning" | "neutral" }> = {
+    ACTIVE: { label: "Aktif", tone: "success" },
+    CANCELLED: { label: "Dibatalkan", tone: "danger" },
+    REFUNDED: { label: "Di-refund", tone: "warning" },
+};
+
 function TicketPageContent() {
     const params = useParams();
     const router = useRouter();
@@ -92,6 +104,7 @@ function TicketPageContent() {
             }
 
             setBooking(data.data);
+            setError(null);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Terjadi kesalahan";
             setError(message);
@@ -151,44 +164,12 @@ function TicketPageContent() {
         setTimeout(() => setCopiedCode(null), 2000);
     };
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "ACTIVE":
-                return (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
-                        <CheckCircle className="h-3.5 w-3.5" />
-                        Aktif
-                    </span>
-                );
-            case "CANCELLED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">
-                        <XCircle className="h-3.5 w-3.5" />
-                        Dibatalkan
-                    </span>
-                );
-            case "REFUNDED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
-                        <Clock className="h-3.5 w-3.5" />
-                        Di-refund
-                    </span>
-                );
-            default:
-                return (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-full">
-                        {status}
-                    </span>
-                );
-        }
-    };
-
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin" />
-                    <p className="text-gray-600">Memuat tiket...</p>
+                    <Loader2 className="h-12 w-12 animate-spin text-(--accent-primary)" />
+                    <p className="text-(--text-muted)">Memuat tiket...</p>
                 </div>
             </div>
         );
@@ -196,19 +177,22 @@ function TicketPageContent() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-red-50 to-amber-50 flex items-center justify-center p-4">
-                <div className="max-w-md w-full text-center">
-                    <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Gagal Memuat Tiket</h1>
-                    <p className="text-gray-600 mb-6">{error}</p>
-                    <button
-                        onClick={() => router.push("/my-bookings")}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                    >
-                        Kembali ke Daftar Pesanan
-                    </button>
+            <DashboardSection>
+                <div className="flex min-h-[45vh] items-center justify-center p-4">
+                    <div className="max-w-md text-center">
+                        <AlertTriangle className="mx-auto mb-4 h-16 w-16 text-(--error)" />
+                        <h1 className="mb-2 text-2xl font-semibold text-foreground">Gagal memuat tiket</h1>
+                        <p className="mb-6 text-(--text-secondary)">{error}</p>
+                        <button
+                            onClick={() => router.push("/my-bookings")}
+                            className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Kembali ke daftar pesanan
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </DashboardSection>
         );
     }
 
@@ -223,221 +207,242 @@ function TicketPageContent() {
         : "Waktu akan diumumkan";
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
-            <div className="max-w-4xl mx-auto px-4 py-8">
-                <div className="mb-6">
-                    <button
-                        onClick={() => router.push("/my-bookings")}
-                        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        <span>Kembali ke Daftar Pesanan</span>
-                    </button>
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Ticket detail"
+                title={`Tiket untuk ${booking.event.title}`}
+                description={`Booking ${booking.bookingCode}. Lihat QR, kode tiket, dan file PDF untuk setiap tiket pada pesanan ini.`}
+                meta={
+                    <>
+                        <CustomerStatusBadge label={`${booking.totalTickets} tiket`} tone="accent" icon={Ticket} />
+                        <CustomerStatusBadge label={booking.status} tone="neutral" />
+                    </>
+                }
+                actions={
+                    <>
+                        <Link
+                            href={`/my-bookings/${bookingCode}`}
+                            className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Detail booking
+                        </Link>
+                        <button
+                            onClick={handleShare}
+                            className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                        >
+                            <Share2 className="h-4 w-4" />
+                            Bagikan tiket
+                        </button>
+                    </>
+                }
+            />
+
+            <DashboardSection
+                title="Ringkasan event"
+                description="Informasi utama acara untuk membantu pengecekan tiket sebelum hari pelaksanaan."
+            >
+                <div className="flex flex-col gap-5 rounded-[1.75rem] border border-(--border-light) bg-(--surface-elevated) p-5 lg:flex-row">
+                    <div className="relative aspect-16/10 overflow-hidden rounded-2xl bg-(--surface-brand-soft) lg:w-72 lg:shrink-0">
+                        <Image
+                            src={booking.event.posterImage || "/placeholder.jpg"}
+                            alt={booking.event.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 100vw, 288px"
+                        />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-4">
+                        <div>
+                            <h2 className="text-2xl font-semibold text-foreground">{booking.event.title}</h2>
+                            <p className="mt-1 text-sm text-(--text-secondary)">
+                                Kode booking: <span className="font-mono">{booking.bookingCode}</span>
+                            </p>
+                        </div>
+
+                        <CustomerInfoList
+                            columns={2}
+                            items={[
+                                {
+                                    icon: Calendar,
+                                    label: "Tanggal & waktu",
+                                    value: `${eventDate} • ${eventTime}`,
+                                },
+                                {
+                                    icon: MapPin,
+                                    label: "Lokasi",
+                                    value:
+                                        booking.event.eventType === "ONLINE"
+                                            ? "Event online"
+                                            : schedule?.locationOverride || "Lokasi akan diumumkan",
+                                },
+                            ]}
+                        />
+                    </div>
                 </div>
+            </DashboardSection>
 
-                <div className="space-y-6">
-                    {booking.bookedTickets.map((ticket, idx) => (
-                        <div key={ticket.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
-                            {booking.bookedTickets.length > 1 && (
-                                <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-indigo-500 to-purple-600">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-white">
-                                            <Ticket className="h-5 w-5" />
-                                            <span className="font-bold">Tiket {idx + 1} dari {booking.bookedTickets.length}</span>
-                                        </div>
-                                        <span className="text-white/80 text-sm font-mono">
-                                            #{booking.bookingCode}
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
+            <DashboardSection
+                title="Daftar tiket"
+                description="Setiap tiket memiliki QR dan kode unik yang siap dipindai pada saat check-in."
+            >
+                <div className="space-y-4">
+                    {booking.bookedTickets.map((ticket, idx) => {
+                        const statusMeta = TICKET_STATUS_META[ticket.status] || {
+                            label: ticket.status,
+                            tone: "neutral" as const,
+                        };
 
-                            <div className="p-6 lg:p-8">
-                                <div className="flex flex-col lg:flex-row gap-8">
-                                    <div className="flex-1 space-y-6">
-                                        <div>
-                                            <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                                                {booking.event.title}
-                                            </h2>
-                                            <div className="flex items-center gap-2 mb-4">
-                                                {getStatusBadge(ticket.status)}
-                                                <span className="text-sm text-gray-500">
-                                                    Kode Tiket: {ticket.uniqueCode}
-                                                </span>
+                        return (
+                            <article
+                                key={ticket.id}
+                                className="rounded-[1.75rem] border border-(--border) bg-(--surface)/96 p-5 shadow-(--shadow-sm)"
+                            >
+                                <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+                                    <div className="space-y-5">
+                                        <div className="space-y-3">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <CustomerStatusBadge label={`Tiket ${idx + 1} dari ${booking.bookedTickets.length}`} tone="neutral" icon={Ticket} />
+                                                <CustomerStatusBadge label={statusMeta.label} tone={statusMeta.tone} />
+                                                {ticket.isCheckedIn ? (
+                                                    <CustomerStatusBadge label="Sudah check-in" tone="success" icon={CheckCircle} />
+                                                ) : null}
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <h3 className="text-xl font-semibold text-foreground">{ticket.ticketType.name}</h3>
                                                 <button
                                                     onClick={() => handleCopyTicketCode(ticket.uniqueCode)}
-                                                    className="text-indigo-600 hover:text-indigo-700"
+                                                    className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-3 py-1.5 text-xs font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover)"
                                                 >
-                                                    <Copy className="h-4 w-4" />
+                                                    <Copy className="h-3.5 w-3.5" />
+                                                    {copiedCode === ticket.uniqueCode ? "Tersalin" : "Salin kode"}
                                                 </button>
-                                                {copiedCode === ticket.uniqueCode && (
-                                                    <span className="text-xs text-green-600">Tersalin!</span>
-                                                )}
                                             </div>
+                                            <p className="font-mono text-sm text-(--text-muted)">{ticket.uniqueCode}</p>
                                         </div>
 
-                                        <div className="space-y-4">
-                                            <div className="flex items-start gap-3">
-                                                <div className="p-2 bg-indigo-100 rounded-lg">
-                                                    <Ticket className="h-5 w-5 text-indigo-600" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm text-gray-500 mb-1">Tipe Tiket</p>
-                                                    <p className="font-semibold text-gray-900">{ticket.ticketType.name}</p>
-                                                    {ticket.ticketType.description && (
-                                                        <p className="text-sm text-gray-600 mt-1">
-                                                            {ticket.ticketType.description}
-                                                        </p>
-                                                    )}
-                                                </div>
+                                        <CustomerInfoList
+                                            columns={2}
+                                            items={[
+                                                {
+                                                    icon: Ticket,
+                                                    label: "Tipe tiket",
+                                                    value: (
+                                                        <>
+                                                            <p>{ticket.ticketType.name}</p>
+                                                            {ticket.ticketType.description ? (
+                                                                <p className="text-(--text-secondary)">{ticket.ticketType.description}</p>
+                                                            ) : null}
+                                                        </>
+                                                    ),
+                                                },
+                                                {
+                                                    icon: Clock,
+                                                    label: "Check-in",
+                                                    value: ticket.isCheckedIn
+                                                        ? `Sudah check-in pada ${formatDate(ticket.checkedInAt || "")}`
+                                                        : "Belum check-in",
+                                                },
+                                                {
+                                                    icon: Calendar,
+                                                    label: "Tanggal & waktu",
+                                                    value: `${eventDate} • ${eventTime}`,
+                                                },
+                                                {
+                                                    icon: MapPin,
+                                                    label: "Lokasi",
+                                                    value:
+                                                        booking.event.eventType === "ONLINE"
+                                                            ? "Event online"
+                                                            : schedule?.locationOverride || "Lokasi akan diumumkan",
+                                                },
+                                            ]}
+                                        />
+
+                                        <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <span className="text-sm text-(--text-secondary)">Harga tiket</span>
+                                                <span className="font-semibold text-foreground">
+                                                    {formatCurrency(Number(ticket.unitPrice))}
+                                                </span>
                                             </div>
-
-                                            {ticket.isCheckedIn ? (
-                                                <div className="flex items-start gap-3">
-                                                    <div className="p-2 bg-green-100 rounded-lg">
-                                                        <CheckCircle className="h-5 w-5 text-green-600" />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <p className="text-sm text-gray-500 mb-1">Check-in</p>
-                                                        <p className="font-semibold text-green-600">
-                                                            Sudah check-in pada {formatDate(ticket.checkedInAt || "")}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-start gap-3">
-                                                    <div className="p-2 bg-amber-100 rounded-lg">
-                                                        <Clock className="h-5 w-5 text-amber-600" />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <p className="text-sm text-gray-500 mb-1">Check-in</p>
-                                                        <p className="font-semibold text-amber-600">Belum check-in</p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <div className="flex items-start gap-3">
-                                                <div className="p-2 bg-purple-100 rounded-lg">
-                                                    <Calendar className="h-5 w-5 text-purple-600" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm text-gray-500 mb-1">Tanggal & Waktu</p>
-                                                    <p className="font-semibold text-gray-900">
-                                                        {eventDate} | {eventTime}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            {booking.event.eventType !== "ONLINE" && (
-                                                <div className="flex items-start gap-3">
-                                                    <div className="p-2 bg-pink-100 rounded-lg">
-                                                        <MapPin className="h-5 w-5 text-pink-600" />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <p className="text-sm text-gray-500 mb-1">Lokasi</p>
-                                                        <p className="font-semibold text-gray-900">
-                                                            {booking.event.eventType === "ONLINE"
-                                                                ? "Online Event"
-                                                                : schedule?.locationOverride || "Lokasi akan diumumkan"}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div className="border-t border-gray-100 pt-6">
-                                            <div className="bg-gray-50 rounded-xl p-6 space-y-3">
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-gray-600">Harga Tiket</span>
-                                                    <span className="font-bold text-gray-900">
-                                                        {formatCurrency(Number(ticket.unitPrice))}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-gray-600">Total</span>
-                                                    <span className="font-bold text-2xl text-indigo-600">
-                                                        {formatCurrency(Number(ticket.finalPrice))}
-                                                    </span>
-                                                </div>
+                                            <div className="mt-3 flex items-center justify-between gap-4 border-t border-(--border-light) pt-3">
+                                                <span className="text-sm text-(--text-secondary)">Total</span>
+                                                <span className="text-2xl font-semibold text-foreground">
+                                                    {formatCurrency(Number(ticket.finalPrice))}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="w-full lg:w-80 flex flex-col gap-6">
-                                        <div className="bg-white rounded-2xl border-2 border-indigo-200 p-6 flex flex-col items-center justify-center">
+                                    <aside className="space-y-4">
+                                        <div className="rounded-[1.75rem] border border-[rgba(41,179,182,0.22)] bg-(--surface-brand-soft) p-5 text-center">
                                             {ticket.qrCodeUrl ? (
                                                 <Image
                                                     src={ticket.qrCodeUrl}
                                                     alt={`QR Code ${ticket.uniqueCode}`}
                                                     width={256}
                                                     height={256}
-                                                    className="w-64 h-64"
+                                                    className="mx-auto h-64 w-64 rounded-2xl bg-white p-3"
                                                 />
                                             ) : (
-                                                <QrCode className="h-64 w-64 text-gray-300" />
+                                                <div className="mx-auto flex h-64 w-64 items-center justify-center rounded-2xl bg-white p-3">
+                                                    <QrCode className="h-32 w-32 text-(--text-muted)" />
+                                                </div>
                                             )}
-                                            <p className="text-center text-sm text-gray-600 mt-4">
-                                                Scan QR Code untuk check-in
-                                            </p>
-                                            <p className="text-center text-xs text-gray-500 mt-2 font-mono">
-                                                {ticket.uniqueCode}
+                                            <p className="mt-4 text-sm text-(--text-secondary)">
+                                                Scan QR Code untuk proses check-in.
                                             </p>
                                         </div>
 
-                                        <div className="space-y-3">
+                                        <div className="grid gap-3">
                                             <button
                                                 onClick={() => handleDownloadTicket(ticket.id)}
-                                                className="w-full px-6 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
+                                                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
                                             >
-                                                <Download className="h-5 w-5" />
-                                                Unduh Tiket PDF
+                                                <Download className="h-4 w-4" />
+                                                Unduh tiket PDF
                                             </button>
                                             <button
                                                 onClick={handleShare}
-                                                className="w-full px-6 py-4 border-2 border-indigo-200 text-indigo-700 rounded-xl font-semibold hover:bg-indigo-50 transition-all flex items-center justify-center gap-2"
+                                                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                                             >
-                                                <Share2 className="h-5 w-5" />
-                                                Bagikan Tiket
+                                                <Share2 className="h-4 w-4" />
+                                                Bagikan tiket
                                             </button>
                                         </div>
-                                    </div>
+                                    </aside>
                                 </div>
-                            </div>
+                            </article>
+                        );
+                    })}
 
-                            {booking.bookedTickets.length > 1 && idx < booking.bookedTickets.length - 1 && (
-                                <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
-                                    <span className="text-sm text-gray-600">
-                                        Tiket berikutnya pada pesanan ini
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-
-                    {booking.bookedTickets.length > 1 && (
+                    {booking.bookedTickets.length > 1 ? (
                         <div className="flex justify-center">
                             <button
                                 onClick={handleDownloadAll}
-                                className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all flex items-center gap-2"
+                                className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                             >
-                                <Download className="h-5 w-5" />
-                                Unduh Semua Tiket ({booking.bookedTickets.length})
+                                <Download className="h-4 w-4" />
+                                Unduh semua tiket ({booking.bookedTickets.length})
                             </button>
                         </div>
-                    )}
+                    ) : null}
                 </div>
-            </div>
+            </DashboardSection>
         </div>
     );
 }
 
 export default function TicketPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center">
-                <Loader2 className="h-12 w-12 text-indigo-600 animate-spin" />
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="min-h-[60vh] flex items-center justify-center">
+                    <Loader2 className="h-12 w-12 animate-spin text-(--accent-primary)" />
+                </div>
+            }
+        >
             <TicketPageContent />
         </Suspense>
     );

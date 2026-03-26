@@ -4,22 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-    Search,
-    Bell,
-    Moon,
-    Sun,
-    User,
-    Settings,
-    LogOut,
-    ChevronDown,
-    Ticket,
-    Heart,
-    X,
-    BookOpen,
-} from "lucide-react";
 import { useTheme } from "@/lib/hooks/useTheme";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
 
 interface CustomerHeaderProps {
     user: {
@@ -35,11 +22,9 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
     const router = useRouter();
     const { resolvedTheme, toggleTheme } = useTheme();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const profileRef = useRef<HTMLDivElement>(null);
-    const searchInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -50,12 +35,6 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
-    useEffect(() => {
-        if (isSearchOpen && searchInputRef.current) {
-            searchInputRef.current.focus();
-        }
-    }, [isSearchOpen]);
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
@@ -69,194 +48,104 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
         e.preventDefault();
         if (searchQuery.trim()) {
             router.push(`/events?q=${encodeURIComponent(searchQuery.trim())}`);
-            setIsSearchOpen(false);
             setSearchQuery("");
         }
     };
 
     return (
-        <>
-            <header className="fixed top-0 left-0 right-0 z-40 glass-strong safe-area-top">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    <div className="flex items-center justify-between h-16">
-                        <Link href="/dashboard" className="flex items-center gap-2">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-                                <span className="text-white font-bold text-lg">B</span>
+        <header className="bg-white dark:bg-slate-950 text-[#015959] dark:text-[#29B3B6] docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm fixed w-full px-8 py-3 h-16 flex justify-between items-center transition-colors">
+            <div className="flex items-center gap-8">
+                <Link href="/dashboard" className="text-2xl font-black text-[#015959] dark:text-[#29B3B6] tracking-tighter font-headline">
+                    Gelaran
+                </Link>
+                <form onSubmit={handleSearch} className="hidden md:flex items-center bg-slate-50 dark:bg-slate-900 rounded-full px-4 py-1.5 border border-slate-200 dark:border-slate-700">
+                    <span className="material-symbols-outlined text-slate-400 text-sm mr-2">search</span>
+                    <input 
+                        className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-400 text-[#015959] dark:text-[#29B3B6] outline-none" 
+                        placeholder="Search events..." 
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </form>
+            </div>
+
+            <nav className="hidden md:flex items-center gap-6 font-['Noto_Serif'] font-bold text-lg">
+                <Link className="text-[#F95D00] font-bold border-b-2 border-[#F95D00] pb-1" href="/events">Explore</Link>
+                <Link className="text-slate-600 dark:text-slate-400 hover:text-[#015959] transition-colors" href="/docs/customer">Help</Link>
+                <Link className="text-slate-600 dark:text-slate-400 hover:text-[#015959] transition-colors" href="/partner">Partner</Link>
+            </nav>
+
+            <div className="flex items-center gap-4">
+                <button onClick={toggleTheme} className="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors hidden sm:block">
+                    <span className="material-symbols-outlined shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>
+                        {resolvedTheme === "dark" ? "light_mode" : "dark_mode"}
+                    </span>
+                </button>
+
+                <Link href="/notifications" className="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors relative block">
+                    <span className="material-symbols-outlined shrink-0">notifications</span>
+                    {notificationCount > 0 && (
+                        <span className="absolute top-2 right-2 w-2 h-2 bg-[#F95D00] rounded-full"></span>
+                    )}
+                </Link>
+
+                <div ref={profileRef} className="relative flex items-center gap-2 ml-2 pl-4 border-l border-slate-200 dark:border-slate-700 h-8">
+                    <button 
+                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                    >
+                        {user.avatarUrl ? (
+                            <Image
+                                src={user.avatarUrl}
+                                alt={user.name}
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 rounded-full object-cover shrink-0"
+                            />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-[#015959] dark:bg-[#29B3B6] flex items-center justify-center shrink-0">
+                                <span className="text-white dark:text-slate-900 font-bold text-sm">
+                                    {user.name.charAt(0).toUpperCase()}
+                                </span>
                             </div>
-                            <span className="font-bold text-xl text-[var(--text-primary)] hidden sm:block">
-                                Gelaran
-                            </span>
-                        </Link>
+                        )}
+                        <span className="material-symbols-outlined text-sm hidden sm:block shrink-0">
+                            {isProfileOpen ? "expand_less" : "expand_more"}
+                        </span>
+                    </button>
 
-                        <div className="flex items-center gap-1 sm:gap-2">
-                            <button
-                                type="button"
-                                onClick={() => setIsSearchOpen(true)}
-                                className="p-2.5 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors touch-target"
-                                aria-label="Search"
-                            >
-                                <Search className="w-5 h-5" />
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={toggleTheme}
-                                className="p-2.5 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors touch-target"
-                                aria-label="Toggle theme"
-                            >
-                                {resolvedTheme === "dark" ? (
-                                    <Sun className="w-5 h-5" />
-                                ) : (
-                                    <Moon className="w-5 h-5" />
-                                )}
-                            </button>
-
-                            <Link
-                                href="/notifications"
-                                className="relative p-2.5 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors touch-target"
-                                aria-label="Notifications"
-                            >
-                                <Bell className="w-5 h-5" />
-                                {notificationCount > 0 && (
-                                    <span className="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 bg-[var(--error)] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                                        {notificationCount > 9 ? "9+" : notificationCount}
-                                    </span>
-                                )}
-                            </Link>
-
-                            <div ref={profileRef} className="relative">
+                    {isProfileOpen && (
+                        <div className="absolute right-0 top-full mt-4 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2">
+                            <div className="p-4 border-b border-slate-100 dark:border-slate-800">
+                                <p className="font-bold text-[#015959] dark:text-[#29B3B6] truncate">{user.name}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+                            </div>
+                            <div className="p-2">
+                                <Link onClick={() => setIsProfileOpen(false)} href="/profile" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#015959] dark:hover:text-[#29B3B6] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                                    <span className="material-symbols-outlined text-[20px]">person</span> Profile
+                                </Link>
+                                <Link onClick={() => setIsProfileOpen(false)} href="/my-bookings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#015959] dark:hover:text-[#29B3B6] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                                    <span className="material-symbols-outlined text-[20px]">confirmation_number</span> Tickets
+                                </Link>
+                                <Link onClick={() => setIsProfileOpen(false)} href="/wishlist" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#015959] dark:hover:text-[#29B3B6] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                                    <span className="material-symbols-outlined text-[20px]">favorite</span> Wishlist
+                                </Link>
+                            </div>
+                            <div className="p-2 border-t border-slate-100 dark:border-slate-800">
                                 <button
-                                    type="button"
-                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="flex items-center gap-2 p-1.5 pr-2 rounded-xl hover:bg-[var(--surface-hover)] transition-colors"
+                                    onClick={handleLogout}
+                                    disabled={isLoggingOut}
+                                    className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                 >
-                                    {user.avatarUrl ? (
-                                        <Image
-                                            src={user.avatarUrl}
-                                            alt={user.name}
-                                            width={32}
-                                            height={32}
-                                            className="w-8 h-8 rounded-lg object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                                            <span className="text-white font-semibold text-sm">
-                                                {user.name.charAt(0).toUpperCase()}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <ChevronDown
-                                        className={`w-4 h-4 text-[var(--text-muted)] transition-transform hidden sm:block ${isProfileOpen ? "rotate-180" : ""
-                                            }`}
-                                    />
+                                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                                    {isLoggingOut ? "Logging out..." : "Logout"}
                                 </button>
-
-                                {isProfileOpen && (
-                                    <div className="absolute right-0 top-full mt-2 w-64 bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-xl overflow-hidden animate-scale-in">
-                                        <div className="p-4 border-b border-[var(--border)]">
-                                            <p className="font-semibold text-[var(--text-primary)] truncate">
-                                                {user.name}
-                                            </p>
-                                            <p className="text-sm text-[var(--text-muted)] truncate">
-                                                {user.email}
-                                            </p>
-                                        </div>
-
-                                        <div className="p-2">
-                                            <Link
-                                                href="/profile"
-                                                onClick={() => setIsProfileOpen(false)}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                            >
-                                                <User className="w-4 h-4" />
-                                                <span className="text-sm font-medium">Profil Saya</span>
-                                            </Link>
-                                            <Link
-                                                href="/my-bookings"
-                                                onClick={() => setIsProfileOpen(false)}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                            >
-                                                <Ticket className="w-4 h-4" />
-                                                <span className="text-sm font-medium">Pesanan Saya</span>
-                                            </Link>
-                                            <Link
-                                                href="/wishlist"
-                                                onClick={() => setIsProfileOpen(false)}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                            >
-                                                <Heart className="w-4 h-4" />
-                                                <span className="text-sm font-medium">Wishlist</span>
-                                            </Link>
-                                            <Link
-                                                href="/docs/customer"
-                                                onClick={() => setIsProfileOpen(false)}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                            >
-                                                <BookOpen className="w-4 h-4" />
-                                                <span className="text-sm font-medium">Bantuan</span>
-                                            </Link>
-                                            <Link
-                                                href="/profile#settings"
-                                                onClick={() => setIsProfileOpen(false)}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
-                                            >
-                                                <Settings className="w-4 h-4" />
-                                                <span className="text-sm font-medium">Pengaturan</span>
-                                            </Link>
-                                        </div>
-
-                                        <div className="p-2 border-t border-[var(--border)]">
-                                            <button
-                                                type="button"
-                                                onClick={handleLogout}
-                                                disabled={isLoggingOut}
-                                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--error)] hover:bg-[var(--error-bg)] transition-colors disabled:opacity-50"
-                                            >
-                                                <LogOut className="w-4 h-4" />
-                                                <span className="text-sm font-medium">
-                                                    {isLoggingOut ? "Keluar..." : "Keluar"}
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-            </header>
-
-            {isSearchOpen && (
-                <div className="fixed inset-0 z-50 bg-[var(--surface-overlay)] animate-fade-in">
-                    <div className="fixed inset-x-0 top-0 bg-[var(--surface)] p-4 safe-area-top animate-slide-in-down">
-                        <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
-                            <div className="flex items-center gap-3">
-                                <div className="flex-1 relative">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
-                                    <input
-                                        ref={searchInputRef}
-                                        type="text"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Cari event, konser, workshop..."
-                                        className="w-full pl-12 pr-4 py-3.5 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--accent-primary)]/20 transition-all"
-                                    />
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsSearchOpen(false);
-                                        setSearchQuery("");
-                                    }}
-                                    className="p-3 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </>
+            </div>
+        </header>
     );
 }

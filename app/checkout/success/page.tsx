@@ -1,9 +1,15 @@
 "use client";
 
-import { Suspense, useState, useEffect, useCallback } from "react";
-import Link from "next/link";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { Download, Loader2, Ticket } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle, Download, Ticket, ArrowRight, Loader2 } from "lucide-react";
+import {
+    CheckoutActionBar,
+    CheckoutCallout,
+    CheckoutPageShell,
+    CheckoutStatusHero,
+    CheckoutStatusNotes,
+} from "@/components/features/checkout/checkout-primitives";
 
 interface BookingTicket {
     id: string;
@@ -25,15 +31,15 @@ function SuccessContent() {
 
     useEffect(() => {
         if (!bookingCode) return;
-        
+
         fetch(`/api/my-bookings/${bookingCode}`)
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
                 if (data.success) {
                     setBookingData(data.data);
                 }
             })
-            .catch(() => {});
+            .catch(() => { });
     }, [bookingCode]);
 
     const handleDownloadTickets = useCallback(async () => {
@@ -48,7 +54,7 @@ function SuccessContent() {
         try {
             for (const ticket of bookingData.bookedTickets) {
                 const response = await fetch(`/api/tickets/${ticket.id}/pdf`);
-                
+
                 if (!response.ok) {
                     throw new Error("Gagal mengunduh tiket");
                 }
@@ -71,87 +77,79 @@ function SuccessContent() {
     }, [bookingData]);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-            <div className="max-w-md w-full text-center">
-                <div className="bg-white rounded-2xl p-8 shadow-lg">
-                    <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
-                        <CheckCircle className="h-12 w-12 text-green-500" />
-                    </div>
-
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                        Pembayaran Berhasil! 🎉
-                    </h1>
-                    <p className="text-gray-600 mb-6">
-                        Terima kasih! Tiket kamu sudah dikonfirmasi.
-                    </p>
-
-                    {bookingCode && (
-                        <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                            <p className="text-sm text-gray-500 mb-1">Kode Booking</p>
-                            <p className="text-xl font-bold font-mono text-indigo-600">
-                                {bookingCode}
+        <CheckoutPageShell
+            title="Checkout selesai dan tiketmu sudah diamankan"
+            description="Halaman ini merangkum outcome pembayaran serta langkah berikutnya untuk mengakses booking dan e-ticket Gelaran."
+            backHref="/events"
+            backLabel="Kembali ke katalog event"
+        >
+            <div className="space-y-6">
+                <CheckoutStatusHero
+                    tone="success"
+                    title="Pembayaran berhasil diproses"
+                    description="Terima kasih. Booking kamu sudah dikonfirmasi dan Gelaran sedang menyiapkan seluruh detail akses tiket untuk event yang dipilih."
+                    bookingCode={bookingCode}
+                    highlight={
+                        <div className="rounded-2xl border border-[rgba(19,135,108,0.22)] bg-(--success-bg) px-4 py-4 shadow-(--shadow-xs)">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--success-text)">Status akses</p>
+                            <p className="mt-2 text-sm leading-6 text-(--success-text)">
+                                E-ticket dikirim ke email pembeli dan bisa diunduh kembali dari halaman ini selama data booking tersedia.
                             </p>
                         </div>
-                    )}
+                    }
+                >
+                    <CheckoutCallout
+                        tone="success"
+                        title="E-ticket sedang disiapkan"
+                        description="Cek inbox atau folder spam untuk email konfirmasi. Simpan kode booking agar proses check-in dan dukungan pelanggan lebih cepat."
+                        icon={Ticket}
+                    />
 
-                    <div className="bg-indigo-50 rounded-lg p-4 mb-6 text-left">
-                        <div className="flex items-start gap-3">
-                            <Ticket className="h-5 w-5 text-indigo-600 mt-0.5" />
-                            <div>
-                                <p className="font-medium text-gray-900">E-Ticket Terkirim</p>
-                                <p className="text-sm text-gray-600">
-                                    Kami sudah mengirim e-ticket ke email kamu. Cek inbox atau folder spam.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    {downloadError ? (
+                        <CheckoutCallout tone="error" title="Unduhan tiket gagal" description={downloadError} />
+                    ) : null}
 
-                    {downloadError && (
-                        <div className="bg-red-50 text-red-600 text-sm rounded-lg p-3 mb-4">
-                            {downloadError}
-                        </div>
-                    )}
+                    <CheckoutActionBar
+                        primary={{ href: "/events", label: "Jelajahi event lain" }}
+                        secondary={{ href: bookingCode ? `/my-bookings/${bookingCode}` : "/my-bookings", label: "Lihat detail booking" }}
+                        tertiary={
+                            <button
+                                type="button"
+                                onClick={handleDownloadTickets}
+                                disabled={isDownloading || !bookingData}
+                                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface)/90 px-5 py-3 text-sm font-semibold text-foreground shadow-(--shadow-xs) transition-colors duration-200 hover:border-(--border-strong) hover:bg-(--surface-hover) disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {isDownloading ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        Mengunduh tiket...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Download className="h-4 w-4" />
+                                        Download e-ticket
+                                    </>
+                                )}
+                            </button>
+                        }
+                    />
+                </CheckoutStatusHero>
 
-                    <div className="space-y-3">
-                        <button 
-                            type="button"
-                            onClick={handleDownloadTickets}
-                            disabled={isDownloading || !bookingData}
-                            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isDownloading ? (
-                                <>
-                                    <Loader2 className="h-5 w-5 animate-spin" />
-                                    Mengunduh...
-                                </>
-                            ) : (
-                                <>
-                                    <Download className="h-5 w-5" />
-                                    Download E-Ticket
-                                </>
-                            )}
-                        </button>
-                        <Link
-                            href="/"
-                            className="w-full py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 flex items-center justify-center gap-2"
-                        >
-                            Lihat Event Lainnya
-                            <ArrowRight className="h-4 w-4" />
-                        </Link>
-                    </div>
-                </div>
+                <CheckoutStatusNotes />
             </div>
-        </div>
+        </CheckoutPageShell>
     );
 }
 
 export default function CheckoutSuccessPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="min-h-screen flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-(--accent-primary)" />
+                </div>
+            }
+        >
             <SuccessContent />
         </Suspense>
     );

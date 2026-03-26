@@ -1,26 +1,33 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowLeft,
-    Loader2,
     AlertCircle,
-    CheckCircle,
+    ArrowRight,
     Building2,
+    CheckCircle,
+    ChevronRight,
+    Clock,
+    Facebook,
     Globe,
     Instagram,
-    Twitter,
-    Facebook,
-    Sparkles,
-    Users,
-    TrendingUp,
-    Shield,
-    Clock,
-    ChevronRight,
+    Loader2,
     PartyPopper,
+    Shield,
+    Sparkles,
+    TrendingUp,
+    Twitter,
+    Users,
 } from "lucide-react";
+import {
+    EditorialPanel,
+    FeatureGrid,
+    MarketingHero,
+    PublicPageShell,
+    PublicSection,
+} from "@/components/shared/public-marketing";
 
 interface ApplicationData {
     id: string;
@@ -50,25 +57,70 @@ interface FormData {
 const BENEFITS = [
     {
         icon: Users,
-        title: "Reach Millions",
-        description: "Access our growing community of event-goers looking for their next experience",
+        title: "Jangkau audiens baru",
+        description: "Perluas eksposur event Anda melalui pengalaman publik Gelaran yang lebih terang, terkurasi, dan mudah dipahami.",
     },
     {
         icon: TrendingUp,
-        title: "Powerful Analytics",
-        description: "Track sales, understand your audience, and optimize your events with real-time data",
+        title: "Pantau performa dengan jelas",
+        description: "Gunakan insight dan workflow internal untuk membaca penjualan, minat pengunjung, dan momentum event.",
     },
     {
         icon: Shield,
-        title: "Secure Payments",
-        description: "Get paid reliably with our secure payment processing and fast payouts",
+        title: "Operasional lebih tepercaya",
+        description: "Pengelolaan tiket, pembayaran, dan akses event didukung alur yang dirancang untuk mengurangi kebingungan.",
     },
     {
         icon: Sparkles,
-        title: "Easy Management",
-        description: "Create, manage, and promote your events all from one intuitive dashboard",
+        title: "Brand tampil lebih rapi",
+        description: "Presentasikan event dalam ekosistem visual yang konsisten dari landing page publik sampai dashboard organizer.",
     },
 ];
+
+function StatusView({
+    icon: Icon,
+    tone,
+    title,
+    description,
+    actions,
+    children,
+}: {
+    icon: typeof CheckCircle;
+    tone: "success" | "warning" | "error" | "accent";
+    title: string;
+    description: React.ReactNode;
+    actions?: React.ReactNode;
+    children?: React.ReactNode;
+}) {
+    const toneClasses = {
+        success: "border-[rgba(19,135,108,0.24)] bg-(--success-bg) text-(--success)",
+        warning: "border-[rgba(251,193,23,0.28)] bg-[var(--warning-bg)] text-(--warning)",
+        error: "border-[rgba(217,79,61,0.24)] bg-(--error-bg) text-(--error)",
+        accent: "border-[rgba(41,179,182,0.24)] bg-[var(--info-bg)] text-(--accent-primary)",
+    };
+
+    return (
+        <PublicPageShell>
+            <section className="px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:px-8 lg:pb-24">
+                <div className="mx-auto max-w-3xl">
+                    <EditorialPanel className="space-y-6 p-8 text-center sm:p-10 lg:p-12">
+                        <span className={`mx-auto inline-flex h-20 w-20 items-center justify-center rounded-full border ${toneClasses[tone]}`}>
+                            <Icon className="h-10 w-10" />
+                        </span>
+                        <div className="space-y-3">
+                            <h1 className="font-(--font-editorial) text-4xl leading-[0.96] tracking-(--tracking-display) text-foreground sm:text-5xl">
+                                {title}
+                            </h1>
+                            <div className="text-sm leading-8 text-(--text-secondary) sm:text-base">{description}</div>
+                        </div>
+                        {children}
+                        {actions ? <div className="flex flex-col justify-center gap-3 sm:flex-row">{actions}</div> : null}
+                    </EditorialPanel>
+                </div>
+            </section>
+        </PublicPageShell>
+    );
+}
 
 export default function BecomeOrganizerPage() {
     const router = useRouter();
@@ -93,11 +145,11 @@ export default function BecomeOrganizerPage() {
     const checkStatus = useCallback(async () => {
         try {
             setIsLoading(true);
-            const res = await fetch("/api/organizer/apply");
-            const data = await res.json();
+            const response = await fetch("/api/organizer/apply");
+            const data = await response.json();
 
-            if (!res.ok) {
-                if (res.status === 401) {
+            if (!response.ok) {
+                if (response.status === 401) {
                     router.push("/login?returnUrl=/become-organizer");
                     return;
                 }
@@ -140,8 +192,8 @@ export default function BecomeOrganizerPage() {
         return Object.keys(errors).length === 0;
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
 
         if (!validateForm()) return;
 
@@ -149,15 +201,15 @@ export default function BecomeOrganizerPage() {
             setIsSubmitting(true);
             setError(null);
 
-            const res = await fetch("/api/organizer/apply", {
+            const response = await fetch("/api/organizer/apply", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
 
-            const data = await res.json();
+            const data = await response.json();
 
-            if (!res.ok) {
+            if (!response.ok) {
                 setError(data.error?.message || "Failed to submit application");
                 return;
             }
@@ -181,355 +233,392 @@ export default function BecomeOrganizerPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading...</p>
-                </div>
-            </div>
+            <PublicPageShell>
+                <section className="flex min-h-[70vh] items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
+                    <div className="text-center">
+                        <Loader2 className="mx-auto h-12 w-12 animate-spin text-(--accent-primary)" />
+                        <p className="mt-4 text-sm font-medium text-(--text-secondary)">Memuat status organizer...</p>
+                    </div>
+                </section>
+            </PublicPageShell>
         );
     }
 
     if (isOrganizer) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center p-4">
-                <div className="max-w-md w-full text-center">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle className="h-10 w-10 text-green-600" />
-                    </div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-3">You&apos;re Already an Organizer!</h1>
-                    <p className="text-gray-600 mb-8">
-                        You already have organizer privileges. Start creating amazing events!
+            <StatusView
+                icon={CheckCircle}
+                tone="success"
+                title="Anda sudah terdaftar sebagai organizer"
+                description={
+                    <p>
+                        Akun Anda sudah memiliki akses organizer. Lanjutkan ke dashboard untuk mulai membuat event dan mengelola pengalaman audiens.
                     </p>
-                    <Link
-                        href="/organizer/events"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all"
-                    >
-                        Go to Dashboard
-                        <ChevronRight className="h-5 w-5" />
-                    </Link>
-                </div>
-            </div>
+                }
+                actions={
+                    <>
+                        <Link
+                            href="/organizer/events"
+                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-(--accent-primary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-primary-hover)"
+                        >
+                            Buka dashboard organizer
+                            <ChevronRight className="h-4 w-4" />
+                        </Link>
+                        <Link
+                            href="/"
+                            className="inline-flex min-h-12 items-center justify-center rounded-full border border-(--border) bg-(--surface) px-6 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-(--surface-hover)"
+                        >
+                            Kembali ke beranda
+                        </Link>
+                    </>
+                }
+            />
         );
     }
 
-    if (hasApplication && application) {
-        if (application.verificationStatus === "PENDING") {
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-orange-50 flex items-center justify-center p-4">
-                    <div className="max-w-md w-full text-center">
-                        <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Clock className="h-10 w-10 text-yellow-600" />
-                        </div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-3">Application Under Review</h1>
-                        <p className="text-gray-600 mb-4">
-                            Your application for <strong>{application.organizationName}</strong> is being reviewed by our team.
-                        </p>
-                        <p className="text-sm text-gray-500 mb-8">
-                            Submitted on {new Date(application.createdAt).toLocaleDateString("id-ID", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                            })}
-                        </p>
-                        <div className="bg-white rounded-xl p-4 shadow-sm border mb-6">
-                            <p className="text-sm text-gray-500 mb-2">What happens next?</p>
-                            <ul className="text-left text-sm text-gray-700 space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                                    <span>We&apos;ll review your application within 1-3 business days</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                                    <span>You&apos;ll receive an email notification once approved</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                                    <span>Then you can start creating and managing events</span>
-                                </li>
-                            </ul>
-                        </div>
+    if (hasApplication && application?.verificationStatus === "PENDING") {
+        return (
+            <StatusView
+                icon={Clock}
+                tone="warning"
+                title="Pengajuan Anda sedang ditinjau"
+                description={
+                    <p>
+                        Pengajuan untuk <strong>{application.organizationName}</strong> sedang direview oleh tim Gelaran. Kami akan memberi kabar segera setelah proses verifikasi selesai.
+                    </p>
+                }
+                actions={
+                    <Link
+                        href="/"
+                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-(--border) bg-(--surface) px-6 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-(--surface-hover)"
+                    >
+                        Kembali ke beranda
+                    </Link>
+                }
+            >
+                <EditorialPanel className="space-y-4 text-left">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
+                        What happens next
+                    </p>
+                    <ul className="space-y-3 text-sm leading-7 text-(--text-secondary) sm:text-base">
+                        <li>• Tim kami meninjau profil organisasi Anda dalam 1–3 hari kerja.</li>
+                        <li>• Anda akan menerima notifikasi email ketika status berubah.</li>
+                        <li>• Setelah disetujui, dashboard organizer siap dipakai tanpa pengajuan ulang.</li>
+                    </ul>
+                    <p className="text-sm text-(--text-muted)">
+                        Dikirim pada {new Date(application.createdAt).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                        })}
+                    </p>
+                </EditorialPanel>
+            </StatusView>
+        );
+    }
+
+    if (hasApplication && application?.verificationStatus === "REJECTED") {
+        return (
+            <StatusView
+                icon={AlertCircle}
+                tone="error"
+                title="Pengajuan belum dapat disetujui"
+                description={
+                    <p>
+                        Pengajuan untuk <strong>{application.organizationName}</strong> belum dapat diproses lebih lanjut. Hubungi tim kami untuk mendapatkan detail tambahan sebelum mengajukan kembali.
+                    </p>
+                }
+                actions={
+                    <>
+                        <Link
+                            href="/contact"
+                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-secondary-hover)"
+                        >
+                            Hubungi support
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
                         <Link
                             href="/"
-                            className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
+                            className="inline-flex min-h-12 items-center justify-center rounded-full border border-(--border) bg-(--surface) px-6 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-(--surface-hover)"
                         >
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Home
+                            Kembali ke beranda
                         </Link>
-                    </div>
-                </div>
-            );
-        }
-
-        if (application.verificationStatus === "REJECTED") {
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center p-4">
-                    <div className="max-w-md w-full text-center">
-                        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <AlertCircle className="h-10 w-10 text-red-600" />
-                        </div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-3">Application Not Approved</h1>
-                        <p className="text-gray-600 mb-8">
-                            Unfortunately, your application for <strong>{application.organizationName}</strong> was not approved.
-                            Please contact support for more information.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                            <Link
-                                href="/contact"
-                                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all"
-                            >
-                                Contact Support
-                            </Link>
-                            <Link
-                                href="/"
-                                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all"
-                            >
-                                Back to Home
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+                    </>
+                }
+            />
+        );
     }
 
     if (success) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-                <div className="max-w-md w-full text-center">
-                    <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <PartyPopper className="h-10 w-10 text-indigo-600" />
-                    </div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-3">Application Submitted!</h1>
-                    <p className="text-gray-600 mb-8">
-                        Thank you for applying to become an organizer. We&apos;ll review your application and get back to you within 1-3 business days.
+            <StatusView
+                icon={PartyPopper}
+                tone="accent"
+                title="Pengajuan berhasil dikirim"
+                description={
+                    <p>
+                        Terima kasih telah mendaftar menjadi organizer di Gelaran. Tim kami akan meninjau profil Anda dan menghubungi Anda dalam 1–3 hari kerja.
                     </p>
+                }
+                actions={
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all"
+                        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-(--accent-primary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-primary-hover)"
                     >
-                        Back to Home
-                        <ChevronRight className="h-5 w-5" />
+                        Kembali ke beranda
+                        <ChevronRight className="h-4 w-4" />
                     </Link>
-                </div>
-            </div>
+                }
+            />
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/" className="text-gray-500 hover:text-gray-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Become an Organizer</h1>
-                            <p className="text-sm text-gray-500">Start hosting amazing events</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white">
-                            <Building2 className="h-12 w-12 mb-4 opacity-90" />
-                            <h2 className="text-2xl font-bold mb-2">Host Your Events</h2>
-                            <p className="text-indigo-100 mb-4">
-                                Join thousands of organizers who trust our platform to create unforgettable experiences.
+        <PublicPageShell
+            hero={
+                <MarketingHero
+                    eyebrow="Become an organizer"
+                    title={<>Bangun event Anda di ekosistem Gelaran yang lebih <em className="text-(--accent-secondary) not-italic">rapi</em>, konsisten, dan dipercaya.</>}
+                    description={
+                        <p>
+                            Halaman ini memadukan narasi value proposition dan formulir aplikasi dalam satu alur publik yang lebih tenang—selaras dengan baseline editorial Gelaran dan tetap fokus pada konversi organizer baru.
+                        </p>
+                    }
+                    primaryCta={{ href: "#organizer-form", label: "Ajukan sekarang" }}
+                    secondaryCta={{ href: "/contact", label: "Bicara dengan tim" }}
+                    aside={
+                        <EditorialPanel className="max-w-xl space-y-5">
+                            <div className="space-y-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-(--text-muted)">
+                                    Why organizers choose Gelaran
+                                </p>
+                                <h2 className="font-(--font-editorial) text-3xl leading-tight tracking-(--tracking-display) text-foreground sm:text-4xl">
+                                    Presentasi event yang lebih kuat, operasional yang lebih jelas, dan onboarding yang lebih ringan.
+                                </h2>
+                            </div>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                <div className="rounded-2xl border border-(--border) bg-(--surface) p-4">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Events hosted</p>
+                                    <p className="mt-2 text-3xl font-semibold tracking-(--tracking-heading) text-foreground">10K+</p>
+                                </div>
+                                <div className="rounded-2xl border border-(--border) bg-(--surface) p-4">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Tickets sold</p>
+                                    <p className="mt-2 text-3xl font-semibold tracking-(--tracking-heading) text-foreground">500K+</p>
+                                </div>
+                            </div>
+                            <p className="text-sm leading-7 text-(--text-secondary)">
+                                Isi profil organisasi Anda sekali, lalu gunakan fondasi tersebut untuk menghadirkan event yang terasa lebih profesional di setiap touchpoint publik.
                             </p>
-                            <div className="flex items-center gap-4 text-sm">
-                                <div>
-                                    <p className="text-2xl font-bold">10K+</p>
-                                    <p className="text-indigo-200">Events Hosted</p>
-                                </div>
-                                <div className="w-px h-10 bg-indigo-400" />
-                                <div>
-                                    <p className="text-2xl font-bold">500K+</p>
-                                    <p className="text-indigo-200">Tickets Sold</p>
-                                </div>
-                            </div>
-                        </div>
+                        </EditorialPanel>
+                    }
+                />
+            }
+        >
+            <PublicSection
+                eyebrow="Platform benefits"
+                title="Dirancang untuk organizer yang butuh lebih dari sekadar form upload event"
+                description="Kami merapikan pesan utama halaman ini agar lebih meyakinkan, mudah discan, dan tetap selaras dengan voice publik Gelaran."
+                className="pt-0"
+            >
+                <FeatureGrid items={BENEFITS} columns={4} />
+            </PublicSection>
 
-                        <div className="bg-white rounded-xl shadow-sm p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Why become an organizer?</h3>
-                            <div className="space-y-4">
-                                {BENEFITS.map((benefit) => (
-                                    <div key={benefit.title} className="flex items-start gap-3">
-                                        <div className="p-2 bg-indigo-100 rounded-lg shrink-0">
-                                            <benefit.icon className="h-5 w-5 text-indigo-600" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-gray-900">{benefit.title}</p>
-                                            <p className="text-sm text-gray-500">{benefit.description}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+            <PublicSection
+                eyebrow="Application form"
+                title="Ajukan profil organizer Anda"
+                description="Lengkapi informasi inti organisasi agar tim kami dapat meninjau kesesuaian dan membantu proses onboarding dengan lebih cepat."
+                className="pt-0"
+            >
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:items-start">
+                    <div className="space-y-5">
+                        <EditorialPanel className="space-y-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
+                                Before you submit
+                            </p>
+                            <ul className="space-y-3 text-sm leading-7 text-(--text-secondary) sm:text-base">
+                                <li>• Gunakan nama organisasi atau brand yang akan tampil ke publik.</li>
+                                <li>• Tambahkan website atau sosial media untuk mempercepat proses verifikasi.</li>
+                                <li>• Jelaskan tipe event yang biasa Anda kelola agar konteks pengajuan lebih jelas.</li>
+                            </ul>
+                        </EditorialPanel>
+                        <EditorialPanel className="space-y-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
+                                Need assistance?
+                            </p>
+                            <p className="text-sm leading-7 text-(--text-secondary) sm:text-base">
+                                Jika Anda membutuhkan penjelasan lebih lanjut sebelum mendaftar, tim kami siap membantu melalui halaman kontak publik Gelaran.
+                            </p>
+                            <Link
+                                href="/contact"
+                                className="inline-flex min-h-11 items-center justify-center rounded-full border border-(--border) bg-(--surface) px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-(--surface-hover)"
+                            >
+                                Hubungi tim Gelaran
+                            </Link>
+                        </EditorialPanel>
                     </div>
 
-                    <div className="lg:col-span-3">
-                        <div className="bg-white rounded-xl shadow-sm p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-6">Organization Details</h2>
-
-                            {error && (
-                                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                                    <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
-                                    <p className="text-red-700">{error}</p>
-                                </div>
-                            )}
-
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                    <EditorialPanel className="p-6 sm:p-8">
+                        <div id="organizer-form" className="scroll-mt-32">
+                            <div className="mb-6 flex items-start gap-4">
+                                <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary) shadow-(--shadow-xs)">
+                                    <Building2 className="h-5 w-5" />
+                                </span>
                                 <div>
-                                    <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Organization Name <span className="text-red-500">*</span>
+                                    <h2 className="text-2xl font-semibold tracking-(--tracking-heading) text-foreground">
+                                        Organization details
+                                    </h2>
+                                    <p className="text-sm text-(--text-secondary) sm:text-base">
+                                        Informasi ini membantu kami memahami identitas dan kesiapan organisasi Anda.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {error ? (
+                                <div className="mb-6 flex items-start gap-3 rounded-2xl border border-[rgba(217,79,61,0.24)] bg-(--error-bg) p-4 text-sm text-(--error-text)">
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+                                    <p>{error}</p>
+                                </div>
+                            ) : null}
+
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                <div className="space-y-2">
+                                    <label htmlFor="organizationName" className="text-sm font-semibold text-foreground">
+                                        Organization name <span className="text-(--error)">*</span>
                                     </label>
                                     <div className="relative">
-                                        <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                        <Building2 className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                         <input
                                             type="text"
                                             id="organizationName"
                                             value={formData.organizationName}
                                             onChange={(e) => handleInputChange("organizationName", e.target.value)}
-                                            placeholder="Your organization or brand name"
-                                            className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                                                formErrors.organizationName ? "border-red-300" : "border-gray-200"
-                                            }`}
+                                            placeholder="Nama organisasi atau brand Anda"
+                                            className={`min-h-12 w-full rounded-2xl border bg-(--surface) py-3 pl-12 pr-4 text-sm text-foreground outline-none transition-colors duration-200 focus:ring-4 focus:ring-(--info-bg) ${formErrors.organizationName
+                                                    ? "border-(--error) focus:border-(--error)"
+                                                    : "border-(--border) focus:border-(--border-focus)"
+                                                }`}
                                         />
                                     </div>
-                                    {formErrors.organizationName && (
-                                        <p className="mt-1 text-sm text-red-500">{formErrors.organizationName}</p>
-                                    )}
+                                    {formErrors.organizationName ? (
+                                        <p className="text-sm text-(--error-text)">{formErrors.organizationName}</p>
+                                    ) : null}
                                 </div>
 
-                                <div>
-                                    <label htmlFor="organizationDescription" className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="space-y-2">
+                                    <label htmlFor="organizationDescription" className="text-sm font-semibold text-foreground">
                                         Description
                                     </label>
                                     <textarea
                                         id="organizationDescription"
-                                        rows={4}
+                                        rows={5}
                                         value={formData.organizationDescription}
                                         onChange={(e) => handleInputChange("organizationDescription", e.target.value)}
-                                        placeholder="Tell us about your organization, the types of events you plan to host, and your experience..."
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                                        placeholder="Ceritakan jenis event yang Anda kelola, audiens utama, dan pengalaman yang ingin Anda bangun."
+                                        className="w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                     />
                                 </div>
 
-                                <div>
-                                    <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="space-y-2">
+                                    <label htmlFor="websiteUrl" className="text-sm font-semibold text-foreground">
                                         Website
                                     </label>
                                     <div className="relative">
-                                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                        <Globe className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                         <input
                                             type="url"
                                             id="websiteUrl"
                                             value={formData.websiteUrl}
                                             onChange={(e) => handleInputChange("websiteUrl", e.target.value)}
-                                            placeholder="https://yourwebsite.com"
-                                            className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                                                formErrors.websiteUrl ? "border-red-300" : "border-gray-200"
-                                            }`}
+                                            placeholder="https://website-anda.com"
+                                            className={`min-h-12 w-full rounded-2xl border bg-(--surface) py-3 pl-12 pr-4 text-sm text-foreground outline-none transition-colors duration-200 focus:ring-4 focus:ring-(--info-bg) ${formErrors.websiteUrl
+                                                    ? "border-(--error) focus:border-(--error)"
+                                                    : "border-(--border) focus:border-(--border-focus)"
+                                                }`}
                                         />
                                     </div>
-                                    {formErrors.websiteUrl && (
-                                        <p className="mt-1 text-sm text-red-500">{formErrors.websiteUrl}</p>
-                                    )}
+                                    {formErrors.websiteUrl ? (
+                                        <p className="text-sm text-(--error-text)">{formErrors.websiteUrl}</p>
+                                    ) : null}
                                 </div>
 
-                                <div>
-                                    <span className="block text-sm font-medium text-gray-700 mb-3">Social Media</span>
-                                    <div className="space-y-3">
+                                <div className="space-y-3">
+                                    <span className="text-sm font-semibold text-foreground">Social media</span>
+                                    <div className="grid gap-3">
                                         <div className="relative">
-                                            <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                            <Instagram className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                             <input
                                                 type="text"
                                                 id="socialInstagram"
                                                 value={formData.socialInstagram}
                                                 onChange={(e) => handleInputChange("socialInstagram", e.target.value)}
                                                 placeholder="Instagram username"
-                                                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) py-3 pl-12 pr-4 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                             />
                                         </div>
                                         <div className="relative">
-                                            <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                            <Facebook className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                             <input
                                                 type="text"
                                                 id="socialFacebook"
                                                 value={formData.socialFacebook}
                                                 onChange={(e) => handleInputChange("socialFacebook", e.target.value)}
                                                 placeholder="Facebook page URL"
-                                                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) py-3 pl-12 pr-4 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                             />
                                         </div>
                                         <div className="relative">
-                                            <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                            <Twitter className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                             <input
                                                 type="text"
                                                 id="socialTwitter"
                                                 value={formData.socialTwitter}
                                                 onChange={(e) => handleInputChange("socialTwitter", e.target.value)}
                                                 placeholder="Twitter/X username"
-                                                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) py-3 pl-12 pr-4 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                             />
                                         </div>
                                         <div className="relative">
-                                            <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
-                                            </svg>
+                                            <span className="absolute left-4 top-1/2 inline-flex h-5 w-5 -translate-y-1/2 items-center justify-center text-(--text-muted)">
+                                                ♪
+                                            </span>
                                             <input
                                                 type="text"
                                                 id="socialTiktok"
                                                 value={formData.socialTiktok}
                                                 onChange={(e) => handleInputChange("socialTiktok", e.target.value)}
                                                 placeholder="TikTok username"
-                                                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) py-3 pl-12 pr-4 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="pt-4 border-t">
-                                    <p className="text-sm text-gray-500 mb-4">
-                                        By submitting this application, you agree to our{" "}
-                                        <Link href="/terms" className="text-indigo-600 hover:text-indigo-700">
-                                            Terms of Service
-                                        </Link>{" "}
-                                        and{" "}
-                                        <Link href="/privacy" className="text-indigo-600 hover:text-indigo-700">
-                                            Privacy Policy
-                                        </Link>
-                                        .
-                                    </p>
-
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {isSubmitting ? (
-                                            <>
-                                                <Loader2 className="h-5 w-5 animate-spin" />
-                                                Submitting...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Sparkles className="h-5 w-5" />
-                                                Submit Application
-                                            </>
-                                        )}
-                                    </button>
+                                <div className="rounded-2xl border border-(--border) bg-(--surface-brand-soft) px-5 py-4 text-sm leading-7 text-(--text-secondary)">
+                                    Dengan mengirim pengajuan ini, Anda menyetujui ketentuan privasi yang berlaku pada <Link href="/privacy" className="font-semibold text-(--accent-primary) hover:text-(--accent-primary-hover)">Kebijakan Privasi</Link> Gelaran. Halaman <code>/terms</code> belum tersedia dalam scope saat ini, sehingga tidak ditautkan di sini.
                                 </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white shadow-(--shadow-md) transition-colors duration-200 hover:bg-(--accent-secondary-hover) disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                            Mengirim pengajuan...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="h-5 w-5" />
+                                            Submit application
+                                        </>
+                                    )}
+                                </button>
                             </form>
                         </div>
-                    </div>
+                    </EditorialPanel>
                 </div>
-            </main>
-        </div>
+            </PublicSection>
+        </PublicPageShell>
     );
 }

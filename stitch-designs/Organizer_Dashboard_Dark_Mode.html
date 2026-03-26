@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Dashboard | Sovereign Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#003737",
+                        "surface-container-high": "#003030",
+                        "on-tertiary-container": "#f1b803",
+                        "secondary-fixed": "#7bf5f8",
+                        "secondary-container": "#00a4a7",
+                        "on-primary-fixed": "#370e00",
+                        "on-surface": "#aaefee",
+                        "surface-bright": "#004141",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "tertiary-fixed": "#ffdf9a",
+                        "on-secondary-fixed": "#002021",
+                        "on-error": "#690005",
+                        "secondary": "#5cd8db",
+                        "surface-container-highest": "#003c3c",
+                        "inverse-surface": "#aaefee",
+                        "on-primary-container": "#ffae8e",
+                        "on-background": "#aaefee",
+                        "on-tertiary-fixed": "#251a00",
+                        "primary-fixed-dim": "#ffb598",
+                        "surface-variant": "#003c3c",
+                        "tertiary-container": "#654b00",
+                        "surface-dim": "#001717",
+                        "surface-container-lowest": "#001111",
+                        "background": "#001717",
+                        "outline-variant": "#3f4948",
+                        "surface-container-low": "#002020",
+                        "inverse-primary": "#a63b00",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-tertiary": "#3f2e00",
+                        "outline": "#899392",
+                        "error-container": "#93000a",
+                        "on-primary": "#591c00",
+                        "surface-tint": "#ffb598",
+                        "on-secondary": "#003738",
+                        "primary": "#ffb598",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdbce",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "surface": "#001717",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "on-surface-variant": "#bec8c8",
+                        "primary-container": "#8d3100",
+                        "surface-container": "#002424",
+                        "on-secondary-container": "#003233",
+                        "tertiary": "#f7be11"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #001717; color: #AAEFEE; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .editorial-lockup { letter-spacing: 0.1rem; }
+        .glass-header { backdrop-filter: blur(20px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="dark overflow-x-hidden">
+<!-- SideNavBar (Shared Component Execution) -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-40 flex flex-col py-8 px-4 bg-[#001717] dark:bg-[#001717]">
+<div class="mb-10 px-4">
+<h1 class="font-['Noto_Serif'] italic text-2xl text-[#AAEFEE]">Gelaran</h1>
+<p class="font-['Plus_Jakarta_Sans'] font-medium tracking-wide uppercase text-[11px] text-[#AAEFEE]/60 mt-1">Sovereign Curator</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#FFB598] bg-[#002424] border-l-2 border-[#FFB598] font-['Plus_Jakarta_Sans'] font-medium tracking-wide uppercase text-[11px] scale-95 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#AAEFEE]/60 font-['Plus_Jakarta_Sans'] font-medium tracking-wide uppercase text-[11px] hover:bg-[#002424] hover:text-[#AAEFEE] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>My Events</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#AAEFEE]/60 font-['Plus_Jakarta_Sans'] font-medium tracking-wide uppercase text-[11px] hover:bg-[#002424] hover:text-[#AAEFEE] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Revenue</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#AAEFEE]/60 font-['Plus_Jakarta_Sans'] font-medium tracking-wide uppercase text-[11px] hover:bg-[#002424] hover:text-[#AAEFEE] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Teams</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#AAEFEE]/60 font-['Plus_Jakarta_Sans'] font-medium tracking-wide uppercase text-[11px] hover:bg-[#002424] hover:text-[#AAEFEE] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-bold text-sm hover:shadow-[0_0_15px_rgba(255,181,152,0.3)] transition-all">
+                Create New Event
+            </button>
+</div>
+</aside>
+<!-- TopAppBar (Shared Component Execution) -->
+<header class="sticky top-0 w-full z-30 flex justify-between items-center h-20 px-12 ml-64 bg-[#001717]/80 backdrop-blur-xl dark:bg-[#001717]/80 border-b border-[#3F4948]/15">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full pl-10 pr-4 py-2 text-sm w-64 focus:ring-1 ring-[#5CD8DB] transition-all" placeholder="Search events..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#003C3C] transition-colors">
+                Generate Report
+            </button>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-on-surface hover:bg-[#003C3C] rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-tertiary rounded-full"></span>
+</button>
+<img alt="Manager Profile" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" data-alt="professional portrait of a curator in a dark tailored suit against a minimalist architectural background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlb4YvIjmpOhOFI2Ll705kXVkONjMOH7gfwIZZFC_knBCRG9hw7udB2tSs6-aLiiFsgaSNnghTGNRyqROecyigJwV-RqtJ3WBtHu7tCX34exixjDwG-qatSgJsbr5pHU-orRb8I1-7lNCK-LKM-VGzlQw4TytjYdyFRF7_FAX5F7Dfup_pV63gMahcBVE28xn5LCQU8Zcbe_ndQjPjiHTr1Zg49ZPbMyCpGkW63sqi0Q3L34GMRakCmf3zJCr0Jbulq8fsMlP8UFc"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-12 space-y-12">
+<!-- Header Section: Editorial Lockup -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-6">
+<div class="space-y-2">
+<p class="font-body font-bold text-secondary uppercase tracking-[0.2em] text-xs">Solo Heritage Collective</p>
+<h2 class="font-headline text-5xl font-bold text-on-surface">Wilujeng Rawuh</h2>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-3 bg-surface-container-high px-4 py-2 rounded-xl border-l-2 border-tertiary">
+<span class="material-symbols-outlined text-tertiary" data-icon="warning">warning</span>
+<div class="text-xs">
+<p class="font-bold text-on-surface">Pending Refunds</p>
+<p class="text-on-surface-variant">4 requests require review</p>
+</div>
+</div>
+</div>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-surface-container-highest p-8 rounded-xl space-y-4 group hover:bg-surface-bright transition-colors">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-secondary font-bold text-sm flex items-center gap-1">
+                        +12.5% <span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+</span>
+</div>
+<div>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-1">Total Revenue</p>
+<p class="font-headline text-3xl font-bold text-on-surface">IDR 842,500K</p>
+</div>
+</div>
+<div class="bg-surface-container-highest p-8 rounded-xl space-y-4 group hover:bg-surface-bright transition-colors">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="confirmation_number">confirmation_number</span>
+<span class="text-secondary font-bold text-sm flex items-center gap-1">
+                        +8.2% <span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+</span>
+</div>
+<div>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-1">Ticket Velocity</p>
+<p class="font-headline text-3xl font-bold text-on-surface">1.2k <span class="text-lg font-normal">/ day</span></p>
+</div>
+</div>
+<div class="bg-surface-container-highest p-8 rounded-xl space-y-4 group hover:bg-surface-bright transition-colors">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary text-3xl" data-icon="group_work">group_work</span>
+<span class="text-on-surface-variant font-bold text-sm flex items-center gap-1">
+                        Stable <span class="material-symbols-outlined text-sm" data-icon="horizontal_rule">horizontal_rule</span>
+</span>
+</div>
+<div>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-1">Active Attendees</p>
+<p class="font-headline text-3xl font-bold text-on-surface">4,892</p>
+</div>
+</div>
+</section>
+<!-- Main Analytics Area (Asymmetric Layout) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Revenue Chart Section -->
+<div class="lg:col-span-8 bg-surface-container p-8 rounded-xl border-t border-primary/10">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h3 class="font-headline text-2xl font-bold text-on-surface">Financial Performance</h3>
+<p class="text-on-surface-variant text-sm">Weekly earnings overview across all venues</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded-lg bg-surface-container-highest text-xs font-bold text-on-surface">7D</button>
+<button class="px-3 py-1 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface">30D</button>
+</div>
+</div>
+<!-- Mock Chart Visual -->
+<div class="relative h-64 flex items-end justify-between gap-2">
+<div class="absolute inset-0 flex flex-col justify-between py-2">
+<div class="w-full border-t border-outline-variant/10"></div>
+<div class="w-full border-t border-outline-variant/10"></div>
+<div class="w-full border-t border-outline-variant/10"></div>
+<div class="w-full border-t border-outline-variant/10"></div>
+</div>
+<!-- Simplified bar/area chart representation -->
+<div class="relative flex-1 bg-gradient-to-t from-primary/20 to-primary h-[40%] rounded-t-sm"></div>
+<div class="relative flex-1 bg-gradient-to-t from-primary/20 to-primary h-[65%] rounded-t-sm"></div>
+<div class="relative flex-1 bg-gradient-to-t from-secondary/20 to-secondary h-[85%] rounded-t-sm"></div>
+<div class="relative flex-1 bg-gradient-to-t from-primary/20 to-primary h-[55%] rounded-t-sm"></div>
+<div class="relative flex-1 bg-gradient-to-t from-primary/20 to-primary h-[95%] rounded-t-sm"></div>
+<div class="relative flex-1 bg-gradient-to-t from-secondary/20 to-secondary h-[70%] rounded-t-sm"></div>
+<div class="relative flex-1 bg-gradient-to-t from-primary/20 to-primary h-[60%] rounded-t-sm"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+<!-- Financial Side Panel -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant/15 space-y-8 h-full">
+<div>
+<h3 class="font-headline text-xl font-bold text-on-surface mb-6">Payout Summary</h3>
+<div class="space-y-6">
+<div>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant mb-1 font-bold">Available Balance</p>
+<p class="text-4xl font-headline font-bold text-secondary">IDR 124,000K</p>
+</div>
+<div class="pt-6 border-t border-outline-variant/10">
+<p class="text-xs uppercase tracking-widest text-on-surface-variant mb-1 font-bold">Estimated Next Payout</p>
+<div class="flex justify-between items-center">
+<p class="text-xl font-headline font-bold text-on-surface">IDR 42,500K</p>
+<p class="text-xs text-on-surface-variant italic">Sept 28, 2023</p>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full bg-[#F95D00] text-white py-4 rounded-xl font-bold tracking-wide uppercase text-xs hover:bg-[#FF7A30] transition-colors mt-auto">
+                        Withdraw Funds
+                    </button>
+</div>
+</div>
+</section>
+<!-- Active Portfolio: Horizontal Scroll/Grid -->
+<section class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="font-headline text-3xl font-bold text-on-surface">Active Portfolio</h3>
+<a class="text-secondary text-sm font-bold flex items-center gap-1 hover:underline" href="#">
+                    View All Events <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Gamelan Gala" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="atmospheric photo of traditional Indonesian gamelan ensemble performing in a dimly lit heritage pavilion with warm lantern light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt6TR3fhx0Z13U8OJEUOnhlznMPShmzQ2AI5uyvUgan9JpsOepTl7nJYZN0LAYqwApaSwpE_QySfUAICABX-erpTGcWnTpVFLGF1sd1jkL4fbd-zV0Y4mdqGm5ntMiN4Nm6Jnv13A6F4j2LyTOvvrHO_5nVOZzPmgYxQcOs-XUARgBFkTmsMjir6MlxyYG0p-nWL6FiuVzRHT5-TSZcnfkhBTe8g7uEZ67LXQCel2EZTyiDiQxJCWcRt8jrnVwmmS8mH_yrdcuG7E"/>
+<div class="absolute top-4 left-4">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Live</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h4 class="font-headline text-xl font-bold text-on-surface">Gamelan Gala: Night of Spirits</h4>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border border-background" data-alt="portrait headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzittBWxHbtNxq7N9VnZrw8d0a3vwdypmLSXpMmDQ2tBUIB5hZET8J8FfAx2tlQhADQDaLNfrYRIwnsFImFE_f7KsJK3KBybSA8r3wQDQTUpmjZg9iRApPdvgT66jYcK6rMwJNOvDaa_nsq5VwwPnkGs80E2-qDA9ekeH85J3ebJn-MPaduYdP247EpL-x9jeZHXoiNeXlKA_IS_4GEnAuuODsua3Dr_knzbXCw2psUVaWppJUcEuo8FsmwHkytb8KeypU1Dtq5aY"/>
+<img class="w-6 h-6 rounded-full border border-background" data-alt="portrait headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwKLroOiWFkxAoJ29Kep3_7fgHbFn-3aCX7mTJxmSKihg5u8no0OfUYDEpPwF-5yRDXkH0Hz4SLB9Y4eiBufmhMn3bryvwO_Joxrba7ZcecfiOBRrOJYA1jLxI9P6-nryGFbbkGy6-sK0te0YN76pjd82WXeV_rfNrOkTeRw-1JgzemxM_gPGuydqjUwu3fBflHWD-wj-rsE65xHFsf0HfaK1SAtghDtck62UsJSu2aFhkCdiKg3hGZcqeTZcqFuWyQ8TLRuDNIoM"/>
+<div class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[8px] font-bold text-on-surface">+12</div>
+</div>
+<span class="text-secondary font-bold text-xs uppercase tracking-widest">92% Sold</span>
+</div>
+<div class="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[92%]"></div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Batik Night" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close-up of vibrant indigo and gold batik fabric being hand-painted in a sunlit traditional workshop with authentic tools" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwZvXbtpGaSND8OoMpb2x0yN_SNo9a54NaJowlTslhHaRdXM-Yyywf-bJTY_lmePyCFfXd05G-H8fSGn3FN0kMAsRpU8YhAphaJTnuT05Bau0vyGO_u2Bvjjacn25CjLuGwp0RUSGn7ZIOXp8x3zDNJw0cUzaV1-cXEb6hCQM3saqPCg_wiWXTMezaKNk38FATn4JKbyXE6MGYzdn_Kyc6rF_WbIljpGEGIN7PWsE0v6DqGRfqfwYYdiCYxLaZv2AIrib-QONjJCo"/>
+<div class="absolute top-4 left-4">
+<span class="bg-secondary-container text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Upcoming</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h4 class="font-headline text-xl font-bold text-on-surface">Batik Night: Indigo Revival</h4>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border border-background" data-alt="portrait headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2PoCRYoF_f0pXetRgJZW3DeDmmji6oNvR9DvVCQ7W2_WXhfUFesuzEMt3QYJwRJmmpfWAAyRlzV7Wr99E0jhyT6W0tIkl9xeHhYYylCOiOqvrpNj6lzasr3i89dpqI2n79Gi09pmreg5syDIykAtTQ6R1EBhME8XhppcMtLP4NVDFWKg4KVYNYqaJB1xeM04mYz16ZtpeyFv1-Aa6mD501xyScwakys1bU5AdLwHB6ZjRLTyn1Ke6vy5VXgvP7Xy4_MPeLhY8p1Q"/>
+<div class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[8px] font-bold text-on-surface">+45</div>
+</div>
+<span class="text-tertiary font-bold text-xs uppercase tracking-widest">85% Sold</span>
+</div>
+<div class="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[85%]"></div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Wayang Kulit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="dramatic silhouette of a shadow puppet play with glowing golden light behind a parchment screen and flickering torchlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVEUB7FtJPqDG94Ijewuf8zX7wwdu_OpiGjyBEIrVy9uVr4DXeOPSQW_wMLSXnDBKkvFLlrxTdVVvqFZXAU41kD757rdjFHEleNQ1uDu5xlRHSPL6-D41X3b71Ol6Hk6u62nC0z99aR4FmpQDquP9_MXGU03RVKhIcjAZcaeGYa2PlpG-5SW_imj0W7whtb1i_rnk4M1OeKWPWu9m5JNB-Plq4gOM50zIZVyVygC0ZZBPbTqCsA4bhCEo1MuYcDR4qi4G2gTgmZXc"/>
+<div class="absolute top-4 left-4">
+<span class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Draft</span>
+</div>
+</div>
+<div class="p-6 space-y-4 opacity-75">
+<h4 class="font-headline text-xl font-bold text-on-surface">Wayang Kulit: Epic of Ramayana</h4>
+<div class="flex justify-between items-center">
+<p class="text-xs text-on-surface-variant italic">Launch scheduled for Oct 12</p>
+</div>
+<div class="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
+<div class="bg-outline-variant h-full w-[0%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Operational Alerts Footer -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-12 border-t border-outline-variant/10">
+<div class="bg-surface-container-low p-6 rounded-xl flex items-start gap-4">
+<div class="bg-tertiary/10 p-3 rounded-lg">
+<span class="material-symbols-outlined text-tertiary" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface text-sm">Identity Verification Needed</h5>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Update your organization's legal documents to increase your withdrawal limit beyond IDR 500M.</p>
+</div>
+<button class="ml-auto text-xs font-bold text-secondary uppercase tracking-widest self-center">Resolve</button>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex items-start gap-4">
+<div class="bg-secondary/10 p-3 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="chat_bubble">chat_bubble</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface text-sm">New Venue Inquiry</h5>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">The Heritage Hall management has responded to your slot request for November.</p>
+</div>
+<button class="ml-auto text-xs font-bold text-secondary uppercase tracking-widest self-center">View</button>
+</div>
+</section>
+</main>
+</body></html>

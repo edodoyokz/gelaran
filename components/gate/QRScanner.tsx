@@ -349,7 +349,7 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
 
             {error && (
                 <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
-                    <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                    <AlertCircle className="h-5 w-5 shrink-0" />
                     <span className="text-sm">{error}</span>
                     <button
                         type="button"
@@ -393,7 +393,7 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
                         <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-indigo-500 rounded-bl-lg" />
                         <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-indigo-500 rounded-br-lg" />
                         
-                        <div className="absolute inset-x-8 top-1/4 h-0.5 bg-gradient-to-r from-transparent via-indigo-500 to-transparent animate-pulse" />
+                        <div className="absolute inset-x-8 top-1/4 h-0.5 bg-linear-to-r from-transparent via-indigo-500 to-transparent animate-pulse" />
                         
                         {isProcessing && (
                             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -476,7 +476,7 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
                                 className="px-4 py-2 flex items-center gap-3"
                             >
                                 <div
-                                    className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                    className={`w-2 h-2 rounded-full shrink-0 ${
                                         item.result === "SUCCESS"
                                             ? "bg-green-500"
                                             : item.result === "ALREADY_CHECKED_IN"
@@ -494,7 +494,7 @@ export default function QRScanner({ onCheckIn, onScanComplete }: QRScannerProps)
                                         </p>
                                     )}
                                 </div>
-                                <span className="text-xs text-gray-500 flex-shrink-0">
+                                <span className="text-xs text-gray-500 shrink-0">
                                     {item.timestamp.toLocaleTimeString("id-ID", {
                                         hour: "2-digit",
                                         minute: "2-digit",

@@ -22,12 +22,12 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
     }, [error]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-linear-to-br from-red-50 via-white to-orange-50 flex items-center justify-center p-4">
             <div className="max-w-lg w-full">
                 <div className="text-center mb-8">
                     <div className="relative inline-block mb-6">
                         <div className="absolute inset-0 bg-red-100 rounded-full animate-ping opacity-25" />
-                        <div className="relative w-24 h-24 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                        <div className="relative w-24 h-24 bg-linear-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
                             <AlertTriangle className="h-12 w-12 text-white" />
                         </div>
                     </div>

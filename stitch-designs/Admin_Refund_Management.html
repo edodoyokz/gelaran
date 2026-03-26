@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran - Refund Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "tertiary-fixed-dim": "#5cd8db",
+                "on-error-container": "#93000a",
+                "surface-container-low": "#c1fffe",
+                "surface-container-highest": "#aaefee",
+                "on-tertiary-container": "#56d4d6",
+                "on-surface": "#002020",
+                "outline": "#6f7978",
+                "on-tertiary": "#ffffff",
+                "tertiary-container": "#00595b",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed-dim": "#8ed2d2",
+                "inverse-primary": "#8ed2d2",
+                "on-primary-fixed": "#002020",
+                "surface-container": "#b5faf9",
+                "on-secondary-fixed": "#370e00",
+                "secondary": "#a63b00",
+                "surface-dim": "#a1e6e5",
+                "on-primary": "#ffffff",
+                "tertiary-fixed": "#7bf5f8",
+                "inverse-surface": "#003737",
+                "on-secondary-fixed-variant": "#7f2b00",
+                "primary-container": "#015959",
+                "on-tertiary-fixed-variant": "#004f51",
+                "on-primary-fixed-variant": "#004f50",
+                "primary-fixed": "#aaefee",
+                "outline-variant": "#bec8c8",
+                "secondary-fixed": "#ffdbce",
+                "background": "#ffffff",
+                "surface": "#ffffff",
+                "on-secondary-container": "#521900",
+                "surface-variant": "#aaefee",
+                "surface-tint": "#1e6868",
+                "on-background": "#002020",
+                "tertiary": "#004041",
+                "error": "#ba1a1a",
+                "surface-container-high": "#aff5f4",
+                "on-primary-container": "#89cdcd",
+                "primary": "#004040",
+                "on-secondary": "#ffffff",
+                "secondary-fixed-dim": "#ffb598",
+                "inverse-on-surface": "#b8fdfc",
+                "on-error": "#ffffff",
+                "on-surface-variant": "#3f4948",
+                "secondary-container": "#fd6005",
+                "on-tertiary-fixed": "#002021",
+                "error-container": "#ffdad6",
+                "surface-bright": "#e2fffe"
+              },
+              fontFamily: {
+                "headline": ["Noto Serif"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-header { backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.8); }
+    </style>
+</head>
+<body class="bg-white">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 flex flex-col p-4 space-y-2 z-50">
+<div class="mb-8 px-2">
+<h1 class="font-serif text-lg text-teal-900">Enterprise Portal</h1>
+<p class="text-xs text-slate-500 font-medium">Ticketing &amp; Refunds</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:text-teal-800 hover:bg-white/50 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 bg-white text-teal-900 shadow-sm rounded-lg transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="payments">payments</span>
+<span class="font-medium text-sm">Refund Queue</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:text-teal-800 hover:bg-white/50 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="insights">insights</span>
+<span class="font-medium text-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:text-teal-800 hover:bg-white/50 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="support_agent">support_agent</span>
+<span class="font-medium text-sm">Customer Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:text-teal-800 hover:bg-white/50 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+<span class="font-medium text-sm">System Logs</span>
+</a>
+</nav>
+<div class="pt-4 mt-auto border-t border-slate-200">
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:text-teal-800 hover:bg-white/50 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+<span class="font-medium text-sm">Documentation</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:text-teal-800 hover:bg-white/50 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span class="font-medium text-sm">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="w-full sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/40 shadow-sm flex justify-between items-center px-8 py-3 h-16">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tight text-teal-900 font-serif">Gelaran Admin</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 hover:text-teal-700 transition-colors font-medium text-sm" href="#">Dashboard</a>
+<a class="text-teal-900 border-b-2 border-teal-900 pb-1 transition-colors font-medium text-sm" href="#">Refunds</a>
+<a class="text-slate-500 hover:text-teal-700 transition-colors font-medium text-sm" href="#">Audits</a>
+<a class="text-slate-500 hover:text-teal-700 transition-colors font-medium text-sm" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container overflow-hidden ml-2">
+<img class="w-full h-full object-cover" data-alt="professional male administrator in formal attire with a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC88lH-hwP8HtuSOcCxDCyOIwlsHMbI4YjBWNaE_1uRvs_XiTs8LAk8Y12EWEeO1pjSKkBZPqLi3L5689_v-XZuE9QI31YHoIw8JS17P4BtVNTWlNNjPpjKS59aSr7_Y9YofEc_eaFRn_LdILoYx4hyJ7RBzP-aV4PnOLnuY6mVhMm3oig9gMC3Re-ESrE8ghoXjKXcguksOYOggF7fUEyA-lxxXesz8XZC6A8ubQ3iSdsjjrhr2VHu6Zc6nFnif_RJz1GrJpzwWPY"/>
+</div>
+</div>
+</header>
+<!-- Header Section -->
+<section class="px-10 py-8 bg-white">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="font-serif text-4xl text-on-surface font-bold tracking-tight mb-2">Refund Management</h2>
+<p class="text-on-surface-variant font-medium">Review and process refund requests across the Gelaran platform.</p>
+</div>
+<div class="flex gap-8">
+<div class="text-right">
+<p class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Pending Total</p>
+<p class="font-serif text-3xl font-bold text-teal-900">1,248 <span class="text-sm font-sans font-medium text-slate-400">Requests</span></p>
+</div>
+<div class="text-right border-l border-slate-200 pl-8">
+<p class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">SLA Health</p>
+<p class="font-serif text-3xl font-bold text-secondary">92.4% <span class="text-sm font-sans font-medium text-slate-400">On-Time</span></p>
+</div>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="flex flex-wrap items-center gap-4 mb-8 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+<div class="flex-1 min-w-[240px] relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-white border-none shadow-sm rounded-lg text-sm focus:ring-2 focus:ring-teal-900/10 placeholder:text-slate-400" placeholder="Search by Request ID, Ticket ID, or Customer Name..." type="text"/>
+</div>
+<select class="min-w-[160px] bg-white border-none shadow-sm rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-teal-900/10 text-slate-600">
+<option>Status: Pending</option>
+<option>Status: Approved</option>
+<option>Status: Rejected</option>
+</select>
+<div class="flex items-center bg-white shadow-sm rounded-lg px-4 py-2.5 gap-3 border-none">
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm text-slate-600 font-medium">Oct 24, 2023 - Oct 31, 2023</span>
+</div>
+<button class="bg-primary-container text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:opacity-90 transition-opacity active:scale-95">
+                    Apply Filters
+                </button>
+</div>
+<!-- Refund Queue Table -->
+<div class="w-full overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 border-b border-slate-100">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Request ID &amp; Date</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Booking Reference</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Customer &amp; Method</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Reason</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Status &amp; Audit</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-teal-50/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="font-bold text-teal-900">#RFD-882910</div>
+<div class="text-xs text-slate-500 mt-0.5">28 Oct 2023, 14:20</div>
+</td>
+<td class="px-6 py-5">
+<div class="font-medium text-on-surface">Java Jazz Festival 2024</div>
+<div class="text-xs text-slate-400 mt-0.5 tracking-tight font-mono">TKT-82219904-B</div>
+</td>
+<td class="px-6 py-5">
+<div class="font-medium text-on-surface">Aditya Wijaya</div>
+<div class="flex items-center gap-1.5 mt-1">
+<div class="w-4 h-4 rounded-sm bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-700">BCA</div>
+<span class="text-xs text-slate-500">Virtual Account</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface-variant max-w-[180px] line-clamp-1">Event Cancellation</div>
+<div class="text-xs text-slate-400 mt-0.5 italic">Official announcement #203</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-secondary-fixed text-secondary-fixed-variant border border-secondary/10 uppercase tracking-tighter w-fit">
+                                        Overdue
+                                    </span>
+<div class="flex items-center gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-teal-500"></div>
+<div class="w-4 h-0.5 bg-teal-500"></div>
+<div class="w-2 h-2 rounded-full bg-teal-500"></div>
+<div class="w-4 h-0.5 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-secondary-container text-white px-4 py-1.5 rounded font-bold text-xs hover:shadow-lg transition-all active:scale-95">Approve</button>
+<button class="border border-tertiary text-tertiary px-4 py-1.5 rounded font-bold text-xs hover:bg-teal-50 transition-all active:scale-95">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-teal-50/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="font-bold text-teal-900">#RFD-882915</div>
+<div class="text-xs text-slate-500 mt-0.5">28 Oct 2023, 16:45</div>
+</td>
+<td class="px-6 py-5">
+<div class="font-medium text-on-surface">Taylor Swift: Eras Tour ID</div>
+<div class="text-xs text-slate-400 mt-0.5 tracking-tight font-mono">TKT-11229983-A</div>
+</td>
+<td class="px-6 py-5">
+<div class="font-medium text-on-surface">Sari Maharani</div>
+<div class="flex items-center gap-1.5 mt-1">
+<div class="w-4 h-4 rounded-sm bg-green-100 flex items-center justify-center text-[10px] font-bold text-green-700">GP</div>
+<span class="text-xs text-slate-500">GoPay Wallet</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface-variant max-w-[180px] line-clamp-1">Double Payment</div>
+<div class="text-xs text-slate-400 mt-0.5 italic">Duplicate charge on checkout</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-surface-container-low text-teal-900 border border-teal-200 uppercase tracking-tighter w-fit">
+                                        Due in 2h
+                                    </span>
+<div class="flex items-center gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-teal-500"></div>
+<div class="w-4 h-0.5 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-4 h-0.5 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-secondary-container text-white px-4 py-1.5 rounded font-bold text-xs hover:shadow-lg transition-all active:scale-95">Approve</button>
+<button class="border border-tertiary text-tertiary px-4 py-1.5 rounded font-bold text-xs hover:bg-teal-50 transition-all active:scale-95">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-teal-50/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="font-bold text-teal-900">#RFD-882922</div>
+<div class="text-xs text-slate-500 mt-0.5">29 Oct 2023, 09:10</div>
+</td>
+<td class="px-6 py-5">
+<div class="font-medium text-on-surface">Startup Tech Conf 2024</div>
+<div class="text-xs text-slate-400 mt-0.5 tracking-tight font-mono">TKT-55443211-C</div>
+</td>
+<td class="px-6 py-5">
+<div class="font-medium text-on-surface">Budi Santoso</div>
+<div class="flex items-center gap-1.5 mt-1">
+<div class="w-4 h-4 rounded-sm bg-red-100 flex items-center justify-center text-[10px] font-bold text-red-700">CC</div>
+<span class="text-xs text-slate-500">Visa ending in 4421</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface-variant max-w-[180px] line-clamp-1">Personal Emergency</div>
+<div class="text-xs text-slate-400 mt-0.5 italic">Medical certificate attached</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col gap-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-surface-container-low text-teal-900 border border-teal-200 uppercase tracking-tighter w-fit">
+                                        Due in 14h
+                                    </span>
+<div class="flex items-center gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-teal-500"></div>
+<div class="w-4 h-0.5 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-4 h-0.5 bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-secondary-container text-white px-4 py-1.5 rounded font-bold text-xs hover:shadow-lg transition-all active:scale-95">Approve</button>
+<button class="border border-tertiary text-tertiary px-4 py-1.5 rounded font-bold text-xs hover:bg-teal-50 transition-all active:scale-95">Reject</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">
+<p class="text-xs font-medium text-slate-500">Showing 1-10 of 1,248 results</p>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-teal-900 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-xs font-bold bg-teal-900 text-white rounded">1</button>
+<button class="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-slate-50 rounded">2</button>
+<button class="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-slate-50 rounded">3</button>
+<span class="text-slate-300 mx-1">...</span>
+<button class="w-8 h-8 flex items-center justify-center text-xs font-bold text-slate-600 hover:bg-slate-50 rounded">125</button>
+<button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-teal-900 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Insights Bento Grid (Bottom) -->
+<section class="px-10 py-12 grid grid-cols-1 md:grid-cols-3 gap-6 mt-auto">
+<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-teal-900" data-icon="query_stats">query_stats</span>
+<span class="text-[10px] font-extrabold text-teal-600 bg-teal-100 px-2 py-0.5 rounded uppercase">Live</span>
+</div>
+<h3 class="font-serif text-xl font-bold text-on-surface mb-1">Approval Velocity</h3>
+<p class="text-xs text-on-surface-variant font-medium">Avg. processing time: 4.2 hours</p>
+<div class="mt-6 h-12 flex items-end gap-1">
+<div class="flex-1 bg-teal-200 rounded-t h-[30%]"></div>
+<div class="flex-1 bg-teal-300 rounded-t h-[50%]"></div>
+<div class="flex-1 bg-teal-400 rounded-t h-[40%]"></div>
+<div class="flex-1 bg-teal-500 rounded-t h-[70%]"></div>
+<div class="flex-1 bg-teal-600 rounded-t h-[90%]"></div>
+<div class="flex-1 bg-teal-700 rounded-t h-[60%]"></div>
+<div class="flex-1 bg-teal-800 rounded-t h-[80%]"></div>
+</div>
+</div>
+<div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-secondary" data-icon="warning_amber">warning_amber</span>
+<span class="text-[10px] font-extrabold text-secondary bg-secondary-fixed px-2 py-0.5 rounded uppercase">Alert</span>
+</div>
+<h3 class="font-serif text-xl font-bold text-on-surface mb-1">Escalation Risks</h3>
+<p class="text-xs text-on-surface-variant font-medium">12 tickets nearing critical SLA breach</p>
+<div class="mt-4 flex items-center gap-4">
+<div class="relative w-12 h-12">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-slate-200" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-secondary" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-dasharray="125.6" stroke-dashoffset="30" stroke-width="4"></circle>
+</svg>
+<span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold">75%</span>
+</div>
+<div class="text-xs text-slate-500 font-medium italic">Most risks related to "Event Cancellation" batch.</div>
+</div>
+</div>
+<div class="bg-primary-container p-6 rounded-2xl text-white relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="font-serif text-xl font-bold mb-1">SOP Update</h3>
+<p class="text-xs text-teal-100 font-medium mb-6">New refund guidelines for VVIP tickets have been published.</p>
+<button class="bg-white/10 hover:bg-white/20 transition-colors text-white border border-white/20 px-4 py-2 rounded font-bold text-xs inline-flex items-center gap-2">
+                        Read Guidelines <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-9xl" data-icon="menu_book">menu_book</span>
+</div>
+</div>
+</section>
+</main>
+</body></html>

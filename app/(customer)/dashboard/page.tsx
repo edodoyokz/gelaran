@@ -10,15 +10,21 @@ import {
     MapPin,
     AlertCircle,
     Heart,
-    Clock,
     ChevronRight,
     Sparkles,
     TrendingUp,
     Wallet,
-    ArrowUpRight,
-    ArrowDownRight,
 } from "lucide-react";
 import { MiniSparkline, AreaChart } from "@/components/ui/charts";
+import {
+    CustomerActionCard,
+    CustomerEmptyState,
+    CustomerHero,
+    CustomerMetricGrid,
+    CustomerStatusBadge,
+    DashboardSection,
+    StatsCard,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface BookingEvent {
     id: string;
@@ -84,27 +90,20 @@ interface DashboardData {
     activityData?: { name: string; value: number }[];
 }
 
-const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-[var(--warning-bg)] text-[var(--warning-text)]",
-    AWAITING_PAYMENT: "bg-[var(--warning-bg)] text-[var(--warning-text)]", // changed from amber
-    PAID: "bg-[var(--info-bg)] text-[var(--info-text)]",
-    CONFIRMED: "bg-[var(--success-bg)] text-[var(--success-text)]",
-    CANCELLED: "bg-[var(--error-bg)] text-[var(--error-text)]",
-    REFUNDED: "bg-[var(--bg-tertiary)] text-[var(--text-muted)]", // changed from purple
-    EXPIRED: "bg-[var(--bg-tertiary)] text-[var(--text-muted)]",
+const STATUS_META: Record<string, { label: string; tone: "warning" | "accent" | "success" | "danger" | "neutral" }> = {
+    PENDING: { label: "Menunggu", tone: "warning" },
+    AWAITING_PAYMENT: { label: "Menunggu Pembayaran", tone: "warning" },
+    PAID: { label: "Dibayar", tone: "accent" },
+    CONFIRMED: { label: "Dikonfirmasi", tone: "success" },
+    CANCELLED: { label: "Dibatalkan", tone: "danger" },
+    REFUNDED: { label: "Dikembalikan", tone: "neutral" },
+    EXPIRED: { label: "Kadaluarsa", tone: "neutral" },
 };
 
-const STATUS_LABELS: Record<string, string> = {
-    PENDING: "Menunggu",
-    AWAITING_PAYMENT: "Menunggu Pembayaran",
-    PAID: "Dibayar",
-    CONFIRMED: "Dikonfirmasi",
-    CANCELLED: "Dibatalkan",
-    REFUNDED: "Dikembalikan",
-    EXPIRED: "Kadaluarsa",
-};
-
-function generateSparklineData(count: number = 7, trend: "up" | "down" | "stable" = "up"): { value: number }[] {
+function generateSparklineData(
+    count: number = 7,
+    trend: "up" | "down" | "stable" = "up",
+): { value: number }[] {
     const data: { value: number }[] = [];
     let base = Math.random() * 50 + 20;
     for (let i = 0; i < count; i++) {
@@ -126,35 +125,27 @@ function generateActivityData(): { name: string; value: number }[] {
 
 function DashboardSkeleton() {
     return (
-        <div className="space-y-6">
-            <div className="flex items-center gap-3">
-                <div className="h-10 w-48 skeleton rounded-lg" />
+        <div className="space-y-6 lg:space-y-8">
+            <div className="rounded-4xl border border-(--border) bg-(--surface)/90 p-6 shadow-(--shadow-sm) sm:p-8">
+                <div className="space-y-4">
+                    <div className="h-5 w-32 skeleton rounded-full" />
+                    <div className="h-10 w-64 skeleton rounded-xl" />
+                    <div className="h-5 w-full max-w-2xl skeleton rounded-lg" />
+                </div>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="h-32 skeleton rounded-2xl" />
+                    <div key={i} className="h-36 skeleton rounded-[1.75rem]" />
                 ))}
             </div>
-            <div className="card p-6">
-                <div className="h-6 w-40 skeleton rounded-lg mb-4" />
-                <div className="h-48 skeleton rounded-xl" />
+            <div className="grid gap-6 xl:grid-cols-[1.5fr_0.9fr]">
+                <div className="h-80 skeleton rounded-[1.75rem]" />
+                <div className="h-80 skeleton rounded-[1.75rem]" />
             </div>
-            <div>
-                <div className="h-6 w-32 skeleton rounded-lg mb-4" />
-                <div className="flex gap-4 overflow-hidden">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="flex-shrink-0 w-72 card p-4">
-                            <div className="flex gap-3">
-                                <div className="w-24 h-24 skeleton rounded-xl" />
-                                <div className="flex-1 space-y-2">
-                                    <div className="h-4 skeleton rounded w-full" />
-                                    <div className="h-3 skeleton rounded w-3/4" />
-                                    <div className="h-3 skeleton rounded w-1/2" />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+                {[1, 2].map((i) => (
+                    <div key={i} className="h-56 skeleton rounded-[1.75rem]" />
+                ))}
             </div>
         </div>
     );
@@ -188,14 +179,17 @@ export default function CustomerDashboardPage() {
                     activityData: result.data.activityData || generateActivityData(),
                     stats: {
                         ...result.data.stats,
-                        totalSpent: result.data.stats.totalSpent ||
+                        totalSpent:
+                            result.data.stats.totalSpent ||
                             result.data.recentBookings.reduce(
-                                (sum: number, b: RecentBooking) => sum + parseFloat(b.totalAmount || "0"),
-                                0
+                                (sum: number, b: RecentBooking) =>
+                                    sum + parseFloat(b.totalAmount || "0"),
+                                0,
                             ),
                     },
                 };
                 setData(enhancedData);
+                setError(null);
             }
         } catch {
             setError("Gagal memuat dashboard");
@@ -247,21 +241,13 @@ export default function CustomerDashboardPage() {
 
     if (error) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="text-center max-w-md w-full card p-8">
-                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
-                    </div>
-                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
-                    <p className="text-[var(--text-muted)] text-sm mb-6">Terjadi kesalahan saat memuat data</p>
-                    <Link
-                        href="/"
-                        className="btn btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center"
-                    >
-                        Kembali ke Beranda
-                    </Link>
-                </div>
-            </div>
+            <CustomerEmptyState
+                title="Dashboard belum bisa dimuat"
+                description={`${error}. Muat ulang halaman atau kembali ke beranda untuk melanjutkan penjelajahan event.`}
+                href="/"
+                ctaLabel="Kembali ke Beranda"
+                icon={AlertCircle}
+            />
         );
     }
 
@@ -271,7 +257,8 @@ export default function CustomerDashboardPage() {
     const bookingTrend = data.bookingTrend || generateSparklineData(7, "up");
     const activityData = data.activityData || generateActivityData();
     const totalSpent = data.stats.totalSpent || 0;
-    const isPositiveTrend = bookingTrend.length > 1 &&
+    const isPositiveTrend =
+        bookingTrend.length > 1 &&
         bookingTrend[bookingTrend.length - 1].value > bookingTrend[0].value;
 
     const stats = [
@@ -279,300 +266,357 @@ export default function CustomerDashboardPage() {
             label: "Total Pesanan",
             value: data.stats.totalBookings,
             icon: Ticket,
-            gradient: "from-indigo-500 to-purple-500",
-            bgGradient: "from-indigo-500/10 to-purple-500/10",
-            iconBg: "bg-indigo-500/10",
-            iconColor: "text-indigo-500",
             href: "/my-bookings",
             sparklineData: bookingTrend,
-            trend: isPositiveTrend ? "+12%" : "-5%",
-            trendUp: isPositiveTrend,
+            tone: "accent" as const,
+            trend: isPositiveTrend ? "+12% vs bulan lalu" : "Perlu perhatian",
         },
         {
             label: "Event Mendatang",
             value: data.stats.upcomingEvents,
             icon: Calendar,
-            gradient: "from-emerald-500 to-teal-500",
-            bgGradient: "from-emerald-500/10 to-teal-500/10",
-            iconBg: "bg-emerald-500/10",
-            iconColor: "text-emerald-500",
             href: "/my-bookings?status=confirmed",
             sparklineData: generateSparklineData(7, "stable"),
-            trend: data.stats.upcomingEvents > 0 ? "Aktif" : "-",
-            trendUp: true,
+            tone: "success" as const,
+            trend:
+                data.stats.upcomingEvents > 0
+                    ? `${data.stats.upcomingEvents} event siap dihadiri`
+                    : "Belum ada agenda aktif",
         },
         {
             label: "Wishlist",
             value: data.stats.wishlistCount,
             icon: Heart,
-            gradient: "from-rose-500 to-pink-500",
-            bgGradient: "from-rose-500/10 to-pink-500/10",
-            iconBg: "bg-rose-500/10",
-            iconColor: "text-rose-500",
             href: "/wishlist",
             sparklineData: generateSparklineData(7, "up"),
-            trend: "+3",
-            trendUp: true,
+            tone: "default" as const,
+            trend:
+                data.stats.wishlistCount > 0
+                    ? "Kurasi event favorit tersimpan"
+                    : "Mulai simpan event favorit",
         },
         {
             label: "Total Belanja",
             value: formatCurrency(totalSpent),
             icon: Wallet,
-            gradient: "from-amber-500 to-orange-500",
-            bgGradient: "from-amber-500/10 to-orange-500/10",
-            iconBg: "bg-amber-500/10",
-            iconColor: "text-amber-500",
             href: "/my-bookings",
             sparklineData: generateSparklineData(7, "up"),
-            trend: "+25%",
-            trendUp: true,
-            isLarge: true,
+            tone: "warning" as const,
+            trend: "Ringkasan pengeluaran sepanjang booking",
         },
     ];
 
     return (
         <div className="space-y-6 lg:space-y-8">
-            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <p className="text-[var(--text-muted)] text-sm font-medium">{getGreeting()}</p>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                        Halo, <span className="text-gradient">{firstName}</span>! 👋
-                    </h1>
-                </div>
-                <Link
-                    href="/events"
-                    className="btn btn-primary w-full sm:w-auto justify-center rounded-full py-3 sm:py-2.5 text-base sm:text-sm shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
-                >
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    <Sparkles className="w-5 h-5 sm:w-4 sm:h-4 relative z-10" />
-                    <span className="relative z-10 font-semibold">Jelajahi Event</span>
-                </Link>
-            </section>
-
-            <section>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    {stats.map((stat) => (
+            <CustomerHero
+                eyebrow="Customer dashboard"
+                title={
+                    <>
+                        {getGreeting()}, <span className="text-(--accent-primary)">{firstName}</span>
+                    </>
+                }
+                description="Pantau pesanan aktif, wishlist, dan rekomendasi event terbaru dari satu dashboard yang konsisten dengan alur customer Gelaran."
+                meta={
+                    <>
+                        <CustomerStatusBadge
+                            label={`${data.stats.upcomingEvents} event mendatang`}
+                            tone="success"
+                            icon={Calendar}
+                        />
+                        <CustomerStatusBadge
+                            label={`${data.stats.wishlistCount} item wishlist`}
+                            tone="accent"
+                            icon={Heart}
+                        />
+                    </>
+                }
+                actions={
+                    <>
                         <Link
-                            key={stat.label}
-                            href={stat.href}
-                            className="group relative overflow-hidden card card-hover p-4 sm:p-5"
+                            href="/my-bookings"
+                            className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                         >
-                            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${stat.bgGradient} rounded-full -mr-16 -mt-16 opacity-50 transition-transform group-hover:scale-150`} />
+                            <Ticket className="h-4 w-4" />
+                            Lihat Pesanan
+                        </Link>
+                        <Link
+                            href="/events"
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) transition-transform duration-200 hover:-translate-y-0.5"
+                        >
+                            <Sparkles className="h-4 w-4" />
+                            Jelajahi Event
+                        </Link>
+                    </>
+                }
+            />
 
-                            <div className="relative">
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className={`p-2.5 ${stat.iconBg} ${stat.iconColor} rounded-xl`}>
-                                        <stat.icon className="h-5 w-5" />
+            <CustomerMetricGrid>
+                {stats.map((stat) => (
+                    <Link key={stat.label} href={stat.href} className="block">
+                        <StatsCard
+                            label={stat.label}
+                            value={stat.value}
+                            icon={stat.icon}
+                            tone={stat.tone}
+                            trend={stat.trend}
+                            meta={
+                                <MiniSparkline
+                                    data={stat.sparklineData}
+                                    color="#29b3b6"
+                                    positive
+                                    height={26}
+                                    width={72}
+                                />
+                            }
+                            className="h-full"
+                        />
+                    </Link>
+                ))}
+            </CustomerMetricGrid>
+
+            <div className="grid gap-6 xl:grid-cols-[1.55fr_0.95fr]">
+                <DashboardSection
+                    title="Aktivitas booking"
+                    description="Ringkasan aktivitas booking dalam 6 bulan terakhir untuk membantu melihat ritme pembelian dan periode terpadat."
+                    className="h-full"
+                >
+                    <AreaChart
+                        data={activityData}
+                        height={250}
+                        color="#29b3b6"
+                        showYAxis={false}
+                        showGrid
+                        formatTooltip={(value: number) => `${value} booking`}
+                    />
+                </DashboardSection>
+
+                <DashboardSection
+                    title="Aksi cepat"
+                    description="Shortcut utama untuk melanjutkan aktivitas customer tanpa berpindah-pindah halaman."
+                    className="h-full"
+                >
+                    <div className="grid gap-4">
+                        <CustomerActionCard
+                            title="Kelola profil"
+                            description="Perbarui data personal, alamat, preferensi bahasa, dan zona waktu akunmu."
+                            href="/profile"
+                            icon={Wallet}
+                            actionLabel="Buka profil"
+                        />
+                        <CustomerActionCard
+                            title="Notifikasi terbaru"
+                            description="Baca update booking, pengingat event, dan pemberitahuan sistem terbaru."
+                            href="/notifications"
+                            icon={TrendingUp}
+                            actionLabel="Buka notifikasi"
+                        />
+                    </div>
+                </DashboardSection>
+            </div>
+
+            <DashboardSection
+                title="Event mendatang"
+                description="Pesanan yang paling dekat dengan jadwal acara ditampilkan lebih dulu agar kamu bisa cepat mengakses tiket dan detail event."
+                actionHref="/my-bookings"
+                actionLabel="Lihat semua pesanan"
+            >
+                {data.upcomingBookings.length === 0 ? (
+                    <CustomerEmptyState
+                        title="Belum ada event mendatang"
+                        description="Setelah kamu menyelesaikan booking, ringkasan acara berikutnya akan muncul di sini lengkap dengan status dan jumlah tiket."
+                        href="/events"
+                        ctaLabel="Temukan event"
+                        icon={Calendar}
+                        className="border-none bg-transparent p-0 shadow-none"
+                    />
+                ) : (
+                    <div className="grid gap-4 lg:grid-cols-2">
+                        {data.upcomingBookings.map((booking) => {
+                            const status = STATUS_META[booking.status] || STATUS_META.PENDING;
+                            return (
+                                <Link
+                                    key={booking.id}
+                                    href={`/my-bookings/${booking.bookingCode}`}
+                                    className="group overflow-hidden rounded-[1.75rem] border border-(--border) bg-(--surface-elevated) shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
+                                >
+                                    <div className="flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
+                                        <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-(--surface-brand-soft) sm:h-32 sm:w-32 sm:shrink-0">
+                                            <Image
+                                                src={booking.event.posterImage || "/placeholder.jpg"}
+                                                alt={booking.event.title}
+                                                fill
+                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                sizes="(max-width: 640px) 100vw, 128px"
+                                            />
+                                        </div>
+                                        <div className="min-w-0 flex-1 space-y-4">
+                                            <div className="space-y-2">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <CustomerStatusBadge label={status.label} tone={status.tone} />
+                                                    <span className="rounded-full bg-(--surface-brand-soft) px-3 py-1 text-xs font-semibold text-(--accent-primary)">
+                                                        {booking.totalTickets} tiket
+                                                    </span>
+                                                </div>
+                                                <h3 className="text-lg font-semibold text-foreground transition-colors group-hover:text-(--accent-primary)">
+                                                    {booking.event.title}
+                                                </h3>
+                                            </div>
+
+                                            <div className="space-y-2 text-sm text-(--text-secondary)">
+                                                {booking.eventSchedule ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Calendar className="h-4 w-4 text-(--accent-primary)" />
+                                                        <span>
+                                                            {formatDate(booking.eventSchedule.scheduleDate)} • {formatTime(booking.eventSchedule.startTime)}
+                                                        </span>
+                                                    </div>
+                                                ) : null}
+                                                {booking.event.venue ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <MapPin className="h-4 w-4 text-(--text-muted)" />
+                                                        <span className="truncate">
+                                                            {booking.event.venue.name}, {booking.event.venue.city}
+                                                        </span>
+                                                    </div>
+                                                ) : null}
+                                            </div>
+
+                                            <div className="inline-flex items-center gap-2 text-sm font-semibold text-(--accent-primary)">
+                                                Buka detail pesanan
+                                                <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="hidden sm:block">
-                                        <MiniSparkline
-                                            data={stat.sparklineData}
-                                            color={stat.trendUp ? "#22c55e" : "#ef4444"}
-                                            positive={stat.trendUp}
-                                            height={24}
-                                            width={50}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
+            </DashboardSection>
+
+            <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                <DashboardSection
+                    title="Pesanan terbaru"
+                    description="Monitor transaksi terbaru dan lanjutkan ke halaman detail jika perlu cek status, tiket, atau invoice."
+                >
+                    {data.recentBookings.length === 0 ? (
+                        <CustomerEmptyState
+                            title="Belum ada pesanan terbaru"
+                            description="Semua transaksi yang kamu buat akan dirangkum di sini agar mudah dipantau dari dashboard."
+                            href="/events"
+                            ctaLabel="Mulai booking"
+                            icon={Ticket}
+                            className="border-none bg-transparent p-0 shadow-none"
+                        />
+                    ) : (
+                        <div className="space-y-3">
+                            {data.recentBookings.slice(0, 4).map((booking) => {
+                                const status = STATUS_META[booking.status] || STATUS_META.PENDING;
+                                return (
+                                    <Link
+                                        key={booking.id}
+                                        href={`/my-bookings/${booking.bookingCode}`}
+                                        className="flex flex-col gap-4 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 transition-colors hover:bg-(--surface-hover) sm:flex-row sm:items-center"
+                                    >
+                                        <div className="min-w-0 flex-1 space-y-2">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <p className="rounded-full bg-(--bg-secondary) px-3 py-1 font-mono text-xs text-(--text-muted)">
+                                                    {booking.bookingCode}
+                                                </p>
+                                                <CustomerStatusBadge label={status.label} tone={status.tone} />
+                                            </div>
+                                            <h3 className="font-semibold text-foreground">{booking.event.title}</h3>
+                                            <p className="text-sm text-(--text-secondary)">
+                                                Dibuat {formatDate(booking.createdAt)}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center justify-between gap-4 sm:block sm:text-right">
+                                            <p className="text-lg font-semibold text-foreground">
+                                                {formatCurrency(booking.totalAmount)}
+                                            </p>
+                                            <span className="inline-flex items-center gap-1 text-sm font-semibold text-(--accent-primary)">
+                                                Detail
+                                                <ChevronRight className="h-4 w-4" />
+                                            </span>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    )}
+                </DashboardSection>
+
+                <DashboardSection
+                    title="Rekomendasi untukmu"
+                    description="Pilihan event yang relevan berdasarkan minat dan aktivitas eksplorasimu di Gelaran."
+                    actionHref="/events"
+                    actionLabel="Lihat katalog"
+                >
+                    {data.recommendedEvents.length === 0 ? (
+                        <CustomerEmptyState
+                            title="Belum ada rekomendasi"
+                            description="Terus jelajahi event dan simpan wishlist agar rekomendasi personal mulai terisi di dashboard ini."
+                            href="/events"
+                            ctaLabel="Jelajahi event"
+                            icon={Sparkles}
+                            className="border-none bg-transparent p-0 shadow-none"
+                        />
+                    ) : (
+                        <div className="space-y-3">
+                            {data.recommendedEvents.slice(0, 3).map((event) => (
+                                <Link
+                                    key={event.id}
+                                    href={`/events/${event.slug}`}
+                                    className="group flex gap-4 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 transition-colors hover:bg-(--surface-hover)"
+                                >
+                                    <div className="relative aspect-3/4 w-24 shrink-0 overflow-hidden rounded-2xl bg-(--surface-brand-soft)">
+                                        <Image
+                                            src={event.posterImage || "/placeholder.jpg"}
+                                            alt={event.title}
+                                            fill
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            sizes="96px"
                                         />
                                     </div>
-                                </div>
-
-                                <p className={`font-bold text-[var(--text-primary)] mb-1 ${stat.isLarge ? "text-lg sm:text-xl" : "text-2xl sm:text-3xl"}`}>
-                                    {stat.value}
-                                </p>
-
-                                <div className="flex items-center justify-between">
-                                    <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">{stat.label}</p>
-                                    {stat.trend !== "-" && (
-                                        <span className={`flex items-center gap-0.5 text-xs font-medium ${stat.trendUp ? "text-[var(--success)]" : "text-[var(--error)]"}`}>
-                                            {stat.trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                                            {stat.trend}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </section>
-
-            <section className="card p-4 sm:p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-[var(--accent-primary)]" />
-                        Aktivitas Booking
-                    </h2>
-                    <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-tertiary)] px-2 py-1 rounded-full">6 bulan terakhir</span>
-                </div>
-                <AreaChart
-                    data={activityData}
-                    height={200}
-                    color="#6366f1"
-                    showYAxis={false}
-                    showGrid={true}
-                    formatTooltip={(value: number) => `${value} booking`}
-                />
-            </section>
-
-            {data.upcomingBookings.length > 0 && (
-                <section>
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
-                            <Clock className="h-5 w-5 text-[var(--accent-primary)]" />
-                            Event Mendatang
-                        </h2>
-                        <Link href="/my-bookings" className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)] text-sm font-semibold flex items-center gap-1">
-                            Lihat Semua
-                            <ChevronRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-
-                    <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory no-scrollbar">
-                        {data.upcomingBookings.map((booking) => (
-                            <Link
-                                key={booking.id}
-                                href={`/my-bookings/${booking.bookingCode}`}
-                                className="snap-start shrink-0 w-[85vw] sm:w-80 group card p-3 flex gap-4"
-                            >
-                                <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl overflow-hidden relative">
-                                    <Image
-                                        src={booking.event.posterImage || "/placeholder.jpg"}
-                                        alt={booking.event.title}
-                                        fill
-                                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                        sizes="(max-width: 640px) 96px, 112px"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent group-hover:from-transparent transition-all" />
-                                </div>
-                                <div className="flex-1 py-1 pr-1 min-w-0 flex flex-col justify-between">
-                                    <div>
-                                        <h3 className="font-bold text-[var(--text-primary)] truncate group-hover:text-[var(--accent-primary)] transition-colors text-sm sm:text-base">
-                                            {booking.event.title}
-                                        </h3>
-                                        {booking.eventSchedule && (
-                                            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[var(--text-muted)] mt-1">
-                                                <Calendar className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]" />
-                                                <span className="truncate">
-                                                    {formatDate(booking.eventSchedule.scheduleDate)} • {formatTime(booking.eventSchedule.startTime)}
-                                                </span>
-                                            </div>
-                                        )}
-                                        {booking.event.venue && (
-                                            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[var(--text-muted)] mt-0.5">
-                                                <MapPin className="h-3.5 w-3.5 shrink-0" />
-                                                <span className="truncate">
-                                                    {booking.event.venue.name}, {booking.event.venue.city}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center justify-between mt-2">
-                                        <span className={`px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-semibold ${STATUS_COLORS[booking.status]}`}>
-                                            {STATUS_LABELS[booking.status] || booking.status}
-                                        </span>
-                                        <div className="flex items-center gap-1 text-xs sm:text-sm font-semibold text-[var(--accent-primary)] bg-[var(--accent-gradient-subtle)] px-2 py-0.5 rounded-lg">
-                                            <Ticket className="h-3 w-3" />
-                                            <span>{booking.totalTickets}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {data.recommendedEvents.length > 0 && (
-                <section>
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
-                            <Sparkles className="h-5 w-5 text-[var(--accent-primary)]" />
-                            Rekomendasi Untukmu
-                        </h2>
-                        <Link href="/events" className="text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)] text-sm font-semibold flex items-center gap-1">
-                            Jelajahi
-                            <ChevronRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {data.recommendedEvents.slice(0, 4).map((event) => (
-                            <Link
-                                key={event.id}
-                                href={`/events/${event.slug}`}
-                                className="group card card-hover p-3 flex gap-4"
-                            >
-                                <div className="w-24 sm:w-28 shrink-0 rounded-xl overflow-hidden relative aspect-[3/4]">
-                                    <Image
-                                        src={event.posterImage || "/placeholder.jpg"}
-                                        alt={event.title}
-                                        fill
-                                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                        sizes="(max-width: 640px) 96px, 112px"
-                                    />
-                                    {event.price && event.price.isFree && (
-                                        <div className="absolute top-2 left-2">
-                                            <span className="inline-block px-2 py-0.5 bg-[var(--success)]/90 backdrop-blur-sm text-white text-[10px] font-bold rounded-lg shadow-sm">
-                                                GRATIS
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0 flex flex-col py-1">
-                                    <div className="mb-auto">
-                                        {event.category && (
-                                            <span className="inline-block text-[10px] font-bold tracking-wider text-[var(--accent-primary)] uppercase mb-1">
+                                    <div className="min-w-0 flex-1 space-y-2">
+                                        {event.category ? (
+                                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--accent-primary)">
                                                 {event.category}
-                                            </span>
-                                        )}
-                                        <h3 className="font-bold text-[var(--text-primary)] leading-tight group-hover:text-[var(--accent-primary)] transition-colors line-clamp-2 text-sm sm:text-base mb-2">
+                                            </p>
+                                        ) : null}
+                                        <h3 className="line-clamp-2 font-semibold text-foreground transition-colors group-hover:text-(--accent-primary)">
                                             {event.title}
                                         </h3>
+                                        {event.schedule ? (
+                                            <div className="flex items-center gap-2 text-sm text-(--text-secondary)">
+                                                <Calendar className="h-4 w-4 text-(--accent-primary)" />
+                                                <span>
+                                                    {formatDate(event.schedule.date)} • {formatTime(event.schedule.time)}
+                                                </span>
+                                            </div>
+                                        ) : null}
+                                        {event.venue ? (
+                                            <div className="flex items-center gap-2 text-sm text-(--text-secondary)">
+                                                <MapPin className="h-4 w-4 text-(--text-muted)" />
+                                                <span className="truncate">
+                                                    {event.venue.name}, {event.venue.city}
+                                                </span>
+                                            </div>
+                                        ) : null}
+                                        <p className="pt-1 text-sm font-semibold text-foreground">
+                                            {event.price
+                                                ? event.price.isFree
+                                                    ? "Gratis"
+                                                    : `Mulai ${formatCurrency(event.price.startingFrom)}`
+                                                : "Harga segera diumumkan"}
+                                        </p>
                                     </div>
-
-                                    <div className="space-y-1">
-                                        {event.schedule && (
-                                            <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                                                <Calendar className="h-3.5 w-3.5" />
-                                                <span>{formatDate(event.schedule.date)}</span>
-                                            </div>
-                                        )}
-                                        {event.venue && (
-                                            <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                                                <MapPin className="h-3.5 w-3.5" />
-                                                <span className="truncate">{event.venue.city}</span>
-                                            </div>
-                                        )}
-                                        {event.price && !event.price.isFree && (
-                                            <div className="pt-2 mt-1 border-t border-dashed border-[var(--border)] font-bold text-[var(--accent-primary)] text-sm">
-                                                {formatCurrency(event.price.startingFrom)}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {data.upcomingBookings.length === 0 && data.recentBookings.length === 0 && (
-                <div className="card p-8 sm:p-12 text-center max-w-lg mx-auto">
-                    <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Ticket className="h-10 w-10 text-[var(--accent-primary)]" />
-                    </div>
-                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                        Belum ada pesanan
-                    </h3>
-                    <p className="text-[var(--text-muted)] mb-8 max-w-xs mx-auto">
-                        Jelajahi ribuan event menarik dan amankan tiket pertamamu sekarang!
-                    </p>
-                    <Link
-                        href="/events"
-                        className="btn btn-primary w-full sm:w-auto inline-flex justify-center rounded-full py-3 px-6 shadow-glow"
-                    >
-                        <Sparkles className="h-5 w-5 mr-2" />
-                        Jelajahi Event
-                    </Link>
-                </div>
-            )}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </DashboardSection>
+            </div>
         </div>
     );
 }

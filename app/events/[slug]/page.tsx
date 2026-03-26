@@ -155,7 +155,13 @@ async function getEvent(slug: string): Promise<EventData | null> {
             refundPolicy: event.refundPolicy,
             viewCount: event.viewCount,
             category: event.category,
-            venue: event.venue,
+            venue: event.venue ? {
+                id: event.venue.id,
+                name: event.venue.name,
+                address: event.venue.address || "",
+                city: event.venue.city || "",
+                province: event.venue.province || ""
+            } : null,
             organizer: {
                 id: event.organizer.id,
                 name: event.organizer.organizerProfile?.organizationName || event.organizer.name,

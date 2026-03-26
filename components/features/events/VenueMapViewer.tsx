@@ -139,7 +139,7 @@ export function VenueMapViewer({
     return (
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-purple-50">
+            <div className="px-5 py-4 border-b border-gray-100 bg-linear-to-r from-indigo-50 to-purple-50">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <MapPin className="h-5 w-5 text-indigo-600" />
@@ -246,7 +246,7 @@ export function VenueMapViewer({
                                 >
                                     {section.rows.map((row) => (
                                         <div key={row.id} className="flex items-center gap-3">
-                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-right flex-shrink-0">
+                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-right shrink-0">
                                                 {row.rowLabel}
                                             </span>
                                             <div className="flex gap-1.5 flex-wrap">
@@ -277,7 +277,7 @@ export function VenueMapViewer({
                                                     );
                                                 })}
                                             </div>
-                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-left flex-shrink-0">
+                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-left shrink-0">
                                                 {row.rowLabel}
                                             </span>
                                         </div>

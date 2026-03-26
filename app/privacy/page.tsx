@@ -1,251 +1,177 @@
-import Link from "next/link";
-import { ArrowLeft, Shield } from "lucide-react";
 import type { Metadata } from "next";
+import { Mail, Phone, Shield } from "lucide-react";
+import { TextContentSection } from "@/components/shared/public-marketing";
 
 export const metadata: Metadata = {
-    title: "Kebijakan Privasi - Gelaran",
-    description: "Kebijakan privasi Gelaran menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda.",
+    title: "Kebijakan Privasi",
+    description:
+        "Kebijakan privasi Gelaran menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi pengguna di dalam platform.",
 };
 
 export default function PrivacyPage() {
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="bg-white border-b">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Kembali
-                    </Link>
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-100 rounded-lg">
-                            <Shield className="h-6 w-6 text-indigo-600" />
+        <TextContentSection
+            eyebrow="Privacy policy"
+            title="Kebijakan Privasi Gelaran"
+            updatedAt="10 Januari 2026"
+            summary={
+                <p>
+                    Dokumen ini menjelaskan bagaimana Gelaran mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda saat menggunakan platform kami untuk menjelajahi event, membeli tiket, atau berinteraksi dengan layanan Gelaran.
+                </p>
+            }
+        >
+            <div className="space-y-10">
+                <section className="space-y-4">
+                    <div className="rounded-2xl border border-(--border) bg-(--surface-brand-soft) p-5 text-sm leading-7 text-(--text-secondary) sm:text-base">
+                        Gelaran berkomitmen menjaga privasi dan keamanan data pengguna. Dengan menggunakan platform ini, Anda menyetujui praktik pengelolaan data sebagaimana dijelaskan dalam kebijakan ini.
+                    </div>
+                </section>
+
+                <section>
+                    <h2>1. Informasi yang kami kumpulkan</h2>
+                    <p>
+                        Kami mengumpulkan informasi yang Anda berikan secara langsung kepada kami, termasuk tetapi tidak terbatas pada:
+                    </p>
+                    <ul>
+                        <li><strong>Informasi akun:</strong> nama, alamat email, nomor telepon, dan kata sandi ketika Anda membuat akun.</li>
+                        <li><strong>Informasi profil:</strong> foto profil, tanggal lahir, jenis kelamin, dan alamat bila Anda memilih untuk melengkapinya.</li>
+                        <li><strong>Informasi pembayaran:</strong> data yang diperlukan untuk memproses pembayaran tiket atau pencairan dana organizer.</li>
+                        <li><strong>Informasi transaksi:</strong> riwayat pembelian, kehadiran event, dan aktivitas terkait pesanan.</li>
+                        <li><strong>Komunikasi:</strong> pesan yang Anda kirim melalui formulir kontak, email, atau kanal bantuan lainnya.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>2. Informasi yang dikumpulkan secara otomatis</h2>
+                    <p>
+                        Saat Anda mengakses platform, kami juga dapat mengumpulkan informasi tertentu secara otomatis untuk menjaga performa dan keamanan layanan.
+                    </p>
+                    <ul>
+                        <li><strong>Data perangkat:</strong> jenis perangkat, sistem operasi, browser, dan pengenal perangkat tertentu.</li>
+                        <li><strong>Data log:</strong> alamat IP, waktu akses, halaman yang dibuka, serta interaksi penting di dalam platform.</li>
+                        <li><strong>Data lokasi umum:</strong> perkiraan lokasi geografis berdasarkan alamat IP.</li>
+                        <li><strong>Cookies dan teknologi serupa:</strong> digunakan untuk mengingat preferensi, menjaga sesi, dan memahami penggunaan produk.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>3. Cara kami menggunakan informasi</h2>
+                    <p>Informasi yang dikumpulkan digunakan untuk tujuan berikut:</p>
+                    <ul>
+                        <li>Menyediakan, menjalankan, dan meningkatkan layanan Gelaran.</li>
+                        <li>Memproses transaksi, mengirim konfirmasi, dan mendistribusikan e-ticket.</li>
+                        <li>Mengirim pengingat event, pembaruan pesanan, atau pemberitahuan penting.</li>
+                        <li>Mengembangkan pengalaman produk, desain, dan dukungan pelanggan.</li>
+                        <li>Mengirim penawaran promosi apabila Anda memberikan persetujuan.</li>
+                        <li>Mendeteksi penipuan, penyalahgunaan, atau ancaman keamanan lainnya.</li>
+                        <li>Memenuhi kewajiban hukum dan kepatuhan yang berlaku.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>4. Berbagi informasi</h2>
+                    <p>Kami dapat membagikan data pribadi Anda kepada pihak berikut hanya sejauh diperlukan:</p>
+                    <ul>
+                        <li><strong>Organizer event</strong> untuk memfasilitasi partisipasi Anda pada event yang dipilih.</li>
+                        <li><strong>Penyedia layanan</strong> seperti payment gateway, infrastruktur cloud, dan alat pendukung operasional.</li>
+                        <li><strong>Mitra bisnis</strong> apabila Anda menyetujui penawaran atau program tertentu.</li>
+                        <li><strong>Otoritas hukum</strong> jika diwajibkan oleh peraturan perundang-undangan atau untuk melindungi hak Gelaran.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>5. Keamanan data</h2>
+                    <p>
+                        Kami menerapkan langkah-langkah teknis dan organisasional yang wajar untuk membantu melindungi data pribadi, termasuk enkripsi saat transit, pembatasan akses internal, dan evaluasi keamanan berkala.
+                    </p>
+                    <p>
+                        Meskipun demikian, tidak ada sistem digital yang sepenuhnya bebas risiko. Karena itu, kami terus memperbarui praktik keamanan sesuai perkembangan teknologi dan ancaman yang relevan.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>6. Hak Anda</h2>
+                    <p>Anda dapat memiliki hak-hak tertentu terkait data pribadi Anda, sesuai hukum yang berlaku, termasuk:</p>
+                    <ul>
+                        <li>Meminta akses atas data pribadi yang kami simpan.</li>
+                        <li>Memperbaiki informasi yang tidak akurat atau tidak mutakhir.</li>
+                        <li>Meminta penghapusan data dalam kondisi tertentu.</li>
+                        <li>Membatasi atau menolak penggunaan data untuk kebutuhan tertentu.</li>
+                        <li>Meminta salinan data dalam format yang dapat dipindahkan jika relevan.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>7. Cookies</h2>
+                    <p>
+                        Kami menggunakan cookies untuk menjaga sesi Anda tetap aktif, mengingat preferensi, memahami pola penggunaan, dan membantu peningkatan performa halaman publik maupun area produk lainnya.
+                    </p>
+                    <p>
+                        Anda dapat menyesuaikan pengaturan cookies melalui browser yang digunakan. Namun, beberapa fitur platform mungkin tidak berjalan optimal bila cookies dinonaktifkan.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>8. Penyimpanan data</h2>
+                    <p>
+                        Kami menyimpan data pribadi selama diperlukan untuk menyediakan layanan, menjaga riwayat transaksi, memenuhi kebutuhan operasional, atau memenuhi kewajiban hukum. Setelah tidak lagi diperlukan, data akan dihapus, dianonimkan, atau disimpan dengan perlindungan yang sesuai.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>9. Layanan untuk anak-anak</h2>
+                    <p>
+                        Platform Gelaran tidak ditujukan untuk anak-anak di bawah usia 17 tahun, kecuali diperbolehkan oleh hukum atau kebijakan event tertentu. Kami tidak dengan sengaja mengumpulkan data pribadi anak tanpa dasar hukum yang sah.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>10. Perubahan kebijakan</h2>
+                    <p>
+                        Kebijakan Privasi ini dapat diperbarui dari waktu ke waktu. Perubahan material akan dipublikasikan melalui halaman ini, dan bila diperlukan kami dapat memberikan pemberitahuan tambahan melalui email atau notifikasi platform.
+                    </p>
+                </section>
+
+                <section className="space-y-4">
+                    <h2>11. Hubungi kami</h2>
+                    <p>
+                        Jika Anda memiliki pertanyaan, permintaan, atau keberatan terkait kebijakan ini dan praktik pengelolaan data Gelaran, silakan hubungi kami melalui kontak berikut:
+                    </p>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="rounded-2xl border border-(--border) bg-(--surface) p-5 shadow-(--shadow-xs)">
+                            <div className="flex items-start gap-3">
+                                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
+                                    <Shield className="h-5 w-5" />
+                                </span>
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Data protection</p>
+                                    <p className="mt-1 text-sm font-semibold text-foreground">Data Protection Officer</p>
+                                    <p className="mt-2 text-sm leading-7 text-(--text-secondary)">
+                                        Gelaran<br />
+                                        Jl. Sudirman No. 123, Jakarta Pusat, 10220
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Kebijakan Privasi</h1>
-                            <p className="text-gray-500">Terakhir diperbarui: 10 Januari 2026</p>
+                        <div className="rounded-2xl border border-(--border) bg-(--surface) p-5 shadow-(--shadow-xs)">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3 text-sm text-foreground">
+                                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
+                                        <Mail className="h-5 w-5" />
+                                    </span>
+                                    <span>privacy@bsctickets.com</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-sm text-foreground">
+                                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
+                                        <Phone className="h-5 w-5" />
+                                    </span>
+                                    <span>+62 21 1234 5678</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
-
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="bg-white rounded-2xl shadow-sm p-8 prose prose-gray max-w-none">
-                    <div className="mb-8 p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
-                        <p className="text-indigo-800 text-sm">
-                            Kebijakan Privasi ini menjelaskan bagaimana Gelaran mengumpulkan,
-                            menggunakan, dan melindungi informasi pribadi Anda. Kami berkomitmen
-                            untuk menjaga privasi dan keamanan data Anda.
-                        </p>
-                    </div>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">1. Informasi yang Kami Kumpulkan</h2>
-                        <p className="text-gray-600 mb-4">
-                            Kami mengumpulkan informasi yang Anda berikan secara langsung kepada kami,
-                            termasuk:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>
-                                <strong>Informasi Akun:</strong> Nama, alamat email, nomor telepon, dan
-                                kata sandi saat Anda membuat akun.
-                            </li>
-                            <li>
-                                <strong>Informasi Profil:</strong> Foto profil, tanggal lahir, jenis
-                                kelamin, dan alamat.
-                            </li>
-                            <li>
-                                <strong>Informasi Pembayaran:</strong> Detail kartu kredit/debit atau
-                                informasi rekening bank untuk pemrosesan pembayaran.
-                            </li>
-                            <li>
-                                <strong>Informasi Transaksi:</strong> Riwayat pembelian tiket dan
-                                kehadiran di event.
-                            </li>
-                            <li>
-                                <strong>Komunikasi:</strong> Pesan yang Anda kirim kepada kami melalui
-                                formulir kontak atau email.
-                            </li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">2. Informasi yang Dikumpulkan Secara Otomatis</h2>
-                        <p className="text-gray-600 mb-4">
-                            Saat Anda menggunakan Platform, kami secara otomatis mengumpulkan:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>
-                                <strong>Data Perangkat:</strong> Jenis perangkat, sistem operasi, browser,
-                                dan pengidentifikasi unik perangkat.
-                            </li>
-                            <li>
-                                <strong>Data Log:</strong> Alamat IP, waktu akses, halaman yang dikunjungi,
-                                dan tindakan yang dilakukan.
-                            </li>
-                            <li>
-                                <strong>Data Lokasi:</strong> Lokasi geografis umum berdasarkan alamat IP.
-                            </li>
-                            <li>
-                                <strong>Cookies:</strong> File kecil yang disimpan di perangkat Anda untuk
-                                meningkatkan pengalaman pengguna.
-                            </li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">3. Penggunaan Informasi</h2>
-                        <p className="text-gray-600 mb-4">
-                            Kami menggunakan informasi yang dikumpulkan untuk:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>Menyediakan dan mengelola layanan Platform.</li>
-                            <li>Memproses transaksi dan mengirim konfirmasi pembelian.</li>
-                            <li>Mengirim e-ticket dan pengingat event.</li>
-                            <li>Meningkatkan dan mengembangkan Platform.</li>
-                            <li>Mengirim informasi promosi dan penawaran (dengan persetujuan Anda).</li>
-                            <li>Mencegah penipuan dan menjaga keamanan Platform.</li>
-                            <li>Mematuhi kewajiban hukum.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">4. Berbagi Informasi</h2>
-                        <p className="text-gray-600 mb-4">
-                            Kami dapat membagikan informasi Anda dengan:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>
-                                <strong>Organizer Event:</strong> Untuk memfasilitasi kehadiran Anda di event.
-                            </li>
-                            <li>
-                                <strong>Penyedia Layanan:</strong> Pihak ketiga yang membantu kami dalam
-                                operasional seperti payment gateway dan cloud hosting.
-                            </li>
-                            <li>
-                                <strong>Mitra Bisnis:</strong> Dengan persetujuan Anda untuk penawaran khusus.
-                            </li>
-                            <li>
-                                <strong>Otoritas Hukum:</strong> Jika diwajibkan oleh hukum atau untuk
-                                melindungi hak kami.
-                            </li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">5. Keamanan Data</h2>
-                        <p className="text-gray-600 mb-4">
-                            Kami menerapkan langkah-langkah keamanan yang sesuai untuk melindungi
-                            informasi Anda, termasuk:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>Enkripsi data saat transit menggunakan SSL/TLS.</li>
-                            <li>Enkripsi data sensitif saat disimpan.</li>
-                            <li>Akses terbatas ke data pribadi oleh karyawan.</li>
-                            <li>Audit keamanan berkala.</li>
-                            <li>Pemberitahuan pelanggaran data jika terjadi.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">6. Hak Anda</h2>
-                        <p className="text-gray-600 mb-4">
-                            Anda memiliki hak untuk:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>
-                                <strong>Akses:</strong> Meminta salinan data pribadi yang kami miliki.
-                            </li>
-                            <li>
-                                <strong>Koreksi:</strong> Memperbarui atau memperbaiki data yang tidak akurat.
-                            </li>
-                            <li>
-                                <strong>Penghapusan:</strong> Meminta penghapusan data pribadi Anda.
-                            </li>
-                            <li>
-                                <strong>Pembatasan:</strong> Membatasi cara kami menggunakan data Anda.
-                            </li>
-                            <li>
-                                <strong>Portabilitas:</strong> Menerima data Anda dalam format yang dapat dibaca mesin.
-                            </li>
-                            <li>
-                                <strong>Penolakan:</strong> Menolak penggunaan data untuk pemasaran langsung.
-                            </li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">7. Cookies</h2>
-                        <p className="text-gray-600 mb-4">
-                            Kami menggunakan cookies untuk:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>Mengingat preferensi dan pengaturan Anda.</li>
-                            <li>Memahami bagaimana Anda menggunakan Platform.</li>
-                            <li>Menyediakan konten yang dipersonalisasi.</li>
-                            <li>Mengukur efektivitas kampanye pemasaran.</li>
-                        </ul>
-                        <p className="text-gray-600 mt-4">
-                            Anda dapat mengatur browser Anda untuk menolak cookies, namun hal ini
-                            dapat mempengaruhi fungsionalitas Platform.
-                        </p>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">8. Penyimpanan Data</h2>
-                        <p className="text-gray-600">
-                            Kami menyimpan data pribadi Anda selama akun Anda aktif atau selama
-                            diperlukan untuk menyediakan layanan. Setelah akun dihapus, kami akan
-                            menghapus atau menganonimkan data Anda dalam waktu 90 hari, kecuali
-                            jika diwajibkan oleh hukum untuk menyimpannya lebih lama.
-                        </p>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">9. Anak-Anak</h2>
-                        <p className="text-gray-600">
-                            Platform kami tidak ditujukan untuk anak-anak di bawah 17 tahun. Kami
-                            tidak dengan sengaja mengumpulkan data pribadi dari anak-anak. Jika
-                            Anda mengetahui bahwa anak Anda telah memberikan informasi kepada kami,
-                            silakan hubungi kami untuk penghapusan.
-                        </p>
-                    </section>
-
-                    <section className="mb-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">10. Perubahan Kebijakan</h2>
-                        <p className="text-gray-600">
-                            Kami dapat memperbarui Kebijakan Privasi ini dari waktu ke waktu.
-                            Perubahan akan dipublikasikan di halaman ini dengan tanggal efektif
-                            yang diperbarui. Kami akan memberitahu Anda melalui email atau
-                            notifikasi Platform untuk perubahan yang signifikan.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">11. Hubungi Kami</h2>
-                        <p className="text-gray-600 mb-4">
-                            Jika Anda memiliki pertanyaan atau kekhawatiran tentang Kebijakan Privasi
-                            ini atau praktik data kami, silakan hubungi:
-                        </p>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                            <p className="text-gray-600">
-                                <strong>Data Protection Officer</strong>
-                            </p>
-                            <p className="text-gray-600">
-                                <strong>Email:</strong> privacy@bsctickets.com
-                            </p>
-                            <p className="text-gray-600">
-                                <strong>Telepon:</strong> +62 21 1234 5678
-                            </p>
-                            <p className="text-gray-600">
-                                <strong>Alamat:</strong> Jl. Sudirman No. 123, Jakarta Pusat, 10220
-                            </p>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </div>
+        </TextContentSection>
     );
 }

@@ -1,218 +1,254 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
-    Users,
-    Target,
-    Shield,
-    Award,
-    Sparkles,
+    ArrowRight,
     Globe,
     Heart,
-    ArrowRight,
+    Landmark,
+    Shield,
+    Sparkles,
 } from "lucide-react";
-import type { Metadata } from "next";
+import {
+    EditorialPanel,
+    FeatureGrid,
+    MarketingHero,
+    PublicPageShell,
+    PublicSection,
+} from "@/components/shared/public-marketing";
 
 export const metadata: Metadata = {
-    title: "Tentang Kami - Gelaran",
-    description: "Gelaran adalah platform ticketing event terpercaya di Indonesia. Kami membantu organizer dan penonton terhubung melalui pengalaman event yang luar biasa.",
+    title: "Tentang Gelaran",
+    description:
+        "Gelaran adalah platform ticketing event terpercaya di Indonesia yang membantu organizer dan penonton terhubung melalui pengalaman event yang lebih terkurasi.",
 };
 
 const STATS = [
-    { value: "500K+", label: "Tiket Terjual" },
-    { value: "2,000+", label: "Event Sukses" },
-    { value: "1,500+", label: "Organizer" },
-    { value: "50+", label: "Kota" },
+    { value: "500K+", label: "Tiket terjual" },
+    { value: "2,000+", label: "Event sukses" },
+    { value: "1,500+", label: "Organizer aktif" },
+    { value: "50+", label: "Kota terhubung" },
 ];
 
 const VALUES = [
     {
         icon: Shield,
         title: "Terpercaya",
-        description: "Keamanan transaksi dan data pengguna adalah prioritas utama kami.",
+        description: "Keamanan transaksi, kejelasan informasi, dan perlindungan data menjadi fondasi pengalaman yang kami bangun.",
     },
     {
         icon: Sparkles,
-        title: "Inovatif",
-        description: "Selalu menghadirkan fitur-fitur terbaru untuk pengalaman terbaik.",
+        title: "Terkurasi",
+        description: "Kami merancang Gelaran agar setiap halaman publik terasa lebih editorial, fokus, dan memandu pengunjung ke event yang tepat.",
     },
     {
         icon: Heart,
-        title: "Peduli",
-        description: "Kami berkomitmen memberikan layanan pelanggan yang responsif.",
+        title: "Berempati",
+        description: "Kami memperhatikan kebutuhan penonton dan organizer agar perjalanan dari penemuan hingga kehadiran terasa lebih manusiawi.",
     },
     {
         icon: Globe,
         title: "Inklusif",
-        description: "Platform yang mudah diakses oleh semua kalangan.",
+        description: "Platform ini dirancang agar dapat dipahami oleh audiens luas, diakses lintas perangkat, dan tetap terasa dekat dengan konteks lokal.",
+    },
+];
+
+const PILLARS = [
+    {
+        title: "Cultural discovery",
+        body: "Menghubungkan audiens dengan event yang punya nilai cerita, identitas lokal, dan pengalaman yang berkesan.",
+    },
+    {
+        title: "Operational clarity",
+        body: "Membantu organizer mengelola distribusi tiket, komunikasi, dan performa event dari satu ekosistem yang jelas.",
+    },
+    {
+        title: "Brand trust",
+        body: "Membangun pengalaman yang konsisten dari halaman marketing sampai dashboard agar setiap interaksi terasa lebih profesional.",
     },
 ];
 
 const TEAM = [
-    { name: "Andi Wijaya", role: "CEO & Founder", image: "/team/ceo.jpg" },
-    { name: "Sari Dewi", role: "CTO", image: "/team/cto.jpg" },
-    { name: "Budi Santoso", role: "Head of Operations", image: "/team/ops.jpg" },
-    { name: "Maya Putri", role: "Head of Marketing", image: "/team/marketing.jpg" },
+    { name: "Andi Wijaya", role: "CEO & Founder" },
+    { name: "Sari Dewi", role: "Chief Product Officer" },
+    { name: "Budi Santoso", role: "Head of Operations" },
+    { name: "Maya Putri", role: "Brand & Growth Lead" },
 ];
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-white">
-            <section className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white py-24 overflow-hidden">
-                <div className="absolute inset-0 bg-black/20" />
-                <div className="absolute inset-0">
-                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" />
-                </div>
-                <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                        Menghubungkan Orang Melalui Event
-                    </h1>
-                    <p className="text-xl text-white/90 max-w-3xl mx-auto">
-                        Gelaran adalah platform ticketing event terpercaya yang membantu
-                        organizer dan penonton terhubung melalui pengalaman event yang luar biasa.
-                    </p>
-                </div>
-            </section>
-
-            <section className="py-16 bg-gray-50">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {STATS.map((stat) => (
-                            <div key={stat.label} className="text-center">
-                                <div className="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">
-                                    {stat.value}
-                                </div>
-                                <div className="text-gray-600">{stat.label}</div>
+        <PublicPageShell
+            hero={
+                <MarketingHero
+                    eyebrow="About Gelaran"
+                    title={<>Mengarsipkan semangat event Indonesia dalam pengalaman digital yang lebih <em className="text-(--accent-secondary) not-italic">jelas</em>.</>}
+                    description={
+                        <p>
+                            Gelaran lahir untuk menjembatani organizer, komunitas, dan penonton dengan presentasi event yang lebih terstruktur—
+                            mengutamakan konteks, kepercayaan, dan pengalaman yang mudah dipahami sejak kunjungan pertama.
+                        </p>
+                    }
+                    primaryCta={{ href: "/events", label: "Lihat event" }}
+                    secondaryCta={{ href: "/become-organizer", label: "Bergabung sebagai organizer" }}
+                    stats={STATS.map((stat, index) => ({
+                        label: stat.label,
+                        value: stat.value,
+                        tone: index === 0 ? "accent" : index === 1 ? "default" : index === 2 ? "success" : "warning",
+                    }))}
+                    aside={
+                        <EditorialPanel className="max-w-xl space-y-5">
+                            <div className="space-y-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-(--text-muted)">
+                                    Misi kami
+                                </p>
+                                <h2 className="font-(--font-editorial) text-3xl leading-tight tracking-(--tracking-display) text-foreground sm:text-4xl">
+                                    Membuat event lebih mudah ditemukan, lebih mudah dipercaya, dan lebih mudah dikelola.
+                                </h2>
                             </div>
-                        ))}
+                            <p className="text-sm leading-7 text-(--text-secondary) sm:text-base">
+                                Kami melihat halaman event bukan hanya sebagai katalog, tetapi sebagai ruang kurasi yang membantu pengguna memahami kualitas pengalaman sebelum mereka membeli tiket.
+                            </p>
+                            <div className="rounded-2xl border border-(--border) bg-(--surface-brand-soft) px-5 py-4 text-sm leading-7 text-(--text-secondary)">
+                                Pendekatan ini mengikuti baseline publik Gelaran yang terang, editorial, dan mengutamakan hierarki informasi yang bersih.
+                            </div>
+                        </EditorialPanel>
+                    }
+                />
+            }
+        >
+            <PublicSection
+                eyebrow="Our story"
+                title="Di balik Gelaran ada obsesi untuk merapikan pengalaman event dari hulu ke hilir"
+                description="Kami membangun platform ini untuk mengurangi friksi antara rasa penasaran audiens dan kebutuhan organizer akan sistem yang lebih andal."
+                className="pt-0"
+            >
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
+                    <EditorialPanel className="h-full overflow-hidden p-0">
+                        <div className="flex h-full min-h-88 flex-col justify-between bg-[linear-gradient(160deg,rgba(1,89,89,0.96),rgba(41,179,182,0.72))] p-8 text-white sm:p-10">
+                            <Landmark className="h-12 w-12 text-white/86" />
+                            <div className="space-y-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
+                                    Founded in Indonesia
+                                </p>
+                                <h3 className="font-(--font-editorial) text-4xl leading-[0.96] tracking-(--tracking-display) sm:text-5xl">
+                                    Event experiences deserve context, not clutter.
+                                </h3>
+                                <p className="max-w-lg text-sm leading-7 text-white/78 sm:text-base">
+                                    Dari landing page hingga halaman pendukung, setiap touchpoint Gelaran dirancang untuk terasa tenang, percaya diri, dan mudah ditelusuri.
+                                </p>
+                            </div>
+                        </div>
+                    </EditorialPanel>
+
+                    <div className="space-y-5">
+                        <EditorialPanel>
+                            <p className="font-(--font-editorial) text-2xl italic leading-relaxed text-foreground sm:text-3xl">
+                                “Kami ingin Gelaran membantu orang memutuskan untuk hadir di sebuah event dengan keyakinan yang lebih besar.”
+                            </p>
+                        </EditorialPanel>
+                        <EditorialPanel className="space-y-4">
+                            <p className="text-sm leading-8 text-(--text-secondary) sm:text-base">
+                                Banyak platform event terlihat ramai, tetapi tidak selalu membantu pengguna memahami apa yang membuat sebuah event layak diikuti. Gelaran hadir dengan pendekatan yang lebih terarah: visual yang konsisten, struktur informasi yang jelas, dan CTA yang tidak membingungkan.
+                            </p>
+                            <p className="text-sm leading-8 text-(--text-secondary) sm:text-base">
+                                Untuk organizer, itu berarti ruang presentasi yang lebih profesional. Untuk penonton, itu berarti proses menemukan event yang terasa lebih meyakinkan. Untuk brand, itu berarti pengalaman publik yang selaras dengan sistem internal di balik layar.
+                            </p>
+                        </EditorialPanel>
                     </div>
                 </div>
-            </section>
+            </PublicSection>
 
-            <section className="py-20">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm font-medium mb-4">
-                                <Target className="h-4 w-4" />
-                                Misi Kami
+            <PublicSection
+                eyebrow="Core values"
+                title="Nilai yang membentuk keputusan desain dan produk kami"
+                description="Nilai-nilai ini diterjemahkan langsung ke dalam tone visual publik, treatment CTA, pola layout, dan rasa keseluruhan Gelaran."
+                className="pt-0"
+            >
+                <FeatureGrid items={VALUES} columns={4} />
+            </PublicSection>
+
+            <PublicSection
+                eyebrow="North star"
+                title="Tiga pilar yang menjaga Gelaran tetap fokus"
+                description="Kami menggunakan pilar ini sebagai acuan untuk menilai fitur, prioritas konten, dan bagaimana halaman-halaman publik seharusnya terasa."
+                className="pt-0"
+            >
+                <div className="grid gap-px overflow-hidden rounded-[calc(var(--radius-3xl)+0.25rem)] border border-(--border) bg-(--border) lg:grid-cols-3">
+                    {PILLARS.map((pillar, index) => (
+                        <div key={pillar.title} className="bg-(--surface) p-8 sm:p-10">
+                            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-(--text-muted)">
+                                0{index + 1}
+                            </p>
+                            <h3 className="mt-4 font-(--font-editorial) text-3xl leading-tight tracking-(--tracking-display) text-foreground">
+                                {pillar.title}
+                            </h3>
+                            <p className="mt-4 text-sm leading-8 text-(--text-secondary) sm:text-base">
+                                {pillar.body}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </PublicSection>
+
+            <PublicSection
+                eyebrow="People behind Gelaran"
+                title="Tim yang menjaga produk, operasi, dan brand tetap seirama"
+                description="Peran-peran inti ini merepresentasikan fokus lintas fungsi yang dibutuhkan untuk membuat pengalaman event terasa menyatu."
+                className="pt-0"
+            >
+                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                    {TEAM.map((member) => (
+                        <EditorialPanel key={member.name} className="text-center">
+                            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-(--surface-brand-soft) text-2xl font-semibold text-(--accent-primary) shadow-(--shadow-xs)">
+                                {member.name
+                                    .split(" ")
+                                    .map((part) => part[0])
+                                    .join("")}
                             </div>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                                Membuat Event Lebih Mudah Diakses
+                            <h3 className="mt-5 text-lg font-semibold tracking-(--tracking-heading) text-foreground">
+                                {member.name}
+                            </h3>
+                            <p className="mt-1 text-sm text-(--text-secondary)">{member.role}</p>
+                        </EditorialPanel>
+                    ))}
+                </div>
+            </PublicSection>
+
+            <PublicSection
+                title="Siap membangun event dengan fondasi yang lebih rapi?"
+                className="pt-0"
+                contentClassName="space-y-0"
+            >
+                <EditorialPanel className="overflow-hidden bg-[linear-gradient(135deg,rgba(1,89,89,0.08),rgba(249,93,0,0.1))]">
+                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                        <div className="space-y-4">
+                            <span className="inline-flex rounded-full border border-(--border) bg-white/80 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-(--accent-primary)">
+                                Continue with Gelaran
+                            </span>
+                            <h2 className="font-(--font-editorial) text-4xl leading-[0.96] tracking-(--tracking-display) text-foreground sm:text-5xl">
+                                Siap membangun event dengan fondasi yang lebih rapi?
                             </h2>
-                            <p className="text-gray-600 mb-4">
-                                Kami percaya bahwa setiap orang berhak menikmati event-event berkualitas.
-                                Misi kami adalah menyederhanakan proses pembelian tiket dan membantu
-                                organizer menjangkau audiens yang lebih luas.
+                            <p className="max-w-2xl text-sm leading-8 text-(--text-secondary) sm:text-base">
+                                Mulai dari menjelajahi event publik atau daftar sebagai organizer untuk membawa pengalaman brand kamu ke ekosistem Gelaran.
                             </p>
-                            <p className="text-gray-600 mb-6">
-                                Dengan teknologi modern dan tim yang berdedikasi, kami berkomitmen untuk
-                                memberikan pengalaman ticketing terbaik bagi semua pihak.
-                            </p>
+                        </div>
+                        <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
                             <Link
-                                href="/events"
-                                className="inline-flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-500"
+                                href="/become-organizer"
+                                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white shadow-(--shadow-md) transition-colors duration-200 hover:bg-(--accent-secondary-hover)"
                             >
-                                Jelajahi Event
+                                Daftar sebagai organizer
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
-                        </div>
-                        <div className="relative">
-                            <div className="aspect-square bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl overflow-hidden">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <Users className="h-32 w-32 text-white/30" />
-                                </div>
-                            </div>
-                            <div className="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-xl p-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-green-100 rounded-lg">
-                                        <Award className="h-6 w-6 text-green-600" />
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-gray-900">4.9/5</div>
-                                        <div className="text-sm text-gray-500">Rating Pengguna</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <Link
+                                href="/contact"
+                                className="inline-flex min-h-12 items-center justify-center rounded-full border border-(--border) bg-white/80 px-6 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-white"
+                            >
+                                Hubungi tim kami
+                            </Link>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section className="py-20 bg-gray-50">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Nilai-Nilai Kami</h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto">
-                            Prinsip-prinsip yang menjadi landasan dalam setiap keputusan dan layanan kami.
-                        </p>
-                    </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {VALUES.map((value) => {
-                            const Icon = value.icon;
-                            return (
-                                <div
-                                    key={value.title}
-                                    className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
-                                >
-                                    <div className="p-3 bg-indigo-100 rounded-lg w-fit mb-4">
-                                        <Icon className="h-6 w-6 text-indigo-600" />
-                                    </div>
-                                    <h3 className="text-lg font-bold text-gray-900 mb-2">{value.title}</h3>
-                                    <p className="text-gray-600 text-sm">{value.description}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </section>
-
-            <section className="py-20">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Tim Kami</h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto">
-                            Orang-orang hebat di balik Gelaran yang bekerja keras untuk memberikan
-                            layanan terbaik.
-                        </p>
-                    </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {TEAM.map((member) => (
-                            <div key={member.name} className="text-center">
-                                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full mb-4 flex items-center justify-center">
-                                    <span className="text-3xl font-bold text-white">
-                                        {member.name.split(" ").map((n) => n[0]).join("")}
-                                    </span>
-                                </div>
-                                <h3 className="font-bold text-gray-900">{member.name}</h3>
-                                <p className="text-sm text-gray-500">{member.role}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="py-20 bg-indigo-600 text-white">
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Siap Membuat Event?</h2>
-                    <p className="text-white/80 mb-8">
-                        Bergabunglah dengan ribuan organizer yang telah mempercayakan event mereka kepada kami.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            href="/register"
-                            className="inline-flex items-center justify-center px-8 py-3 bg-white text-indigo-600 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-                        >
-                            Daftar Sebagai Organizer
-                        </Link>
-                        <Link
-                            href="/contact"
-                            className="inline-flex items-center justify-center px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white/10 transition-colors"
-                        >
-                            Hubungi Kami
-                        </Link>
-                    </div>
-                </div>
-            </section>
-        </div>
+                </EditorialPanel>
+            </PublicSection>
+        </PublicPageShell>
     );
 }

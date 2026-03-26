@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran AdminHub - Knowledge &amp; Operations Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#e2fffe",
+              "on-error-container": "#93000a",
+              "on-background": "#002020",
+              "surface-tint": "#1e6868",
+              "secondary-fixed": "#ffdbce",
+              "on-surface-variant": "#3f4948",
+              "surface-container-highest": "#aaefee",
+              "surface": "#e2fffe",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#a1e6e5",
+              "secondary-container": "#fd6005",
+              "on-tertiary-container": "#56d4d6",
+              "on-secondary-fixed-variant": "#7f2b00",
+              "surface-container-high": "#aff5f4",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#004f51",
+              "primary-fixed-dim": "#8ed2d2",
+              "primary": "#004040",
+              "primary-fixed": "#aaefee",
+              "on-surface": "#002020",
+              "on-primary-container": "#89cdcd",
+              "tertiary-container": "#00595b",
+              "secondary": "#a63b00",
+              "on-error": "#ffffff",
+              "surface-bright": "#e2fffe",
+              "on-tertiary": "#ffffff",
+              "surface-container-low": "#c1fffe",
+              "outline": "#6f7978",
+              "on-secondary-fixed": "#370e00",
+              "inverse-surface": "#003737",
+              "on-primary-fixed-variant": "#004f50",
+              "primary-container": "#015959",
+              "on-primary-fixed": "#002020",
+              "surface-variant": "#aaefee",
+              "surface-container": "#b5faf9",
+              "error-container": "#ffdad6",
+              "on-secondary-container": "#521900",
+              "error": "#ba1a1a",
+              "tertiary-fixed-dim": "#5cd8db",
+              "tertiary": "#004041",
+              "on-primary": "#ffffff",
+              "outline-variant": "#bec8c8",
+              "on-tertiary-fixed": "#002021",
+              "tertiary-fixed": "#7bf5f8",
+              "inverse-primary": "#8ed2d2",
+              "secondary-fixed-dim": "#ffb598",
+              "inverse-on-surface": "#b8fdfc"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif", "serif"],
+              "body": ["Plus Jakarta Sans", "sans-serif"],
+              "label": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+        .serif-headline { font-family: 'Noto Serif', serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-surface-container-high">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-slate-50 border-r border-slate-100 z-50">
+<div class="px-8 py-10">
+<h1 class="font-serif text-xl text-teal-900">Enterprise Docs</h1>
+<p class="font-sans text-[10px] tracking-widest uppercase text-slate-500 mt-1">Analytical Editorial</p>
+</div>
+<nav class="flex flex-col gap-1 px-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-teal-700 transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-sm tracking-wide uppercase">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-900 font-bold bg-white rounded-r-full shadow-sm translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-sans text-sm tracking-wide uppercase">SOPs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-teal-700 transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="font-sans text-sm tracking-wide uppercase">Policy</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-teal-700 transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="new_releases">new_releases</span>
+<span class="font-sans text-sm tracking-wide uppercase">Release Notes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-teal-700 transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sans text-sm tracking-wide uppercase">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 pb-8 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-teal-700 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="font-sans text-sm tracking-wide uppercase">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-teal-700 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-sans text-sm tracking-wide uppercase">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<main class="ml-64 min-h-screen bg-white">
+<!-- TopNavBar Integration -->
+<header class="flex justify-between items-center px-12 h-16 w-full bg-white/80 backdrop-blur-md sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<span class="font-serif text-2xl font-bold text-teal-900">AdminHub</span>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-teal-700 font-bold border-b-2 border-teal-700 px-1 py-1" href="#">Archive</a>
+<a class="text-slate-600 font-medium hover:text-teal-600 transition-colors" href="#">Directory</a>
+<a class="text-slate-600 font-medium hover:text-teal-600 transition-colors" href="#">Insights</a>
+</nav>
+<div class="flex items-center gap-4 border-l border-slate-100 pl-8">
+<span class="material-symbols-outlined text-slate-600 cursor-pointer hover:text-teal-900" data-icon="help">help</span>
+<span class="material-symbols-outlined text-slate-600 cursor-pointer hover:text-teal-900" data-icon="notifications">notifications</span>
+<img alt="Executive Profile" class="w-8 h-8 rounded-full object-cover" data-alt="professional portrait of a high-level executive man in a tailored dark suit with neutral background and soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO5Qrr-TAf4uIfAq1eqyGnXoExKdTk4FliLNkFsIhq1PAjBAnYO0xz2OJSN9IYmCOEwusW0RKEdROft5xiSHr4hv9FE6Fv59IZeH1bjNrGDpiffFtjvOW58MdZksH77KKPnDdyUFzB0dSUG66Cp1yiIstmf50-04qQWYRy_8JfoL0ww8Atnol96vLwVA0P8TWXOfsqoFECxandPEsJ42VbOUfhcScL3OEsPcO-FoliKAwppKbJ0ca09zgiqYvQAVhu0XNftNFvnAI"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="px-12 py-12 max-w-7xl mx-auto">
+<!-- Documentation Hub Header -->
+<section class="mb-16">
+<h2 class="serif-headline text-5xl text-primary font-bold tracking-tight mb-4">Knowledge &amp; Operations Archive</h2>
+<p class="text-on-surface-variant max-w-2xl text-lg leading-relaxed">The central repository for all enterprise protocols, legal frameworks, and system evolution logs. Curated for the analytical mind.</p>
+</section>
+<!-- Prominent Search -->
+<section class="mb-20">
+<div class="relative group">
+<div class="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-primary-container/40 group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+</div>
+<input class="w-full bg-slate-50 border-none border-b-2 border-outline-variant/40 focus:border-primary focus:ring-0 py-6 pl-16 pr-8 text-xl font-light transition-all" placeholder="Search articles, SOPs, or compliance documents..." type="text"/>
+<div class="absolute right-6 top-1/2 -translate-y-1/2 flex gap-2">
+<kbd class="px-2 py-1 bg-white border border-outline-variant/20 rounded text-xs text-slate-400 font-sans uppercase tracking-tighter">CMD</kbd>
+<kbd class="px-2 py-1 bg-white border border-outline-variant/20 rounded text-xs text-slate-400 font-sans uppercase tracking-tighter">K</kbd>
+</div>
+</div>
+</section>
+<!-- Layout Grid: Main & Sidebar -->
+<div class="grid grid-cols-12 gap-16">
+<!-- Main Content (Left) -->
+<div class="col-span-12 lg:col-span-8">
+<!-- Policy Cards Grid -->
+<div class="mb-16">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h3 class="serif-headline text-2xl text-primary mb-1">Governance Frameworks</h3>
+<p class="text-xs font-bold tracking-widest uppercase text-slate-400">Institutional Policy</p>
+</div>
+<a class="text-tertiary text-sm font-semibold underline underline-offset-4 hover:text-primary-container transition-colors" href="#">View All Policies</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="group p-8 border-l-4 border-primary-container bg-white hover:bg-slate-50 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary-container mb-6 block text-3xl" data-icon="confirmation_number">confirmation_number</span>
+<h4 class="font-bold text-lg text-primary mb-3">Ticketing Standards</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">Omni-channel distribution protocols and anti-fraud verification logic.</p>
+<span class="text-xs font-bold tracking-widest text-primary uppercase flex items-center gap-2">
+                                    Read Policy <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+<!-- Card 2 -->
+<div class="group p-8 border-l-4 border-primary-container bg-white hover:bg-slate-50 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary-container mb-6 block text-3xl" data-icon="museum">museum</span>
+<h4 class="font-bold text-lg text-primary mb-3">Cultural Heritage Integrity</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">Guidelines for venue selection and community-first representation.</p>
+<span class="text-xs font-bold tracking-widest text-primary uppercase flex items-center gap-2">
+                                    Read Policy <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+<!-- Card 3 -->
+<div class="group p-8 border-l-4 border-primary-container bg-white hover:bg-slate-50 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary-container mb-6 block text-3xl" data-icon="security">security</span>
+<h4 class="font-bold text-lg text-primary mb-3">Data Governance</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">Regulatory compliance for PII and transaction auditing trails.</p>
+<span class="text-xs font-bold tracking-widest text-primary uppercase flex items-center gap-2">
+                                    Read Policy <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+</div>
+<!-- SOP Categories -->
+<div class="mb-16">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h3 class="serif-headline text-2xl text-primary mb-1">Operational Procedures</h3>
+<p class="text-xs font-bold tracking-widest uppercase text-slate-400">Tactical Execution</p>
+</div>
+</div>
+<div class="space-y-4">
+<!-- SOP Row -->
+<div class="flex items-center justify-between p-6 bg-slate-50 group hover:bg-white border-b border-transparent hover:border-surface-container transition-all">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 flex items-center justify-center bg-[#29B3B6]/10 text-[#29B3B6]">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+</div>
+<div>
+<h5 class="font-bold text-primary">Organizer Onboarding</h5>
+<p class="text-xs text-on-surface-variant">KYC verification and merchant account initialization.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-all" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- SOP Row -->
+<div class="flex items-center justify-between p-6 bg-slate-50 group hover:bg-white border-b border-transparent hover:border-surface-container transition-all">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 flex items-center justify-center bg-[#29B3B6]/10 text-[#29B3B6]">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</div>
+<div>
+<h5 class="font-bold text-primary">Refund Processing</h5>
+<p class="text-xs text-on-surface-variant">Automated escalation and manual override authorization levels.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-all" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- SOP Row -->
+<div class="flex items-center justify-between p-6 bg-slate-50 group hover:bg-white border-b border-transparent hover:border-surface-container transition-all">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 flex items-center justify-center bg-[#29B3B6]/10 text-[#29B3B6]">
+<span class="material-symbols-outlined" data-icon="domain_verification">domain_verification</span>
+</div>
+<div>
+<h5 class="font-bold text-primary">Venue Verification</h5>
+<p class="text-xs text-on-surface-variant">Capacity validation and technical infrastructure assessment.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-all" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Content (Right) -->
+<div class="col-span-12 lg:col-span-4 space-y-12">
+<!-- Pinned Resources -->
+<div>
+<h3 class="serif-headline text-xl text-primary mb-6">Pinned Resources</h3>
+<ul class="space-y-4">
+<li>
+<a class="flex items-center gap-3 text-sm text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-slate-100" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="description">description</span>
+                                    2024 Audit Compliance Form
+                                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-sm text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-slate-100" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="contact_page">contact_page</span>
+                                    Vendor Escalation Directory
+                                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 text-sm text-on-surface-variant hover:text-primary transition-colors py-2 border-b border-slate-100" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="link">link</span>
+                                    Global Event Calendar API
+                                </a>
+</li>
+</ul>
+</div>
+<!-- Release Notes (Timeline Style) -->
+<div>
+<h3 class="serif-headline text-xl text-primary mb-6">What's New</h3>
+<div class="relative pl-6 border-l border-slate-200 space-y-10">
+<!-- Release Item -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-white border-4 border-primary"></div>
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-bold tracking-widest text-[#FBC117] bg-[#FBC117]/10 rounded">v2.4.0 • CRITICAL</span>
+<h6 class="font-bold text-sm text-primary">Blockchain Ledger Integration</h6>
+<p class="text-xs text-on-surface-variant mt-1">Immutable transaction logs now active for all primary ticket series.</p>
+</div>
+<!-- Release Item -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-200 border-4 border-white"></div>
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-bold tracking-widest text-slate-400 bg-slate-100 rounded">v2.3.8</span>
+<h6 class="font-bold text-sm text-primary">Refined UX Micro-copy</h6>
+<p class="text-xs text-on-surface-variant mt-1">Updates to terminology across the partner dashboard.</p>
+</div>
+<!-- Release Item -->
+<div class="relative">
+<div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-200 border-4 border-white"></div>
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-bold tracking-widest text-slate-400 bg-slate-100 rounded">v2.3.5</span>
+<h6 class="font-bold text-sm text-primary">Regional Compliance Update</h6>
+<p class="text-xs text-on-surface-variant mt-1">Specific VAT calculation updates for SEA territories.</p>
+</div>
+</div>
+<button class="mt-8 text-xs font-bold tracking-widest text-primary uppercase flex items-center gap-2 hover:gap-3 transition-all">
+                            Full Changelog <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Support Escalation CTA -->
+<footer class="mt-32 pt-16 border-t border-slate-100">
+<div class="bg-primary-container p-12 text-center">
+<h3 class="serif-headline text-3xl text-white mb-4">Cannot find what you need?</h3>
+<p class="text-surface-container-highest/80 mb-8 max-w-xl mx-auto">Our senior administrative team is available for protocol clarifications and system escalations 24/7.</p>
+<button class="bg-[#F95D00] text-white px-8 py-4 font-bold tracking-wide uppercase hover:bg-[#ff6e1a] transition-colors flex items-center gap-3 mx-auto">
+<span class="material-symbols-outlined" data-icon="headset_mic">headset_mic</span>
+                        Direct Admin Support
+                    </button>
+</div>
+<div class="mt-12 text-center text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">
+                    © 2024 Gelaran Enterprise Operations • Confidential Editorial
+                </div>
+</footer>
+</div>
+</main>
+</body></html>

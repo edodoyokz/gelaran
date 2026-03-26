@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
+import { createClient } from "@/lib/supabase/server";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 
 const organizerNavItems = [
     { title: "Overview", href: "/docs/organizer", iconName: "LayoutDashboard" },
-    { title: "Kelola Event", href: "/docs/organizer/events", iconName: "Calendar" },
+    { title: "Event operations", href: "/docs/organizer/events", iconName: "Calendar" },
     { title: "Gate & POS", href: "/docs/organizer/gate", iconName: "ScanLine" },
-    { title: "Wallet & Payouts", href: "/docs/organizer/wallet", iconName: "Wallet" },
-    { title: "Tim", href: "/docs/organizer/team", iconName: "Users" },
+    { title: "Wallet & payouts", href: "/docs/organizer/wallet", iconName: "Wallet" },
+    { title: "Team coordination", href: "/docs/organizer/team", iconName: "Users" },
 ];
 
 export default async function OrganizerDocsLayout({
@@ -17,7 +17,9 @@ export default async function OrganizerDocsLayout({
     children: React.ReactNode;
 }) {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
         redirect("/login?returnUrl=/docs/organizer");
@@ -27,17 +29,15 @@ export default async function OrganizerDocsLayout({
         where: { email: user.email! },
     });
 
-    if (!dbUser || (dbUser.role !== "ORGANIZER" && dbUser.role !== "ADMIN" && dbUser.role !== "SUPER_ADMIN")) {
+    if (!dbUser || !["ORGANIZER", "ADMIN", "SUPER_ADMIN"].includes(dbUser.role)) {
         redirect("/docs");
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-8">
-            <DocsSidebar items={organizerNavItems} title="Organizer Guide" />
-            <main className="flex-1 min-w-0 px-4 py-6 lg:px-8">
-                <div className="max-w-4xl">
-                    {children}
-                </div>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:items-start">
+            <DocsSidebar items={organizerNavItems} title="Organizer documentation" />
+            <main className="min-w-0">
+                <div className="space-y-8">{children}</div>
             </main>
         </div>
     );

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Event Editor | Solo Events</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed": "#aaefee",
+                        "inverse-on-surface": "#b8fdfc",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "primary-fixed-dim": "#ffb598",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#bec8c8",
+                        "surface-container-high": "#aff5f4",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdf9a",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "surface-bright": "#e2fffe",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#a1e6e5",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline": "#6f7978",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "primary-container": "#8d3100",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#246d6d",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "tertiary": "#483500",
+                        "surface-tint": "#a63b00",
+                        "surface-container-highest": "#aaefee",
+                        "secondary": "#1e6868",
+                        "inverse-surface": "#003737",
+                        "on-primary-container": "#ffae8e",
+                        "surface-container": "#b5faf9",
+                        "on-tertiary-fixed": "#251a00",
+                        "surface": "#e2fffe",
+                        "tertiary-container": "#654b00",
+                        "on-tertiary-container": "#f1b803",
+                        "primary": "#672200",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdbce",
+                        "secondary-container": "#a7eceb",
+                        "on-surface": "#002020",
+                        "on-primary-fixed": "#370e00",
+                        "on-secondary-fixed": "#002020",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#c1fffe",
+                        "surface-variant": "#aaefee",
+                        "inverse-primary": "#ffb598",
+                        "on-background": "#002020",
+                        "background": "#e2fffe",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "on-surface-variant": "#3f4948",
+                        "brand-orange": "#F95D00",
+                        "brand-yellow": "#FBC117",
+                        "brand-dark-teal": "#015959",
+                        "brand-light-teal": "#29B3B6"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #ffffff; color: #002020; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .ticket-stub { mask-image: radial-gradient(circle at 0 50%, transparent 12px, black 13px), radial-gradient(circle at 100% 50%, transparent 12px, black 13px); }
+    </style>
+</head>
+<body class="antialiased overflow-hidden">
+<!-- Top Navigation Shell -->
+<header class="w-full h-16 sticky top-0 z-40 bg-teal-900/80 backdrop-blur-xl border-b border-teal-800/30 flex justify-between items-center px-6 ml-64 w-[calc(100%-16rem)] shadow-sm">
+<div class="flex items-center gap-6">
+<span class="text-xl font-bold text-white tracking-tight">Event Editor</span>
+<div class="h-4 w-[1px] bg-teal-700"></div>
+<nav class="flex gap-6 font-jakarta text-sm font-semibold uppercase tracking-widest">
+<a class="text-teal-100/70 hover:text-white transition-all ease-in-out" href="#">Preview</a>
+<a class="text-orange-500 border-b-2 border-orange-500 pb-1 transition-all ease-in-out" href="#">Save Draft</a>
+<a class="text-teal-100/70 hover:text-white transition-all ease-in-out" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-teal-100/70 hover:bg-white/10 rounded-full px-3 py-1">notifications</button>
+<button class="material-symbols-outlined text-teal-100/70 hover:bg-white/10 rounded-full px-3 py-1">help_outline</button>
+<button class="bg-[#F95D00] text-white px-6 py-2 rounded-xl font-bold text-sm tracking-wide hover:scale-[1.02] transition-transform active:scale-95 duration-150">Go Live</button>
+</div>
+</header>
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col p-4 bg-teal-950 shadow-xl z-50">
+<div class="mb-10 px-4">
+<h1 class="text-2xl font-black text-teal-50 tracking-tighter">Solo Events</h1>
+<p class="text-xs font-jakarta text-teal-400 font-semibold uppercase tracking-widest mt-1">Cultural Curator Portal</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-teal-300 hover:bg-teal-800/30 rounded-lg transition-transform duration-200 hover:scale-[1.02]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-noto-serif font-bold text-lg tracking-tight">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-teal-800 text-teal-50 rounded-lg shadow-inner transition-transform duration-200 hover:scale-[1.02]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<span class="font-noto-serif font-bold text-lg tracking-tight">Event Details</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-300 hover:bg-teal-800/30 rounded-lg transition-transform duration-200 hover:scale-[1.02]" href="#">
+<span class="material-symbols-outlined">image</span>
+<span class="font-noto-serif font-bold text-lg tracking-tight">Media &amp; Content</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-300 hover:bg-teal-800/30 rounded-lg transition-transform duration-200 hover:scale-[1.02]" href="#">
+<span class="material-symbols-outlined">local_activity</span>
+<span class="font-noto-serif font-bold text-lg tracking-tight">Ticketing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-300 hover:bg-teal-800/30 rounded-lg transition-transform duration-200 hover:scale-[1.02]" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="font-noto-serif font-bold text-lg tracking-tight">Analytics</span>
+</a>
+</nav>
+<div class="mt-auto bg-teal-900/50 p-4 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold">OC</div>
+<div>
+<p class="text-white text-sm font-bold">Organizer Profile</p>
+<p class="text-teal-400 text-xs">Cultural Lead</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex h-[calc(100vh-4rem)]">
+<!-- Scrollable Form Area -->
+<section class="flex-1 overflow-y-auto p-12 hide-scrollbar">
+<div class="max-w-3xl mx-auto space-y-16">
+<!-- Section: Event Basics -->
+<div class="space-y-8">
+<header>
+<h2 class="font-headline text-3xl font-black text-brand-dark-teal tracking-tight mb-2">Event Basics</h2>
+<div class="h-1 w-20 bg-brand-orange rounded-full"></div>
+</header>
+<div class="grid grid-cols-1 gap-6">
+<div class="space-y-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Event Title</label>
+<input class="w-full bg-white border-none shadow-[0_4px_20px_rgba(0,32,32,0.05)] focus:ring-2 focus:ring-brand-light-teal rounded-xl py-4 px-6 text-lg font-medium placeholder:text-brand-dark-teal/30" placeholder="e.g. Malam Selikuran at Kraton Surakarta" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Category</label>
+<select class="w-full bg-white border-none shadow-[0_4px_20px_rgba(0,32,32,0.05)] focus:ring-2 focus:ring-brand-light-teal rounded-xl py-4 px-6 appearance-none">
+<option>Traditional Performance</option>
+<option>Culinary Festival</option>
+<option>Modern Art Expo</option>
+<option>Batik Workshop</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Sub-Category</label>
+<select class="w-full bg-white border-none shadow-[0_4px_20px_rgba(0,32,32,0.05)] focus:ring-2 focus:ring-brand-light-teal rounded-xl py-4 px-6 appearance-none">
+<option>Wayang Kulit</option>
+<option>Gamelan Concert</option>
+<option>Tari Srimpi</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Short Description</label>
+<textarea class="w-full bg-white border-none shadow-[0_4px_20px_rgba(0,32,32,0.05)] focus:ring-2 focus:ring-brand-light-teal rounded-xl py-4 px-6 text-base placeholder:text-brand-dark-teal/30" placeholder="Briefly describe the cultural essence of your event..." rows="4"></textarea>
+</div>
+</div>
+</div>
+<!-- Section: Media Upload -->
+<div class="space-y-8">
+<header>
+<h2 class="font-headline text-3xl font-black text-brand-dark-teal tracking-tight mb-2">Media &amp; Visuals</h2>
+</header>
+<div class="relative group cursor-pointer overflow-hidden rounded-xl bg-surface-container-low aspect-[16/7] flex items-center justify-center border-2 border-dashed border-brand-light-teal/30 hover:border-brand-orange/50 transition-colors">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity" data-alt="vibrant traditional javanese dance performance with golden costumes and dramatic theatrical lighting in a heritage palace courtyard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAEuQ2hROxoC3FtXqF8eaQXnYUHfMzkOCYeaV6cl6Qs08icphB_KASiY7n9yrgh9roWqsrvIJMJeSPcKJStbXwV4hz_DzFQAcTzwq74X7Gu9KjCXSBvOTGPHuk7o0foW_-tBL4SYwvJKpar9DbBi0V18ei2KWshTWwzlTjw_rwC8AS0ROBIN06Qp_lBE4Gx0rmVjp86Ts9Cngt8vFrT-al46NbgCgC4BHN3Kg3RlbvqgPfwHIXgpXn2Tu4FWMG-oU7OB9FLDx_Fmg"/>
+<div class="relative z-10 flex flex-col items-center gap-3">
+<div class="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center text-brand-orange">
+<span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+</div>
+<span class="font-bold text-brand-dark-teal">Click to upload event poster</span>
+<span class="text-xs text-brand-dark-teal/60 font-medium">Recommended size: 1200 x 675 px</span>
+</div>
+</div>
+</div>
+<!-- Section: Schedule & Venue -->
+<div class="grid grid-cols-2 gap-12">
+<div class="space-y-8">
+<h2 class="font-headline text-2xl font-black text-brand-dark-teal tracking-tight">Schedule</h2>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Date Range</label>
+<div class="bg-white p-4 rounded-xl shadow-[0_4px_20px_rgba(0,32,32,0.05)] flex items-center gap-4">
+<span class="material-symbols-outlined text-brand-light-teal">calendar_today</span>
+<span class="text-sm font-semibold">Oct 21, 2023 - Oct 23, 2023</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Start Time</label>
+<div class="bg-white p-4 rounded-xl shadow-[0_4px_20px_rgba(0,32,32,0.05)] flex items-center gap-4">
+<span class="material-symbols-outlined text-brand-light-teal">schedule</span>
+<span class="text-sm font-semibold">19:00 WIB</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-8">
+<h2 class="font-headline text-2xl font-black text-brand-dark-teal tracking-tight">Venue</h2>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Location Search</label>
+<div class="bg-white p-4 rounded-xl shadow-[0_4px_20px_rgba(0,32,32,0.05)] flex items-center gap-4">
+<span class="material-symbols-outlined text-brand-light-teal">location_on</span>
+<input class="border-none p-0 focus:ring-0 text-sm font-semibold w-full bg-transparent" type="text" value="Kraton Surakarta Hadiningrat"/>
+</div>
+</div>
+<div class="h-32 rounded-xl bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="satellite view map of central java region focusing on the heritage district of surakarta city" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABRm4SFvtTr-a7D9o_ICCiiZQaHY2rccH8WbcuMyzNQNsowNY0Er2f_tJzgJHzHb4D-fII8G4K6hu_fURMRnPxfxQWWswlGO855ZSaTmdfDzd0nEkQqJFYyRYduL9zjQtWjjDwq8uiCl7FzneRpkNYjPtkAgG-5oiDwdMwQqRelF6WqRKI3iOnh_yUXHWObOr5uWqy_pEYW75OHQVGnVpV6oWQ3RjdFOPhsclIRE5bzRngi0DjQK14miKSFIxbFcx6nHsMBF72fvg"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Ticket Tiers -->
+<div class="space-y-8 pb-12">
+<div class="flex justify-between items-end">
+<header>
+<h2 class="font-headline text-3xl font-black text-brand-dark-teal tracking-tight mb-2">Ticket Tiers</h2>
+</header>
+<button class="flex items-center gap-2 text-brand-orange font-bold text-sm hover:underline">
+<span class="material-symbols-outlined text-lg">add_circle</span> Add Tier
+                        </button>
+</div>
+<div class="space-y-4">
+<!-- Tier Row 1 -->
+<div class="bg-white p-6 rounded-xl shadow-[0_10px_30px_rgba(0,32,32,0.04)] grid grid-cols-4 gap-6 items-center border-l-4 border-brand-orange">
+<div class="col-span-1">
+<label class="block text-[10px] font-black uppercase text-brand-dark-teal/40 mb-1">Name</label>
+<p class="font-bold text-brand-dark-teal">Regular Pass</p>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-black uppercase text-brand-dark-teal/40 mb-1">Price</label>
+<p class="font-bold text-brand-dark-teal">IDR 75,000</p>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-black uppercase text-brand-dark-teal/40 mb-1">Inventory</label>
+<p class="font-bold text-brand-dark-teal">500 Tickets</p>
+</div>
+<div class="flex justify-end gap-3">
+<button class="p-2 hover:bg-brand-light-teal/10 rounded-lg text-brand-light-teal transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Tier Row 2 (VIP) -->
+<div class="bg-brand-dark-teal p-6 rounded-xl shadow-[0_10px_30px_rgba(0,32,32,0.04)] grid grid-cols-4 gap-6 items-center">
+<div class="col-span-1">
+<label class="block text-[10px] font-black uppercase text-teal-300 mb-1">Name</label>
+<p class="font-bold text-white">VIP Pavilion</p>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-black uppercase text-teal-300 mb-1">Price</label>
+<p class="font-bold text-brand-yellow">IDR 250,000</p>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-black uppercase text-teal-300 mb-1">Inventory</label>
+<p class="font-bold text-white">50 Tickets</p>
+</div>
+<div class="flex justify-end gap-3">
+<button class="p-2 hover:bg-white/10 rounded-lg text-teal-300 transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-lg text-teal-300 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side Preview Panel -->
+<section class="w-[400px] bg-surface-container-low border-l border-brand-light-teal/10 p-8 overflow-y-auto">
+<div class="sticky top-0 space-y-8">
+<header class="flex justify-between items-center">
+<h3 class="font-jakarta text-xs font-extrabold uppercase tracking-widest text-brand-dark-teal/60">Live Preview</h3>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-[10px] font-bold text-green-600">SYNCED</span>
+</div>
+</header>
+<!-- Customer View Event Card -->
+<div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden group">
+<div class="relative h-56">
+<img class="w-full h-full object-cover" data-alt="vibrant traditional javanese dance performance with golden costumes and dramatic theatrical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJd52z_VHO5RRS448AJyohZn7QaupBwidUORNVuzukSK8XqEchzvkAn7ecofnIP6_ntHNj9Pws-HeIG8vkV3QAaZ7pfZJU5M6GCnqQm1RfMKavW4tnyDfd-uOs5RfO7TmJBeiEzVYGHd4LcR2E8W1W4EKxWJuw4P-yb3Q8T-M0oGbyNnChuDvsRLI2paM8R9MS4wacPs_rmThVqU2WbJ1UO0lOh97ecOws73L0-PaEKjY0iRrqKdjSboi1lVhyU0mKjHBCyJn4AeQ"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-brand-orange uppercase">
+                            Performance
+                        </div>
+</div>
+<div class="p-8 space-y-4">
+<div class="space-y-1">
+<p class="font-headline text-2xl font-black text-brand-dark-teal leading-tight">Malam Selikuran at Kraton Surakarta</p>
+<div class="flex items-center gap-2 text-brand-light-teal">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-xs font-bold uppercase tracking-wider">Solo, Central Java</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-4 border-y border-dashed border-teal-100">
+<div>
+<p class="text-[10px] font-extrabold text-brand-dark-teal/40 uppercase">Starts From</p>
+<p class="font-headline text-lg font-bold text-brand-orange">IDR 75k</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-extrabold text-brand-dark-teal/40 uppercase">Next Show</p>
+<p class="text-xs font-black text-brand-dark-teal">OCT 21, 19:00</p>
+</div>
+</div>
+<!-- Ticket Stub Aesthetic CTA -->
+<div class="ticket-stub bg-brand-dark-teal p-4 rounded-xl flex items-center justify-between">
+<div class="text-white">
+<p class="text-[9px] font-bold text-teal-400 uppercase">Available Status</p>
+<p class="text-xs font-bold">Limited Slots</p>
+</div>
+<button class="bg-brand-yellow text-brand-dark-teal px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg">Get Tickets</button>
+</div>
+</div>
+</div>
+<div class="bg-brand-yellow/10 p-6 rounded-2xl border border-brand-yellow/20">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-brand-yellow">lightbulb</span>
+<div class="space-y-1">
+<p class="text-xs font-bold text-brand-dark-teal">Curator Tip</p>
+<p class="text-[11px] leading-relaxed text-brand-dark-teal/70">Events with high-quality landscape posters (16:9) see a 40% higher click-through rate in the Solo marketplace.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

@@ -11,10 +11,15 @@ import {
     Loader2,
     AlertCircle,
     Trash2,
-    ExternalLink,
     Tag,
     Sparkles,
 } from "lucide-react";
+import {
+    CustomerEmptyState,
+    CustomerHero,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface WishlistEvent {
     id: string;
@@ -43,6 +48,13 @@ interface WishlistItem {
     event: WishlistEvent;
 }
 
+const EVENT_STATUS_META: Record<string, { label: string; tone: "neutral" | "warning" | "danger" | "success" }> = {
+    PUBLISHED: { label: "Tersedia", tone: "success" },
+    DRAFT: { label: "Draft", tone: "warning" },
+    ENDED: { label: "Berakhir", tone: "danger" },
+    CANCELLED: { label: "Dibatalkan", tone: "danger" },
+};
+
 export default function WishlistPage() {
     const router = useRouter();
     const [wishlists, setWishlists] = useState<WishlistItem[]>([]);
@@ -67,6 +79,7 @@ export default function WishlistPage() {
 
             if (data.success) {
                 setWishlists(data.data.wishlists);
+                setError(null);
             }
         } catch {
             setError("Gagal memuat wishlist");
@@ -130,8 +143,8 @@ export default function WishlistPage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat wishlist...</p>
+                    <Loader2 className="h-12 w-12 text-(--accent-primary) animate-spin mx-auto mb-4" />
+                    <p className="text-(--text-muted)">Memuat wishlist...</p>
                 </div>
             </div>
         );
@@ -139,162 +152,169 @@ export default function WishlistPage() {
 
     if (error) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="text-center card p-8 max-w-md">
-                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
-                    </div>
-                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
-                    <Link href="/dashboard" className="text-[var(--accent-primary)] hover:underline">
-                        Kembali ke Dashboard
-                    </Link>
-                </div>
-            </div>
+            <CustomerEmptyState
+                title="Wishlist belum bisa dimuat"
+                description={`${error}. Coba lagi beberapa saat atau kembali ke dashboard untuk melanjutkan aktivitas.`}
+                href="/dashboard"
+                ctaLabel="Kembali ke dashboard"
+                icon={AlertCircle}
+            />
         );
     }
 
     return (
-        <div className="space-y-6">
-            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                        Wishlist Saya
-                    </h1>
-                    <p className="text-[var(--text-muted)] text-sm mt-1">
-                        {wishlists.length} event tersimpan
-                    </p>
-                </div>
-            </section>
-
-            {wishlists.length === 0 ? (
-                <div className="card p-12 text-center">
-                    <div className="w-20 h-20 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Heart className="h-10 w-10 text-rose-500" />
-                    </div>
-                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                        Wishlist kamu kosong
-                    </h3>
-                    <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
-                        Simpan event yang kamu minati untuk ditemukan dengan mudah nanti.
-                    </p>
-                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2 shadow-glow">
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Saved events"
+                title="Wishlist saya"
+                description="Simpan event yang menarik untuk ditinjau kembali, bandingkan jadwal, lalu lanjutkan ke proses booking saat kamu siap."
+                meta={
+                    <CustomerStatusBadge
+                        label={`${wishlists.length} event tersimpan`}
+                        tone="accent"
+                        icon={Heart}
+                    />
+                }
+                actions={
+                    <Link
+                        href="/events"
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) transition-transform duration-200 hover:-translate-y-0.5"
+                    >
                         <Sparkles className="h-4 w-4" />
                         Jelajahi Event
-                        <ExternalLink className="h-4 w-4" />
                     </Link>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {wishlists.map((item, index) => (
-                        <div
-                            key={item.id}
-                            className="card card-hover overflow-hidden group animate-fade-in-up"
-                            style={{ animationDelay: `${index * 50}ms` }}
-                        >
-                            <div className="relative aspect-[16/10]">
-                                <Image
-                                    src={item.event.posterImage || "/placeholder.jpg"}
-                                    alt={item.event.title}
-                                    fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                }
+            />
 
-                                {item.event.status !== "PUBLISHED" && (
-                                    <div className="absolute top-3 left-3">
-                                        <span className="inline-flex px-2.5 py-1 bg-[var(--error)] text-white rounded-lg text-xs font-bold">
-                                            {item.event.status === "ENDED" ? "Berakhir" : "Tidak Tersedia"}
-                                        </span>
-                                    </div>
-                                )}
+            <DashboardSection
+                title="Event tersimpan"
+                description="Daftar event favoritmu dengan status, jadwal, lokasi, dan harga awal agar keputusan booking terasa lebih cepat dan terarah."
+            >
+                {wishlists.length === 0 ? (
+                    <CustomerEmptyState
+                        title="Wishlist kamu masih kosong"
+                        description="Saat menemukan event menarik, simpan ke wishlist agar mudah dibandingkan dan dibuka kembali dari area customer."
+                        href="/events"
+                        ctaLabel="Temukan event"
+                        icon={Heart}
+                        className="border-none bg-transparent p-0 shadow-none"
+                    />
+                ) : (
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        {wishlists.map((item) => {
+                            const status = EVENT_STATUS_META[item.event.status] || {
+                                label: item.event.status,
+                                tone: "neutral" as const,
+                            };
 
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemove(item.event.id)}
-                                    disabled={removingId === item.event.id}
-                                    className="absolute top-3 right-3 p-2.5 bg-[var(--surface-overlay)] text-rose-500 hover:bg-[var(--surface-hover)] dark:hover:bg-rose-900/30 transition-colors disabled:opacity-50 shadow-lg rounded-xl backdrop-blur-sm"
-                                    title="Hapus dari wishlist"
+                            return (
+                                <article
+                                    key={item.id}
+                                    className="group overflow-hidden rounded-[1.75rem] border border-(--border) bg-(--surface)/96 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
                                 >
-                                    {removingId === item.event.id ? (
-                                        <Loader2 className="h-5 w-5 animate-spin" />
-                                    ) : (
-                                        <Heart className="h-5 w-5 fill-current border border-white dark:border-rose-300" />
-                                    )}
-                                </button>
-
-                                <div className="absolute bottom-3 left-3 right-3">
-                                    {item.event.price && (
-                                        <div className="text-white font-bold text-lg drop-shadow-lg">
-                                            {item.event.price.isFree ? (
-                                                <span className="text-emerald-400">GRATIS</span>
-                                            ) : (
-                                                <span>
-                                                    Mulai {formatCurrency(item.event.price.startingFrom)}
+                                    <div className="relative aspect-16/10 overflow-hidden bg-(--surface-brand-soft)">
+                                        <Image
+                                            src={item.event.posterImage || "/placeholder.jpg"}
+                                            alt={item.event.title}
+                                            fill
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                                        />
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+                                        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+                                            <CustomerStatusBadge
+                                                label={status.label}
+                                                tone={status.tone}
+                                                className="border-white/10 bg-black/40 text-white backdrop-blur"
+                                            />
+                                            {item.event.category ? (
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                                                    <Tag className="h-3.5 w-3.5" />
+                                                    {item.event.category}
                                                 </span>
+                                            ) : null}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemove(item.event.id)}
+                                            disabled={removingId === item.event.id}
+                                            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-black/35 text-white backdrop-blur transition-colors hover:bg-black/55 disabled:cursor-not-allowed disabled:opacity-60"
+                                            aria-label="Hapus dari wishlist"
+                                        >
+                                            {removingId === item.event.id ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <Trash2 className="h-4 w-4" />
                                             )}
+                                        </button>
+                                        <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3 text-white">
+                                            <div>
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/80">
+                                                    Tersimpan {formatDate(item.createdAt)}
+                                                </p>
+                                                <p className="mt-1 text-lg font-semibold">
+                                                    {item.event.price
+                                                        ? item.event.price.isFree
+                                                            ? "Gratis"
+                                                            : `Mulai ${formatCurrency(item.event.price.startingFrom)}`
+                                                        : "Harga segera diumumkan"}
+                                                </p>
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="p-4">
-                                {item.event.category && (
-                                    <div className="flex items-center gap-1 text-xs text-[var(--accent-primary)] font-semibold mb-2">
-                                        <Tag className="h-3 w-3" />
-                                        {item.event.category}
                                     </div>
-                                )}
 
-                                <h3 className="font-bold text-[var(--text-primary)] mb-2 line-clamp-2 group-hover:text-[var(--accent-primary)] transition-colors">
-                                    <Link href={`/events/${item.event.slug}`}>
-                                        {item.event.title}
-                                    </Link>
-                                </h3>
-
-                                <div className="space-y-1.5 text-sm text-[var(--text-muted)]">
-                                    {item.event.schedule && (
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="h-4 w-4 flex-shrink-0 text-[var(--accent-primary)]" />
-                                            <span>
-                                                {formatDate(item.event.schedule.date)}
-                                                <span className="mx-1 text-[var(--border)]">•</span>
-                                                {formatTime(item.event.schedule.time)}
-                                            </span>
+                                    <div className="space-y-5 p-5">
+                                        <div className="space-y-2">
+                                            <h2 className="line-clamp-2 text-lg font-semibold text-foreground transition-colors group-hover:text-(--accent-primary)">
+                                                {item.event.title}
+                                            </h2>
+                                            <div className="space-y-2 text-sm text-(--text-secondary)">
+                                                {item.event.schedule ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Calendar className="h-4 w-4 text-(--accent-primary)" />
+                                                        <span>
+                                                            {formatDate(item.event.schedule.date)} • {formatTime(item.event.schedule.time)}
+                                                        </span>
+                                                    </div>
+                                                ) : null}
+                                                {item.event.venue ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <MapPin className="h-4 w-4 text-(--text-muted)" />
+                                                        <span className="truncate">
+                                                            {item.event.venue.name}, {item.event.venue.city}
+                                                        </span>
+                                                    </div>
+                                                ) : null}
+                                            </div>
                                         </div>
-                                    )}
 
-                                    {item.event.venue && (
-                                        <div className="flex items-center gap-2">
-                                            <MapPin className="h-4 w-4 flex-shrink-0" />
-                                            <span className="truncate">
-                                                {item.event.venue.name}, {item.event.venue.city}
-                                            </span>
+                                        <div className="flex gap-3">
+                                            <Link
+                                                href={`/events/${item.event.slug}`}
+                                                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) transition-transform duration-200 hover:-translate-y-0.5"
+                                            >
+                                                Lihat event
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemove(item.event.id)}
+                                                disabled={removingId === item.event.id}
+                                                className="inline-flex items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover) disabled:cursor-not-allowed disabled:opacity-60"
+                                            >
+                                                {removingId === item.event.id ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Trash2 className="h-4 w-4" />
+                                                )}
+                                            </button>
                                         </div>
-                                    )}
-                                </div>
-
-                                <div className="mt-4 flex gap-2">
-                                    <Link
-                                        href={`/events/${item.event.slug}`}
-                                        className="btn-primary flex-1 py-3 text-sm rounded-xl shadow-md hover:shadow-lg transition-all text-center"
-                                    >
-                                        Lihat Event
-                                    </Link>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemove(item.event.id)}
-                                        disabled={removingId === item.event.id}
-                                        className="btn-secondary py-3 px-3 rounded-xl hover:bg-[var(--surface-hover)] transition-colors"
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                                    </div>
+                                </article>
+                            );
+                        })}
+                    </div>
+                )}
+            </DashboardSection>
         </div>
     );
 }

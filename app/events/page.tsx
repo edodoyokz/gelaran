@@ -1,22 +1,33 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import type { FormEvent } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-    Search,
-    Filter,
-    MapPin,
-    Calendar,
-    Loader2,
-    Grid,
+    CalendarDays,
+    Grid3X3,
     List,
-    X,
-    Tag,
+    Loader2,
+    MapPin,
+    Search,
     SlidersHorizontal,
+    Sparkles,
+    Ticket,
+    X,
 } from "lucide-react";
 import { Navbar } from "@/components/layouts/Navbar";
-
+import { EventCard } from "@/components/features/events/EventCard";
+import {
+    DiscoveryBadge,
+    DiscoveryContainer,
+    DiscoveryHero,
+    DiscoveryPageShell,
+    DiscoveryPanel,
+    DiscoverySection,
+    DiscoveryStat,
+} from "@/components/features/events/discovery-primitives";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface Category {
     id: string;
@@ -74,23 +85,73 @@ const SORT_OPTIONS = [
 ];
 
 const EVENT_TYPES = [
-    { value: "", label: "Semua Tipe" },
+    { value: "", label: "Semua tipe" },
     { value: "OFFLINE", label: "Offline" },
     { value: "ONLINE", label: "Online" },
     { value: "HYBRID", label: "Hybrid" },
 ];
 
 const DATE_FILTERS = [
-    { value: "", label: "Semua Waktu" },
-    { value: "THIS_WEEK", label: "Minggu Ini" },
-    { value: "THIS_MONTH", label: "Bulan Ini" },
+    { value: "", label: "Semua waktu" },
+    { value: "THIS_WEEK", label: "Minggu ini" },
+    { value: "THIS_MONTH", label: "Bulan ini" },
 ];
 
 const PRICE_TYPES = [
-    { value: "", label: "Gratis & Berbayar" },
+    { value: "", label: "Gratis & berbayar" },
     { value: "FREE", label: "Gratis" },
     { value: "PAID", label: "Berbayar" },
 ];
+
+function formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
+}
+
+function formatTime(dateStr?: string): string {
+    if (!dateStr) return "Waktu diumumkan nanti";
+
+    return new Date(dateStr).toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+    }) + " WIB";
+}
+
+function buildActiveChips(filters: {
+    search: string;
+    category: string;
+    city: string;
+    eventType: string;
+    dateFilter: string;
+    priceType: string;
+}, categories: Category[]) {
+    return [
+        filters.search
+            ? { key: "search", label: filters.search }
+            : null,
+        filters.category
+            ? {
+                key: "category",
+                label: categories.find((category) => category.slug === filters.category)?.name || filters.category,
+            }
+            : null,
+        filters.city
+            ? { key: "city", label: filters.city }
+            : null,
+        filters.eventType
+            ? { key: "eventType", label: EVENT_TYPES.find((type) => type.value === filters.eventType)?.label || filters.eventType }
+            : null,
+        filters.dateFilter
+            ? { key: "dateFilter", label: DATE_FILTERS.find((filter) => filter.value === filters.dateFilter)?.label || filters.dateFilter }
+            : null,
+        filters.priceType
+            ? { key: "priceType", label: PRICE_TYPES.find((type) => type.value === filters.priceType)?.label || filters.priceType }
+            : null,
+    ].filter(Boolean) as Array<{ key: string; label: string }>;
+}
 
 function EventsContent() {
     const router = useRouter();
@@ -113,7 +174,7 @@ function EventsContent() {
         sort: searchParams.get("sort") || "createdAt-desc",
     });
 
-    const [searchInput, setSearchInput] = useState(filters.search);
+    const [searchInput, setSearchInput] = useState(searchParams.get("search") || "");
 
     const fetchEvents = useCallback(async () => {
         try {
@@ -133,8 +194,8 @@ function EventsContent() {
             params.set("page", searchParams.get("page") || "1");
             params.set("limit", "12");
 
-            const res = await fetch(`/api/events?${params.toString()}`);
-            const data = await res.json();
+            const response = await fetch(`/api/events?${params.toString()}`);
+            const data = await response.json();
 
             if (data.success) {
                 setEvents(data.data);
@@ -149,8 +210,8 @@ function EventsContent() {
 
     const fetchCategories = useCallback(async () => {
         try {
-            const res = await fetch("/api/categories");
-            const data = await res.json();
+            const response = await fetch("/api/categories");
+            const data = await response.json();
             if (data.success) {
                 setCategories(data.data);
             }
@@ -169,6 +230,7 @@ function EventsContent() {
 
     const updateURL = (newFilters: typeof filters) => {
         const params = new URLSearchParams();
+
         if (newFilters.search) params.set("search", newFilters.search);
         if (newFilters.category) params.set("category", newFilters.category);
         if (newFilters.city) params.set("city", newFilters.city);
@@ -177,11 +239,11 @@ function EventsContent() {
         if (newFilters.priceType) params.set("priceType", newFilters.priceType);
         if (newFilters.sort !== "createdAt-desc") params.set("sort", newFilters.sort);
 
-        router.push(`/events?${params.toString()}`);
+        router.push(`/events${params.toString() ? `?${params.toString()}` : ""}`);
     };
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSearch = (event: FormEvent) => {
+        event.preventDefault();
         const newFilters = { ...filters, search: searchInput };
         setFilters(newFilters);
         updateURL(newFilters);
@@ -194,7 +256,7 @@ function EventsContent() {
     };
 
     const clearFilters = () => {
-        const newFilters = {
+        const nextFilters = {
             search: "",
             category: "",
             city: "",
@@ -203,193 +265,219 @@ function EventsContent() {
             priceType: "",
             sort: "createdAt-desc",
         };
-        setFilters(newFilters);
+
+        setFilters(nextFilters);
         setSearchInput("");
         router.push("/events");
     };
 
-    const hasActiveFilters = filters.search || filters.category || filters.city || filters.eventType || filters.dateFilter || filters.priceType;
+    const activeChips = useMemo(() => buildActiveChips(filters, categories), [filters, categories]);
+    const featuredEvents = useMemo(() => events.filter((event) => event.isFeatured).slice(0, 3), [events]);
+    const cityCount = useMemo(() => new Set(events.map((event) => event.venue?.city).filter(Boolean)).size, [events]);
+    const lowestPrice = useMemo(() => {
+        const paidPrices = events
+            .map((event) => event.startingPrice)
+            .filter((value): value is number => value !== null && value > 0);
 
-    const formatDate = (dateStr: string): string => {
-        return new Date(dateStr).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-        });
-    };
+        if (!paidPrices.length) return null;
+        return Math.min(...paidPrices);
+    }, [events]);
 
-    const formatCurrency = (amount: number): string => {
-        return new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            minimumFractionDigits: 0,
-        }).format(amount);
-    };
+    const hasActiveFilters = activeChips.length > 0;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <DiscoveryPageShell>
             <Navbar transparent={false} />
 
-            <div className="pt-20">
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold mb-4">Jelajahi Event</h1>
-                        <p className="text-white/80 mb-6">
-                            Temukan event menarik di sekitarmu
-                        </p>
+            <DiscoveryHero
+                eyebrow={
+                    <>
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Event discovery
+                    </>
+                }
+                title={<>Jelajahi event dengan ritme editorial yang lebih terkurasi.</>}
+                description={
+                    <>
+                        Temukan konser, workshop, seminar, dan pengalaman komunitas dengan filter yang rapi,
+                        kartu event konsisten, dan highlight yang tetap terasa seperti bagian dari sistem publik Gelaran.
+                    </>
+                }
+            >
+                <DiscoveryPanel className="p-5 sm:p-6">
+                    <div className="grid gap-3 sm:grid-cols-3">
+                        <DiscoveryStat label="Event tayang" value={pagination?.total ?? events.length} hint="Kurasi publik aktif" />
+                        <DiscoveryStat label="Kota aktif" value={cityCount || "—"} hint="Persebaran agenda" />
+                        <DiscoveryStat
+                            label="Harga awal"
+                            value={lowestPrice ? formatCurrency(lowestPrice) : "Gratis"}
+                            hint="Mulai dari penawaran termurah"
+                        />
+                    </div>
+                </DiscoveryPanel>
+            </DiscoveryHero>
 
-                        <form onSubmit={handleSearch} className="flex gap-2">
-                            <div className="relative flex-1 max-w-2xl">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <DiscoveryContainer className="pb-16 sm:pb-20">
+                <DiscoveryPanel className="overflow-hidden">
+                    <div className="border-b border-(--border) px-5 py-5 sm:px-6 lg:px-8">
+                        <form onSubmit={handleSearch} className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                            <div className="relative">
+                                <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                 <input
                                     type="text"
                                     value={searchInput}
-                                    onChange={(e) => setSearchInput(e.target.value)}
-                                    placeholder="Cari konser, seminar, workshop..."
-                                    className="w-full pl-12 pr-4 py-3 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    onChange={(event) => setSearchInput(event.target.value)}
+                                    placeholder="Cari konser, seminar, workshop, atau organizer"
+                                    className="h-13 w-full rounded-full border border-(--border) bg-white pl-12 pr-4 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus) focus:ring-4 focus:ring-[rgba(41,179,182,0.12)]"
                                 />
                             </div>
-                            <button
-                                type="submit"
-                                className="px-6 py-3 bg-white text-indigo-600 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-                            >
-                                Cari
-                            </button>
+                            <div className="flex flex-wrap gap-3">
+                                <button
+                                    type="submit"
+                                    className="inline-flex min-h-12 items-center justify-center rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-secondary-hover)"
+                                >
+                                    Cari event
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowFilters((previous) => !previous)}
+                                    className={cn(
+                                        "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition-colors duration-200",
+                                        showFilters || hasActiveFilters
+                                            ? "border-(--border-strong) bg-(--surface-brand-soft) text-(--accent-primary)"
+                                            : "border-(--border) bg-white text-foreground hover:bg-(--surface-hover)",
+                                    )}
+                                >
+                                    <SlidersHorizontal className="h-4 w-4" />
+                                    Filter
+                                    {hasActiveFilters ? (
+                                        <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-(--accent-primary) px-1.5 text-[0.72rem] text-white">
+                                            {activeChips.length}
+                                        </span>
+                                    ) : null}
+                                </button>
+                            </div>
                         </form>
                     </div>
-                </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                onClick={() => setShowFilters(!showFilters)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                                    showFilters || hasActiveFilters
-                                        ? "bg-indigo-50 border-indigo-300 text-indigo-600"
-                                        : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                                }`}
-                            >
-                                <SlidersHorizontal className="h-4 w-4" />
-                                Filter
-                                {hasActiveFilters && (
-                                    <span className="px-1.5 py-0.5 bg-indigo-600 text-white text-xs rounded-full">
-                                        {[filters.search, filters.category, filters.city, filters.eventType, filters.dateFilter, filters.priceType].filter(Boolean).length}
-                                    </span>
-                                )}
-                            </button>
-
-                            {hasActiveFilters && (
-                                <button
-                                    type="button"
-                                    onClick={clearFilters}
-                                    className="flex items-center gap-1 px-3 py-2 text-gray-500 hover:text-gray-700"
-                                >
-                                    <X className="h-4 w-4" />
-                                    Hapus filter
-                                </button>
-                            )}
-                        </div>
-
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-500">Urutkan:</span>
-                                <select
-                                    value={filters.sort}
-                                    onChange={(e) => handleFilterChange("sort", e.target.value)}
-                                    className="px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                >
-                                    {SORT_OPTIONS.map((opt) => (
-                                        <option key={opt.value} value={opt.value}>
-                                            {opt.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="hidden sm:flex items-center border rounded-lg overflow-hidden">
-                                <button
-                                    type="button"
-                                    onClick={() => setViewMode("grid")}
-                                    className={`p-2 ${viewMode === "grid" ? "bg-indigo-50 text-indigo-600" : "bg-white text-gray-500"}`}
-                                >
-                                    <Grid className="h-5 w-5" />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setViewMode("list")}
-                                    className={`p-2 ${viewMode === "list" ? "bg-indigo-50 text-indigo-600" : "bg-white text-gray-500"}`}
-                                >
-                                    <List className="h-5 w-5" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {showFilters && (
-                        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                                <div>
-                                    <label htmlFor="filter-category" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Kategori
-                                    </label>
-                                    <select
-                                        id="filter-category"
-                                        value={filters.category}
-                                        onChange={(e) => handleFilterChange("category", e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    <div className="flex flex-col gap-4 px-5 py-5 sm:px-6 lg:px-8">
+                        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <DiscoveryBadge tone="accent">
+                                    <Ticket className="h-3.5 w-3.5" />
+                                    {pagination?.total ?? events.length} event ditemukan
+                                </DiscoveryBadge>
+                                {featuredEvents.length > 0 ? (
+                                    <DiscoveryBadge tone="warm">
+                                        <Sparkles className="h-3.5 w-3.5" />
+                                        {featuredEvents.length} pilihan unggulan
+                                    </DiscoveryBadge>
+                                ) : null}
+                                {hasActiveFilters ? (
+                                    <button
+                                        type="button"
+                                        onClick={clearFilters}
+                                        className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-white px-4 py-2 text-sm font-semibold text-(--text-secondary) transition-colors duration-200 hover:border-(--border-strong) hover:text-foreground"
                                     >
-                                        <option value="">Semua Kategori</option>
-                                        {categories.map((cat) => (
-                                            <option key={cat.id} value={cat.slug}>
-                                                {cat.name}
+                                        <X className="h-4 w-4" />
+                                        Reset semua filter
+                                    </button>
+                                ) : null}
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3">
+                                <label className="flex items-center gap-3 rounded-full border border-(--border) bg-white px-4 py-2.5 text-sm text-(--text-secondary)">
+                                    <span className="font-medium">Urutkan</span>
+                                    <select
+                                        value={filters.sort}
+                                        onChange={(event) => handleFilterChange("sort", event.target.value)}
+                                        className="bg-transparent font-semibold text-foreground outline-none"
+                                    >
+                                        {SORT_OPTIONS.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </label>
 
-                                <div>
-                                    <label htmlFor="filter-city" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Kota
-                                    </label>
+                                <div className="inline-flex overflow-hidden rounded-full border border-(--border) bg-white">
+                                    <button
+                                        type="button"
+                                        onClick={() => setViewMode("grid")}
+                                        className={cn(
+                                            "inline-flex h-11 w-11 items-center justify-center transition-colors duration-200",
+                                            viewMode === "grid" ? "bg-(--accent-primary) text-white" : "text-(--text-secondary) hover:bg-(--surface-hover)",
+                                        )}
+                                        aria-label="Tampilan grid"
+                                    >
+                                        <Grid3X3 className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setViewMode("list")}
+                                        className={cn(
+                                            "inline-flex h-11 w-11 items-center justify-center transition-colors duration-200",
+                                            viewMode === "list" ? "bg-(--accent-primary) text-white" : "text-(--text-secondary) hover:bg-(--surface-hover)",
+                                        )}
+                                        aria-label="Tampilan list"
+                                    >
+                                        <List className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {showFilters ? (
+                            <div className="grid gap-4 rounded-[1.75rem] border border-(--border) bg-[rgba(255,255,255,0.72)] p-5 sm:grid-cols-2 xl:grid-cols-5">
+                                <label className="space-y-2 text-sm text-(--text-secondary)">
+                                    <span className="font-semibold text-foreground">Kategori</span>
+                                    <select
+                                        value={filters.category}
+                                        onChange={(event) => handleFilterChange("category", event.target.value)}
+                                        className="h-12 w-full rounded-2xl border border-(--border) bg-white px-4 text-sm text-foreground outline-none transition-all duration-200 focus:border-(--border-focus)"
+                                    >
+                                        <option value="">Semua kategori</option>
+                                        {categories.map((category) => (
+                                            <option key={category.id} value={category.slug}>
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                <label className="space-y-2 text-sm text-(--text-secondary)">
+                                    <span className="font-semibold text-foreground">Kota</span>
                                     <input
-                                        id="filter-city"
                                         type="text"
                                         value={filters.city}
-                                        onChange={(e) => handleFilterChange("city", e.target.value)}
-                                        placeholder="Masukkan kota"
-                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={(event) => handleFilterChange("city", event.target.value)}
+                                        placeholder="Jakarta, Bandung, Surabaya"
+                                        className="h-12 w-full rounded-2xl border border-(--border) bg-white px-4 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus)"
                                     />
-                                </div>
+                                </label>
 
-                                <div>
-                                    <label htmlFor="filter-type" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Tipe Event
-                                    </label>
+                                <label className="space-y-2 text-sm text-(--text-secondary)">
+                                    <span className="font-semibold text-foreground">Tipe event</span>
                                     <select
-                                        id="filter-type"
                                         value={filters.eventType}
-                                        onChange={(e) => handleFilterChange("eventType", e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={(event) => handleFilterChange("eventType", event.target.value)}
+                                        className="h-12 w-full rounded-2xl border border-(--border) bg-white px-4 text-sm text-foreground outline-none transition-all duration-200 focus:border-(--border-focus)"
                                     >
-                                        {EVENT_TYPES.map((type) => (
-                                            <option key={type.value} value={type.value}>
-                                                {type.label}
+                                        {EVENT_TYPES.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </label>
 
-                                <div>
-                                    <label htmlFor="filter-date" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Periode
-                                    </label>
+                                <label className="space-y-2 text-sm text-(--text-secondary)">
+                                    <span className="font-semibold text-foreground">Periode</span>
                                     <select
-                                        id="filter-date"
                                         value={filters.dateFilter}
-                                        onChange={(e) => handleFilterChange("dateFilter", e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={(event) => handleFilterChange("dateFilter", event.target.value)}
+                                        className="h-12 w-full rounded-2xl border border-(--border) bg-white px-4 text-sm text-foreground outline-none transition-all duration-200 focus:border-(--border-focus)"
                                     >
                                         {DATE_FILTERS.map((option) => (
                                             <option key={option.value} value={option.value}>
@@ -397,17 +485,14 @@ function EventsContent() {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </label>
 
-                                <div>
-                                    <label htmlFor="filter-price-type" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Harga
-                                    </label>
+                                <label className="space-y-2 text-sm text-(--text-secondary)">
+                                    <span className="font-semibold text-foreground">Harga</span>
                                     <select
-                                        id="filter-price-type"
                                         value={filters.priceType}
-                                        onChange={(e) => handleFilterChange("priceType", e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        onChange={(event) => handleFilterChange("priceType", event.target.value)}
+                                        className="h-12 w-full rounded-2xl border border-(--border) bg-white px-4 text-sm text-foreground outline-none transition-all duration-200 focus:border-(--border-focus)"
                                     >
                                         {PRICE_TYPES.map((option) => (
                                             <option key={option.value} value={option.value}>
@@ -415,235 +500,174 @@ function EventsContent() {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </label>
                             </div>
-                        </div>
-                    )}
+                        ) : null}
 
-                    {hasActiveFilters && (
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            {filters.search && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                                    <Search className="h-3 w-3" />
-                                    {filters.search}
+                        {activeChips.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                                {activeChips.map((chip) => (
                                     <button
+                                        key={chip.key}
                                         type="button"
                                         onClick={() => {
-                                            handleFilterChange("search", "");
-                                            setSearchInput("");
+                                            handleFilterChange(chip.key, "");
+                                            if (chip.key === "search") {
+                                                setSearchInput("");
+                                            }
                                         }}
-                                        className="ml-1 hover:text-indigo-900"
+                                        className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-white px-3 py-2 text-sm text-(--text-secondary) transition-colors duration-200 hover:border-(--border-strong) hover:text-foreground"
                                     >
-                                        <X className="h-3 w-3" />
+                                        {chip.key === "city" ? <MapPin className="h-3.5 w-3.5" /> : null}
+                                        {chip.key === "dateFilter" ? <CalendarDays className="h-3.5 w-3.5" /> : null}
+                                        {chip.label}
+                                        <X className="h-3.5 w-3.5" />
                                     </button>
-                                </span>
-                            )}
-                            {filters.category && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                                    <Tag className="h-3 w-3" />
-                                    {categories.find((c) => c.slug === filters.category)?.name || filters.category}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleFilterChange("category", "")}
-                                        className="ml-1 hover:text-indigo-900"
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </span>
-                            )}
-                            {filters.city && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                                    <MapPin className="h-3 w-3" />
-                                    {filters.city}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleFilterChange("city", "")}
-                                        className="ml-1 hover:text-indigo-900"
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </span>
-                            )}
-                            {filters.eventType && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                                    <Filter className="h-3 w-3" />
-                                    {EVENT_TYPES.find((t) => t.value === filters.eventType)?.label}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleFilterChange("eventType", "")}
-                                        className="ml-1 hover:text-indigo-900"
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </span>
-                            )}
-                            {filters.dateFilter && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                                    <Calendar className="h-3 w-3" />
-                                    {DATE_FILTERS.find((d) => d.value === filters.dateFilter)?.label}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleFilterChange("dateFilter", "")}
-                                        className="ml-1 hover:text-indigo-900"
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </span>
-                            )}
-                            {filters.priceType && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
-                                    <Tag className="h-3 w-3" />
-                                    {PRICE_TYPES.find((p) => p.value === filters.priceType)?.label}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleFilterChange("priceType", "")}
-                                        className="ml-1 hover:text-indigo-900"
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
-                                </span>
-                            )}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        ) : null}
+                    </div>
+                </DiscoveryPanel>
 
-                    {isLoading ? (
-                        <div className="flex items-center justify-center py-20">
-                            <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+                {featuredEvents.length > 0 ? (
+                    <DiscoverySection
+                        title="Sorotan minggu ini"
+                        description="Event unggulan ditempatkan dalam strip editorial agar rekomendasi terasa lebih terarah sebelum pengunjung masuk ke keseluruhan listing."
+                        className="mt-10"
+                    >
+                        <div className="grid gap-5 lg:grid-cols-3">
+                            {featuredEvents.map((event) => (
+                                <Link
+                                    key={event.id}
+                                    href={`/events/${event.slug}`}
+                                    className="group relative overflow-hidden rounded-[calc(var(--radius-3xl)+0.15rem)] border border-(--border) bg-(--surface) shadow-(--shadow-sm)"
+                                >
+                                    <img
+                                        src={event.posterImage || "/placeholder.jpg"}
+                                        alt={event.title}
+                                        className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-linear-to-t from-[rgba(6,18,18,0.82)] via-[rgba(6,18,18,0.16)] to-transparent" />
+                                    <div className="absolute inset-x-0 bottom-0 space-y-3 p-6 text-white">
+                                        <DiscoveryBadge tone="dark">Featured selection</DiscoveryBadge>
+                                        <div className="space-y-1.5">
+                                            <h2 className="font-(--font-editorial) text-2xl leading-tight tracking-(--tracking-heading)">{event.title}</h2>
+                                            <p className="text-sm text-white/82">
+                                                {event.venue ? `${event.venue.city}, ${event.venue.province}` : "Lokasi diumumkan nanti"}
+                                            </p>
+                                            <p className="text-sm text-white/72">
+                                                {event.schedule ? formatDate(event.schedule.scheduleDate) : "Tanggal diumumkan"}
+                                                {event.startingPrice !== null ? ` · ${event.startingPrice === 0 ? "Gratis" : formatCurrency(event.startingPrice)}` : ""}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
+                    </DiscoverySection>
+                ) : null}
+
+                <DiscoverySection
+                    title="Semua event"
+                    description="Listing utama sekarang memakai kartu yang konsisten, metadata yang lebih mudah dipindai, dan mode list/grid yang tetap terasa satu keluarga secara visual."
+                    className="mt-10"
+                >
+                    {isLoading ? (
+                        <DiscoveryPanel className="flex min-h-72 items-center justify-center p-8">
+                            <div className="text-center">
+                                <Loader2 className="mx-auto h-9 w-9 animate-spin text-(--accent-primary)" />
+                                <p className="mt-4 text-sm text-(--text-secondary)">Memuat kurasi event terbaru...</p>
+                            </div>
+                        </DiscoveryPanel>
                     ) : events.length === 0 ? (
-                        <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                            <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                Tidak ada event ditemukan
+                        <DiscoveryPanel className="p-10 text-center sm:p-14">
+                            <Search className="mx-auto h-12 w-12 text-(--text-muted)" />
+                            <h3 className="mt-5 text-2xl font-semibold tracking-(--tracking-heading) text-foreground">
+                                Tidak ada event yang cocok
                             </h3>
-                            <p className="text-gray-500 mb-6">
-                                Coba ubah filter atau kata kunci pencarian Anda
+                            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-(--text-secondary) sm:text-base">
+                                Coba ganti kata kunci, ubah kota, atau buka kembali filter untuk menemukan agenda yang lebih relevan.
                             </p>
-                            {hasActiveFilters && (
+                            {hasActiveFilters ? (
                                 <button
                                     type="button"
                                     onClick={clearFilters}
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                                    className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-(--accent-primary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-primary-hover)"
                                 >
                                     Hapus semua filter
                                 </button>
-                            )}
-                        </div>
+                            ) : null}
+                        </DiscoveryPanel>
                     ) : (
                         <>
-                            <p className="text-sm text-gray-500 mb-4">
-                                Menampilkan {events.length} dari {pagination?.total || 0} event
+                            <p className="mb-4 text-sm text-(--text-secondary)">
+                                Menampilkan {events.length} dari {pagination?.total || 0} event publik yang sedang tayang.
                             </p>
 
                             <div
-                                className={
+                                className={cn(
                                     viewMode === "grid"
-                                        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                                        : "space-y-4"
-                                }
+                                        ? "grid gap-5 md:grid-cols-2 xl:grid-cols-4"
+                                        : "space-y-4",
+                                )}
                             >
-                                {events.map((event) => (
-                                    <Link
-                                        key={event.id}
-                                        href={`/events/${event.slug}`}
-                                        className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group ${
-                                            viewMode === "list" ? "flex" : ""
-                                        }`}
-                                    >
-                                        <div
-                                            className={`relative ${
-                                                viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-[4/3]"
-                                            }`}
-                                        >
-                                            <img
-                                                src={event.posterImage || "/placeholder.jpg"}
-                                                alt={event.title}
-                                                className="w-full h-full object-cover"
-                                            />
-                                            {event.isFeatured && (
-                                                <span className="absolute top-2 left-2 px-2 py-1 bg-yellow-400 text-yellow-900 text-xs font-medium rounded">
-                                                    Featured
-                                                </span>
-                                            )}
-                                        </div>
+                                {events.map((event) => {
+                                    const categoryLabel = event.category?.name || "General";
+                                    const locationLabel = event.venue
+                                        ? `${event.venue.city}, ${event.venue.province}`
+                                        : event.eventType === "ONLINE"
+                                            ? "Online event"
+                                            : "Lokasi diumumkan nanti";
 
-                                        <div className="p-4 flex-1">
-                                            {event.category && (
-                                                <span
-                                                    className="inline-block px-2 py-0.5 rounded text-xs font-medium mb-2"
-                                                    style={{
-                                                        backgroundColor: `${event.category.colorHex}20`,
-                                                        color: event.category.colorHex || "#6366f1",
-                                                    }}
-                                                >
-                                                    {event.category.name}
-                                                </span>
-                                            )}
-
-                                            <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                                                {event.title}
-                                            </h3>
-
-                                            {event.schedule && (
-                                                <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
-                                                    <Calendar className="h-4 w-4" />
-                                                    {formatDate(event.schedule.scheduleDate)}
-                                                </div>
-                                            )}
-
-                                            {event.venue && (
-                                                <div className="flex items-center gap-1 text-sm text-gray-500 mb-3">
-                                                    <MapPin className="h-4 w-4" />
-                                                    {event.venue.city}
-                                                </div>
-                                            )}
-
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    {event.startingPrice !== null && (
-                                                        <p className="font-bold text-indigo-600">
-                                                            {event.startingPrice === 0
-                                                                ? "GRATIS"
-                                                                : `Mulai ${formatCurrency(event.startingPrice)}`}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                <span className="text-xs text-gray-400 capitalize">
-                                                    {event.eventType.toLowerCase()}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))}
+                                    return (
+                                        <EventCard
+                                            key={event.id}
+                                            id={event.id}
+                                            slug={event.slug}
+                                            title={event.title}
+                                            date={event.schedule ? formatDate(event.schedule.scheduleDate) : "Tanggal diumumkan"}
+                                            time={event.schedule ? formatTime(event.schedule.startTime) : "Waktu diumumkan nanti"}
+                                            location={locationLabel}
+                                            price={event.startingPrice ?? 0}
+                                            image={event.posterImage || "/placeholder.jpg"}
+                                            category={categoryLabel}
+                                            organizer={event.organizer.name}
+                                            rating={Math.min(5, Math.max(4, event.viewCount > 0 ? 4 + event.viewCount / 1000 : 4.6))}
+                                            reviewCount={event.viewCount}
+                                            featuredLabel={event.isFeatured ? "Pilihan editor" : null}
+                                            className={viewMode === "list" ? "md:flex-row md:[&>div:first-child]:h-auto md:[&>div:first-child]:w-72 md:[&>div:last-child]:p-6" : undefined}
+                                            metaTone={event.isFeatured ? "warm" : event.eventType === "ONLINE" ? "default" : "accent"}
+                                        />
+                                    );
+                                })}
                             </div>
 
-                            {pagination && pagination.totalPages > 1 && (
-                                <div className="flex justify-center gap-2 mt-8">
-                                    {Array.from({ length: pagination.totalPages }, (__unused, i) => i + 1).map((page) => (
+                            {pagination && pagination.totalPages > 1 ? (
+                                <div className="mt-8 flex flex-wrap justify-center gap-2">
+                                    {Array.from({ length: pagination.totalPages }, (_unused, index) => index + 1).map((page) => (
                                         <Link
                                             key={page}
                                             href={`/events?${new URLSearchParams({
-                                                ...Object.fromEntries(
-                                                    Object.entries(filters).filter(([_, v]) => v)
-                                                ),
+                                                ...Object.fromEntries(Object.entries(filters).filter(([, value]) => value)),
                                                 page: page.toString(),
                                             }).toString()}`}
-                                            className={`w-10 h-10 flex items-center justify-center rounded-lg font-medium ${
+                                            className={cn(
+                                                "inline-flex h-11 min-w-11 items-center justify-center rounded-full border px-4 text-sm font-semibold transition-colors duration-200",
                                                 pagination.page === page
-                                                    ? "bg-indigo-600 text-white"
-                                                    : "bg-white border hover:bg-gray-50"
-                                            }`}
+                                                    ? "border-(--accent-primary) bg-(--accent-primary) text-white"
+                                                    : "border-(--border) bg-white text-foreground hover:border-(--border-strong) hover:bg-(--surface-hover)",
+                                            )}
                                         >
                                             {page}
                                         </Link>
                                     ))}
                                 </div>
-                            )}
+                            ) : null}
                         </>
                     )}
-                </div>
-            </div>
-        </div>
+                </DiscoverySection>
+            </DiscoveryContainer>
+        </DiscoveryPageShell>
     );
 }
 
@@ -651,8 +675,8 @@ export default function EventsPage() {
     return (
         <Suspense
             fallback={
-                <div className="flex items-center justify-center min-h-[60vh]">
-                    <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+                <div className="flex min-h-[60vh] items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-(--accent-primary)" />
                 </div>
             }
         >

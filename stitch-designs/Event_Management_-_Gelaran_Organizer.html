@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solo Curator - Event Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#e2fffe",
+                        "primary-container": "#8d3100",
+                        "on-primary-container": "#ffae8e",
+                        "inverse-surface": "#003737",
+                        "primary": "#672200",
+                        "tertiary-container": "#654b00",
+                        "tertiary": "#483500",
+                        "on-surface": "#002020",
+                        "surface-container-highest": "#aaefee",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#aff5f4",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#ffb598",
+                        "secondary-container": "#a7eceb",
+                        "on-surface-variant": "#3f4948",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "surface-dim": "#a1e6e5",
+                        "surface-tint": "#a63b00",
+                        "surface-container": "#b5faf9",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#ffdbce",
+                        "secondary-fixed": "#aaefee",
+                        "tertiary-fixed": "#ffdf9a",
+                        "surface-container-low": "#c1fffe",
+                        "background": "#e2fffe",
+                        "on-primary-fixed": "#370e00",
+                        "on-background": "#002020",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f1b803",
+                        "on-secondary-container": "#246d6d",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "outline-variant": "#bec8c8",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#ffb598",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#aaefee",
+                        "on-tertiary-fixed": "#251a00",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "surface-bright": "#e2fffe",
+                        "inverse-on-surface": "#b8fdfc",
+                        "secondary": "#1e6868",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002020",
+                        "outline": "#6f7978"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { background-color: #ffffff; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="font-body text-on-surface overflow-x-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#e2fffe] dark:bg-[#002020] flex justify-between items-center w-full px-6 py-4 mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#015959] dark:text-[#c1fffe] italic font-headline">Solo Curator</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-[#F95D00] border-b-2 border-[#F95D00] pb-1 font-medium text-sm transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-[#015959] dark:text-[#aaefee] font-medium text-sm hover:text-[#F95D00] transition-colors duration-200" href="#">Events</a>
+<a class="text-[#015959] dark:text-[#aaefee] font-medium text-sm hover:text-[#F95D00] transition-colors duration-200" href="#">Analytics</a>
+<a class="text-[#015959] dark:text-[#aaefee] font-medium text-sm hover:text-[#F95D00] transition-colors duration-200" href="#">Resources</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<input class="pl-10 pr-4 py-2 rounded-full bg-surface-container border-none focus:ring-2 focus:ring-secondary text-sm w-64" placeholder="Search events..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[#015959]/50 text-xl">search</span>
+</div>
+<button class="p-2 text-[#015959] hover:bg-surface-container rounded-full transition-transform active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-[#015959] hover:bg-surface-container rounded-full transition-transform active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-secondary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a professional event organizer in a clean modern office studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDukvXjVpEDL88T89z65XHFTtmhx4xE1wxzmNftSnrgrMdtObabHtq37eB9WYMCzWijxy4n_bQOZXKZWOIrrIW1UfuiMcddICnNANzM64ZOuZbmUeGPj-yG4vmukmqyqEb4CPlcOiCKEcnDBeD1Lt3NNXDOgmv6jf4j5PUPjbghBhazJ7dxzjDU9qklurmrFQpGg7uhYGC9_SmAI2EO2v8ixqmdP8gD_mI_8wIGjcpQEIdvRUJU6kdmW0iLKfRO355n0rn3h177SJo"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 hidden xl:flex flex-col h-full w-64 py-8 bg-[#c1fffe] dark:bg-[#002020] shadow-[40px_0_40px_-20px_rgba(0,32,32,0.05)] pt-24 z-40">
+<div class="px-6 mb-8">
+<h2 class="text-xl font-bold text-[#015959] dark:text-[#c1fffe] font-headline">Cultural Curator</h2>
+<p class="text-xs text-[#015959]/70 font-medium">Organizer Portal</p>
+</div>
+<nav class="flex-1 space-y-1 pr-4">
+<a class="flex items-center gap-3 px-6 py-3 text-[#015959]/70 hover:bg-[#b5faf9] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 bg-[#aaefee] text-[#015959] rounded-r-full font-bold" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span class="font-medium text-sm">My Events</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-[#015959]/70 hover:bg-[#b5faf9] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-medium text-sm">Sales Reports</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-[#015959]/70 hover:bg-[#b5faf9] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-medium text-sm">Cultural Archive</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-[#015959]/70 hover:bg-[#b5faf9] transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium text-sm">Team</span>
+</a>
+</nav>
+<div class="px-6 mb-8">
+<button class="w-full py-3 bg-[#F95D00] text-white rounded-xl font-bold text-sm shadow-lg hover:bg-primary-container transition-all active:scale-98">
+                Create New Event
+            </button>
+</div>
+<div class="px-4 space-y-1">
+<a class="flex items-center gap-3 px-6 py-2 text-[#015959]/70 hover:bg-[#b5faf9] transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 px-6 py-2 text-[#015959]/70 hover:bg-[#b5faf9] transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-lg">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="xl:ml-64 pt-24 pb-16 px-6 lg:px-12 bg-white min-h-screen">
+<!-- Header Section -->
+<section class="mb-12 flex flex-col lg:flex-row justify-between items-start gap-8">
+<div class="max-w-2xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-surface-container-highest text-secondary px-3 py-1 rounded-full text-xs font-bold tracking-wide flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-[#F95D00] animate-pulse"></span>
+                        LIVE SALES
+                    </span>
+<span class="text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+                        May 21, 2024
+                    </span>
+<span class="text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-lg">location_on</span>
+                        Kraton Surakarta
+                    </span>
+</div>
+<h1 class="text-5xl font-black text-[#015959] font-headline tracking-tight mb-4">Malam Selikuran at Kraton Surakarta</h1>
+<p class="text-on-surface-variant body-lg leading-relaxed">A traditional nocturnal procession commemorating the 21st night of Ramadan with lanterns, prayer, and cultural royalty heritage.</p>
+</div>
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-3 bg-[#ffffff] text-secondary border border-secondary/20 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">pause_circle</span>
+                    Pause Sales
+                </button>
+<button class="px-6 py-3 bg-[#ffffff] text-secondary border border-secondary/20 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+                    Check-in Console
+                </button>
+<button class="px-6 py-3 bg-[#F95D00] text-white rounded-xl font-bold flex items-center gap-2 shadow-xl hover:-translate-y-1 transition-all">
+<span class="material-symbols-outlined">publish</span>
+                    Publish Update
+                </button>
+</div>
+</section>
+<!-- Bento Grid Stats -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Ticket Sales -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-[#015959] font-bold text-sm mb-4">Tickets Sold</p>
+<div class="flex items-end gap-2 mb-2">
+<span class="text-4xl font-black text-[#015959] font-headline">850</span>
+<span class="text-[#015959]/60 font-medium mb-1">/ 1,000</span>
+</div>
+<div class="w-full bg-white/50 h-2 rounded-full mb-2">
+<div class="bg-[#F95D00] h-full rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-xs text-[#015959]/70">85% of total capacity reached</p>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-[#015959]/5 opacity-20 rotate-12 transition-transform group-hover:rotate-0">confirmation_number</span>
+</div>
+<!-- Revenue -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-[#015959] font-bold text-sm mb-4">Total Revenue</p>
+<div class="flex items-end gap-2 mb-6">
+<span class="text-sm font-bold text-[#015959]/60 mb-1">IDR</span>
+<span class="text-4xl font-black text-[#015959] font-headline">63.7M</span>
+</div>
+<div class="flex items-center gap-1 text-emerald-600 font-bold text-xs bg-emerald-50 w-fit px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                        +12.4% vs last week
+                    </div>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-[#015959]/5 opacity-20 rotate-12">payments</span>
+</div>
+<!-- Attendance -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-[#015959] font-bold text-sm mb-4">Live Check-ins</p>
+<div class="flex items-end gap-2 mb-6">
+<span class="text-4xl font-black text-[#015959] font-headline">412</span>
+<span class="text-[#015959]/60 font-medium mb-1">present</span>
+</div>
+<p class="text-xs text-[#015959]/70 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">history</span>
+                        Peak entry: 19:45 (120 scans)
+                    </p>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-[#015959]/5 opacity-20 rotate-12">group</span>
+</div>
+<!-- Conversion Rate -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-[#015959] font-bold text-sm mb-4">Page Conversion</p>
+<div class="flex items-end gap-2 mb-6">
+<span class="text-4xl font-black text-[#015959] font-headline">4.2%</span>
+<span class="text-[#015959]/60 font-medium mb-1">CTR</span>
+</div>
+<div class="flex items-center gap-1 text-amber-600 font-bold text-xs bg-amber-50 w-fit px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-sm">info</span>
+                        Average for local festivals
+                    </div>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-7xl text-[#015959]/5 opacity-20 rotate-12">ads_click</span>
+</div>
+</section>
+<!-- Editorial Content & Table Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Left: Attendee List & Search -->
+<div class="lg:col-span-2 space-y-8">
+<div class="flex justify-between items-center">
+<h3 class="text-2xl font-bold text-[#015959] font-headline">Recent Attendee Bookings</h3>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant/30 rounded-lg hover:bg-surface-container-low">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 border border-outline-variant/30 rounded-lg hover:bg-surface-container-low">
+<span class="material-symbols-outlined">file_download</span>
+</button>
+</div>
+</div>
+<div class="overflow-hidden rounded-2xl border border-outline-variant/10">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-[#015959] uppercase tracking-wider">Attendee</th>
+<th class="px-6 py-4 text-xs font-bold text-[#015959] uppercase tracking-wider">Type</th>
+<th class="px-6 py-4 text-xs font-bold text-[#015959] uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-[#015959] uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container/20 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-[#015959]">AD</div>
+<div>
+<p class="font-bold text-sm">Aditya Dharmawan</p>
+<p class="text-xs text-on-surface-variant">aditya@solo.id</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-[#29B3B6]/10 text-[#015959] px-2 py-1 rounded text-[10px] font-black tracking-widest uppercase">VIP Access</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Checked-in
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-[#F95D00]"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/20 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-[#015959]">SW</div>
+<div>
+<p class="font-bold text-sm">Siti Wahyuni</p>
+<p class="text-xs text-on-surface-variant">siti.w@gmail.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest text-[#015959] px-2 py-1 rounded text-[10px] font-black tracking-widest uppercase">General</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-xs font-bold text-amber-600">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-[#F95D00]"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/20 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-[#015959]">BP</div>
+<div>
+<p class="font-bold text-sm">Bambang Pamungkas</p>
+<p class="text-xs text-on-surface-variant">bp@outlook.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest text-[#015959] px-2 py-1 rounded text-[10px] font-black tracking-widest uppercase">General</span>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Checked-in
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-[#F95D00]"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex justify-center">
+<button class="text-sm font-bold text-secondary hover:underline">View All 850 Attendees</button>
+</div>
+</div>
+<!-- Right: Content & Quick Actions -->
+<div class="space-y-8">
+<div>
+<h3 class="text-xl font-bold text-[#015959] font-headline mb-6">Asset &amp; Content Management</h3>
+<div class="space-y-4">
+<div class="group p-4 bg-white border border-outline-variant/20 rounded-2xl hover:border-secondary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-surface-container-low rounded-lg text-secondary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="material-symbols-outlined text-[#015959]/30 group-hover:text-[#F95D00]">edit</span>
+</div>
+<p class="font-bold text-sm mb-1">Event Description</p>
+<p class="text-xs text-on-surface-variant">Last updated 2 days ago by Organizer</p>
+</div>
+<div class="group p-4 bg-white border border-outline-variant/20 rounded-2xl hover:border-secondary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-surface-container-low rounded-lg text-secondary">
+<span class="material-symbols-outlined">collections</span>
+</div>
+<span class="material-symbols-outlined text-[#015959]/30 group-hover:text-[#F95D00]">edit</span>
+</div>
+<div class="grid grid-cols-4 gap-2 mb-3">
+<img class="rounded h-10 w-full object-cover" data-alt="vibrant night festival in Indonesia with many glowing lanterns and crowds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdvT09yUpBUjkECSv8cLJftTLXEEO8i9hhPTZXRSb5jaeS98YSzVFasFLwx-yKPef7ThsCFsojfofhpuIaLssgWPtjJcMtycw5VUHx13CTcDfVnDRjh4j2ofTMmgcz1bz9evlZjz_0u7B1_gV_K_PLdaULAlZj6ZF49VVjOqvxuDn1xxE9jlGxy9d2qZjlBnoBfV63cHaaMJLskHeiAhezHqyCnRCwgGTIajGm7-qUjLihSMxdY8LYfF4O_QUaW63euvNdk96_yi8"/>
+<img class="rounded h-10 w-full object-cover" data-alt="traditional Indonesian dancers in elaborate batik costumes under warm stage lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyv4VBZsjzE0VUWnH1P3nBUXJ4E_HO8lk_S1YuzM02wPHG4IX_rZ7eBqIB-UfWoKIz6bsqdm4gSSkn64Qk3AkAijBan_u62ZVVJlt3_1WOE8puxflTQiCUx57ZaZxZLFId8Spl1HLxor23VWi-5jJC52x9_5i6-ha0hNlA2E803YWar0DTsWbHgrNwjWSQeCwwkKvJIRWYSxCzCcPekpRKGqwCoXyOggOyDQ6BC3b5x8BOB6fIzJyfBXugig2DpnE8PshUzKV4Oq8"/>
+<div class="bg-surface-container-low rounded h-10 w-full flex items-center justify-center text-xs font-bold text-[#015959]">+12</div>
+</div>
+<p class="font-bold text-sm mb-1">Media Gallery</p>
+<p class="text-xs text-on-surface-variant">15 High-res images, 1 Trailer video</p>
+</div>
+<div class="group p-4 bg-white border border-outline-variant/20 rounded-2xl hover:border-secondary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<div class="p-2 bg-surface-container-low rounded-lg text-secondary">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<span class="material-symbols-outlined text-[#015959]/30 group-hover:text-[#F95D00]">edit</span>
+</div>
+<p class="font-bold text-sm mb-1">Terms &amp; Conditions</p>
+<p class="text-xs text-on-surface-variant">Safety protocols, refund policy, and dress code</p>
+</div>
+</div>
+</div>
+<!-- Ticket Stub Component (Bespoke) -->
+<div class="relative bg-[#015959] text-white p-8 rounded-2xl overflow-hidden before:content-[''] before:absolute before:top-1/2 before:-left-4 before:-translate-y-1/2 before:w-8 before:h-8 before:bg-white before:rounded-full after:content-[''] after:absolute after:top-1/2 after:-right-4 after:-translate-y-1/2 after:w-8 after:h-8 after:bg-white after:rounded-full">
+<div class="relative z-10">
+<p class="text-[10px] font-black tracking-[0.3em] uppercase opacity-60 mb-6">VIP Premium Access</p>
+<h4 class="text-2xl font-headline font-bold mb-2">Exclusive Selikuran Pass</h4>
+<p class="text-xs opacity-80 mb-8">Includes private dinner and priority seating at the main ceremony area.</p>
+<div class="flex justify-between items-center border-t border-white/10 pt-6">
+<div>
+<p class="text-[10px] uppercase opacity-60">Price</p>
+<p class="font-bold">IDR 250,000</p>
+</div>
+<button class="bg-[#FBC117] text-[#251a00] px-4 py-2 rounded-lg font-bold text-xs hover:scale-105 transition-transform">Update Pricing</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Success Message Pop (Simulated) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-on-surface text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 z-[100] hidden">
+<span class="material-symbols-outlined text-emerald-400">check_circle</span>
+<span class="text-sm font-medium">Exporting attendee list to CSV...</span>
+</div>
+</body></html>

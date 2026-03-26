@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin - Booking Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#370e00",
+                        "surface-tint": "#1e6868",
+                        "surface-variant": "#aaefee",
+                        "on-primary-fixed-variant": "#004f50",
+                        "secondary": "#a63b00",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#521900",
+                        "on-secondary": "#ffffff",
+                        "background": "#ffffff",
+                        "tertiary-fixed-dim": "#5cd8db",
+                        "secondary-fixed": "#ffdbce",
+                        "tertiary": "#004041",
+                        "on-primary-container": "#89cdcd",
+                        "secondary-container": "#fd6005",
+                        "primary-fixed-dim": "#8ed2d2",
+                        "tertiary-fixed": "#7bf5f8",
+                        "on-surface-variant": "#3f4948",
+                        "on-background": "#002020",
+                        "on-tertiary-fixed-variant": "#004f51",
+                        "surface-container": "#b5faf9",
+                        "surface-bright": "#e2fffe",
+                        "on-tertiary-fixed": "#002021",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#6f7978",
+                        "tertiary-container": "#00595b",
+                        "surface-dim": "#a1e6e5",
+                        "secondary-fixed-dim": "#ffb598",
+                        "inverse-primary": "#8ed2d2",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#003737",
+                        "primary-container": "#015959",
+                        "on-secondary-fixed-variant": "#7f2b00",
+                        "primary-fixed": "#aaefee",
+                        "inverse-on-surface": "#b8fdfc",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#aff5f4",
+                        "outline-variant": "#bec8c8",
+                        "on-tertiary-container": "#56d4d6",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#aaefee",
+                        "on-surface": "#002020",
+                        "surface-container-low": "#c1fffe",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "surface": "#e2fffe",
+                        "primary": "#004040",
+                        "on-primary-fixed": "#002020"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #ffffff;
+            color: #002020;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .serif-headline {
+            font-family: 'Noto Serif', serif;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="flex flex-col h-screen w-64 border-r-0 bg-teal-50 fixed left-0 top-0 py-8 px-6 z-50">
+<div class="mb-12">
+<h1 class="text-2xl font-serif font-black text-teal-900">Gelaran</h1>
+<p class="font-serif text-sm tracking-tight font-bold text-teal-900/60">Event Management</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 font-medium hover:bg-teal-200/50 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-lg font-serif">Dashboard</span>
+</a>
+<!-- Bookings - ACTIVE -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-900 font-bold border-r-4 border-teal-800 translate-x-1 transition-transform duration-200 bg-teal-200/30 rounded-l-lg" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="text-lg font-serif">Bookings</span>
+</a>
+<!-- Events -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 font-medium hover:bg-teal-200/50 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="text-lg font-serif">Events</span>
+</a>
+<!-- Users -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 font-medium hover:bg-teal-200/50 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-lg font-serif">Users</span>
+</a>
+<!-- Reports -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 font-medium hover:bg-teal-200/50 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-lg font-serif">Reports</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 font-medium hover:bg-teal-200/50 transition-colors rounded-lg mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-lg font-serif">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex items-center gap-3 p-2 bg-teal-100 rounded-xl">
+<img alt="Gelaran Admin Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu41s_6BFXWWeWRYw6_uA6Ei6AksGmMMMnEjQC7aMg6oLEG08jz6yEqT2suxXKzF2M1hKbmT0MLrcLr1hVXMe5RQOcA3skYJajBUXilqW_DKqbtVd-sDdHtJCkbuGZOrXee_O9kn84C-n00ZdWMbyi0iqnD2fhCsn3knzdL-toQUq316esfz7MP5Z-5UaaOkcul83dKumEY7QjFOQFiRy3dCvQN94zqngeESZviSox02bCcn-vxIUDCC6IKVrk2rb6KeTcbOd24NI"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold text-teal-900 truncate">Administrator</p>
+<p class="text-xs text-teal-700/70 truncate">Super User</p>
+</div>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="flex-1 ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar (Authority: JSON) -->
+<header class="flex justify-between items-center h-16 px-8 w-full bg-white/80 backdrop-blur-xl shadow-sm shadow-teal-900/5 sticky top-0 z-40">
+<div class="flex items-center gap-4 w-1/3">
+<div class="relative w-full max-w-sm">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-teal-600 text-lg" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-teal-50/50 border-none focus:ring-2 focus:ring-teal-500/20 rounded-lg text-sm transition-all outline-none" placeholder="Search bookings, ID, or attendees..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-teal-600 hover:text-teal-800 transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<button class="text-teal-600 hover:text-teal-800 transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-px bg-teal-100 mx-2"></div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-semibold text-teal-900 font-label">Admin User</span>
+<img alt="Admin User Avatar" class="w-8 h-8 rounded-full border border-teal-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8sGKRaeZndRsbd9j-bgqczHepgZNPYa6OpI_JJ0LAZhLSMd7KarYO05RzuEGqMcBSARCS_DJrmmA6_7BaxvSh_8gkM61zWmIkVNEFQXrXFvZ5gz6iuVGCF-lNBC_NppyBrX98-PZXpOnRmjYlvM7N1HhOT6z1oSUiQqoqJuYz2KAA2KrtWKkVAB_eUVb9cknlHQHpeS_aJfXtMx-fewDh2uKvnVtqOtQp-XrCyLtuNGm_sQD4BFD5-aL31EmT7tXkxT3S4VEXXCA"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="p-10 flex-1 bg-white">
+<!-- Page Header -->
+<div class="mb-10">
+<h2 class="serif-headline text-4xl font-black text-on-surface tracking-tight mb-2">Booking Management</h2>
+<p class="text-on-surface-variant font-body text-lg">Manage ticket sales, attendee records, and financial reversals.</p>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="p-6 border border-outline-variant bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+<p class="text-label text-on-surface-variant font-semibold uppercase tracking-widest text-xs mb-2">Total Bookings</p>
+<div class="flex items-end justify-between">
+<h3 class="serif-headline text-4xl font-bold text-primary">12,482</h3>
+<span class="text-tertiary font-bold text-sm bg-tertiary-fixed-dim/20 px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 8.4%
+                        </span>
+</div>
+</div>
+<div class="p-6 border border-outline-variant bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+<p class="text-label text-on-surface-variant font-semibold uppercase tracking-widest text-xs mb-2">Revenue (IDR)</p>
+<div class="flex items-end justify-between">
+<h3 class="serif-headline text-4xl font-bold text-primary">4.2B</h3>
+<span class="text-tertiary font-bold text-sm bg-tertiary-fixed-dim/20 px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 12.1%
+                        </span>
+</div>
+</div>
+<div class="p-6 border border-outline-variant bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+<p class="text-label text-on-surface-variant font-semibold uppercase tracking-widest text-xs mb-2">Active Refunds</p>
+<div class="flex items-end justify-between">
+<h3 class="serif-headline text-4xl font-bold text-secondary">24</h3>
+<span class="text-secondary font-bold text-sm bg-secondary-fixed/50 px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="info">info</span> Action Req.
+                        </span>
+</div>
+</div>
+</div>
+<!-- Filter & Action Bar -->
+<div class="flex flex-col gap-6 mb-8">
+<div class="flex flex-wrap items-center justify-between gap-4 bg-surface-container-low/30 p-4 rounded-xl">
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant ml-1">Event Name</label>
+<select class="bg-white border-outline-variant text-sm font-medium py-2 px-4 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none">
+<option>All Events</option>
+<option>Java Jazz Festival 2024</option>
+<option>Pesta Pora Music Festival</option>
+<option>Art Jakarta Fair</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant ml-1">Ticket Type</label>
+<select class="bg-white border-outline-variant text-sm font-medium py-2 px-4 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none">
+<option>All Types</option>
+<option>VIP Access</option>
+<option>General Admission</option>
+<option>Early Bird</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant ml-1">Payment Status</label>
+<select class="bg-white border-outline-variant text-sm font-medium py-2 px-4 rounded-lg focus:ring-2 focus:ring-primary/20 outline-none" multiple="">
+<option selected="">Paid</option>
+<option selected="">Pending</option>
+<option>Refunded</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold uppercase text-on-surface-variant ml-1">Date Range</label>
+<div class="flex items-center bg-white border border-outline-variant rounded-lg px-3 py-2 gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="calendar_today">calendar_today</span>
+<input class="text-sm font-medium outline-none border-none p-0 w-40" type="text" value="Jan 01 - Mar 31, 2024"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-[#29B3B6] text-white px-5 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg" data-icon="ios_share">ios_share</span>
+                            Export CSV
+                        </button>
+<button class="bg-[#015959] text-white px-5 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                            Manual Entry
+                        </button>
+</div>
+</div>
+</div>
+<!-- Data Table -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant/50">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest">Booking ID</th>
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest">Attendee</th>
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest">Event</th>
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest">Ticket Type</th>
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest">Amount</th>
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest">Status</th>
+<th class="px-6 py-4 text-xs font-bold uppercase text-on-surface-variant tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-5">
+<a class="text-[#29B3B6] font-bold font-mono" href="#">#GLR-29410</a>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Aditya Wijaya</span>
+<span class="text-xs text-on-surface-variant">aditya.w@email.com</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Java Jazz 2024</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 rounded bg-teal-100 text-teal-900 text-[10px] font-black uppercase tracking-tighter">VIP Access</span>
+</td>
+<td class="px-6 py-5 text-sm font-bold">Rp 2,500,000</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-surface-container-high text-[#015959]">
+                                    Paid
+                                </span>
+</td>
+<td class="px-6 py-5 text-right space-x-2">
+<button class="text-tertiary hover:underline text-sm font-bold">View</button>
+<button class="text-[#F95D00] hover:underline text-sm font-bold">Refund</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-5">
+<a class="text-[#29B3B6] font-bold font-mono" href="#">#GLR-29411</a>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Siti Aminah</span>
+<span class="text-xs text-on-surface-variant">s.aminah@gmail.com</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Art Jakarta Fair</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant text-[10px] font-black uppercase tracking-tighter">General</span>
+</td>
+<td class="px-6 py-5 text-sm font-bold">Rp 450,000</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#FBC117]/20 text-on-secondary-fixed">
+                                    Pending
+                                </span>
+</td>
+<td class="px-6 py-5 text-right space-x-2">
+<button class="text-tertiary hover:underline text-sm font-bold">View</button>
+<button class="text-[#F95D00] hover:underline text-sm font-bold">Refund</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-5">
+<a class="text-[#29B3B6] font-bold font-mono" href="#">#GLR-29398</a>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Rizky Pratama</span>
+<span class="text-xs text-on-surface-variant">rizky_p@outlook.com</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Pesta Pora 2024</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 rounded bg-teal-100 text-teal-900 text-[10px] font-black uppercase tracking-tighter">VIP Access</span>
+</td>
+<td class="px-6 py-5 text-sm font-bold">Rp 1,200,000</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">
+                                    Refunded
+                                </span>
+</td>
+<td class="px-6 py-5 text-right space-x-2">
+<button class="text-tertiary hover:underline text-sm font-bold">View</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-5">
+<a class="text-[#29B3B6] font-bold font-mono" href="#">#GLR-29385</a>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Maya Sari</span>
+<span class="text-xs text-on-surface-variant">m.sari@corporate.co.id</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Java Jazz 2024</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 rounded bg-teal-100 text-teal-900 text-[10px] font-black uppercase tracking-tighter">Early Bird</span>
+</td>
+<td class="px-6 py-5 text-sm font-bold">Rp 1,800,000</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-surface-container-high text-[#015959]">
+                                    Paid
+                                </span>
+</td>
+<td class="px-6 py-5 text-right space-x-2">
+<button class="text-tertiary hover:underline text-sm font-bold">View</button>
+<button class="text-[#F95D00] hover:underline text-sm font-bold">Refund</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-5">
+<a class="text-[#29B3B6] font-bold font-mono" href="#">#GLR-29370</a>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Dewi Lestari</span>
+<span class="text-xs text-on-surface-variant">dewi_lest@email.com</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-medium">Art Jakarta Fair</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant text-[10px] font-black uppercase tracking-tighter">General</span>
+</td>
+<td class="px-6 py-5 text-sm font-bold">Rp 450,000</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-surface-container-high text-[#015959]">
+                                    Paid
+                                </span>
+</td>
+<td class="px-6 py-5 text-right space-x-2">
+<button class="text-tertiary hover:underline text-sm font-bold">View</button>
+<button class="text-[#F95D00] hover:underline text-sm font-bold">Refund</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-white border-t border-outline-variant/30 flex items-center justify-between">
+<p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Showing 1 to 5 of 12,482 results</p>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-teal-50 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-teal-50 transition-colors text-xs font-bold">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-teal-50 transition-colors text-xs font-bold">3</button>
+<span class="px-2 text-on-surface-variant text-xs font-bold">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-teal-50 transition-colors text-xs font-bold">2,497</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-teal-50 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Signature Editorial Footer -->
+<footer class="p-8 border-t border-outline-variant/10 bg-white">
+<div class="flex items-center justify-between">
+<div class="flex gap-10">
+<div class="flex flex-col gap-2">
+<span class="text-[10px] font-black uppercase text-on-surface-variant tracking-[0.2em]">Platform</span>
+<p class="text-xs font-semibold text-primary">Gelaran Cloud v2.4.0-pro</p>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-[10px] font-black uppercase text-on-surface-variant tracking-[0.2em]">Support</span>
+<p class="text-xs font-semibold text-primary">admin-support@gelaran.com</p>
+</div>
+</div>
+<p class="text-xs text-on-surface-variant italic font-serif opacity-60">Curating Cultural Excellence Since 2018</p>
+</div>
+</footer>
+</div>
+</body></html>

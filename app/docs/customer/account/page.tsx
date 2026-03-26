@@ -1,83 +1,91 @@
+import { Edit, Shield, Ticket, User } from "lucide-react";
 import { Breadcrumb } from "@/components/docs/Breadcrumb";
 import { FeatureCard } from "@/components/docs/FeatureCard";
-import { User, Shield, Ticket, Edit } from "lucide-react";
+import { DocsChecklist, DocsHero, DocsSection, DocsStat } from "@/components/docs/docs-shell";
 
 export default function CustomerAccountDocsPage() {
     return (
-        <div className="animate-fade-in">
+        <div className="space-y-8 animate-fade-in">
             <Breadcrumb
                 items={[
-                    { label: "Dokumentasi", href: "/docs" },
+                    { label: "Documentation", href: "/docs" },
                     { label: "Customer", href: "/docs/customer" },
-                    { label: "Akun Saya" },
+                    { label: "My account" },
                 ]}
             />
 
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                Akun Saya
-            </h1>
-            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan untuk mengelola akun dan profil Anda.
-            </p>
+            <DocsHero
+                eyebrow="Account support"
+                title="Keep your profile, tickets, and access details up to date"
+                description="The account area gives customers one place to maintain personal details, review ticket history, and keep their access information reliable for future bookings."
+                meta={
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <DocsStat
+                            label="Primary use"
+                            value="Self-service"
+                            description="Customers should be able to handle basic profile maintenance without leaving the help flow."
+                        />
+                        <DocsStat
+                            label="Linked area"
+                            value="My bookings"
+                            description="Account management and booking recovery often work together during support cases."
+                        />
+                        <DocsStat
+                            label="Best practice"
+                            value="Keep current"
+                            description="Updated identity and contact details reduce delays when payment or ticket help is needed."
+                        />
+                    </div>
+                }
+            />
 
-            {/* Feature Cards */}
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Fitur Akun</h2>
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-                <FeatureCard
-                    icon={Edit}
-                    title="Edit Profil"
-                    description="Ubah nama, foto profil, dan nomor telepon."
-                    iconBgColor="bg-blue-100"
-                    iconColor="text-blue-600"
-                />
-                <FeatureCard
-                    icon={Shield}
-                    title="Keamanan"
-                    description="Ubah password dan aktifkan autentikasi 2 faktor."
-                    iconBgColor="bg-green-100"
-                    iconColor="text-green-600"
-                />
-                <FeatureCard
-                    icon={Ticket}
-                    title="Tiket Saya"
-                    description="Lihat semua tiket yang sudah Anda beli."
-                    iconBgColor="bg-purple-100"
-                    iconColor="text-purple-600"
-                />
-                <FeatureCard
-                    icon={User}
-                    title="Riwayat Aktivitas"
-                    description="Lihat log login dan aktivitas akun Anda."
-                    iconBgColor="bg-amber-100"
-                    iconColor="text-amber-600"
-                />
-            </div>
-
-            {/* Settings */}
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Pengaturan Profil</h2>
-            <div className="space-y-4 mb-12">
-                <div className="p-4 border border-slate-200 rounded-lg">
-                    <h3 className="font-semibold text-slate-900 mb-2">Informasi Dasar</h3>
-                    <ul className="list-disc list-inside space-y-1 text-slate-600 text-sm">
-                        <li>Ubah nama dan foto profil</li>
-                        <li>Update nomor telepon</li>
-                        <li>Ubah email (memerlukan verifikasi)</li>
-                    </ul>
+            <DocsSection
+                title="What customers can manage"
+                description="The current account experience focuses on profile accuracy, account safety, and visibility into purchased tickets."
+            >
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    <FeatureCard
+                        icon={Edit}
+                        title="Edit profile"
+                        description="Update your displayed identity details and keep profile information current for support purposes."
+                    />
+                    <FeatureCard
+                        icon={Shield}
+                        title="Security hygiene"
+                        description="Review password and access habits so account recovery is less likely to become urgent."
+                        iconBgColor="bg-(--success-bg)"
+                        iconColor="text-emerald-600"
+                    />
+                    <FeatureCard
+                        icon={Ticket}
+                        title="Ticket visibility"
+                        description="Use linked booking surfaces to confirm what has been purchased and what is ready for entry."
+                        iconBgColor="bg-[rgba(99,102,241,0.08)]"
+                        iconColor="text-indigo-600"
+                    />
+                    <FeatureCard
+                        icon={User}
+                        title="Account history"
+                        description="Understand recent account changes when verifying identity or reviewing support concerns."
+                        iconBgColor="bg-(--warning-bg)"
+                        iconColor="text-amber-600"
+                    />
                 </div>
-                <div className="p-4 border border-slate-200 rounded-lg">
-                    <h3 className="font-semibold text-slate-900 mb-2">Keamanan Akun</h3>
-                    <ul className="list-disc list-inside space-y-1 text-slate-600 text-sm">
-                        <li>Ubah password secara berkala</li>
-                        <li>Aktifkan autentikasi dua faktor (2FA)</li>
-                        <li>Pantau riwayat login dari perangkat lain</li>
-                    </ul>
-                </div>
-            </div>
+            </DocsSection>
 
-            {/* Footer */}
-            <div className="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
-                <span>Terakhir diperbarui: Januari 2026</span>
-            </div>
+            <DocsSection
+                title="Profile maintenance checklist"
+                description="A few simple habits make booking access and support much smoother over time."
+            >
+                <DocsChecklist
+                    items={[
+                        "Keep your name, email, and phone details accurate so ticket and support communication reaches you correctly.",
+                        "Review your booking history after purchases so you can confirm orders before the event date arrives.",
+                        "Update account access details when you notice anything outdated or suspicious, especially after device changes.",
+                        "Use the support guide when a booking, payment, or ticket issue cannot be resolved through self-service screens."
+                    ]}
+                />
+            </DocsSection>
         </div>
     );
 }

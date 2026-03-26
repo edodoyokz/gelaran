@@ -1,76 +1,99 @@
+import { Edit, History, Shield, Users } from "lucide-react";
 import { Breadcrumb } from "@/components/docs/Breadcrumb";
 import { BrowserFrame } from "@/components/docs/BrowserFrame";
 import { FeatureCard } from "@/components/docs/FeatureCard";
-import { Users, Shield, Edit, History } from "lucide-react";
+import { DocsChecklist, DocsHero, DocsSection, DocsStat } from "@/components/docs/docs-shell";
 
 export default function AdminUsersDocsPage() {
     return (
-        <div className="animate-fade-in">
+        <div className="space-y-8 animate-fade-in">
             <Breadcrumb
                 items={[
-                    { label: "Dokumentasi", href: "/docs" },
+                    { label: "Documentation", href: "/docs" },
                     { label: "Admin", href: "/docs/admin" },
-                    { label: "User Management" },
+                    { label: "User management" },
                 ]}
             />
 
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                User Management
-            </h1>
-            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan lengkap untuk mengelola pengguna di platform Gelaran.
-            </p>
+            <DocsHero
+                eyebrow="User governance"
+                title="Manage platform accounts with clear status and audit awareness"
+                description="The user management area helps admins review role assignments, account state, and history so customer, organizer, and internal access stays trustworthy."
+                meta={
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <DocsStat
+                            label="Primary goal"
+                            value="Account control"
+                            description="Support healthy role mapping and reliable access across all product areas."
+                        />
+                        <DocsStat
+                            label="Review mode"
+                            value="Search + detail"
+                            description="Use shared filters and detail views to move from broad scanning into account-specific action."
+                        />
+                        <DocsStat
+                            label="Operational link"
+                            value="Support ready"
+                            description="Many user reviews start as support escalations, so clarity and audit context matter."
+                        />
+                    </div>
+                }
+            />
 
-            {/* Screenshot */}
-            <div className="mb-10">
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">Tampilan User Management</h3>
-                <p className="text-slate-600 mb-4 text-sm">
-                    Kelola semua pengguna dari satu dashboard yang terintegrasi.
-                </p>
-                <BrowserFrame
-                    src="/docs/images/admin-users.png"
-                    title="https://bsc.com/admin/users"
-                    alt="Admin User Management Screenshot"
-                />
-            </div>
+            <DocsSection
+                title="User management surface"
+                description="The admin user area is designed for fast scanning first, then deliberate action on individual accounts."
+            >
+                <div className="space-y-4">
+                    <BrowserFrame
+                        src="/docs/images/admin-users.png"
+                        title="https://bsc.com/admin/users"
+                        alt="Admin user management workspace"
+                    />
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                        <FeatureCard
+                            icon={Users}
+                            title="Browse user records"
+                            description="Inspect the current user base with a consistent table layout and account-level context."
+                        />
+                        <FeatureCard
+                            icon={Edit}
+                            title="Adjust roles"
+                            description="Update role assignments carefully so workspace access remains appropriate and auditable."
+                            iconBgColor="bg-(--success-bg)"
+                            iconColor="text-emerald-600"
+                        />
+                        <FeatureCard
+                            icon={Shield}
+                            title="Manage account status"
+                            description="Handle account activation or restrictions when platform safety or accuracy requires it."
+                            iconBgColor="bg-(--warning-bg)"
+                            iconColor="text-amber-600"
+                        />
+                        <FeatureCard
+                            icon={History}
+                            title="Review activity context"
+                            description="Use available history signals to understand why an account may need intervention."
+                            iconBgColor="bg-[rgba(99,102,241,0.08)]"
+                            iconColor="text-indigo-600"
+                        />
+                    </div>
+                </div>
+            </DocsSection>
 
-            {/* Feature Cards */}
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Fitur Utama</h2>
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-                <FeatureCard
-                    icon={Users}
-                    title="Daftar Pengguna"
-                    description="Lihat semua pengguna yang terdaftar beserta role dan statusnya."
-                    iconBgColor="bg-blue-100"
-                    iconColor="text-blue-600"
+            <DocsSection
+                title="Recommended account review flow"
+                description="Follow a simple sequence so changes are justified and easy to explain later."
+            >
+                <DocsChecklist
+                    items={[
+                        "Locate the account with search or filters, then verify identity details, current role, and visible status signals.",
+                        "Review the reason for intervention, especially when the request came from support, moderation, or organizer escalation.",
+                        "Apply the smallest necessary change, such as updating a role or adjusting account status, instead of making broad edits.",
+                        "Re-check the resulting access implications for related workspaces and note any follow-up needed by support or operations."
+                    ]}
                 />
-                <FeatureCard
-                    icon={Edit}
-                    title="Ubah Role"
-                    description="Mengubah role pengguna menjadi Customer, Organizer, atau Admin."
-                    iconBgColor="bg-green-100"
-                    iconColor="text-green-600"
-                />
-                <FeatureCard
-                    icon={Shield}
-                    title="Status Akun"
-                    description="Aktifkan atau nonaktifkan akun pengguna sesuai kebutuhan."
-                    iconBgColor="bg-amber-100"
-                    iconColor="text-amber-600"
-                />
-                <FeatureCard
-                    icon={History}
-                    title="Riwayat Aktivitas"
-                    description="Pantau aktivitas login dan perubahan data pengguna."
-                    iconBgColor="bg-purple-100"
-                    iconColor="text-purple-600"
-                />
-            </div>
-
-            {/* Footer */}
-            <div className="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
-                <span>Terakhir diperbarui: Januari 2026</span>
-            </div>
+            </DocsSection>
         </div>
     );
 }

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solo Curator | Organizer Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "primary-fixed": "#ffdbce",
+                        "tertiary": "#483500",
+                        "surface-container": "#b5faf9",
+                        "surface": "#ffffff",
+                        "surface-dim": "#a1e6e5",
+                        "on-background": "#002020",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdf9a",
+                        "inverse-surface": "#003737",
+                        "surface-container-high": "#aff5f4",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#ffb598",
+                        "on-secondary-container": "#246d6d",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#a63b00",
+                        "surface-container-low": "#c1fffe",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "secondary-fixed": "#aaefee",
+                        "on-primary-container": "#ffae8e",
+                        "tertiary-container": "#654b00",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "outline": "#6f7978",
+                        "secondary": "#1e6868",
+                        "on-secondary-fixed": "#002020",
+                        "surface-container-highest": "#aaefee",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#a7eceb",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "on-surface-variant": "#3f4948",
+                        "primary-fixed-dim": "#ffb598",
+                        "on-surface": "#002020",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#e2fffe",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f1b803",
+                        "on-tertiary-fixed": "#251a00",
+                        "background": "#ffffff",
+                        "primary": "#672200",
+                        "on-primary-fixed": "#370e00",
+                        "primary-container": "#8d3100",
+                        "outline-variant": "#bec8c8",
+                        "surface-variant": "#aaefee",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#b8fdfc",
+                        "brand-teal": "#015959",
+                        "brand-orange": "#F95D00",
+                        "brand-light-teal": "#29B3B6",
+                        "brand-yellow": "#FBC117"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+        h1, h2, h3, .font-serif { font-family: 'Noto Serif', serif; }
+        .tonal-shift { background-color: rgba(1, 89, 89, 0.05); }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<!-- Sidebar Navigation (From JSON SideNavBar) -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-brand-teal flex flex-col py-8 z-50 transition-all duration-300 ease-in-out">
+<div class="px-6 mb-10">
+<h1 class="font-serif text-teal-50 text-2xl italic">Surakarta Events</h1>
+<p class="text-teal-100/60 text-xs font-medium tracking-widest mt-1">Professional Suite</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active: Dashboard -->
+<a class="flex items-center gap-3 bg-teal-800 text-brand-orange rounded-r-full py-3 px-6 border-l-4 border-brand-orange transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans font-medium text-sm tracking-wide">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-teal-100/70 py-3 px-6 hover:bg-teal-800/80 hover:text-white transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-sans font-medium text-sm tracking-wide">Events</span>
+</a>
+<a class="flex items-center gap-3 text-teal-100/70 py-3 px-6 hover:bg-teal-800/80 hover:text-white transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-sans font-medium text-sm tracking-wide">Orders</span>
+</a>
+<a class="flex items-center gap-3 text-teal-100/70 py-3 px-6 hover:bg-teal-800/80 hover:text-white transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-sans font-medium text-sm tracking-wide">Analytics</span>
+</a>
+<a class="flex items-center gap-3 text-teal-100/70 py-3 px-6 hover:bg-teal-800/80 hover:text-white transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-sans font-medium text-sm tracking-wide">Finances</span>
+</a>
+<a class="flex items-center gap-3 text-teal-100/70 py-3 px-6 hover:bg-teal-800/80 hover:text-white transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sans font-medium text-sm tracking-wide">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-brand-orange text-white py-4 rounded-xl font-bold text-sm shadow-lg hover:bg-primary-container transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base">add_circle</span>
+                Create Event
+            </button>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="pl-64 min-h-screen flex flex-col">
+<!-- TopAppBar (From JSON) -->
+<header class="fixed top-0 right-0 left-64 z-40 bg-white/80 backdrop-blur-xl shadow-sm px-8 py-4 flex justify-between items-center">
+<div class="flex items-center gap-4 bg-slate-100 rounded-full px-4 py-2 w-96 border border-slate-200/50 focus-within:ring-2 ring-brand-light-teal transition-all">
+<span class="material-symbols-outlined text-slate-400">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400" placeholder="Search events, orders, or curators..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-600 hover:text-brand-teal transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<div class="relative">
+<button class="text-slate-600 hover:text-brand-teal transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-brand-orange rounded-full"></span>
+</div>
+<div class="flex items-center gap-3 border-l border-slate-200 pl-6">
+<div class="text-right">
+<p class="text-sm font-bold text-brand-teal leading-tight">Solo Curator</p>
+<p class="text-xs text-slate-500">Verified Organizer</p>
+</div>
+<img alt="Organizer Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-light-teal/20" data-alt="portrait of a professional asian event organizer in modern attire with a warm confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0V-HE3rIH1hsks-aYhAY0Jh9IkRFqf7u9jEYEz2S6hf0ZxxnAmd4E62US7A7fLRZR_6WCj1jBp6QD2pRQkIuczZttKV95EYvZKsh2N8EtiLe3gjoM6gk9ZgoyQQZ6cIM3pSiblxHH5pam_tdaed6x7qu5niEOO0bkzIe3we9aOEllXoqg1qpnTgfO8vtZaErUXw2zUcxE_3SInqrHD3fkIVTK-bLnhtTITW2c71gtNrBxV9Px7UrhtQgilUSUJM1aM5QQVKgO8mE"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="mt-20 p-8 flex gap-8">
+<!-- Left Column: Primary Dashboard Data -->
+<div class="flex-1 space-y-10">
+<!-- Welcome & KPI Section -->
+<section>
+<div class="mb-8">
+<h2 class="text-3xl font-serif text-brand-teal font-bold tracking-tight">Wilujeng Rawuh, Curator</h2>
+<p class="text-slate-500 mt-1">Here is how your cultural portfolio is performing this month.</p>
+</div>
+<div class="grid grid-cols-4 gap-6">
+<!-- Revenue KPI -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-teal-50 text-brand-teal rounded-lg">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +12%
+                                </span>
+</div>
+<p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Total Revenue</p>
+<h3 class="text-2xl font-serif font-bold text-brand-teal mt-1">Rp 142.5M</h3>
+<div class="mt-4 h-8 w-full bg-gradient-to-r from-brand-light-teal/10 to-brand-teal/20 rounded opacity-50">
+<!-- Mock Sparkline -->
+</div>
+</div>
+<!-- Tickets KPI -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-orange-50 text-brand-orange rounded-lg">
+<span class="material-symbols-outlined">confirmation_number</span>
+</div>
+</div>
+<p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Tickets Sold</p>
+<h3 class="text-2xl font-serif font-bold text-brand-teal mt-1">3,842</h3>
+<p class="text-xs text-slate-400 mt-2">Across 12 active events</p>
+</div>
+<!-- Rating KPI -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-yellow-50 text-brand-yellow rounded-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Avg. Rating</p>
+<h3 class="text-2xl font-serif font-bold text-brand-teal mt-1">4.92 / 5</h3>
+<p class="text-xs text-slate-400 mt-2">1,200+ Reviews</p>
+</div>
+<!-- Active Events KPI -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-slate-50 text-brand-teal rounded-lg">
+<span class="material-symbols-outlined">event_available</span>
+</div>
+<span class="px-2 py-0.5 bg-brand-yellow text-[10px] font-bold text-on-tertiary-fixed rounded uppercase tracking-tighter">Trending</span>
+</div>
+<p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Active Events</p>
+<h3 class="text-2xl font-serif font-bold text-brand-teal mt-1">14</h3>
+<p class="text-xs text-slate-400 mt-2">3 New drafts this week</p>
+</div>
+</div>
+</section>
+<!-- Event Performance Chart (Visual Simulation) -->
+<section class="bg-brand-teal p-8 rounded-[2rem] text-white relative overflow-hidden">
+<div class="relative z-10 flex justify-between items-end">
+<div>
+<span class="text-teal-200 text-xs font-bold uppercase tracking-widest">Performance Insight</span>
+<h3 class="text-3xl font-serif mt-2">Ticket Sales Growth</h3>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-full border border-teal-700 text-xs hover:bg-teal-800 transition-colors">Weekly</button>
+<button class="px-4 py-1.5 rounded-full bg-brand-light-teal text-xs font-bold transition-colors">Monthly</button>
+</div>
+</div>
+<div class="mt-12 h-64 flex items-end justify-between gap-4">
+<!-- Simulated Chart Bars with editorial asymmetry -->
+<div class="w-full bg-teal-800/40 rounded-t-lg h-24 relative group">
+<div class="absolute bottom-0 w-full bg-brand-light-teal h-12 rounded-t-lg transition-all duration-500 group-hover:h-16"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-teal-300">Jan</span>
+</div>
+<div class="w-full bg-teal-800/40 rounded-t-lg h-40 relative group">
+<div class="absolute bottom-0 w-full bg-brand-light-teal h-28 rounded-t-lg transition-all duration-500 group-hover:h-32"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-teal-300">Feb</span>
+</div>
+<div class="w-full bg-teal-800/40 rounded-t-lg h-32 relative group">
+<div class="absolute bottom-0 w-full bg-brand-orange h-20 rounded-t-lg transition-all duration-500 group-hover:h-24 shadow-[0_-4px_12px_rgba(249,93,0,0.3)]"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white font-bold">Mar</span>
+</div>
+<div class="w-full bg-teal-800/40 rounded-t-lg h-56 relative group">
+<div class="absolute bottom-0 w-full bg-brand-light-teal h-44 rounded-t-lg transition-all duration-500 group-hover:h-48"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-teal-300">Apr</span>
+</div>
+<div class="w-full bg-teal-800/40 rounded-t-lg h-48 relative group">
+<div class="absolute bottom-0 w-full bg-brand-light-teal h-36 rounded-t-lg transition-all duration-500 group-hover:h-40"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-teal-300">May</span>
+</div>
+</div>
+</section>
+<!-- Upcoming Events Table -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-2xl font-serif text-brand-teal font-bold">Upcoming Portfolio</h3>
+<button class="text-brand-light-teal font-bold text-sm flex items-center gap-1 hover:underline">
+                            View All Events <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-slate-50/50 border-b border-slate-100">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Event Name</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Date</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Tickets</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Wayang Event" class="w-full h-full object-cover" data-alt="dramatic lighting on traditional Javanese wayang kulit shadow puppet performance on screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANbAYbNDOKwycqJRLIy_3fj-wWB940G4dQVYuHlDT4WGWPKbZuSj82IvmanJsKlxEDHYWUx19DOW2eOKnEHCJ-RLi9rVG0U3PjYYk0IJHuZwFzaCeAh-4UyCSmgSHZZIxJTyPjU9nLE3DquJR_VwlboorTD2NeO9-ikiosIa2Qzk3FYGTVlvQB79NFlEi3AIXCtlPrdTwfUZ8z_B-GKHGHrwzxGsCBQaiw1xXRJabnUKAAc72Nhs9qHZHa6ANy89tXHnhbnfGblK0"/>
+</div>
+<div>
+<p class="text-sm font-bold text-brand-teal">Midnight Wayang Kulit</p>
+<p class="text-[10px] text-slate-400">Cultural Center, Solo</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Oct 24, 2023</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase">On Sale</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-brand-light-teal h-full w-[85%]"></div>
+</div>
+<span class="text-[10px] text-slate-400 mt-1 block">850/1000 Sold</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-brand-light-teal transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-slate-400 hover:text-brand-light-teal transition-colors"><span class="material-symbols-outlined text-lg">visibility</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Batik Workshop" class="w-full h-full object-cover" data-alt="artisan hand drawing batik pattern with canting and hot wax on white silk fabric" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7ATO6UEig1Q0Fz55Y2aeTBPWKljQ-wQSM1hjo8eRqHQiHmXcxMf2jaPFmWmXvw2m8tEk_LmCSZzSYCimi-bRZX0A3_nTmsW6g7TvMRxAweHUqfns80ktHP3E5ovb33nKqSgi6eLf-5gND_5izBuLxgByjUzfzmTPDqs1gzxbs-b2ASVJwaSyJqV3V_Qga1rsFu5XGbH_8nt9ZrBXRKyipcBpaMB6c0kLQjSo2VR7TBCf6P2PRmYWIvmnMrsBb6SjVKZrx5Go-6HA"/>
+</div>
+<div>
+<p class="text-sm font-bold text-brand-teal">Artisan Batik Workshop</p>
+<p class="text-[10px] text-slate-400">Laweyan Village</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Nov 02, 2023</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-full uppercase">Draft</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-[10px] text-slate-400">—</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-brand-light-teal transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-slate-400 hover:text-brand-light-teal transition-colors"><span class="material-symbols-outlined text-lg">visibility</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-teal-50/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Jazz Festival" class="w-full h-full object-cover" data-alt="silhouettes of jazz musicians performing on stage with atmospheric teal and orange spotlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjoUzFUVpEyrJLnWBMCCqkhe0cS2h3FuT3KEAwJbAhPnpTJlqCSlK1SbaNHoXNUm_Ed0yZYQVKdaaGKB3Xs03HKB8Adjj6Ziwn5qzC10aAhNjFXPUNRAQYXytBipRCr5kkGqvjuA1X4Zkb_dmTxmYo3oX4U2chwgaRvUZyWOmSWfDeljA6qOtmFQChGyHy6S6Gbs1SHdXjUE5m7gTQwPpuRDk8EwwMMUHuQz3D1VCO68Jmrj6a1nWGaJBJFDQcKsgbrV0EGNmbbmE"/>
+</div>
+<div>
+<p class="text-sm font-bold text-brand-teal">Bengawan Solo Jazz Night</p>
+<p class="text-[10px] text-slate-400">Riverside Stage</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600">Nov 15, 2023</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-brand-yellow/20 text-brand-teal text-[10px] font-bold rounded-full uppercase">Sold Out</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-brand-orange h-full w-[100%]"></div>
+</div>
+<span class="text-[10px] text-slate-400 mt-1 block">500/500 Sold</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-brand-light-teal transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-slate-400 hover:text-brand-light-teal transition-colors"><span class="material-symbols-outlined text-lg">visibility</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Sidebar Panel -->
+<aside class="w-80 space-y-8">
+<!-- Wallet & Withdraw (From Prompt) -->
+<div class="bg-brand-teal p-8 rounded-3xl shadow-xl shadow-teal-900/10 text-white relative overflow-hidden group">
+<!-- Subtle pattern overlay -->
+<div class="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,#ffffff_1px,transparent_1px)] bg-[length:20px_20px]"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-center mb-6">
+<span class="text-xs font-bold uppercase tracking-widest text-teal-300">Curator Wallet</span>
+<span class="material-symbols-outlined text-teal-300">account_balance_wallet</span>
+</div>
+<p class="text-sm text-teal-100 mb-1">Available Balance</p>
+<h4 class="text-3xl font-serif font-bold mb-8">Rp 48.250.000</h4>
+<button class="w-full bg-brand-orange text-white py-4 rounded-xl font-bold text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all">
+                            Withdraw Funds
+                        </button>
+<p class="text-[10px] text-teal-400 text-center mt-4">Last withdrawal: 2 days ago</p>
+</div>
+</div>
+<!-- Recent Sales Snapshot -->
+<div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-serif font-bold text-brand-teal">Recent Sales</h4>
+<span class="text-[10px] font-bold text-brand-light-teal uppercase tracking-widest">Live</span>
+</div>
+<div class="space-y-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-brand-teal">AD</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-brand-teal">Aris Dimas <span class="text-slate-400 font-normal">bought</span></p>
+<p class="text-[10px] text-slate-500">2x Wayang Kulit Tickets</p>
+</div>
+<p class="text-[10px] font-bold text-emerald-600">Rp 500k</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-brand-teal">RN</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-brand-teal">Riana N. <span class="text-slate-400 font-normal">bought</span></p>
+<p class="text-[10px] text-slate-500">1x Batik Workshop</p>
+</div>
+<p class="text-[10px] font-bold text-emerald-600">Rp 250k</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-brand-teal">BP</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-brand-teal">Bambang P. <span class="text-slate-400 font-normal">bought</span></p>
+<p class="text-[10px] text-slate-500">4x Jazz Festival</p>
+</div>
+<p class="text-[10px] font-bold text-emerald-600">Rp 1.2M</p>
+</div>
+</div>
+<button class="w-full mt-8 py-3 rounded-xl border border-slate-100 text-xs font-bold text-slate-500 hover:bg-slate-50 transition-colors">
+                        View Detailed Log
+                    </button>
+</div>
+<!-- Milestone Badge (Yellow Status) -->
+<div class="bg-brand-yellow/10 rounded-3xl p-6 border border-brand-yellow/30">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 bg-brand-yellow text-on-tertiary-fixed rounded-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<h4 class="font-serif font-bold text-on-tertiary-fixed">Silver Curator</h4>
+</div>
+<p class="text-xs text-on-tertiary-fixed/80 leading-relaxed mb-4">You are only <strong>Rp 7.5M</strong> away from reaching the <span class="font-bold">Gold Curator</span> milestone and unlocking reduced platform fees.</p>
+<div class="w-full h-2 bg-brand-yellow/20 rounded-full overflow-hidden">
+<div class="h-full bg-brand-yellow w-[75%] rounded-full shadow-[0_0_8px_rgba(251,193,23,0.5)]"></div>
+</div>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

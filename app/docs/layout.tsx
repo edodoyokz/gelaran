@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import Link from "next/link";
+import { PublicLayout } from "@/components/shared/phase-two-shells";
 
 export default function DocsLayout({
     children,
@@ -8,18 +8,11 @@ export default function DocsLayout({
 }) {
     return (
         <ThemeProvider>
-            <div className="min-h-screen bg-background text-foreground flex flex-col">
-                <header className="border-b px-6 py-4 flex items-center justify-between bg-card">
-                    <div className="flex items-center gap-4">
-                        <Link href="/" className="text-xl font-bold text-primary">
-                            Gelaran Docs
-                        </Link>
-                    </div>
-                </header>
-                <div className="flex-1 container mx-auto py-8 px-4">
-                    {children}
+            <PublicLayout navbarTransparent={false} mainClassName="pt-24">
+                <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+                    <div className="space-y-6">{children}</div>
                 </div>
-            </div>
+            </PublicLayout>
         </ThemeProvider>
     );
 }

@@ -1,75 +1,79 @@
 "use client";
 
 import { Suspense } from "react";
-import Link from "next/link";
+import { Loader2, RefreshCw } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { Clock, RefreshCw, ArrowLeft, Loader2 } from "lucide-react";
+import {
+    CheckoutActionBar,
+    CheckoutCallout,
+    CheckoutPageShell,
+    CheckoutStatusHero,
+    CheckoutStatusNotes,
+} from "@/components/features/checkout/checkout-primitives";
 
 function PendingContent() {
     const searchParams = useSearchParams();
     const bookingCode = searchParams.get("booking");
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-            <div className="max-w-md w-full text-center">
-                <div className="bg-white rounded-2xl p-8 shadow-lg">
-                    {/* Pending Icon */}
-                    <div className="mx-auto w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                        <Clock className="h-12 w-12 text-yellow-500" />
-                    </div>
-
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                        Menunggu Pembayaran
-                    </h1>
-                    <p className="text-gray-600 mb-6">
-                        Selesaikan pembayaran dalam waktu 30 menit untuk mengamankan tiket kamu.
-                    </p>
-
-                    {bookingCode && (
-                        <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                            <p className="text-sm text-gray-500 mb-1">Kode Booking</p>
-                            <p className="text-xl font-bold font-mono text-gray-800">
-                                {bookingCode}
+        <CheckoutPageShell
+            title="Pembayaran masih menunggu penyelesaian"
+            description="Gunakan halaman pending sebagai pusat informasi ketika pembayaran belum terkonfirmasi sepenuhnya oleh sistem Gelaran atau payment gateway."
+            backHref="/events"
+            backLabel="Kembali ke katalog event"
+        >
+            <div className="space-y-6">
+                <CheckoutStatusHero
+                    tone="pending"
+                    title="Selesaikan pembayaran untuk mengamankan tiket"
+                    description="Booking sudah dibuat, tetapi status pembayaran masih menunggu. Ikuti instruksi yang kamu terima agar reservasi tidak otomatis dilepas."
+                    bookingCode={bookingCode}
+                    highlight={
+                        <div className="rounded-2xl border border-[rgba(251,193,23,0.3)] bg-(--warning-bg) px-4 py-4 shadow-(--shadow-xs)">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--warning-text)">Batas waktu</p>
+                            <p className="mt-2 text-sm leading-6 text-(--warning-text)">
+                                Selesaikan pembayaran dalam 30 menit atau sesuai instruksi yang kamu terima untuk menjaga ketersediaan tiket di booking ini.
                             </p>
                         </div>
-                    )}
+                    }
+                >
+                    <CheckoutCallout
+                        tone="warning"
+                        title="Instruksi pembayaran telah dikirim"
+                        description="Periksa email pembeli untuk detail transfer, virtual account, atau metode lain yang sedang dipakai. Beberapa channel membutuhkan jeda verifikasi sebelum status diperbarui."
+                    />
 
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-left">
-                        <p className="text-sm text-yellow-800">
-                            <strong>Instruksi pembayaran</strong> sudah dikirim ke email kamu.
-                            Ikuti langkah-langkah yang tertera untuk menyelesaikan pembayaran.
-                        </p>
-                    </div>
+                    <CheckoutActionBar
+                        primary={{ href: "/events", label: "Lihat event lain" }}
+                        secondary={{ href: bookingCode ? `/my-bookings/${bookingCode}` : "/my-bookings", label: "Pantau booking" }}
+                        tertiary={
+                            <button
+                                type="button"
+                                onClick={() => window.location.reload()}
+                                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface)/90 px-5 py-3 text-sm font-semibold text-foreground shadow-(--shadow-xs) transition-colors duration-200 hover:border-(--border-strong) hover:bg-(--surface-hover)"
+                            >
+                                <RefreshCw className="h-4 w-4" />
+                                Cek status pembayaran
+                            </button>
+                        }
+                    />
+                </CheckoutStatusHero>
 
-                    <div className="space-y-3">
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 flex items-center justify-center gap-2"
-                        >
-                            <RefreshCw className="h-5 w-5" />
-                            Cek Status Pembayaran
-                        </button>
-                        <Link
-                            href="/"
-                            className="w-full py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 flex items-center justify-center gap-2"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            Kembali ke Homepage
-                        </Link>
-                    </div>
-                </div>
+                <CheckoutStatusNotes />
             </div>
-        </div>
+        </CheckoutPageShell>
     );
 }
 
 export default function CheckoutPendingPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="min-h-screen flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-(--accent-primary)" />
+                </div>
+            }
+        >
             <PendingContent />
         </Suspense>
     );

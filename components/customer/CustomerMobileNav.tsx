@@ -26,7 +26,7 @@ export function CustomerMobileNav() {
             <div className="glass-strong border-t border-[var(--glass-border)] safe-area-pb">
                 <div className="flex items-center justify-around px-2 py-2 relative">
                     <div
-                        className="absolute bottom-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-300 ease-out"
+                        className="absolute bottom-0 h-0.5 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-300 ease-out"
                         style={{
                             width: "40px",
                             left: `calc(${activeIndex * 20}% + 10% - 20px)`,
@@ -48,7 +48,7 @@ export function CustomerMobileNav() {
                                         className={`
                                             w-14 h-14 rounded-2xl flex items-center justify-center text-white 
                                             shadow-lg transition-all duration-300
-                                            bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500
+                                            bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500
                                             group-hover:scale-110 group-active:scale-95
                                             ${isActive ? "shadow-indigo-500/40 shadow-xl scale-105" : "shadow-indigo-500/25"}
                                         `}

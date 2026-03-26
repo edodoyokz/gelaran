@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin - Payout Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-container": "#56d4d6",
+                        "tertiary-fixed": "#7bf5f8",
+                        "surface": "#e2fffe",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#aaefee",
+                        "on-surface": "#002020",
+                        "on-surface-variant": "#3f4948",
+                        "surface-tint": "#1e6868",
+                        "surface-container-high": "#aff5f4",
+                        "primary": "#004040",
+                        "surface-dim": "#a1e6e5",
+                        "secondary-fixed-dim": "#ffb598",
+                        "surface-container-low": "#c1fffe",
+                        "on-tertiary-fixed-variant": "#004f51",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#004041",
+                        "secondary": "#a63b00",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#5cd8db",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#002020",
+                        "secondary-fixed": "#ffdbce",
+                        "surface-container": "#b5faf9",
+                        "on-secondary-fixed": "#370e00",
+                        "outline": "#6f7978",
+                        "on-tertiary-fixed": "#002021",
+                        "inverse-primary": "#8ed2d2",
+                        "on-primary": "#ffffff",
+                        "on-background": "#002020",
+                        "inverse-on-surface": "#b8fdfc",
+                        "on-secondary-container": "#521900",
+                        "on-secondary-fixed-variant": "#7f2b00",
+                        "on-primary-container": "#89cdcd",
+                        "background": "#e2fffe",
+                        "primary-container": "#015959",
+                        "inverse-surface": "#003737",
+                        "primary-fixed-dim": "#8ed2d2",
+                        "surface-variant": "#aaefee",
+                        "on-primary-fixed-variant": "#004f50",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#e2fffe",
+                        "secondary-container": "#fd6005",
+                        "outline-variant": "#bec8c8",
+                        "tertiary-container": "#00595b",
+                        "surface-container-highest": "#aaefee",
+                        "gelaran-orange": "#F95D00",
+                        "gelaran-yellow": "#FBC117",
+                        "gelaran-teal-dark": "#015959",
+                        "gelaran-teal-light": "#29B3B6"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFFFFF; }
+        .font-noto-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Predicted SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-cyan-50 flex flex-col py-8 z-50">
+<div class="px-8 mb-10">
+<h1 class="font-noto-serif text-2xl font-bold text-[#015959]">Gelaran</h1>
+<p class="text-xs uppercase tracking-widest text-slate-500 mt-1 font-medium">Admin Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center text-slate-600 hover:text-[#015959] px-8 py-3 transition-colors hover:bg-cyan-100/50 group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">dashboard</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Dashboard</span>
+</a>
+<a class="flex items-center bg-white text-[#015959] font-bold rounded-l-full ml-4 pl-4 py-3 shadow-sm border-r-4 border-[#F95D00]" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">payments</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Payouts</span>
+</a>
+<a class="flex items-center text-slate-600 hover:text-[#015959] px-8 py-3 transition-colors hover:bg-cyan-100/50" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">groups</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Organizers</span>
+</a>
+<a class="flex items-center text-slate-600 hover:text-[#015959] px-8 py-3 transition-colors hover:bg-cyan-100/50" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">event</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Events</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-primary-container text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">add</span>
+<span class="font-noto-serif text-sm">Create Event</span>
+</button>
+</div>
+</aside>
+<!-- Predicted TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-white/80 backdrop-blur-md flex justify-between items-center h-20 px-12">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#015959]">search</span>
+<input class="w-full pl-12 pr-4 py-2.5 bg-slate-50 border-none rounded-full text-sm focus:ring-2 focus:ring-[#015959] outline-none transition-all" placeholder="Search payouts, transactions..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-500 hover:text-[#F95D00] transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#F95D00] rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-500 hover:text-[#F95D00] transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-100">
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">Admin Profile</p>
+<p class="text-[10px] uppercase tracking-tighter text-slate-400">Master Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover ring-2 ring-cyan-100" data-alt="professional portrait of a male administrative manager in business attire with neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkPSZFX3g8ho_6fznwu-24xYqY45EWwrzsoGmz3T1yeg8ICVAhRys6a8FPN6yCqAXYEdnXEB1w8D0AbNeM1FOrVYiXRQkCMSBbnoHIjI0dM-iKG9sZD-nekS_mM1OS2pA99ap3iQiLQ0kHfZXHbmrM08nVRwdVWnN98k_xWBMyGTtD8R_nJe2tM4YjAvkEIbEejpKtgxiIAAJ7pecDXkjI-NdSEtbo6FVoxg_TX14vYbp-pYrl52t1wpFRIOiFQRgWcD89-4CA1JE"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 min-h-screen">
+<div class="p-12">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-noto-serif text-4xl font-bold text-[#015959] tracking-tight">Payout Management</h2>
+<p class="text-slate-500 mt-2 font-medium">Review and settle pending event earnings across Indonesia.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                    Export CSV
+                </button>
+</div>
+<!-- Summary Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+<div class="p-8 bg-cyan-50/50 rounded-xl flex flex-col justify-between group hover:bg-cyan-50 transition-colors">
+<p class="text-xs uppercase tracking-widest text-[#015959] font-bold mb-4">Pending Payouts</p>
+<div>
+<span class="font-noto-serif text-3xl font-bold text-[#015959]">IDR 1.240.500.000</span>
+<div class="flex items-center gap-1 mt-2 text-[#29B3B6]">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="text-xs font-bold">+12% from yesterday</span>
+</div>
+</div>
+</div>
+<div class="p-8 bg-white border border-slate-100 rounded-xl flex flex-col justify-between shadow-sm">
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-4 text-on-surface-variant">Approved Today</p>
+<div>
+<span class="font-noto-serif text-3xl font-bold text-[#015959]">42 Requests</span>
+<p class="text-xs text-slate-500 mt-2">Settle completion rate: 94%</p>
+</div>
+</div>
+<div class="p-8 bg-white border border-slate-100 rounded-xl flex flex-col justify-between shadow-sm border-l-4 border-[#FBC117]">
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-4 text-on-surface-variant">Flagged Requests</p>
+<div class="flex items-center justify-between">
+<span class="font-noto-serif text-3xl font-bold text-[#a63b00]">07</span>
+<span class="material-symbols-outlined text-[#FBC117] text-3xl">warning</span>
+</div>
+<p class="text-xs text-slate-500 mt-2">Requires manual identity verification</p>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="flex flex-wrap items-center gap-4 mb-8 p-4 bg-slate-50/50 rounded-xl">
+<div class="flex-1 min-w-[300px] relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white border-slate-200 rounded-lg text-sm focus:ring-[#29B3B6]" placeholder="Organizer name or ID..." type="text"/>
+</div>
+<select class="px-4 py-2 bg-white border-slate-200 rounded-lg text-sm font-medium text-slate-700 min-w-[150px] focus:ring-[#29B3B6]">
+<option>All Status</option>
+<option>Pending</option>
+<option>Approved</option>
+<option>Flagged</option>
+<option>On Hold</option>
+</select>
+<div class="flex items-center gap-2 px-4 py-2 bg-white border-slate-200 rounded-lg">
+<span class="material-symbols-outlined text-sm text-slate-400">calendar_today</span>
+<span class="text-sm font-medium text-slate-700">Oct 01 - Oct 31, 2024</span>
+</div>
+<button class="px-4 py-2 text-sm font-bold text-[#29B3B6] hover:bg-cyan-50 rounded-lg transition-all">Clear Filters</button>
+</div>
+<!-- Payout Queue Table -->
+<div class="overflow-hidden bg-white border-none">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50">
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400">Organizer</th>
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400">Amount</th>
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400">Bank Info</th>
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400">Request Date</th>
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400">Status</th>
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400">Settlement</th>
+<th class="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-slate-400 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1: Flagged -->
+<tr class="group hover:bg-cyan-50/20 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-[#015959] text-white flex items-center justify-center font-bold text-xs">SAC</div>
+<div>
+<p class="font-bold text-sm text-[#015959]">Solo Art Collective</p>
+<p class="text-[10px] text-slate-400 tracking-tight">ID: GLR-88920-X</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<p class="font-noto-serif font-bold text-on-surface">IDR 12.500.000</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-700">Mandiri</p>
+<p class="text-[10px] text-slate-400">**** 4920</p>
+</td>
+<td class="px-6 py-6 text-sm text-slate-500">Oct 24, 2024</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FBC117]/10 text-[#a63b00] text-[10px] font-extrabold uppercase tracking-wide border border-[#FBC117]/20">
+<span class="material-symbols-outlined text-xs leading-none">assessment</span>
+                                    Flagged
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#a63b00]">Due in 6h</span>
+<div class="w-24 h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+<div class="w-[85%] h-full bg-[#FBC117]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded hover:bg-slate-200 transition-all">Hold</button>
+<button class="px-4 py-1.5 bg-[#F95D00] text-white text-xs font-bold rounded shadow-sm hover:opacity-90 transition-all">Approve</button>
+<button class="p-1.5 text-slate-400 hover:text-on-surface">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Pending -->
+<tr class="group hover:bg-cyan-50/20 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded object-cover" data-alt="traditional indonesian architecture details with warm wooden textures and heritage atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG1w_LDbnlt5bxT73KG97f1nR3FoAv4yJr1l1PuIK-45b88CoQHechaNYYx0Hb5qdzfbEYzx60UJYw-i4uQdprweXwYFTI2bCMvN4FfGwq1VlC6EBWoLcjWLO8VvMBd54193-kCMN8RmD9ZH_QJFUmNRrXGf7h81EInQt-SyKmJyV3cq-2yYODUF2eXKy6pqdVXbF-821S8Ud7PLOcccg588ZgurIFInZgMn0SnN7KyZCRVptVzwSJhGDUh-ME68xEFrPQeI5Py0c"/>
+<div>
+<p class="font-bold text-sm text-[#015959]">Wayang Heritage</p>
+<p class="text-[10px] text-slate-400 tracking-tight">ID: GLR-11202-P</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<p class="font-noto-serif font-bold text-on-surface">IDR 45.000.000</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-700">BCA</p>
+<p class="text-[10px] text-slate-400">**** 1122</p>
+</td>
+<td class="px-6 py-6 text-sm text-slate-500">Oct 23, 2024</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-extrabold uppercase tracking-wide">
+                                    Pending
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-700">Due in 24h</span>
+<div class="w-24 h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+<div class="w-[40%] h-full bg-[#29B3B6]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded hover:bg-slate-200 transition-all">Hold</button>
+<button class="px-4 py-1.5 bg-[#F95D00] text-white text-xs font-bold rounded shadow-sm hover:opacity-90 transition-all">Approve</button>
+<button class="p-1.5 text-slate-400 hover:text-on-surface">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Standard -->
+<tr class="group hover:bg-cyan-50/20 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-[#29B3B6] text-white flex items-center justify-center font-bold text-xs">BT</div>
+<div>
+<p class="font-bold text-sm text-[#015959]">Bali Techno Expo</p>
+<p class="text-[10px] text-slate-400 tracking-tight">ID: GLR-55410-L</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<p class="font-noto-serif font-bold text-on-surface">IDR 8.200.000</p>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-700">BNI</p>
+<p class="text-[10px] text-slate-400">**** 9003</p>
+</td>
+<td class="px-6 py-6 text-sm text-slate-500">Oct 24, 2024</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-extrabold uppercase tracking-wide">
+                                    Pending
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-700">Due in 48h</span>
+<div class="w-24 h-1 bg-slate-100 rounded-full mt-2 overflow-hidden">
+<div class="w-[15%] h-full bg-[#29B3B6]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded hover:bg-slate-200 transition-all">Hold</button>
+<button class="px-4 py-1.5 bg-[#F95D00] text-white text-xs font-bold rounded shadow-sm hover:opacity-90 transition-all">Approve</button>
+<button class="p-1.5 text-slate-400 hover:text-on-surface">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="mt-8 flex items-center justify-between border-t border-slate-50 pt-8">
+<p class="text-sm text-slate-500">Showing <span class="font-bold text-[#015959]">1-3</span> of 24 payout requests</p>
+<div class="flex items-center gap-1">
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-bold bg-[#015959] text-white rounded">1</button>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-slate-600 hover:bg-slate-50 rounded transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-slate-600 hover:bg-slate-50 rounded transition-all">3</button>
+<span class="px-2 text-slate-400">...</span>
+<button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-slate-600 hover:bg-slate-50 rounded transition-all">8</button>
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#1e6868",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "surface-tint": "#a63b00",
+                        "surface-variant": "#aaefee",
+                        "on-secondary-fixed": "#002020",
+                        "tertiary": "#483500",
+                        "on-primary-container": "#ffae8e",
+                        "secondary-container": "#a7eceb",
+                        "primary-fixed-dim": "#ffb598",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "secondary-fixed": "#aaefee",
+                        "on-secondary-container": "#246d6d",
+                        "on-secondary": "#ffffff",
+                        "background": "#e2fffe",
+                        "surface-bright": "#e2fffe",
+                        "surface-container": "#b5faf9",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "tertiary-fixed": "#ffdf9a",
+                        "on-surface-variant": "#3f4948",
+                        "on-background": "#002020",
+                        "outline": "#6f7978",
+                        "tertiary-container": "#654b00",
+                        "on-tertiary-fixed": "#251a00",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#003737",
+                        "primary-container": "#8d3100",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "inverse-primary": "#ffb598",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#a1e6e5",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "surface-container-high": "#aff5f4",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#ffdbce",
+                        "inverse-on-surface": "#b8fdfc",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#c1fffe",
+                        "surface-container-highest": "#aaefee",
+                        "on-surface": "#002020",
+                        "outline-variant": "#bec8c8",
+                        "on-tertiary-container": "#f1b803",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#370e00",
+                        "primary": "#672200",
+                        "surface": "#e2fffe",
+                        "error-container": "#ffdad6",
+                        "brand-orange": "#F95D00",
+                        "brand-teal": "#015959",
+                        "brand-light-teal": "#29B3B6"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-animation {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="bg-white font-body text-on-surface antialiased">
+<!-- Top Navigation (Shared Component Context) -->
+<nav class="w-full top-0 z-50 bg-[#e2fffe] text-[#672200] font-['Noto_Serif'] antialiased tracking-tight">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-bold text-[#015959] tracking-tighter">SoloCurator</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-[#002020] opacity-80 hover:opacity-100 transition-opacity" href="#">Explore</a>
+<a class="text-[#002020] opacity-80 hover:opacity-100 transition-opacity" href="#">Exhibitions</a>
+<a class="text-[#002020] opacity-80 hover:opacity-100 transition-opacity" href="#">My Tickets</a>
+<div class="flex gap-4 ml-4">
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#c1fffe]/50 p-2 rounded-full transition-colors">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#c1fffe]/50 p-2 rounded-full transition-colors">account_circle</span>
+</div>
+</div>
+</div>
+<div class="bg-[#b5faf9] h-px w-full"></div>
+</nav>
+<main class="min-h-screen flex flex-col items-center justify-center px-4 py-16 bg-white">
+<!-- Main Checkout Card -->
+<div class="w-full max-w-4xl bg-white rounded-xl shadow-[0_20px_50px_rgba(0,32,32,0.08)] overflow-hidden flex flex-col md:flex-row">
+<!-- Left Side: Payment Status & Instructions -->
+<div class="flex-1 p-8 md:p-12 border-r border-outline-variant/10">
+<div class="flex items-center gap-4 mb-8">
+<div class="relative flex items-center justify-center">
+<span class="material-symbols-outlined text-brand-orange text-4xl pulse-animation" style="font-variation-settings: 'FILL' 1;">pending</span>
+</div>
+<div>
+<h1 class="font-headline text-3xl font-bold text-on-surface tracking-tight">Payment Pending</h1>
+<p class="text-on-surface-variant font-medium">Please complete your transaction before it expires.</p>
+</div>
+</div>
+<!-- Timer Section -->
+<div class="bg-surface-container-low rounded-xl p-6 mb-8 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-brand-orange">schedule</span>
+<span class="text-on-surface font-semibold">Payment expires in</span>
+</div>
+<div class="text-2xl font-bold text-brand-orange font-mono tracking-wider">
+                        23:54:12
+                    </div>
+</div>
+<!-- Payment Instructions -->
+<div class="space-y-6">
+<h3 class="font-headline text-xl font-bold text-brand-teal">Payment Instructions</h3>
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-brand-teal text-white flex items-center justify-center shrink-0 font-bold text-sm">1</div>
+<div class="flex-1">
+<p class="text-on-surface font-semibold mb-1">Copy Virtual Account Number</p>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-3 flex justify-between items-center group cursor-pointer hover:bg-surface-container transition-colors">
+<span class="font-mono text-lg font-bold tracking-widest text-on-surface">8802 0124 8892 100</span>
+<span class="material-symbols-outlined text-brand-teal text-sm group-hover:scale-110 transition-transform">content_copy</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1 italic">Virtual Account Name: SoloCurator - Gelaran</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-brand-teal text-white flex items-center justify-center shrink-0 font-bold text-sm">2</div>
+<div class="flex-1">
+<p class="text-on-surface font-semibold mb-1">Transfer the exact amount</p>
+<div class="text-2xl font-headline font-bold text-on-surface">IDR 150.000</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-brand-teal text-white flex items-center justify-center shrink-0 font-bold text-sm">3</div>
+<div class="flex-1">
+<p class="text-on-surface font-semibold mb-1">Confirm Payment</p>
+<p class="text-sm text-on-surface-variant leading-relaxed">System will automatically verify your payment within 5 minutes of transfer completion.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-12 flex flex-col gap-4">
+<button class="w-full bg-brand-orange hover:bg-primary-container text-white py-4 rounded-xl font-bold text-lg transition-all active:scale-95 shadow-lg shadow-brand-orange/20">
+                        Check Payment Status
+                    </button>
+<button class="w-full border-2 border-brand-light-teal text-brand-light-teal hover:bg-brand-light-teal/5 py-4 rounded-xl font-bold text-lg transition-all active:scale-95">
+                        Change Payment Method
+                    </button>
+</div>
+</div>
+<!-- Right Side: Order Summary & Details -->
+<div class="w-full md:w-80 bg-surface-container-low p-8 md:p-10 flex flex-col">
+<div class="mb-10">
+<h3 class="font-headline text-lg font-bold text-brand-teal mb-6">Order Summary</h3>
+<div class="relative rounded-lg overflow-hidden mb-4 group h-32">
+<img alt="Traditional Indonesian dancers performing on stage with dramatic lighting" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="dramatic stage performance of traditional Javanese dance with elaborate costumes and atmospheric stage lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIzjoYZkIVFLpj7_iR2cOaYQa1WgDr1kP9z0S-_BOiybbCSnd2bp-biEQ0JE7FDaeyYoo5c8ZWj8Ld_yNk3VET9HdbrycbHfMvABBK7TkMrytXTvWVoEt_4nBCY2_ryJ-UIyI69scWyx_RSIwhNEurL4IeKS5GZinSED7OC0KLOKetXWfxHX8gofU4gb_ZXh-gXQVgoxqRYUObBu1dQv4pP8Q3p0bGpww_DsYdfK9fEKdmfeWkmSXtKqpPn5m5wiRpXpdJU50QOpQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-brand-teal/80 to-transparent flex items-end p-3">
+<span class="text-white text-xs font-bold uppercase tracking-widest">Featured Performance</span>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<p class="text-xs text-on-surface-variant uppercase font-bold tracking-tighter">Event Name</p>
+<p class="text-on-surface font-headline font-bold leading-tight">Solo International Performing Arts</p>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant uppercase font-bold tracking-tighter">Date &amp; Time</p>
+<p class="text-on-surface text-sm font-medium">Saturday, 24 Aug 2024 • 19:00 WIB</p>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-8 border-t border-outline-variant/30 space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant uppercase font-bold">Transaction ID</span>
+<span class="text-xs font-mono font-bold text-on-surface">GL-BK-2024-8892</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant uppercase font-bold">Method</span>
+<span class="text-xs font-bold text-on-surface">VA BCA</span>
+</div>
+<div class="bg-surface-container-highest/50 p-4 rounded-lg mt-4">
+<div class="flex justify-between items-center">
+<span class="text-sm font-bold text-on-surface">Total Amount</span>
+<span class="text-lg font-headline font-bold text-brand-orange">IDR 150.000</span>
+</div>
+</div>
+</div>
+<!-- Cultural Motif Decoration -->
+<div class="mt-8 flex justify-center opacity-10">
+<span class="material-symbols-outlined text-6xl">spa</span>
+</div>
+</div>
+</div>
+<!-- Help Link -->
+<div class="mt-8 flex items-center gap-2 text-on-surface-variant hover:text-brand-teal transition-colors cursor-pointer group">
+<span class="text-sm font-medium">Need help with your payment? Contact Support</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</main>
+<!-- Footer (Shared Component Context) -->
+<footer class="w-full mt-auto bg-[#002020] text-[#f7be11] font-['Plus_Jakarta_Sans'] text-sm tracking-wide">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 gap-6 max-w-7xl mx-auto">
+<div class="text-[#e2fffe] font-serif italic text-xl">SoloCurator</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-[#c1fffe] opacity-80 hover:opacity-100 hover:text-white transition-opacity" href="#">Terms of Service</a>
+<a class="text-[#c1fffe] opacity-80 hover:opacity-100 hover:text-white transition-opacity" href="#">Privacy Policy</a>
+<a class="text-[#c1fffe] opacity-80 hover:opacity-100 hover:text-white transition-opacity" href="#">Help Center</a>
+<a class="text-[#c1fffe] opacity-80 hover:opacity-100 hover:text-white transition-opacity" href="#">Cultural Guidelines</a>
+</div>
+<div class="text-[#c1fffe]/60 text-center md:text-right">
+                © 2024 SoloCurator Cultural Archive. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

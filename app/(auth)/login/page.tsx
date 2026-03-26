@@ -9,11 +9,24 @@ import {
     Mail,
     Lock,
     Loader2,
-    UserCircle,
     Briefcase,
     ShoppingBag,
     Shield,
+    Sparkles,
+    ArrowRight,
 } from "lucide-react";
+import {
+    AuthField,
+    AuthFinePrint,
+    AuthFormShell,
+    AuthIconButton,
+    AuthInputShell,
+    AuthMessage,
+    AuthPageIntro,
+    AuthPrimaryButton,
+    AuthSectionCard,
+    AuthTextLink,
+} from "@/components/shared/auth-ui";
 import { getAuthDemoConfig } from "@/lib/demo-mode";
 import { getPublicEnv } from "@/lib/env";
 import { createClient } from "@/lib/supabase/client";
@@ -22,15 +35,15 @@ const DEMO_ACCOUNTS = [
     {
         category: "Admin",
         icon: Shield,
-        color: "bg-red-100 text-red-600 border-red-200",
-        hoverColor: "hover:bg-red-200",
+        accentClassName: "border-[rgba(217,79,61,0.18)] bg-[rgba(217,79,61,0.08)]",
+        badgeClassName: "bg-[rgba(217,79,61,0.14)] text-(--error-text)",
         accounts: [{ email: "admin@gelaran.id", name: "Admin Gelaran Solo", role: "SUPER_ADMIN" }],
     },
     {
         category: "Organizers",
         icon: Briefcase,
-        color: "bg-blue-100 text-blue-600 border-blue-200",
-        hoverColor: "hover:bg-blue-200",
+        accentClassName: "border-[rgba(41,179,182,0.2)] bg-(--surface-brand-soft)",
+        badgeClassName: "bg-[rgba(41,179,182,0.14)] text-(--accent-primary)",
         accounts: [
             { email: "info@sriwedari.solo.go.id", name: "Taman Sriwedari", role: "ORGANIZER" },
             { email: "info@gormanahan.solo.go.id", name: "GOR Manahan", role: "ORGANIZER" },
@@ -42,8 +55,8 @@ const DEMO_ACCOUNTS = [
     {
         category: "Customers",
         icon: ShoppingBag,
-        color: "bg-green-100 text-green-600 border-green-200",
-        hoverColor: "hover:bg-green-200",
+        accentClassName: "border-[rgba(19,135,108,0.2)] bg-(--success-bg)",
+        badgeClassName: "bg-[rgba(19,135,108,0.14)] text-(--success-text)",
         accounts: [
             { email: "budi.santoso@email.com", name: "Budi Santoso", role: "CUSTOMER" },
             { email: "siti.nur@email.com", name: "Siti Nurhaliza", role: "CUSTOMER" },
@@ -138,202 +151,177 @@ function LoginForm() {
     };
 
     return (
-        <div className="space-y-6">
+        <AuthFormShell>
             {authDemoConfig.enabled ? (
-                <>
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <div className="flex items-start">
-                            <div className="flex-shrink-0">
-                                <UserCircle className="h-5 w-5 text-yellow-600" />
-                            </div>
-                            <div className="ml-3 flex-1">
-                                <h3 className="text-sm font-medium text-yellow-800">Demo Mode</h3>
-                                <p className="mt-1 text-xs text-yellow-700">
-                                    Klik tombol akun di bawah untuk login cepat. Password:{" "}
-                                    <code className="bg-yellow-100 px-1 rounded">password123</code>
+                <AuthSectionCard className="space-y-4">
+                    <div className="flex items-start gap-4">
+                        <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-(--accent-primary) shadow-(--shadow-xs)">
+                            <Sparkles className="h-5 w-5" />
+                        </span>
+                        <div className="space-y-2">
+                            <div>
+                                <p className="text-sm font-semibold text-foreground">Demo mode tersedia</p>
+                                <p className="text-sm leading-6 text-(--text-secondary)">
+                                    Gunakan akun siap pakai untuk meninjau dashboard customer, organizer,
+                                    atau admin tanpa membuat kredensial baru.
                                 </p>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowDemoMode(!showDemoMode)}
-                                    className="mt-2 text-xs font-medium text-yellow-800 hover:text-yellow-900 underline"
-                                >
-                                    {showDemoMode ? "Sembunyikan" : "Tampilkan"} Akun Demo
-                                </button>
                             </div>
+                            <p className="text-xs uppercase tracking-[0.2em] text-(--text-muted)">
+                                Password default: {DEFAULT_PASSWORD}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => setShowDemoMode(!showDemoMode)}
+                                className="inline-flex items-center gap-2 text-sm font-semibold text-(--accent-primary) transition-colors duration-200 hover:text-(--accent-primary-hover)"
+                            >
+                                {showDemoMode ? "Sembunyikan akun demo" : "Tampilkan akun demo"}
+                                <ArrowRight className={`h-4 w-4 transition-transform duration-200 ${showDemoMode ? "rotate-90" : ""}`} />
+                            </button>
                         </div>
                     </div>
 
                     {showDemoMode ? (
-                        <div className="space-y-4">
+                        <div className="grid gap-4">
                             {DEMO_ACCOUNTS.map((group) => (
-                                <div key={group.category} className="bg-white border rounded-lg p-4">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <group.icon className="h-5 w-5 text-gray-600" />
-                                        <h3 className="font-semibold text-gray-900">{group.category}</h3>
+                                <section
+                                    key={group.category}
+                                    className={`rounded-3xl border p-4 shadow-(--shadow-xs) sm:p-5 ${group.accentClassName}`}
+                                >
+                                    <div className="mb-4 flex items-center gap-3">
+                                        <span className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${group.badgeClassName}`}>
+                                            <group.icon className="h-5 w-5" />
+                                        </span>
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground">{group.category}</p>
+                                            <p className="text-xs text-(--text-secondary)">
+                                                Login cepat untuk alur {group.category.toLowerCase()}.
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-2.5">
                                         {group.accounts.map((account) => (
                                             <button
                                                 key={account.email}
                                                 type="button"
                                                 onClick={() => handleQuickLogin(account.email)}
                                                 disabled={isLoading}
-                                                className={`w-full text-left px-4 py-3 border rounded-lg transition-colors ${group.color} ${group.hoverColor} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                                className="w-full rounded-2xl border border-white/70 bg-white/88 px-4 py-3 text-left shadow-(--shadow-xs) transition-all duration-200 hover:-translate-y-0.5 hover:border-(--border-strong) disabled:cursor-not-allowed disabled:opacity-60"
                                             >
-                                                <div className="font-medium text-sm">{account.name}</div>
-                                                <div className="text-xs opacity-75 mt-0.5">
-                                                    {account.email}
+                                                <div className="flex items-center justify-between gap-4">
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-foreground">{account.name}</p>
+                                                        <p className="text-xs text-(--text-secondary)">{account.email}</p>
+                                                    </div>
+                                                    <span className="rounded-full border border-(--border) px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-(--text-secondary)">
+                                                        {account.role}
+                                                    </span>
                                                 </div>
                                             </button>
                                         ))}
                                     </div>
-                                </div>
+                                </section>
                             ))}
                         </div>
                     ) : null}
-
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-gray-50 text-gray-500">atau login manual</span>
-                        </div>
-                    </div>
-                </>
+                </AuthSectionCard>
             ) : null}
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-                {error ? (
-                    <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-                        {error}
-                    </div>
-                ) : null}
+            {error ? (
+                <AuthMessage tone="danger" title="Masuk belum berhasil" description={error} />
+            ) : null}
 
-                <div className="space-y-4">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                            Email
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Mail className="h-5 w-5 text-gray-400" />
-                            </div>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="nama@email.com"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                            Password
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-gray-400" />
-                            </div>
-                            <input
-                                id="password"
-                                name="password"
-                                type={showPassword ? "text" : "password"}
-                                autoComplete="current-password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                placeholder="••••••••"
-                            />
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? (
-                                    <EyeOff className="h-5 w-5 text-gray-400" />
-                                ) : (
-                                    <Eye className="h-5 w-5 text-gray-400" />
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-end">
-                    <Link
-                        href="/forgot-password"
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                        Lupa password?
-                    </Link>
-                </div>
-
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            <form className="space-y-5" onSubmit={handleSubmit}>
+                <AuthField
+                    label="Email"
+                    helper="Gunakan email yang terhubung ke akun Gelaran"
                 >
+                    <AuthInputShell
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="nama@email.com"
+                        icon={Mail}
+                    />
+                </AuthField>
+
+                <AuthField
+                    label="Password"
+                    helper={
+                        <Link
+                            href="/forgot-password"
+                            className="font-semibold text-(--accent-primary) transition-colors duration-200 hover:text-(--accent-primary-hover)"
+                        >
+                            Lupa password?
+                        </Link>
+                    }
+                >
+                    <AuthInputShell
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Masukkan password"
+                        icon={Lock}
+                        inputClassName="pr-12"
+                    />
+                    <div className="-mt-[3.35rem] flex justify-end pr-3">
+                        <AuthIconButton
+                            aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </AuthIconButton>
+                    </div>
+                </AuthField>
+
+                <AuthPrimaryButton type="submit" disabled={isLoading}>
                     {isLoading ? (
                         <>
-                            <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                            <Loader2 className="h-5 w-5 animate-spin" />
                             Masuk...
                         </>
                     ) : (
-                        "Masuk"
+                        "Masuk ke Gelaran"
                     )}
-                </button>
+                </AuthPrimaryButton>
             </form>
-        </div>
+        </AuthFormShell>
     );
 }
 
 export default function LoginPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl w-full space-y-8">
-                <div className="text-center">
-                    <Link href="/" className="text-3xl font-bold text-indigo-600">
-                        Gelaran<span className="text-gray-800">Solo</span>
-                    </Link>
-                    <h2 className="mt-6 text-2xl font-bold text-gray-900">Masuk ke akun kamu</h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Belum punya akun?{" "}
-                        <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-                            Daftar sekarang
-                        </Link>
-                    </p>
-                </div>
+        <div className="flex flex-col h-full">
+            <AuthPageIntro
+                title="Welcome Back"
+                description="Enter your credentials to access the digital archives of the royal city, and manage your tickets, events, or workspaces."
+            />
 
-                <Suspense
-                    fallback={
-                        <div className="h-64 flex items-center justify-center">
-                            <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
-                        </div>
-                    }
-                >
-                    <LoginForm />
-                </Suspense>
+            <Suspense
+                fallback={
+                    <div className="flex h-64 items-center justify-center rounded-3xl border border-[#bec8c8]/20 bg-[#faf9f7] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
+                        <Loader2 className="h-8 w-8 animate-spin text-[#015959]" />
+                    </div>
+                }
+            >
+                <LoginForm />
+            </Suspense>
 
-                <p className="text-center text-xs text-gray-500 mt-8">
-                    Dengan masuk, kamu menyetujui{" "}
-                    <Link href="/terms" className="text-indigo-600 hover:underline">
-                        Syarat & Ketentuan
-                    </Link>{" "}
-                    dan{" "}
-                    <Link href="/privacy" className="text-indigo-600 hover:underline">
-                        Kebijakan Privasi
-                    </Link>{" "}
-                    kami.
+            <footer className="mt-12 text-center">
+                <p className="text-[#3f4948] text-sm">
+                    Belum punya akun? {" "}
+                    <AuthTextLink href="/register">
+                        Daftar sekarang
+                    </AuthTextLink>
                 </p>
-            </div>
+            </footer>
         </div>
     );
 }

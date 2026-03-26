@@ -1,26 +1,29 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import type { Decimal } from "@prisma/client/runtime/library";
+import { redirect } from "next/navigation";
 import {
-    Users,
-    Calendar,
-    CreditCard,
-    AlertCircle,
-    TrendingUp,
-    ArrowUpRight,
-    MapPin,
-    Tag,
-    Settings,
-    LayoutTemplate,
+    ArrowRight,
+    BadgeDollarSign,
+    CalendarRange,
     Gift,
+    MapPin,
+    Settings,
+    ShieldCheck,
+    Tags,
+    Users,
+    Wallet,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import type { Decimal } from "@prisma/client/runtime/library";
 import prisma from "@/lib/prisma/client";
+import { createClient } from "@/lib/supabase/server";
+import {
+    AdminActionCard,
+    AdminMetricCard,
+    AdminNotice,
+    AdminStatusBadge,
+    AdminSurface,
+    AdminWorkspacePage,
+} from "@/components/admin/admin-workspace";
 import { formatCurrency } from "@/lib/utils";
-import { AdminHeader } from "@/components/admin/AdminHeader";
-import { AdminDashboardCharts } from "@/components/admin/AdminDashboardCharts";
-import { RevenueBreakdown } from "@/components/admin/RevenueBreakdown";
-import { CommissionOverview } from "@/components/admin/CommissionOverview";
 
 interface RecentBooking {
     id: string;
@@ -41,9 +44,19 @@ interface RecentBooking {
     createdAt: Date;
 }
 
-export default async function AdminDashboard() {
+const bookingStatusTone: Record<string, "accent" | "success" | "warning" | "danger" | "default"> = {
+    PAID: "success",
+    CONFIRMED: "accent",
+    PENDING: "warning",
+    CANCELLED: "danger",
+    REFUNDED: "default",
+};
+
+export default async function AdminDashboardPage() {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
         redirect("/login?returnUrl=/admin");
@@ -83,6 +96,7 @@ export default async function AdminDashboard() {
         where: { status: { in: ["CONFIRMED", "PAID"] } },
         _sum: { platformRevenue: true },
     });
+
     const totalPlatformRevenue = Number(platformRevenueData._sum.platformRevenue || 0);
 
     const revenueBreakdown = await prisma.booking.aggregate({
@@ -97,15 +111,6 @@ export default async function AdminDashboard() {
         },
     });
 
-    const breakdown = {
-        totalTransactions: Number(revenueBreakdown._sum.totalAmount || 0),
-        subtotal: Number(revenueBreakdown._sum.subtotal || 0),
-        platformRevenue: Number(revenueBreakdown._sum.platformRevenue || 0),
-        organizerRevenue: Number(revenueBreakdown._sum.organizerRevenue || 0),
-        gatewayFee: Number(revenueBreakdown._sum.paymentGatewayFee || 0),
-        tax: Number(revenueBreakdown._sum.taxAmount || 0),
-    };
-
     const globalCommission = await prisma.commissionSetting.findFirst({
         where: { organizerId: null, isActive: true },
         select: { commissionValue: true },
@@ -115,15 +120,10 @@ export default async function AdminDashboard() {
         where: { organizerId: { not: null }, isActive: true },
     });
 
-    const commissionStats = {
-        globalRate: Number(globalCommission?.commissionValue || 5),
-        overridesCount: commissionOverridesCount,
-    };
-
     const recentBookings = await prisma.booking.findMany({
-        take: 5,
+        take: 6,
         orderBy: { createdAt: "desc" },
-        where: { status: { in: ["CONFIRMED", "PAID"] } },
+        where: { status: { in: ["CONFIRMED", "PAID", "PENDING"] } },
         include: {
             event: {
                 select: {
@@ -132,207 +132,290 @@ export default async function AdminDashboard() {
                         select: {
                             name: true,
                             organizerProfile: {
-                                select: { organizationName: true }
-                            }
-                        }
-                    }
-                }
+                                select: { organizationName: true },
+                            },
+                        },
+                    },
+                },
             },
             user: { select: { name: true, email: true } },
         },
     });
 
-    const stats = [
+    const breakdown = {
+        totalTransactions: Number(revenueBreakdown._sum.totalAmount || 0),
+        subtotal: Number(revenueBreakdown._sum.subtotal || 0),
+        platformRevenue: Number(revenueBreakdown._sum.platformRevenue || 0),
+        organizerRevenue: Number(revenueBreakdown._sum.organizerRevenue || 0),
+        gatewayFee: Number(revenueBreakdown._sum.paymentGatewayFee || 0),
+        tax: Number(revenueBreakdown._sum.taxAmount || 0),
+    };
+
+    const actionCards = [
         {
-            label: "Total Users",
-            value: totalUsers,
-            icon: Users,
-            href: "/admin/users",
-            color: "bg-blue-500",
-            iconColor: "text-blue-500",
-            bgColor: "bg-blue-500/10",
-        },
-        {
-            label: "Total Events",
-            value: `${publishedEvents}/${totalEvents}`,
-            subLabel: "Published/Total",
-            icon: Calendar,
+            title: "Moderate event catalog",
+            description: `${publishedEvents} published events out of ${totalEvents} total listings across the platform catalog.`,
             href: "/admin/events",
-            color: "bg-emerald-500",
-            iconColor: "text-emerald-500",
-            bgColor: "bg-emerald-500/10",
+            icon: CalendarRange,
+            badge: `${totalEvents} total`,
         },
         {
-            label: "Total Bookings",
-            value: totalBookings,
-            icon: CreditCard,
+            title: "Review bookings and escalations",
+            description: `${totalBookings} confirmed bookings are flowing through the workspace with finance-linked visibility.`,
             href: "/admin/bookings",
-            color: "bg-purple-500",
-            iconColor: "text-purple-500",
-            bgColor: "bg-purple-500/10",
+            icon: BadgeDollarSign,
+            badge: `${totalBookings} orders`,
         },
         {
-            label: "Platform Revenue",
-            value: formatCurrency(totalPlatformRevenue),
-            icon: TrendingUp,
-            href: "/admin/finance",
-            color: "bg-indigo-500",
-            iconColor: "text-indigo-500",
-            bgColor: "bg-indigo-500/10",
+            title: "Check venues and location quality",
+            description: `${totalVenues} active venues and ${totalCategories} active categories support discovery and operations.`,
+            href: "/admin/venues",
+            icon: MapPin,
+            badge: `${totalVenues} venues`,
+        },
+        {
+            title: "Adjust platform controls",
+            description: `Commission defaults, limits, and notification behavior remain centralized for admins.`,
+            href: "/admin/settings",
+            icon: Settings,
+            badge: `${Number(globalCommission?.commissionValue || 5)}% fee`,
         },
     ];
 
-    const quickLinks = [
-        { href: "/admin/users", icon: Users, label: "User Management", sublabel: `${totalOrganizers} organizers`, iconColor: "text-blue-500", bgColor: "bg-blue-500/10" },
-        { href: "/admin/events", icon: Calendar, label: "Event Moderation", sublabel: `${publishedEvents} published`, iconColor: "text-emerald-500", bgColor: "bg-emerald-500/10" },
-        { href: "/admin/payouts", icon: CreditCard, label: "Payout Processing", sublabel: `${pendingPayouts} pending`, iconColor: "text-purple-500", bgColor: "bg-purple-500/10" },
-        { href: "/admin/categories", icon: Tag, label: "Categories", sublabel: `${totalCategories} categories`, iconColor: "text-orange-500", bgColor: "bg-orange-500/10" },
-        { href: "/admin/venues", icon: MapPin, label: "Venues", sublabel: `${totalVenues} venues`, iconColor: "text-teal-500", bgColor: "bg-teal-500/10" },
-        { href: "/admin/settings", icon: Settings, label: "Platform Settings", sublabel: "Configure platform", iconColor: "text-[var(--text-muted)]", bgColor: "bg-gray-500/10" },
-        { href: "/admin/complimentary-requests", icon: Gift, label: "Complimentary Requests", sublabel: `${pendingComplimentaryRequests} pending`, iconColor: "text-pink-500", bgColor: "bg-pink-500/10" },
-        { href: "/admin/landing-page", icon: LayoutTemplate, label: "Landing Page", sublabel: "Hero, footer, SEO", iconColor: "text-indigo-500", bgColor: "bg-indigo-500/10" },
+    const shortcutCards = [
+        {
+            href: "/admin/categories",
+            label: "Categories",
+            value: `${totalCategories} active`,
+            icon: Tags,
+        },
+        {
+            href: "/admin/venues",
+            label: "Venues",
+            value: `${totalVenues} active`,
+            icon: MapPin,
+        },
+        {
+            href: "/admin/complimentary-requests",
+            label: "Complimentary",
+            value: `${pendingComplimentaryRequests} pending`,
+            icon: Gift,
+        },
+        {
+            href: "/admin/settings",
+            label: "Settings",
+            value: "Platform controls",
+            icon: Settings,
+        },
     ];
 
     return (
-        <>
-            <AdminHeader
-                title="Admin Panel"
-                subtitle="Gelaran Management"
-            />
+        <AdminWorkspacePage
+            eyebrow="Admin workspace"
+            title="Gelaran control center"
+            description="Monitor platform health, revenue flow, catalog quality, and operator response from a workspace aligned with the shared Gelaran UI system."
+            actions={
+                <div className="flex flex-wrap items-center gap-3">
+                    <Link
+                        href="/admin/analytics"
+                        className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-[rgba(41,179,182,0.28)] hover:text-(--accent-primary)"
+                    >
+                        Open analytics
+                        <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <Link
+                        href="/admin/users"
+                        className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-2 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                    >
+                        Review users
+                        <ArrowRight className="h-4 w-4" />
+                    </Link>
+                </div>
+            }
+        >
+            {pendingPayouts > 0 ? (
+                <AdminNotice
+                    tone="warning"
+                    title={`${pendingPayouts} payout request${pendingPayouts > 1 ? "s are" : " is"} waiting for review`}
+                    description="Finance operations need attention so organizer cash flow remains predictable and escalations stay low."
+                    actionHref="/admin/payouts"
+                    actionLabel="Review payouts"
+                />
+            ) : (
+                <AdminNotice
+                    tone="success"
+                    title="Finance queue is currently stable"
+                    description="No payout requests are waiting right now, so the team can focus on moderation, support, and platform quality."
+                    actionHref="/admin/finance"
+                    actionLabel="Open finance overview"
+                />
+            )}
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {pendingPayouts > 0 && (
-                    <div className="mb-6 rounded-xl p-4 flex items-center justify-between bg-[var(--warning-bg)] border border-[var(--warning)]/20">
-                        <div className="flex items-center gap-3">
-                            <AlertCircle className="h-5 w-5 text-[var(--warning)]" />
-                            <div>
-                                <p className="font-medium text-[var(--warning-text)]">
-                                    {pendingPayouts} payout request{pendingPayouts > 1 ? "s" : ""} pending
-                                </p>
-                                <p className="text-sm text-[var(--warning-text)]/70">Review and process organizer payouts</p>
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <AdminMetricCard
+                    label="Active users"
+                    value={totalUsers.toLocaleString("en-US")}
+                    icon={Users}
+                    href="/admin/users"
+                    tone="accent"
+                    meta={`${totalOrganizers} organizers with workspace access`}
+                />
+                <AdminMetricCard
+                    label="Published events"
+                    value={`${publishedEvents}/${totalEvents}`}
+                    icon={CalendarRange}
+                    href="/admin/events"
+                    meta="Live events versus total catalog listings"
+                />
+                <AdminMetricCard
+                    label="Confirmed bookings"
+                    value={totalBookings.toLocaleString("en-US")}
+                    icon={ShieldCheck}
+                    href="/admin/bookings"
+                    meta="Paid and confirmed orders across the platform"
+                />
+                <AdminMetricCard
+                    label="Platform revenue"
+                    value={formatCurrency(totalPlatformRevenue)}
+                    icon={Wallet}
+                    href="/admin/analytics"
+                    tone="success"
+                    meta={`Global commission ${Number(globalCommission?.commissionValue || 5)}%`}
+                />
+            </section>
+
+            <section className="grid gap-4 xl:grid-cols-4">
+                {actionCards.map((card) => (
+                    <AdminActionCard key={card.href} {...card} />
+                ))}
+            </section>
+
+            <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                <AdminSurface
+                    title="Revenue posture"
+                    description="A high-level view of gross transaction flow, platform share, and payout-sensitive components."
+                >
+                    <dl className="grid gap-4 sm:grid-cols-2">
+                        {[
+                            ["Gross transactions", formatCurrency(breakdown.totalTransactions)],
+                            ["Subtotal", formatCurrency(breakdown.subtotal)],
+                            ["Platform revenue", formatCurrency(breakdown.platformRevenue)],
+                            ["Organizer revenue", formatCurrency(breakdown.organizerRevenue)],
+                            ["Gateway fees", formatCurrency(breakdown.gatewayFee)],
+                            ["Tax collected", formatCurrency(breakdown.tax)],
+                        ].map(([label, value]) => (
+                            <div key={label} className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                                <dt className="text-sm text-(--text-secondary)">{label}</dt>
+                                <dd className="mt-2 text-xl font-semibold text-foreground">{value}</dd>
                             </div>
+                        ))}
+                    </dl>
+                </AdminSurface>
+
+                <AdminSurface
+                    title="Platform configuration snapshot"
+                    description="Shared controls that directly shape revenue policies and admin intervention thresholds."
+                >
+                    <div className="space-y-4">
+                        <div className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                            <p className="text-sm text-(--text-secondary)">Global commission</p>
+                            <p className="mt-2 text-2xl font-semibold text-foreground">
+                                {Number(globalCommission?.commissionValue || 5)}%
+                            </p>
                         </div>
-                        <Link
-                            href="/admin/payouts"
-                            className="px-5 py-2.5 bg-[var(--warning)] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
-                        >
-                            Review
-                        </Link>
+                        <div className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                            <p className="text-sm text-(--text-secondary)">Organizer overrides</p>
+                            <p className="mt-2 text-2xl font-semibold text-foreground">
+                                {commissionOverridesCount.toLocaleString("en-US")}
+                            </p>
+                        </div>
+                        <div className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                            <p className="text-sm text-(--text-secondary)">Complimentary requests pending</p>
+                            <p className="mt-2 text-2xl font-semibold text-foreground">
+                                {pendingComplimentaryRequests.toLocaleString("en-US")}
+                            </p>
+                        </div>
                     </div>
-                )}
+                </AdminSurface>
+            </section>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {stats.map((stat) => (
+            <AdminSurface
+                title="Operational shortcuts"
+                description="Frequently visited admin surfaces that keep Phase 9 coherent with moderation, finance, and platform setup flows."
+            >
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {shortcutCards.map((item) => (
                         <Link
-                            key={stat.label}
-                            href={stat.href}
-                            className="rounded-xl p-6 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all group bg-[var(--surface)] border border-[var(--border)]"
+                            key={item.href}
+                            href={item.href}
+                            className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4 transition-colors hover:border-[rgba(41,179,182,0.28)] hover:bg-(--surface-brand-soft)"
                         >
-                            <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 ${stat.bgColor} rounded-lg flex items-center justify-center`}>
-                                    <stat.icon className={`h-6 w-6 ${stat.iconColor}`} />
+                            <item.icon className="h-5 w-5 text-(--accent-primary)" />
+                            <h3 className="mt-4 text-sm font-semibold text-foreground">{item.label}</h3>
+                            <p className="mt-1 text-sm text-(--text-secondary)">{item.value}</p>
+                        </Link>
+                    ))}
+                </div>
+            </AdminSurface>
+
+            <AdminSurface
+                title="Recent booking activity"
+                description="Latest customer activity visible to admins without leaving the workspace shell."
+                action={
+                    <Link
+                        href="/admin/bookings"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-(--accent-primary) transition-opacity hover:opacity-80"
+                    >
+                        View all bookings
+                        <ArrowRight className="h-4 w-4" />
+                    </Link>
+                }
+            >
+                <div className="space-y-3">
+                    {recentBookings.map((booking: RecentBooking) => {
+                        const organizerName =
+                            booking.event.organizer.organizerProfile?.organizationName ||
+                            booking.event.organizer.name ||
+                            "Unknown organizer";
+
+                        return (
+                            <Link
+                                key={booking.id}
+                                href={`/admin/bookings/${booking.id}`}
+                                className="flex flex-col gap-4 rounded-2xl border border-(--border) bg-(--surface-elevated) p-4 transition-colors hover:border-[rgba(41,179,182,0.28)] hover:bg-(--surface-brand-soft) md:flex-row md:items-center md:justify-between"
+                            >
+                                <div className="min-w-0 space-y-1">
+                                    <p className="text-sm font-semibold text-foreground">{booking.event.title}</p>
+                                    <p className="text-sm text-(--text-secondary)">
+                                        {booking.user?.name || booking.guestName || "Guest purchaser"} · {booking.bookingCode}
+                                    </p>
+                                    <p className="text-xs uppercase tracking-[0.14em] text-(--text-muted)">
+                                        Organizer · {organizerName}
+                                    </p>
                                 </div>
-                                <ArrowUpRight className="h-5 w-5 text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors" />
-                            </div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stat.value}</p>
-                            <p className="text-sm text-[var(--text-muted)]">{stat.subLabel || stat.label}</p>
-                        </Link>
-                    ))}
+                                <div className="flex items-center gap-3 md:justify-end">
+                                    <div className="text-left md:text-right">
+                                        <p className="text-sm font-semibold text-foreground">
+                                            {formatCurrency(Number(booking.totalAmount))}
+                                        </p>
+                                        <p className="text-xs text-(--text-muted)">
+                                            {new Date(booking.createdAt).toLocaleDateString("id-ID", {
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                            })}
+                                        </p>
+                                    </div>
+                                    <AdminStatusBadge
+                                        label={booking.status}
+                                        tone={bookingStatusTone[booking.status] || "default"}
+                                    />
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
-
-                <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-                    {quickLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="rounded-xl p-4 shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] flex items-center gap-4 transition-all bg-[var(--surface)] border border-[var(--border)]"
-                        >
-                            <div className={`w-10 h-10 ${link.bgColor} rounded-lg flex items-center justify-center`}>
-                                <link.icon className={`h-5 w-5 ${link.iconColor}`} />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-[var(--text-primary)] text-sm">{link.label}</h3>
-                                <p className="text-xs text-[var(--text-muted)]">{link.sublabel}</p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
-                    <RevenueBreakdown
-                        totalTransactions={breakdown.totalTransactions}
-                        subtotal={breakdown.subtotal}
-                        platformRevenue={breakdown.platformRevenue}
-                        organizerRevenue={breakdown.organizerRevenue}
-                        gatewayFee={breakdown.gatewayFee}
-                        tax={breakdown.tax}
-                    />
-                    <CommissionOverview
-                        globalRate={commissionStats.globalRate}
-                        overridesCount={commissionStats.overridesCount}
-                    />
-                </div>
-
-                <AdminDashboardCharts />
-
-                <div className="rounded-xl shadow-[var(--shadow-sm)] bg-[var(--surface)] border border-[var(--border)] mt-8">
-                    <div className="px-6 py-4 border-b border-[var(--border)]">
-                        <h2 className="text-lg font-semibold text-[var(--text-primary)]">Recent Bookings</h2>
-                    </div>
-                    <div className="divide-y divide-[var(--border)]">
-                        {recentBookings.length === 0 ? (
-                            <div className="p-8 text-center text-[var(--text-muted)]">
-                                No recent bookings
-                            </div>
-                        ) : (
-                            recentBookings.map((booking: RecentBooking) => {
-                                const statusColors = {
-                                    PAID: "bg-green-500/10 text-green-600",
-                                    CONFIRMED: "bg-blue-500/10 text-blue-600",
-                                };
-                                const organizerName = booking.event.organizer.organizerProfile?.organizationName
-                                    || booking.event.organizer.name
-                                    || "Unknown";
-
-                                return (
-                                    <Link
-                                        key={booking.id}
-                                        href={`/admin/bookings/${booking.id}`}
-                                        className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
-                                    >
-                                        <div className="flex-1">
-                                            <p className="font-medium text-[var(--text-primary)]">
-                                                {booking.event.title}
-                                            </p>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-sm text-[var(--text-muted)]">
-                                                    {booking.user?.name || booking.guestName || "Guest"} • {booking.bookingCode}
-                                                </span>
-                                                <span className="text-xs text-[var(--text-muted)]">
-                                                    • by {organizerName}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="text-right">
-                                                <p className="font-medium text-[var(--accent-primary)]">
-                                                    {formatCurrency(Number(booking.totalAmount))}
-                                                </p>
-                                                <p className="text-xs text-[var(--text-muted)]">
-                                                    {new Date(booking.createdAt).toLocaleDateString("id-ID")}
-                                                </p>
-                                            </div>
-                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[booking.status as keyof typeof statusColors]}`}>
-                                                {booking.status}
-                                            </span>
-                                        </div>
-                                    </Link>
-                                );
-                            })
-                        )}
-                    </div>
-                </div>
-            </main>
-        </>
+            </AdminSurface>
+        </AdminWorkspacePage>
     );
 }

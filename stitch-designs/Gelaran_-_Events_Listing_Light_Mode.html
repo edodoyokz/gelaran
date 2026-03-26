@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran - Explore Solo's Cultural Pulse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,900;1,900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#f1b803",
+              "tertiary-fixed-dim": "#f7be11",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "inverse-on-surface": "#b8fdfc",
+              "tertiary-container": "#654b00",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#3f4948",
+              "on-background": "#002020",
+              "secondary-fixed": "#aaefee",
+              "primary-container": "#8d3100",
+              "surface-bright": "#e2fffe",
+              "surface-variant": "#aaefee",
+              "surface-tint": "#a63b00",
+              "secondary-fixed-dim": "#8ed2d2",
+              "on-error": "#ffffff",
+              "tertiary-fixed": "#ffdf9a",
+              "secondary": "#1e6868",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "tertiary": "#483500",
+              "surface-dim": "#a1e6e5",
+              "primary": "#672200",
+              "on-primary-fixed-variant": "#7f2b00",
+              "on-secondary-fixed-variant": "#004f50",
+              "surface-container-high": "#aff5f4",
+              "surface": "#e2fffe",
+              "surface-container-highest": "#aaefee",
+              "background": "#e2fffe",
+              "on-primary-fixed": "#370e00",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdbce",
+              "surface-container-low": "#c1fffe",
+              "secondary-container": "#a7eceb",
+              "on-surface": "#002020",
+              "primary-fixed-dim": "#ffb598",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#251a00",
+              "on-primary-container": "#ffae8e",
+              "inverse-primary": "#ffb598",
+              "surface-container": "#b5faf9",
+              "inverse-surface": "#003737",
+              "error-container": "#ffdad6",
+              "outline": "#6f7978",
+              "on-secondary-fixed": "#002020",
+              "on-secondary-container": "#246d6d",
+              "outline-variant": "#bec8c8"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .ticket-stub {
+            mask-image: radial-gradient(circle at left bottom, transparent 12px, black 13px),
+                        radial-gradient(circle at left top, transparent 12px, black 13px),
+                        radial-gradient(circle at right bottom, transparent 12px, black 13px),
+                        radial-gradient(circle at right top, transparent 12px, black 13px);
+            mask-composite: intersect;
+        }
+        .editorial-shadow {
+            box-shadow: 0 20px 40px -15px rgba(0, 32, 32, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest font-body text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#e2fffe] dark:bg-slate-900/90 backdrop-blur-md border-b border-[#015959]/10 dark:border-white/10 shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="font-['Noto_Serif'] text-2xl font-black text-[#015959] dark:text-[#29B3B6] italic">Gelaran</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#F95D00] font-bold border-b-2 border-[#F95D00] pb-1 font-['Noto_Serif'] text-lg tracking-tight" href="#">Explore</a>
+<a class="text-[#015959] dark:text-slate-300 hover:text-[#F95D00] transition-colors font-['Noto_Serif'] text-lg tracking-tight" href="#">Venues</a>
+<a class="text-[#015959] dark:text-slate-300 hover:text-[#F95D00] transition-colors font-['Noto_Serif'] text-lg tracking-tight" href="#">Heritage</a>
+<a class="text-[#015959] dark:text-slate-300 hover:text-[#F95D00] transition-colors font-['Noto_Serif'] text-lg tracking-tight" href="#">About</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<input class="pl-10 pr-4 py-2 bg-white/50 border-none rounded-full text-sm focus:ring-2 focus:ring-[#015959]/20 w-64" placeholder="Search events..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#015959]/50">search</span>
+</div>
+<button class="text-[#015959] hover:opacity-80 transition-all duration-300 scale-95 active:scale-90">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="bg-[#F95D00] text-white px-6 py-2 rounded-full font-bold text-sm transition-transform active:scale-95 shadow-lg shadow-[#F95D00]/20">Sign In</button>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-16 max-w-screen-2xl mx-auto px-6">
+<!-- Hero Header -->
+<header class="py-12 flex flex-col items-center text-center">
+<h1 class="font-headline text-5xl md:text-7xl font-black text-[#015959] tracking-tighter leading-tight mb-4">
+                Explore Solo's <br/><span class="italic text-[#F95D00]">Cultural Pulse</span>
+</h1>
+<p class="text-on-surface-variant max-w-2xl text-lg mb-10">
+                Immerse yourself in the timeless elegance of Surakarta. From royal court dances to contemporary street art, discover the events shaping the soul of Central Java.
+            </p>
+<!-- Category Chips -->
+<div class="flex flex-wrap justify-center gap-3">
+<button class="px-8 py-3 rounded-full bg-[#FBC117] text-[#251a00] font-bold text-sm editorial-shadow transition-all hover:-translate-y-1">All Events</button>
+<button class="px-8 py-3 rounded-full bg-white text-[#015959] font-bold text-sm editorial-shadow border border-[#015959]/5 hover:bg-[#aaefee] transition-all">Music</button>
+<button class="px-8 py-3 rounded-full bg-white text-[#015959] font-bold text-sm editorial-shadow border border-[#015959]/5 hover:bg-[#aaefee] transition-all">Traditional Dance</button>
+<button class="px-8 py-3 rounded-full bg-white text-[#015959] font-bold text-sm editorial-shadow border border-[#015959]/5 hover:bg-[#aaefee] transition-all">Wayang Kulit</button>
+<button class="px-8 py-3 rounded-full bg-white text-[#015959] font-bold text-sm editorial-shadow border border-[#015959]/5 hover:bg-[#aaefee] transition-all">Culinary Heritage</button>
+</div>
+</header>
+<div class="flex flex-col lg:flex-row gap-12 mt-8">
+<!-- SideNavBar (Left) -->
+<aside class="lg:w-72 flex-shrink-0">
+<div class="sticky top-28 bg-[#b5faf9] dark:bg-slate-800 rounded-3xl overflow-hidden p-6 editorial-shadow">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="font-headline text-[#015959] dark:text-[#FBC117] font-bold text-xl">Filters</h2>
+<p class="font-body text-[#015959]/60 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Refine your culture</p>
+</div>
+<button class="text-[#29B3B6] text-xs font-bold hover:underline">Clear All</button>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="bg-[#015959] text-white rounded-xl px-4 py-3 shadow-lg shadow-[#015959]/20 flex items-center gap-3 transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">All Events</span>
+</a>
+<a class="text-[#015959] dark:text-slate-300 hover:bg-[#aaefee] dark:hover:bg-slate-700 rounded-xl px-4 py-3 flex items-center gap-3 transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">music_note</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Music &amp; Keroncong</span>
+</a>
+<a class="text-[#015959] dark:text-slate-300 hover:bg-[#aaefee] dark:hover:bg-slate-700 rounded-xl px-4 py-3 flex items-center gap-3 transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">theater_comedy</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Traditional Dance</span>
+</a>
+<a class="text-[#015959] dark:text-slate-300 hover:bg-[#aaefee] dark:hover:bg-slate-700 rounded-xl px-4 py-3 flex items-center gap-3 transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">visibility</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Wayang Kulit</span>
+</a>
+<a class="text-[#015959] dark:text-slate-300 hover:bg-[#aaefee] dark:hover:bg-slate-700 rounded-xl px-4 py-3 flex items-center gap-3 transition-transform hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">palette</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Modern Art</span>
+</a>
+</nav>
+<div class="mt-10 pt-8 border-t border-[#015959]/10">
+<h3 class="font-bold text-[#015959] mb-4 text-sm">Price Range</h3>
+<div class="h-1 bg-[#015959]/10 rounded-full relative">
+<div class="absolute left-1/4 right-1/4 h-full bg-[#F95D00] rounded-full"></div>
+<div class="absolute left-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#F95D00] rounded-full shadow-md"></div>
+<div class="absolute right-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#F95D00] rounded-full shadow-md"></div>
+</div>
+<div class="flex justify-between mt-4 text-xs font-bold text-[#015959]/60">
+<span>IDR 50k</span>
+<span>IDR 500k</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Event Grid (Right) -->
+<div class="flex-grow">
+<div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+<p class="text-[#015959] font-medium"><span class="font-bold">24 Events</span> found in Solo</p>
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Sort by:</span>
+<select class="bg-white border-none rounded-xl text-sm font-bold text-[#015959] px-4 py-2 editorial-shadow focus:ring-2 focus:ring-[#015959]/10 cursor-pointer">
+<option>Newest First</option>
+<option>Price: Low to High</option>
+<option>Most Popular</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 editorial-shadow">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Traditional Javanese dancers in intricate gold and batik costumes performing on a wooden stage with soft warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9uGjqlBt67i1HuAB5Y5CSpyKDtvJAPo5QEvmwLCiPu4Eu_hLtndoOIqyb601AKltbKVyXMrGXnW6R3tiGq-CfQg5qIeO4NXVAVI9yWRhzwnp3k2VHjHg6Sqn9oF_guDLeqzW2S-QHxfQCbIAqobJ2n2DmXf4sPIeVVUp1IorbN6sB66Be9eFmKmz1Y-Jd4K7PmGxhxAD3oxAUa44-rDMadMJQhnx9frTc_ii_vcZ6ejjvtBrSaz-qvgpxtG2pUNwIFv0DziICd4Y"/>
+<div class="absolute top-4 left-4 bg-[#FBC117] text-[#251a00] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Heritage</div>
+<div class="absolute bottom-4 right-4 bg-[#F95D00] text-white font-bold px-4 py-2 rounded-lg text-sm shadow-xl">IDR 150k</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-3 text-[#29B3B6] text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Nov 24, 2024</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-2 leading-tight">Keraton Surakarta Night Festival</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">Experience the mystical atmosphere of the royal palace under the moonlight with traditional keroncong performances.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-[#015959]/60 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Pagelaran Keraton</span>
+</div>
+<button class="bg-[#F95D00] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#8d3100] transition-colors active:scale-95">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 editorial-shadow">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Atmospheric stage lighting with purple and gold hues illuminating traditional percussion instruments like the gamelan" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSIXHhOudnjIhftRUofZ359Y7TpTOQ_R4GH2lwZDt0p3UZsGtcEvXet7HnvfNm5rTrqlmVar7wLoxj1TrBhplwNSVCsxFup2k03NhHthXmR7h7pmkoRefvBxJxW12SR7LWDFQuEH7h3AcozqSuEVJXPmSED056d7s-as_3w_c0NV0hdHHfkSLyKQ4xRw6KNi4xnFcgTUvISmicMphJvZY8wLzl6BoeAshzfjMn-BqziqJmZZLgzjut7ML4moq09mdIB9Lk-oN-nY0"/>
+<div class="absolute top-4 left-4 bg-[#FBC117] text-[#251a00] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Music</div>
+<div class="absolute bottom-4 right-4 bg-[#F95D00] text-white font-bold px-4 py-2 rounded-lg text-sm shadow-xl">Free Entry</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-3 text-[#29B3B6] text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Dec 02, 2024</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-2 leading-tight">Gamelan Modern Sessions</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">A fusion of traditional Javanese gamelan with modern jazz and ambient electronic soundscapes by local youth collectives.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-[#015959]/60 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Taman Budaya Surakarta</span>
+</div>
+<button class="bg-[#F95D00] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#8d3100] transition-colors active:scale-95">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#015959] text-white rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 editorial-shadow ticket-stub">
+<div class="relative h-64 overflow-hidden opacity-90 group-hover:opacity-100 transition-opacity">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Close up of a leather wayang puppet against a lit screen showing intricate shadows and craftsmanship" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWFLdif9LOD1zJUspJM22OFMK2uIdmBDTl4sXBenZ_oCRtzXfUFWHjnMn_nDU85uj9YaNl6oN6K8loammY_GrG209MUpWwJTvt1MVkPXhSsxdawXzsJIPvuZo8PFFsT_xqtpmgj6pmluD1dul7F00g-ZXNv_4fS04aX0DXd9huXdreilY2vRubiYuMEDWtU_uqbFPf89jZLOyUUo1HWfoisrLB-U81LcUrJcRR5UaLqHfzC71LF81uANS0u9CpbLGGmXPpK-mNp9s"/>
+<div class="absolute top-4 left-4 bg-[#F95D00] text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Premium</div>
+<div class="absolute bottom-4 right-4 bg-[#FBC117] text-[#251a00] font-bold px-4 py-2 rounded-lg text-sm shadow-xl">IDR 350k</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-3 text-[#29B3B6] text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Dec 15, 2024</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2 leading-tight">Wayang Kulit: Mahabarata Epic</h3>
+<p class="text-white/70 text-sm line-clamp-2 mb-6">An all-night performance by the legendary Dalang Ki Manteb's disciples, featuring a complete orchestra and traditional feast.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-white/50 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Sriwedari Stadium</span>
+</div>
+<button class="bg-[#FBC117] text-[#251a00] px-5 py-2.5 rounded-xl font-bold text-xs hover:opacity-90 transition-opacity active:scale-95">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 editorial-shadow">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Elegant display of Indonesian traditional food including Nasi Liwet and colorful snacks on a banana leaf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDof32U18r-xgUjkgblMfl9AE9SQy19GBZwfiutjPkIuHXUFLCba3cCKudly-RuGBbB5u_6_TWUxzy0Yc3W_kwMkmamje7c83A-DyttVjN74zRipNHQPLkgDq5TG-Pf3lhAW2v-VueJizuX_TDHb3kp8Ij6BffCyuN65DY7I5A-9DJiGWD5tJSOwR6hsyIqGq2ljKmjdikl0ZFLqxjgzhMOkqfZ95POf9LcF891m_w38ChrzsOSUTDuIyhhrP849i5cT5BN6moIBjo"/>
+<div class="absolute top-4 left-4 bg-[#FBC117] text-[#251a00] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Culinary</div>
+<div class="absolute bottom-4 right-4 bg-[#F95D00] text-white font-bold px-4 py-2 rounded-lg text-sm shadow-xl">IDR 75k</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-3 text-[#29B3B6] text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Nov 28, 2024</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-2 leading-tight">Solo Liwet Festival 2024</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">A celebration of Solo's signature dish. Taste authentic Nasi Liwet from 50 different traditional vendors across the city.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-[#015959]/60 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Jalan Slamet Riyadi</span>
+</div>
+<button class="bg-[#F95D00] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#8d3100] transition-colors active:scale-95">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 editorial-shadow">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Interior of a modern art gallery with high white walls and large colorful abstract paintings displayed elegantly" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXSYf2ZnwME4dBxzrZSx-PMIa6xHrYAa9wGTP3DTfSnRIH3iRC_iVfICu2TI7JLmjA0O6DzxoWODkP7-KO5g71zB3LUYo_6KNjg_JXPbMWEKEut-ApVlqTcQnEGzr-I_jKBw0aQZgwHsdlvoe2F9upbGinA3W1_SE6F3KyBva0EM5ZuEOtDxy9sxdc0UEcAbidYBlw3C48LW19tvi_Zd9iADp5TCnxeyp-Y4wyfurHflx_7GVsreiImBQoF1nRnJPaApvYpLHLGzk"/>
+<div class="absolute top-4 left-4 bg-[#FBC117] text-[#251a00] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Art</div>
+<div class="absolute bottom-4 right-4 bg-[#F95D00] text-white font-bold px-4 py-2 rounded-lg text-sm shadow-xl">Free Entry</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-3 text-[#29B3B6] text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Jan 10, 2025</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-2 leading-tight">Surakarta Contemporary Biennale</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">The largest contemporary art exhibition in Central Java, showcasing works by 40 national and international artists.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-[#015959]/60 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Tumurun Museum</span>
+</div>
+<button class="bg-[#F95D00] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#8d3100] transition-colors active:scale-95">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface-container-highest rounded-xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 editorial-shadow">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Vibrant outdoor concert stage at sunset with a silhouette of a guitarist and colorful spotlight beams" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwdMCVGTH62zMSnlf3DBpfKFSO1h-53AISOmo_TG32jtM4SlAHMFDZq3X7mfY138HsvtexvR_SVmzV2LNvxCIPl18swYzv8TSjIHvkFUcu4RhGDV06NrOTpIKcgnJxc1X-GJN0tz0a6TdREXv83NzxckaotBKwJk8e21fYC2d6TnsjdzL40b3utTZK-gqMHMdIKpAYxbpb8rHecimLWo76LHkzdjyC_pEAEIN9LKvkyQ9tDosGOB4q--uOv60TKbMYlTrqJPqazfE"/>
+<div class="absolute top-4 left-4 bg-[#FBC117] text-[#251a00] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Music</div>
+<div class="absolute bottom-4 right-4 bg-[#F95D00] text-white font-bold px-4 py-2 rounded-lg text-sm shadow-xl">IDR 200k</div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 mb-3 text-[#29B3B6] text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Dec 30, 2024</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-2 leading-tight">Solo Rock City: Year End Bash</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2 mb-6">A high-energy rock festival featuring the best local bands and headliners from Jakarta to close out the year.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1 text-[#015959]/60 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Vastenburg Fort</span>
+</div>
+<button class="bg-[#F95D00] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#8d3100] transition-colors active:scale-95">Book Now</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16 flex justify-center">
+<button class="flex items-center gap-2 text-[#015959] font-bold text-sm bg-[#aaefee] px-8 py-3 rounded-full hover:bg-[#29B3B6] hover:text-white transition-all">
+<span>Load More Events</span>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto bg-[#015959] dark:bg-black border-t border-white/5">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 gap-8 w-full max-w-screen-2xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="font-['Noto_Serif'] text-xl text-[#FBC117]">Gelaran Surakarta</div>
+<div class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-white/80">© 2024 Gelaran Surakarta. Curating Cultural Excellence.</div>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-white/60 hover:text-white hover:underline decoration-[#F95D00] underline-offset-4 transition-all duration-200" href="#">Privacy Policy</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-white/60 hover:text-white hover:underline decoration-[#F95D00] underline-offset-4 transition-all duration-200" href="#">Terms of Service</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-white/60 hover:text-white hover:underline decoration-[#F95D00] underline-offset-4 transition-all duration-200" href="#">Partner with Us</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#FBC117] hover:underline decoration-[#F95D00] underline-offset-4 transition-all duration-200" href="#">Cultural Archive</a>
+</div>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/80 hover:bg-[#F95D00] hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">share</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/80 hover:bg-[#F95D00] hover:text-white transition-all">
+<span class="material-symbols-outlined text-lg">mail</span>
+</button>
+</div>
+</div>
+</footer>
+</body></html>

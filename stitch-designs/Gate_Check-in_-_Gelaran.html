@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Gate Console - Gate 04 Check-in</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-primary-fixed-variant": "#7f2b00",
+                "secondary-container": "#a7eceb",
+                "surface": "#f9f9f9",
+                "surface-container-low": "#f3f3f3",
+                "on-primary": "#ffffff",
+                "on-primary-fixed": "#370e00",
+                "inverse-on-surface": "#f0f1f1",
+                "tertiary": "#004041",
+                "secondary-fixed": "#aaefee",
+                "outline": "#6f7978",
+                "on-secondary-container": "#246d6d",
+                "on-primary-container": "#ffae8e",
+                "on-secondary": "#ffffff",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed-dim": "#5cd8db",
+                "surface-container-high": "#e8e8e8",
+                "on-secondary-fixed": "#002020",
+                "on-tertiary-fixed-variant": "#004f51",
+                "primary-container": "#8d3100",
+                "surface-variant": "#e2e2e2",
+                "on-error-container": "#93000a",
+                "inverse-primary": "#ffb598",
+                "secondary-fixed-dim": "#8ed2d2",
+                "surface-tint": "#a63b00",
+                "surface-dim": "#dadada",
+                "on-tertiary-fixed": "#002021",
+                "on-tertiary-container": "#56d4d6",
+                "primary-fixed-dim": "#ffb598",
+                "tertiary-container": "#00595b",
+                "surface-container-lowest": "#ffffff",
+                "error-container": "#ffdad6",
+                "tertiary-fixed": "#7bf5f8",
+                "inverse-surface": "#2f3131",
+                "surface-bright": "#f9f9f9",
+                "background": "#f9f9f9",
+                "on-error": "#ffffff",
+                "error": "#ba1a1a",
+                "surface-container": "#eeeeee",
+                "primary-fixed": "#ffdbce",
+                "surface-container-highest": "#e2e2e2",
+                "secondary": "#1e6868",
+                "primary": "#672200",
+                "on-background": "#1a1c1c",
+                "outline-variant": "#bec8c8",
+                "on-surface": "#1a1c1c",
+                "on-surface-variant": "#3f4948",
+                "on-secondary-fixed-variant": "#004f50"
+              },
+              fontFamily: {
+                "headline": ["Noto Serif"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .serif { font-family: 'Noto Serif', serif; }
+    </style>
+</head>
+<body class="bg-white text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<header class="bg-[#015959] dark:bg-[#004040] text-white docked full-width top-0 z-50 no-border background-shift shadow-lg shadow-teal-900/20 flex justify-between items-center w-full px-6 py-3">
+<div class="flex items-center gap-8">
+<h1 class="text-xl font-bold tracking-tight text-white font-serif">Gelaran Gate Console</h1>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-teal-100/70 hover:text-white transition-colors Headlines: Noto Serif font-bold. Labels: Plus Jakarta Sans font-medium text-xs tracking-tight." href="#">Event Dashboard</a>
+<a class="text-teal-100/70 hover:text-white transition-colors Headlines: Noto Serif font-bold. Labels: Plus Jakarta Sans font-medium text-xs tracking-tight." href="#">Guest List</a>
+<a class="text-teal-100/70 hover:text-white transition-colors Headlines: Noto Serif font-bold. Labels: Plus Jakarta Sans font-medium text-xs tracking-tight." href="#">Staff Logs</a>
+<div class="text-white border-b-2 border-orange-500 pb-1 Headlines: Noto Serif font-bold. Labels: Plus Jakarta Sans font-medium text-xs tracking-tight.">Gate 04 Check-in</div>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 hover:bg-teal-800/50 transition-all duration-200 rounded-full scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-teal-800/50 transition-all duration-200 rounded-full scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="flex items-center gap-3 ml-2 pl-4 border-l border-teal-700/50">
+<span class="text-xs font-medium tracking-tight">Operator Profile</span>
+<img alt="Operator Avatar" class="w-8 h-8 rounded-full border border-teal-400/30" data-alt="professional portrait of a technical event operator in a modern workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBddoaWDKkoUHIyJjngbU3vNTRFNkg66AWWDHs1KhcjQeWZQnKCXQu4jkPASRBHcWxEXznMkocUJaraUI0VGGqhMh6wY1t6rRblxsS4LC9KBno474ZCkS7zuzfFBjKmRd4snKpQVfY3uEYjPHLVP14fZtzoSZKS8sBZLEb0_SuB_Y4CtM_GORlt5FwBrrKoyEDG_aa47Xc4EbymM-LbVe5pynQkZhvDwpF2M9v6QpG4MHp14__RMlwuW6Wl_q7SWf3qrSmyI75uMvY"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar (Hidden on desktop for this specific view per split-view requirements, but logic included) -->
+<aside class="hidden lg:flex flex-col h-full py-6 bg-slate-100 dark:bg-slate-900 h-screen w-64 fixed left-0 top-0 border-r-0 tonal-shift bg-slate-200/50 dark:bg-slate-800/50 flat no-shadows z-40 mt-14">
+<div class="px-6 mb-8">
+<h2 class="text-[#015959] font-serif font-black text-lg">Gate 04</h2>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Main Entrance</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-800 text-[#015959] dark:text-teal-300 rounded-l-xl ml-2 shadow-sm Active: translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="Labels: Plus Jakarta Sans text-sm font-semibold.">Scan Terminal</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#015959] hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="keyboard">keyboard</span>
+<span class="Labels: Plus Jakarta Sans text-sm font-semibold.">Manual Entry</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#015959] hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="Labels: Plus Jakarta Sans text-sm font-semibold.">Live Stats</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-[#015959] hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="Labels: Plus Jakarta Sans text-sm font-semibold.">Gate Settings</span>
+</a>
+</nav>
+<div class="px-6 pt-6 border-t border-slate-200 dark:border-slate-800 mt-auto">
+<button class="w-full py-2 bg-[#015959] text-white rounded-lg text-sm font-semibold mb-6">Switch Event</button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#015959] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-sm font-semibold">Support</span>
+</a>
+<a class="flex items-center gap-3 py-2 text-slate-500 dark:text-slate-400 hover:text-[#015959] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-sm font-semibold">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-64 p-8 flex gap-8">
+<!-- Left 2/3: Active Scanner Feedback -->
+<section class="flex-[2] flex flex-col gap-8">
+<!-- Last Scan Success Panel -->
+<div class="bg-surface-container-low rounded-xl p-10 flex items-center gap-10 shadow-sm border-l-8 border-[#29B3B6]">
+<div class="w-32 h-32 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-[#29B3B6]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<span class="px-3 py-1 bg-secondary text-white text-[10px] font-bold tracking-widest rounded uppercase">ACCEPTED</span>
+<span class="text-on-surface-variant text-sm font-medium">Scan successful at 14:22:04</span>
+</div>
+<h2 class="text-5xl font-black text-[#015959] serif mb-4">Eleanor Vance</h2>
+<div class="grid grid-cols-2 gap-8">
+<div>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">Ticket Type</p>
+<p class="text-xl font-semibold text-on-surface">VIP Backstage Access</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-tighter text-on-surface-variant font-bold mb-1">Assigned Seat</p>
+<p class="text-xl font-semibold text-on-surface">Row A, Seat 12</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Scanner Focus -->
+<div class="flex-1 bg-surface-container-lowest rounded-xl border-4 border-[#FBC117] border-dashed p-1 relative overflow-hidden group">
+<div class="absolute inset-0 bg-[#FBC117]/5 flex flex-col items-center justify-center p-12 text-center">
+<div class="w-64 h-64 border-4 border-[#FBC117] rounded-3xl flex items-center justify-center mb-8 relative">
+<div class="absolute inset-x-4 top-1/2 h-0.5 bg-[#FBC117] shadow-[0_0_15px_rgba(251,193,23,0.8)]"></div>
+<span class="material-symbols-outlined text-8xl text-[#FBC117]" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<h3 class="text-3xl font-black serif text-[#015959] tracking-tight mb-2 uppercase">READY TO SCAN</h3>
+<p class="text-on-surface-variant font-medium max-w-xs">Position the guest's digital or printed ticket QR code within the frame above.</p>
+</div>
+</div>
+<!-- Manual Entry Area -->
+<div class="bg-surface-container-high rounded-xl p-8 flex items-end gap-6">
+<div class="flex-1">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-[#015959] mb-3">Manual Ticket Entry</label>
+<input class="w-full bg-white border-0 border-b-2 border-[#015959] focus:ring-0 focus:border-[#F95D00] text-2xl font-body font-semibold py-4 px-0 placeholder:text-outline-variant transition-all" placeholder="Enter 12-digit ticket code..." type="text"/>
+</div>
+<button class="bg-[#F95D00] hover:bg-[#d85100] text-white px-10 py-5 rounded-lg font-bold text-lg shadow-lg shadow-orange-500/20 active:scale-95 transition-all">
+                        Check-in
+                    </button>
+</div>
+</section>
+<!-- Right 1/3: Activity Log and Stats -->
+<section class="flex-1 flex flex-col gap-6">
+<!-- Progress Summary Card -->
+<div class="bg-white rounded-xl p-6 shadow-sm border border-surface-container">
+<div class="flex justify-between items-end mb-4">
+<h3 class="text-lg font-bold serif text-[#015959]">Capacity Monitor</h3>
+<span class="text-2xl font-black serif text-[#015959]">482 <span class="text-sm font-medium text-on-surface-variant">/ 600</span></span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden mb-2">
+<div class="h-full bg-[#29B3B6] rounded-full" style="width: 80.3%"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold uppercase text-on-surface-variant tracking-wider">
+<span>80% Checked-in</span>
+<span>118 remaining</span>
+</div>
+</div>
+<!-- Activity Log -->
+<div class="flex-1 bg-white rounded-xl shadow-sm border border-surface-container flex flex-col overflow-hidden">
+<div class="p-6 border-b border-surface-container bg-surface-container-low/30">
+<h3 class="text-lg font-bold serif text-[#015959]">Recent Activity</h3>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Recent Scan Item 1 -->
+<div class="p-4 border-b border-surface-container hover:bg-surface-container-low transition-colors flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-on-surface truncate">Marcus Aurelius</p>
+<p class="text-[10px] text-on-surface-variant font-medium">14:21:45 • General Admission</p>
+</div>
+<div class="text-[10px] font-black text-secondary tracking-widest uppercase">OK</div>
+</div>
+<!-- Recent Scan Item 2 -->
+<div class="p-4 border-b border-surface-container hover:bg-surface-container-low transition-colors flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-on-surface truncate">Selina Kyle</p>
+<p class="text-[10px] text-on-surface-variant font-medium">14:19:12 • VIP Pass</p>
+</div>
+<div class="text-[10px] font-black text-secondary tracking-widest uppercase">OK</div>
+</div>
+<!-- Recent Scan Item 3 (Alert) -->
+<div class="p-4 border-b border-surface-container hover:bg-surface-container-low transition-colors flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-xl" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-on-surface truncate">Unknown Ticket</p>
+<p class="text-[10px] text-on-surface-variant font-medium">14:15:30 • Invalid Code</p>
+</div>
+<div class="text-[10px] font-black text-error tracking-widest uppercase">FAIL</div>
+</div>
+<!-- Recent Scan Item 4 -->
+<div class="p-4 border-b border-surface-container hover:bg-surface-container-low transition-colors flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-on-surface truncate">Arthur Dent</p>
+<p class="text-[10px] text-on-surface-variant font-medium">14:12:01 • General Admission</p>
+</div>
+<div class="text-[10px] font-black text-secondary tracking-widest uppercase">OK</div>
+</div>
+<!-- Recent Scan Item 5 -->
+<div class="p-4 border-b border-surface-container hover:bg-surface-container-low transition-colors flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-on-surface truncate">Sarah Connor</p>
+<p class="text-[10px] text-on-surface-variant font-medium">14:08:44 • Press/Media</p>
+</div>
+<div class="text-[10px] font-black text-secondary tracking-widest uppercase">OK</div>
+</div>
+</div>
+<button class="p-4 text-center text-[10px] font-bold uppercase tracking-widest text-[#015959] bg-surface-container-low hover:bg-surface-container transition-all">
+                        View Full Event Log
+                    </button>
+</div>
+<!-- Event Info Mini Card -->
+<div class="bg-[#015959] rounded-xl p-6 text-white relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-2">Current Production</p>
+<h4 class="text-xl font-bold serif leading-tight mb-4">Metropolis Arts Festival: Opening Gala</h4>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-xs font-medium">Oct 24, 2023</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-medium">19:00 - 23:30</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-8xl opacity-10 rotate-12" data-icon="confirmation_number">confirmation_number</span>
+</div>
+</section>
+</main>
+</div>
+<!-- Persistent Bottom Status Bar for Operator Visibility -->
+<footer class="bg-surface-container-highest border-t border-surface-container-highest px-6 py-2 flex justify-between items-center text-[10px] font-bold tracking-tight text-on-surface-variant uppercase">
+<div class="flex gap-6">
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> Scanner Connected (USB-04)</span>
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> Local Sync Active</span>
+</div>
+<div>
+            Gelaran Console v2.4.1 • Gateway: 192.168.1.104
+        </div>
+</footer>
+</body></html>

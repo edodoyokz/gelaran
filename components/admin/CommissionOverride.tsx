@@ -162,7 +162,7 @@ export function CommissionOverride({ organizerId, organizationName }: Commission
 
       <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
         <div className="flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <AlertCircle className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-blue-900">Global Default Commission</p>
             <p className="text-xs text-blue-700 mt-1">
@@ -177,7 +177,7 @@ export function CommissionOverride({ organizerId, organizationName }: Commission
         <div className="space-y-4">
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
             <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-green-900">Custom Commission Active</p>
                 <div className="mt-3 space-y-2 text-sm text-gray-700">

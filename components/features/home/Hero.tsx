@@ -47,7 +47,7 @@ export function Hero() {
 
     return (
         <div className="relative min-h-[520px] md:min-h-[580px] w-full bg-slate-900 overflow-hidden pt-16 md:pt-20">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 opacity-90 z-0" />
+            <div className="absolute inset-0 bg-linear-to-br from-indigo-900 via-purple-900 to-slate-900 opacity-90 z-0" />
 
             <img
                 src={content.backgroundImage}
@@ -55,7 +55,7 @@ export function Hero() {
                 className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay z-0"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent z-0" />
+            <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/50 to-transparent z-0" />
 
             <div className="relative flex flex-col justify-center items-center px-4 text-center z-10 py-12 md:py-16">
                 <div className="space-y-4 max-w-3xl mx-auto">

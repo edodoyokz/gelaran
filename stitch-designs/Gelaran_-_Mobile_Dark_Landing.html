@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran - Discover the Soul of Solo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-container": "#ffdad6",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#654b00",
+              "secondary-fixed": "#aaefee",
+              "on-secondary-fixed-variant": "#004f50",
+              "inverse-primary": "#ffb598",
+              "on-secondary-fixed": "#002020",
+              "surface-container-low": "#c1fffe",
+              "background": "#e2fffe",
+              "tertiary-fixed": "#ffdf9a",
+              "on-tertiary-container": "#f1b803",
+              "outline": "#6f7978",
+              "on-background": "#002020",
+              "surface-tint": "#a63b00",
+              "inverse-surface": "#003737",
+              "error": "#ba1a1a",
+              "on-primary-fixed": "#370e00",
+              "secondary-fixed-dim": "#8ed2d2",
+              "outline-variant": "#bec8c8",
+              "surface-container-high": "#aff5f4",
+              "on-primary-container": "#ffae8e",
+              "on-error": "#ffffff",
+              "on-primary-fixed-variant": "#7f2b00",
+              "primary-fixed": "#ffdbce",
+              "on-surface": "#002020",
+              "surface-container-highest": "#aaefee",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-dim": "#a1e6e5",
+              "tertiary-fixed-dim": "#f7be11",
+              "surface-bright": "#e2fffe",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-secondary-container": "#246d6d",
+              "surface-container-lowest": "#ffffff",
+              "primary": "#672200",
+              "on-primary": "#ffffff",
+              "secondary": "#1e6868",
+              "surface-variant": "#aaefee",
+              "on-surface-variant": "#3f4948",
+              "tertiary": "#483500",
+              "secondary-container": "#a7eceb",
+              "surface-container": "#b5faf9",
+              "surface": "#e2fffe",
+              "primary-container": "#8d3100",
+              "on-tertiary": "#ffffff",
+              "primary-fixed-dim": "#ffb598",
+              "on-tertiary-fixed": "#251a00",
+              "on-error-container": "#93000a"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.text-brand-orange {
+    color: #F95D00
+    }
+.bg-brand-orange {
+    background-color: #F95D00
+    }
+.text-brand-yellow {
+    color: #FBC117
+    }
+.bg-brand-yellow {
+    background-color: #FBC117
+    }
+.text-brand-light-teal {
+    color: #29B3B6
+    }
+.bg-dark-teal {
+    background-color: #015959
+    }
+/* Pattern Overlay */
+.batik-pattern {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDD9RC5ji6fdf_Rx4vkgh0s9Z_tjG5IejsGoiZbif366ywdGrUuvg1OUf6TeS7-AxUFmzHNn0W4wVAIcN3EI8FBc7YKbQD4Fq2gEVUbZ250IIAACujyeB9cjt-qZnUye97SOOgR-V1ladFCmm81pLFrNnB02pXw8QCRngjaquiBw26KMdfhBNLdQnsy8-rhf-uc5PW-OgMwl9ch3ksXIhCRpf-L9im6EjlTaY7gBjcWpHCPiMqugylxKgmxhAL94DWhBfoumH9wers);
+    opacity: 0.03
+    }
+.ticket-cut {
+    mask-image: radial-gradient(circle at 0 50%, transparent 12px, black 13px), radial-gradient(circle at 100% 50%, transparent 12px, black 13px);
+    mask-composite: intersect
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body bg-dark-teal text-white selection:bg-brand-orange selection:text-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-20 bg-[#015959] dark:bg-[#002020] transition-all duration-300">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#F95D00] dark:text-[#F95D00]" data-icon="menu">menu</span>
+<h1 class="font-['Noto_Serif'] font-bold tracking-tight text-2xl italic text-white dark:text-[#aaefee]">Gelaran</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-white/10 transition-colors text-[#aaefee]/70">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<span class="material-symbols-outlined text-[#aaefee]/70" data-icon="search">search</span>
+</div>
+</header>
+<main class="relative pt-20 pb-32 overflow-hidden">
+<!-- Subtle Background Ornament -->
+<div class="absolute inset-0 batik-pattern pointer-events-none"></div>
+<!-- Hero Section -->
+<section class="px-6 py-12 relative">
+<div class="relative z-10">
+<span class="inline-block py-1 px-3 mb-4 rounded-full bg-brand-yellow/10 text-brand-yellow text-[10px] font-bold uppercase tracking-[0.2em]">Explore Surakarta</span>
+<h2 class="font-headline text-5xl font-black leading-[1.1] mb-6 tracking-tight">
+                    Discover the <br/> <span class="text-brand-yellow">Soul of Solo</span>
+</h2>
+<p class="text-white/70 text-lg leading-relaxed mb-10 max-w-xs">
+                    Curated cultural experiences, festivals, and hidden gems in the heart of Javanese heritage.
+                </p>
+<!-- Search Filter Input -->
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-white/40 group-focus-within:text-brand-orange transition-colors" data-icon="search">search</span>
+</div>
+<input class="w-full bg-white/5 border-0 rounded-2xl py-5 pl-12 pr-6 text-white placeholder:text-white/30 focus:ring-2 focus:ring-brand-orange transition-all shadow-xl" placeholder="Search events, venues..." type="text"/>
+</div>
+</div>
+<!-- Decorative Floating Element -->
+<div class="absolute -top-10 -right-20 w-64 h-64 bg-brand-orange/10 blur-[80px] rounded-full"></div>
+</section>
+<!-- Categories Section -->
+<section class="px-6 mb-16">
+<div class="flex overflow-x-auto gap-3 pb-4 no-scrollbar">
+<button class="flex-shrink-0 px-6 py-3 rounded-full bg-brand-orange text-white text-sm font-bold shadow-lg shadow-brand-orange/20">All Events</button>
+<button class="flex-shrink-0 px-6 py-3 rounded-full bg-white/5 text-white/80 text-sm font-semibold hover:bg-white/10 transition-colors">Music</button>
+<button class="flex-shrink-0 px-6 py-3 rounded-full bg-white/5 text-white/80 text-sm font-semibold hover:bg-white/10 transition-colors">Art</button>
+<button class="flex-shrink-0 px-6 py-3 rounded-full bg-white/5 text-white/80 text-sm font-semibold hover:bg-white/10 transition-colors">Workshop</button>
+<button class="flex-shrink-0 px-6 py-3 rounded-full bg-white/5 text-white/80 text-sm font-semibold hover:bg-white/10 transition-colors">Tourism</button>
+</div>
+</section>
+<!-- Featured Events Grid -->
+<section class="px-6 mb-20">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="font-headline text-2xl font-bold">Featured Now</h3>
+<div class="h-1 w-12 bg-brand-yellow mt-2 rounded-full"></div>
+</div>
+<a class="text-brand-light-teal text-sm font-bold flex items-center gap-1" href="#">
+                    See All <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 gap-8">
+<!-- Event Card 1 -->
+<div class="group relative bg-white/5 rounded-[2rem] overflow-hidden border border-white/5 hover:border-brand-orange/30 transition-all duration-500">
+<div class="relative h-64 overflow-hidden">
+<img alt="Cultural Performance" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="traditional Javanese dancers in ornate gold and batik costumes performing on a dimly lit stage with dramatic spotlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ4efl12Al47RbxV56QKLOqOrNHaBkSzLg5gSqeetClAINY49vCA4Nsx3Gp_yF7mmD2hZJ3j_AsweUPIxTawLlffBInN_1LaCBGi1KO23_pVZqVAX46VljuIYCzShQ7vy6KtMFgaq0voTILf-Rr9jhi7WyTicoul57ePuXOR7GT-i4-44p01CIPSKDx-3lJM3KJjo4WW3j5LnzMQwZVBRJE7PymbxZRPgpV_lNfmc-NE2Iq05c_5H6yLS-0eUM4hyVziGvVAO1CLE"/>
+<div class="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-brand-yellow uppercase tracking-widest border border-white/10">
+                            Sold Out Soon
+                        </div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-headline text-xl font-bold mb-2 group-hover:text-brand-orange transition-colors">Night at Keraton Surakarta</h4>
+<div class="flex items-center gap-2 text-white/50 text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+<span>Keraton Hadiningrat, Solo</span>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-white/5">
+<div class="flex flex-col">
+<span class="text-[10px] text-white/40 uppercase font-bold tracking-wider">Starting from</span>
+<span class="text-xl font-bold text-brand-orange">IDR 150k</span>
+</div>
+<button class="bg-brand-orange p-3 rounded-xl shadow-lg shadow-brand-orange/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white" data-icon="confirmation_number">confirmation_number</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="group relative bg-white/5 rounded-[2rem] overflow-hidden border border-white/5">
+<div class="relative h-64 overflow-hidden">
+<img alt="Music Festival" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="vibrant music concert stage with purple and orange lights silhouettes of a cheering crowd and floating confetti" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl0PHNLV8Cl9V4UKxBkuk3lOXwX56M96IsUdZ7KmoftaD6IstsBa-Xls-b-2NPLapKJADhIrawbTeNMA47_OzUt80tOYozlveVnxmlHXeCYeZ8iz1T2AN2V_qhwwYAbt0Y0l1kF8GYBTW2BdjA824tpBB44e_ZCaXl9A_B1dz0EDQHXcP3tOatR6hvbV8njBU8NmQp8hN7Rok5C0bk5Y4ttQpSk4Ym7hHh7VjVrfAxjniYhlIWe8zOZ6Wdjvhd-_1M7XS39ffvS4M"/>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-headline text-xl font-bold mb-2 group-hover:text-brand-orange transition-colors">Solo Keroncong Festival</h4>
+<div class="flex items-center gap-2 text-white/50 text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="event">event</span>
+<span>Oct 24 • 19:00 WIB</span>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-white/5">
+<div class="flex flex-col">
+<span class="text-[10px] text-white/40 uppercase font-bold tracking-wider">Starting from</span>
+<span class="text-xl font-bold text-brand-orange">FREE</span>
+</div>
+<button class="bg-brand-orange/10 border border-brand-orange/20 px-6 py-3 rounded-xl text-brand-orange font-bold text-sm active:scale-95 transition-transform">
+                                Book Spot
+                            </button>
+</div>
+</div>
+</div>
+<!-- Event Card 3 (Bento-style half width would go here on desktop, but keeping list for mobile focus) -->
+<div class="group relative bg-[#002020] rounded-[2rem] p-6 border border-brand-light-teal/20 ticket-cut overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-brand-light-teal/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+<div class="flex gap-4 items-center">
+<div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
+<img alt="Batik Workshop" class="w-full h-full object-cover" data-alt="close up of hands holding a canting tool applying hot wax to a white cloth with traditional batik patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANZGCbGsDhh69dixf7P1hOsxeA9dKGdzytE1tKFZw7vJei602_nmDywxZPdMQT70laxCxD3bQiJH9Ex1YAON4qTbT1dWf3QeveFXtXLHqiidgdGgr2i06OEYH2MR64LZoaarXCXCOOyQrjc8YqCKnF_826S9AlNZhgIwxK30XefspsoGd4zDbNqyPzvp-ecLe4RZj2msWqmi0Ifnwp00m8VjaQOtUPtA0Nckul_mLXOz0gOR9i8QaqNPVg0U2gSqdpaIiWauphziU"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-headline text-lg font-bold leading-tight mb-1">Modern Batik Workshop</h4>
+<p class="text-brand-light-teal text-xs font-semibold">Limited to 15 People</p>
+</div>
+<div class="text-right">
+<span class="block text-brand-orange font-bold">IDR 275k</span>
+<span class="text-[10px] text-white/40 font-bold uppercase">Oct 28</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Section -->
+<section class="px-6 py-16 bg-[#001515] rounded-t-[3rem]">
+<h3 class="font-headline text-2xl font-bold text-center mb-12">Why Book with Gelaran?</h3>
+<div class="grid grid-cols-1 gap-10">
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-2xl bg-brand-orange/10 flex items-center justify-center mb-4 border border-brand-orange/20">
+<span class="material-symbols-outlined text-brand-orange text-3xl" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h5 class="font-bold text-lg mb-2">Verified Events</h5>
+<p class="text-white/50 text-sm leading-relaxed max-w-[220px]">Direct partnerships with local palaces and organizers.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-2xl bg-brand-light-teal/10 flex items-center justify-center mb-4 border border-brand-light-teal/20">
+<span class="material-symbols-outlined text-brand-light-teal text-3xl" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<h5 class="font-bold text-lg mb-2">Secure Booking</h5>
+<p class="text-white/50 text-sm leading-relaxed max-w-[220px]">Safe transactions with multiple payment options.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-2xl bg-brand-yellow/10 flex items-center justify-center mb-4 border border-brand-yellow/20">
+<span class="material-symbols-outlined text-brand-yellow text-3xl" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<h5 class="font-bold text-lg mb-2">Instant E-Tickets</h5>
+<p class="text-white/50 text-sm leading-relaxed max-w-[220px]">Get your tickets instantly delivered to your phone.</p>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full px-8 py-12 flex flex-col items-center gap-6 bg-[#002020] dark:bg-[#001515]">
+<div class="text-lg font-serif text-white flex items-center gap-2 italic font-bold">
+<span class="w-2 h-2 rounded-full bg-brand-orange"></span>
+                Gelaran
+            </div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="text-white/40 font-['Plus_Jakarta_Sans'] text-xs font-light hover:text-white transition-opacity" href="#">Privacy</a>
+<a class="text-white/40 font-['Plus_Jakarta_Sans'] text-xs font-light hover:text-white transition-opacity" href="#">Terms</a>
+<a class="text-white/40 font-['Plus_Jakarta_Sans'] text-xs font-light hover:text-white transition-opacity" href="#">Support</a>
+<a class="text-white/40 font-['Plus_Jakarta_Sans'] text-xs font-light hover:text-white transition-opacity" href="#">Press</a>
+</div>
+<p class="text-white/40 font-['Plus_Jakarta_Sans'] text-xs font-light text-center">© 2024 Gelaran Cultural Archive. All rights reserved.</p>
+<div class="flex gap-4 mt-4">
+<div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-brand-orange transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="language">language</span>
+</div>
+<div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 hover:text-brand-orange transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="share">share</span>
+</div>
+</div>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#a7eceb]/10 dark:bg-[#015959]/80 backdrop-blur-xl rounded-t-[1.5rem] shadow-[0_-4px_24px_rgba(0,32,32,0.1)]">
+<a class="flex flex-col items-center justify-center text-[#F95D00] bg-white/5 rounded-2xl px-4 py-2 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#aaefee]/60 hover:text-white transition-all transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Tickets</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#aaefee]/60 hover:text-white transition-all transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="bookmark">bookmark</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#aaefee]/60 hover:text-white transition-all transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person_tag">tag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+<!-- Contextual FAB for Home -->
+<button class="fixed bottom-28 right-6 w-14 h-14 bg-brand-orange rounded-full shadow-2xl shadow-brand-orange/40 flex items-center justify-center z-40 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="add_circle">add_circle</span>
+</button>
+</body></html>

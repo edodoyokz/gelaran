@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran - Organizer Wallet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error": "#ba1a1a",
+                        "surface-dim": "#a1e6e5",
+                        "primary-container": "#cb4a00",
+                        "surface-bright": "#e2fffe",
+                        "secondary": "#00696b",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "secondary-container": "#7bf5f8",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "on-primary-fixed": "#370e00",
+                        "on-secondary-container": "#007072",
+                        "surface-variant": "#aaefee",
+                        "on-surface-variant": "#5b4137",
+                        "secondary-fixed": "#7bf5f8",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "tertiary-container": "#936f00",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#8f7065",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "surface-container": "#b5faf9",
+                        "on-background": "#002020",
+                        "surface-container-highest": "#aaefee",
+                        "on-surface": "#002020",
+                        "tertiary-fixed": "#ffdf9a",
+                        "on-tertiary-fixed": "#251a00",
+                        "surface": "#e2fffe",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-low": "#c1fffe",
+                        "on-primary-container": "#fffbff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#a63b00",
+                        "inverse-on-surface": "#b8fdfc",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffdbce",
+                        "on-primary": "#ffffff",
+                        "primary": "#a23a00",
+                        "surface-container-high": "#aff5f4",
+                        "tertiary": "#755800",
+                        "background": "#ffffff",
+                        "inverse-primary": "#ffb598",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#ffb598",
+                        "inverse-surface": "#003737",
+                        "on-secondary-fixed": "#002021",
+                        "outline-variant": "#e3bfb1",
+                        "secondary-fixed-dim": "#5cd8db"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .editorial-shadow { shadow-[0px_12px_32px_rgba(0,32,32,0.06)]; }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+<!-- SideNavBar (from JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#b5faf9] dark:bg-[#003636] flex flex-col py-6 pl-4 transition-transform ease-in-out duration-200 shadow-[12px_0px_32px_rgba(0,32,32,0.04)] hidden md:flex z-50">
+<div class="text-xl font-bold text-[#002020] dark:text-[#e2fffe] mb-8 font-noto-serif">
+            Event Finance
+        </div>
+<nav class="flex-1 space-y-2 pr-4">
+<a class="flex items-center gap-3 px-4 py-3 text-[#00696b] dark:text-[#7bf5f8] hover:translate-x-1 transition-transform font-plus-jakarta text-sm font-medium hover:bg-[#c1fffe] dark:hover:bg-[#005a5a] rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00696b] dark:text-[#7bf5f8] hover:translate-x-1 transition-transform font-plus-jakarta text-sm font-medium hover:bg-[#c1fffe] dark:hover:bg-[#005a5a] rounded-xl" href="#">
+<span class="material-symbols-outlined">event_note</span>
+                Events
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-[#e2fffe] dark:bg-[#004d4d] text-[#002020] dark:text-[#ffffff] rounded-l-xl font-bold font-plus-jakarta text-sm" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+                Wallet
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00696b] dark:text-[#7bf5f8] hover:translate-x-1 transition-transform font-plus-jakarta text-sm font-medium hover:bg-[#c1fffe] dark:hover:bg-[#005a5a] rounded-xl" href="#">
+<span class="material-symbols-outlined">insights</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00696b] dark:text-[#7bf5f8] hover:translate-x-1 transition-transform font-plus-jakarta text-sm font-medium hover:bg-[#c1fffe] dark:hover:bg-[#005a5a] rounded-xl" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto pr-4 space-y-2">
+<button class="w-full bg-gradient-to-br from-[#a23a00] to-[#cb4a00] text-white py-3 rounded-xl font-bold text-sm mb-6 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                Create Event
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00696b] font-medium text-sm" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00696b] font-medium text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 flex-1 bg-white min-h-screen">
+<!-- TopNavBar (from JSON) -->
+<header class="flex justify-between items-center w-full px-8 py-4 bg-[#e2fffe] dark:bg-[#002020] sticky top-0 z-40">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#002020] dark:text-[#e2fffe] font-noto-serif">The Editorial Architect</span>
+<div class="hidden lg:flex gap-6">
+<a class="text-[#00696b] dark:text-[#7bf5f8] opacity-70 font-noto-serif text-lg font-bold tracking-tight" href="#">Dashboard</a>
+<a class="text-[#00696b] dark:text-[#7bf5f8] opacity-70 font-noto-serif text-lg font-bold tracking-tight" href="#">Events</a>
+<a class="text-[#002020] dark:text-[#ffffff] border-b-2 border-[#F95D00] pb-1 font-noto-serif text-lg font-bold tracking-tight" href="#">Wallet</a>
+<a class="text-[#00696b] dark:text-[#7bf5f8] opacity-70 font-noto-serif text-lg font-bold tracking-tight" href="#">Analytics</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#00696b] hover:bg-[#c1fffe]/50 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-2 cursor-pointer p-1 hover:bg-[#c1fffe]/50 rounded-xl transition-colors">
+<span class="material-symbols-outlined text-3xl">account_circle</span>
+<span class="hidden sm:inline font-medium text-on-surface">Gelaran Org</span>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="max-w-7xl mx-auto px-8 py-12">
+<!-- Hero Balance Section -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-end mb-16">
+<div class="lg:col-span-2">
+<span class="text-sm font-bold uppercase tracking-widest text-secondary mb-2 block font-body">Current Earnings</span>
+<h1 class="text-7xl font-black text-[#015959] font-headline tracking-tighter mb-4">
+                        Rp 48.250.000
+                    </h1>
+<p class="text-on-surface-variant max-w-md font-body leading-relaxed">
+                        Your revenue has increased by <span class="text-primary font-bold">12.4%</span> this week. Funds are ready for immediate withdrawal to your primary bank account.
+                    </p>
+</div>
+<div class="flex flex-col gap-4">
+<button class="w-full bg-[#F95D00] hover:bg-[#cb4a00] text-white py-5 rounded-xl font-bold text-lg shadow-[0px_12px_32px_rgba(249,93,0,0.2)] transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">payments</span>
+                        Withdraw Funds
+                    </button>
+<div class="flex items-center gap-2 justify-center py-2 px-4 bg-tertiary-fixed rounded-full text-on-tertiary-fixed text-xs font-bold uppercase tracking-tighter">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">info</span>
+                        Next Payout: Oct 24, 2023
+                    </div>
+</div>
+</section>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Earnings Chart (Large Card) -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 shadow-[0px_12px_32px_rgba(0,32,32,0.04)]">
+<div class="flex justify-between items-center mb-10">
+<h2 class="text-2xl font-bold font-headline text-on-surface">Revenue Trends</h2>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container text-secondary text-xs font-bold rounded-lg cursor-pointer hover:bg-surface-container-highest transition-colors">Weekly</span>
+<span class="px-3 py-1 text-on-surface-variant text-xs font-bold rounded-lg cursor-pointer hover:bg-surface-container transition-colors">Monthly</span>
+</div>
+</div>
+<!-- Mock Chart Visualization -->
+<div class="h-64 flex items-end justify-between gap-4 group">
+<div class="w-full bg-[#e2fffe] hover:bg-[#b5faf9] transition-colors rounded-t-lg relative" style="height: 40%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-secondary">Rp 2M</div>
+</div>
+<div class="w-full bg-[#e2fffe] hover:bg-[#b5faf9] transition-colors rounded-t-lg relative" style="height: 60%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-secondary">Rp 4.5M</div>
+</div>
+<div class="w-full bg-[#e2fffe] hover:bg-[#b5faf9] transition-colors rounded-t-lg relative" style="height: 35%"></div>
+<div class="w-full bg-[#b5faf9] hover:bg-[#7bf5f8] transition-colors rounded-t-lg relative" style="height: 85%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-secondary-container">Rp 12M</div>
+</div>
+<div class="w-full bg-[#e2fffe] hover:bg-[#b5faf9] transition-colors rounded-t-lg relative" style="height: 50%"></div>
+<div class="w-full bg-[#015959] hover:bg-[#003737] transition-colors rounded-t-lg relative" style="height: 100%">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-[#015959]">Current</div>
+</div>
+<div class="w-full bg-[#e2fffe] hover:bg-[#b5faf9] transition-colors rounded-t-lg relative" style="height: 45%"></div>
+</div>
+<div class="flex justify-between mt-6 text-xs font-bold text-on-surface-variant uppercase tracking-widest px-2">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+<!-- Payout Schedule (Vertical Card) -->
+<div class="lg:col-span-4 bg-surface-container-low rounded-xl p-8 flex flex-col">
+<h2 class="text-2xl font-bold font-headline text-on-surface mb-8">Automatic Payouts</h2>
+<div class="space-y-6 flex-1">
+<div class="p-4 bg-white rounded-xl shadow-sm border-l-4 border-[#FBC117]">
+<p class="text-xs font-bold text-on-surface-variant uppercase mb-1">Upcoming Oct 24</p>
+<p class="text-lg font-bold text-[#015959] font-body">Rp 12.000.000</p>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-[10px] text-secondary font-medium">BCA •••• 4920</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="p-4 bg-white/50 rounded-xl border border-white/20">
+<p class="text-xs font-bold text-on-surface-variant uppercase mb-1">Schedule Nov 01</p>
+<p class="text-lg font-bold text-on-surface font-body">Rp 8.450.000</p>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-[10px] text-on-surface-variant font-medium">BCA •••• 4920</span>
+<span class="material-symbols-outlined text-outline-variant">schedule</span>
+</div>
+</div>
+</div>
+<button class="mt-8 text-secondary font-bold text-sm flex items-center gap-2 hover:translate-x-1 transition-transform">
+                        Manage Payout Methods <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Transaction History (Full Width Below) -->
+<div class="lg:col-span-12 bg-white rounded-xl py-12">
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+<h2 class="text-4xl font-black font-headline text-on-surface">Recent Transactions</h2>
+<div class="flex gap-4">
+<div class="relative">
+<input class="pl-10 pr-4 py-2 rounded-full border-none bg-surface-container-low focus:ring-2 focus:ring-tertiary-fixed text-sm w-64" placeholder="Search events..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+</div>
+<button class="flex items-center gap-2 px-5 py-2 bg-surface-container-low text-on-surface font-bold text-sm rounded-full">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                                Filters
+                            </button>
+</div>
+</div>
+<div class="overflow-hidden">
+<table class="w-full text-left border-separate border-spacing-y-4">
+<thead>
+<tr class="text-xs font-bold text-on-surface-variant uppercase tracking-widest px-4">
+<th class="pb-4 pl-4">Event Name</th>
+<th class="pb-4">Date</th>
+<th class="pb-4">Type</th>
+<th class="pb-4 text-right pr-4">Amount</th>
+</tr>
+</thead>
+<tbody class="font-body">
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors rounded-xl overflow-hidden group">
+<td class="py-6 pl-6 rounded-l-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="vibrant neon festival lights and crowds of people at a music event with shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF2d5zwfzDk1XVZK1ZkNAEcyJSmelKBpeNQrIkkrPlGpxeET6DB_iDffBPPiJ1yJcqciUAy8sj6aXeZ6jk8E68B8W9ra9hUXLOIaGRKma50pMiKy2GTAkTQYFvpCENoJjZaE5k945xejNnBN-kfCZrvzQPWk4d7pIsGIEw8ZvJxCRMDvN94fSMTKJHyT4NRCqNUfdWQM_-D19XnbVDEJHdRPYM9WjJ3mo5bcdx8mCTRYTWC_HOfxWzPH5jP3ctCol7DP4mEmxy2tI"/>
+</div>
+<span class="font-bold text-on-surface">Jakarta Night Festival 2023</span>
+</div>
+</td>
+<td class="py-6 text-on-surface-variant text-sm">Oct 20, 2023</td>
+<td class="py-6">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-black uppercase rounded-full">Ticket Sale</span>
+</td>
+<td class="py-6 text-right pr-6 rounded-r-xl font-bold text-on-surface">
+                                        + Rp 1.250.000
+                                    </td>
+</tr>
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors rounded-xl group">
+<td class="py-6 pl-6 rounded-l-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="elegant wedding table setting with floral arrangements and soft warm indoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXC2npVND-NW_BNa3JekkBY7FWrS0XI7_FMOrAZQVRQBsRsc07K_HI9lCd1k9F4-eaPWviB7Ldz3CEdagt8vleTcQpnjXhhsMUaSvy4eajj-07Z05VhUax4DNjg2fVubp1yrx4H50tTZMQce5PiJCpHYKOoOV8h1QJCr3RF7yBMXhjZQ-dnM_mxfj4zLVK4FWZ_oOLmAtbtpN75D8mG7MvOswbU92pfi3cR1ZZKbRXEkVPAk76RgdQbR5_9fdeUTsrQhuBWberQmU"/>
+</div>
+<span class="font-bold text-on-surface">Orchid Wedding Gala</span>
+</div>
+</td>
+<td class="py-6 text-on-surface-variant text-sm">Oct 19, 2023</td>
+<td class="py-6">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-black uppercase rounded-full">Payout</span>
+</td>
+<td class="py-6 text-right pr-6 rounded-r-xl font-bold text-primary">
+                                        - Rp 4.000.000
+                                    </td>
+</tr>
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors rounded-xl group">
+<td class="py-6 pl-6 rounded-l-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="high energy stage with colorful spotlighting at a tech conference" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD05SIHxg6L1daePSCrFfEwtJwyQ_8F8BWK9caLNcXyhrv_3lqOKs0NGzY_qId-PHOFhATT3JhRHmHfdImYSU3jI3K0xk16jKnPGAmV821Vjd3RkKL0LIYQ087cDo_NnGC5sPTKFGpEfg8On5TeGlr8ZNHHQwY3hcQbmL30rodN69ehpdCBrPPBROGnqzM59qMzr92Ms8WGlYqqQDBy-FguayIsf8lICoJ2uF8Bbn9JyHFWBe8KZyqKwYYZw491Bwddcl3Ck1AD31I"/>
+</div>
+<span class="font-bold text-on-surface">Tech Summit 2023</span>
+</div>
+</td>
+<td class="py-6 text-on-surface-variant text-sm">Oct 18, 2023</td>
+<td class="py-6">
+<span class="px-3 py-1 bg-error-container text-on-error-container text-[10px] font-black uppercase rounded-full">Refund</span>
+</td>
+<td class="py-6 text-right pr-6 rounded-r-xl font-bold text-on-surface">
+                                        - Rp 750.000
+                                    </td>
+</tr>
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors rounded-xl group">
+<td class="py-6 pl-6 rounded-l-xl">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="vibrant neon festival lights and crowds of people at a music event" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOVSaiNnYlu6jTvjMXDp-IdWyZxS5z5BRnzQxX5gH0UidjzNyRluXj366t65pI-al11dr3od7NHT0Efvlppfn0TwysUfARNUhWau98Zs5ZzgODLvVjiMLwQcXbxGzWUAlY9uuPHM9E4m1vXNgWvQVhpMGyGdm8Wlx9ALGNvR5Y4JJP_ga1hynLf4Ku3tTnlRCK_s2MXmgZvN-ethjNK6ekexBVqUrEUdt_ME3Ed8GO3_7xdqrjooInD2t6ey5-lSzt2afjITHiNjA"/>
+</div>
+<span class="font-bold text-on-surface">Jakarta Night Festival 2023</span>
+</div>
+</td>
+<td class="py-6 text-on-surface-variant text-sm">Oct 17, 2023</td>
+<td class="py-6">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-black uppercase rounded-full">Ticket Sale</span>
+</td>
+<td class="py-6 text-right pr-6 rounded-r-xl font-bold text-on-surface">
+                                        + Rp 2.800.000
+                                    </td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-8 flex justify-center">
+<button class="px-8 py-3 bg-surface-container text-secondary font-bold text-sm rounded-full hover:bg-surface-container-highest transition-all">
+                            View All Transactions
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Accent -->
+<footer class="mt-auto py-12 px-8 border-t border-outline-variant/5">
+<div class="flex justify-between items-center text-on-surface-variant text-xs font-bold uppercase tracking-widest">
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+<span>© 2023 GELARAN ORGANIZER PORTAL</span>
+</div>
+</footer>
+</main>
+<!-- Floating Action Button Contextual Suppression: On Transactional Screens we hide it as per rules -->
+</body></html>

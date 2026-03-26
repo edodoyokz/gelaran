@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface-container-low": "#f3f3f3",
+                        "surface-dim": "#dadada",
+                        "on-tertiary-fixed": "#251a00",
+                        "surface-tint": "#a63b00",
+                        "on-secondary-container": "#246d6d",
+                        "surface-bright": "#f9f9f9",
+                        "inverse-on-surface": "#f1f1f1",
+                        "secondary-container": "#a7eceb",
+                        "on-secondary-fixed": "#002020",
+                        "surface-container-highest": "#e2e2e2",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e8e8e8",
+                        "primary": "#a23a00",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#ffdbce",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#e3bfb1",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "on-tertiary-container": "#fffbff",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdf9a",
+                        "surface-variant": "#e2e2e2",
+                        "background": "#f9f9f9",
+                        "tertiary": "#755800",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-surface-variant": "#5b4137",
+                        "inverse-surface": "#2f3131",
+                        "outline": "#8f7065",
+                        "secondary": "#1e6868",
+                        "on-primary-fixed": "#370e00",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "inverse-primary": "#ffb598",
+                        "primary-container": "#cb4a00",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "surface-container": "#eeeeee",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f9f9f9",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "tertiary-container": "#936f00",
+                        "secondary-fixed": "#aaefee",
+                        "primary-fixed-dim": "#ffb598"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .punched-hole-mask {
+            position: relative;
+        }
+        .punched-hole-mask::before, .punched-hole-mask::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .punched-hole-mask::before { left: -10px; transform: translateY(-50%); }
+        .punched-hole-mask::after { right: -10px; transform: translateY(-50%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white font-body text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f9f9f9]/80 dark:bg-neutral-900/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#1a1c1c] cursor-pointer hover:opacity-80 transition-opacity active:scale-95 duration-200">menu</span>
+<span class="font-['Noto_Serif'] italic text-[#F95D00] text-2xl font-bold tracking-tight">Gelaran</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#1a1c1c] cursor-pointer hover:opacity-80 transition-opacity active:scale-95 duration-200">account_circle</span>
+</div>
+</div>
+<div class="h-[1px] w-full bg-gradient-to-r from-transparent via-outline-variant/10 to-transparent"></div>
+</header>
+<main class="flex-grow pt-24 pb-32 flex flex-col items-center px-6">
+<div class="max-w-xl w-full text-center space-y-12">
+<!-- Payment Failed State -->
+<section class="space-y-6">
+<div class="relative inline-flex items-center justify-center p-8">
+<!-- Subtle background glow -->
+<div class="absolute inset-0 bg-error/5 rounded-full blur-3xl"></div>
+<div class="relative w-24 h-24 rounded-full bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-5xl" style="font-variation-settings: 'wght' 300;">error</span>
+</div>
+</div>
+<div class="space-y-3">
+<h1 class="font-headline text-3xl md:text-4xl text-secondary font-bold">Pembayaran Gagal</h1>
+<p class="text-on-surface-variant max-w-sm mx-auto leading-relaxed">Mohon maaf, sistem kami tidak dapat memproses transaksi Anda saat ini.</p>
+</div>
+</section>
+<!-- Failure Reason Area -->
+<section class="bg-surface-container-low rounded-2xl p-6 text-left border-l-4 border-secondary/20">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary mt-1">info</span>
+<div class="space-y-1">
+<p class="font-bold text-secondary">Alasan Kegagalan</p>
+<p class="text-sm text-on-surface-variant">Transaksi ditolak oleh bank (Saldo tidak mencukupi atau limit harian terlampaui).</p>
+</div>
+</div>
+</section>
+<!-- Ticket Summary -->
+<section class="punched-hole-mask bg-surface-container-lowest shadow-[0_8px_32px_rgba(26,28,28,0.04)] rounded-2xl p-8 text-left border border-outline-variant/15">
+<div class="flex flex-col gap-6">
+<div class="flex justify-between items-start gap-4">
+<div class="space-y-1">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/60 font-bold">Ringkasan Pesanan</span>
+<h2 class="font-headline text-xl text-on-surface leading-snug">The Midnight Shadow: A Wayang Kulit Masterpiece</h2>
+</div>
+<div class="text-right">
+<span class="font-headline text-xl font-bold text-primary">IDR 450.000</span>
+</div>
+</div>
+<div class="border-t border-dashed border-outline-variant/30 pt-6 flex flex-wrap justify-between gap-y-4">
+<div class="space-y-1">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60">ID Transaksi</p>
+<p class="font-mono text-xs font-semibold text-on-surface">GLRN-TX-202310892</p>
+</div>
+<div class="space-y-1 text-right">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60">Tanggal</p>
+<p class="text-xs font-semibold text-on-surface">24 Okt 2023, 14:20 WIB</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<section class="flex flex-col gap-4 w-full">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 px-8 rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-primary/10 hover:opacity-90 transition-all active:scale-[0.98]">
+                    Coba Lagi Sekarang
+                </button>
+<button class="w-full bg-transparent border-2 border-secondary/40 text-secondary py-4 px-8 rounded-xl font-bold text-sm tracking-wide hover:bg-secondary/5 transition-all active:scale-[0.98]">
+                    Pilih Metode Lain
+                </button>
+<a class="text-on-surface-variant text-sm font-medium hover:text-primary transition-colors py-2" href="#">
+                    Kembali ke Beranda
+                </a>
+</section>
+<!-- Support Footer -->
+<p class="text-xs text-on-surface-variant/70 italic font-headline">
+                Butuh bantuan? Hubungi layanan pelanggan kami melalui <span class="underline decoration-primary/30 underline-offset-4 cursor-pointer">WhatsApp Support</span>
+</p>
+</div>
+</main>
+<!-- BottomNavBar (Hidden on desktop, shown on mobile per responsive pivot rule) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-[#f9f9f9]/80 backdrop-blur-xl rounded-t-[2rem] z-50 shadow-[0_-8px_32px_rgba(26,28,28,0.06)]">
+<div class="flex justify-around items-center px-4 pb-8 pt-4">
+<div class="flex flex-col items-center justify-center text-neutral-500">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest">Jelajah</span>
+</div>
+<div class="flex flex-col items-center justify-center text-neutral-500">
+<span class="material-symbols-outlined mb-1">confirmation_number</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest">Tiket</span>
+</div>
+<div class="flex flex-col items-center justify-center text-neutral-500">
+<span class="material-symbols-outlined mb-1">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest">Favorit</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#F95D00] scale-110">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-widest">Profil</span>
+</div>
+</div>
+</nav>
+</body></html>

@@ -198,7 +198,7 @@ export function ReviewSection({ eventId, eventSlug, canReview = false, bookingId
                     {reviews.map((review) => (
                         <div key={review.id} className="bg-white rounded-xl border border-gray-200 p-6">
                             <div className="flex items-start gap-4">
-                                <div className="flex-shrink-0">
+                                <div className="shrink-0">
                                     {review.user.avatarUrl ? (
                                         <img
                                             src={review.user.avatarUrl}

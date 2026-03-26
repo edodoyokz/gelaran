@@ -78,7 +78,7 @@ export default function GatePage() {
     const [staffName, setStaffName] = useState<string>("");
     const [event, setEvent] = useState<EventData | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
-    
+
     const [ticketCode, setTicketCode] = useState("");
     const [isScanning, setIsScanning] = useState(false);
     const [scanResult, setScanResult] = useState<CheckInResult | null>(null);
@@ -89,13 +89,13 @@ export default function GatePage() {
                 headers: { "x-device-token": token },
             });
             const data = await res.json();
-            
+
             if (!data.success) {
                 localStorage.removeItem("gate_device_token");
                 router.push("/gate/access");
                 return;
             }
-            
+
             setStaffName(data.data.staffName);
             setEvent(data.data.event);
             setStats(data.data.stats);
@@ -191,10 +191,10 @@ export default function GatePage() {
     const handleCheckIn = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!ticketCode.trim() || !deviceToken) return;
-        
+
         setIsScanning(true);
         setScanResult(null);
-        
+
         try {
             const res = await fetch("/api/gate/check-in", {
                 method: "POST",
@@ -204,9 +204,9 @@ export default function GatePage() {
                 },
                 body: JSON.stringify({ ticketCode: ticketCode.trim().toUpperCase() }),
             });
-            
+
             const data = await res.json();
-            
+
             const result = mapCheckInResponse(data);
             setScanResult(result);
 
@@ -276,28 +276,34 @@ export default function GatePage() {
 
             <main className="max-w-2xl mx-auto px-4 py-6">
                 {stats && (
-                    <div className="bg-gray-800 rounded-xl p-4 mb-6 border border-gray-700">
-                        <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                            <Users className="h-4 w-4" />
-                            Check-in Progress
+                    <div className="mb-6 rounded-2xl border border-gray-700 bg-gray-800 p-4">
+                        <div className="mb-4 grid gap-3 sm:grid-cols-3">
+                            <article className="rounded-xl border border-gray-700 bg-gray-900/60 p-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Total tiket</p>
+                                <p className="mt-2 text-2xl font-semibold text-white">{stats.totalSold}</p>
+                            </article>
+                            <article className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">Checked in</p>
+                                <p className="mt-2 text-2xl font-semibold text-emerald-300">{stats.checkedIn}</p>
+                            </article>
+                            <article className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">Belum masuk</p>
+                                <p className="mt-2 text-2xl font-semibold text-amber-300">{stats.remaining}</p>
+                            </article>
                         </div>
-                        <div className="flex items-end gap-4">
-                            <div className="text-3xl font-bold text-white">
-                                {stats.checkedIn}<span className="text-gray-500 text-xl">/{stats.totalSold}</span>
+                        <div className="mb-2 flex items-center justify-between gap-3 text-sm">
+                            <div className="flex items-center gap-2 text-gray-400">
+                                <Users className="h-4 w-4" />
+                                Check-in progress
                             </div>
-                            <div className="text-emerald-400 font-semibold text-lg">
-                                {stats.checkInPercentage}%
-                            </div>
+                            <span className="font-semibold text-emerald-400">{stats.checkInPercentage}%</span>
                         </div>
-                        <div className="w-full bg-gray-700 rounded-full h-3 mt-3">
+                        <div className="h-3 w-full rounded-full bg-gray-700">
                             <div
-                                className="bg-gradient-to-r from-indigo-500 to-emerald-500 h-3 rounded-full transition-all duration-500"
+                                className="h-3 rounded-full bg-linear-to-r from-indigo-500 to-emerald-500 transition-all duration-500"
                                 style={{ width: `${stats.checkInPercentage}%` }}
                             />
                         </div>
-                        <p className="text-sm text-gray-500 mt-2">
-                            {stats.remaining} tiket belum check-in
-                        </p>
                     </div>
                 )}
 
@@ -358,14 +364,14 @@ export default function GatePage() {
                             display.tone === "success"
                                 ? "bg-emerald-900/50 border border-emerald-700"
                                 : display.tone === "warning"
-                                ? "bg-yellow-900/50 border border-yellow-700"
-                                : "bg-red-900/50 border border-red-700";
+                                    ? "bg-yellow-900/50 border border-yellow-700"
+                                    : "bg-red-900/50 border border-red-700";
                         const titleClasses =
                             display.tone === "success"
                                 ? "text-emerald-400"
                                 : display.tone === "warning"
-                                ? "text-yellow-400"
-                                : "text-red-400";
+                                    ? "text-yellow-400"
+                                    : "text-red-400";
 
                         return (
                             <div className={`rounded-xl p-6 ${toneClasses}`}>

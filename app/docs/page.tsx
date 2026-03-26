@@ -1,94 +1,186 @@
-import { createClient } from "@/lib/supabase/server";
-import prisma from "@/lib/prisma/client";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { redirect } from "next/navigation";
+import { BookOpen, LifeBuoy, ShieldCheck, Sparkles, Users } from "lucide-react";
+import prisma from "@/lib/prisma/client";
+import { createClient } from "@/lib/supabase/server";
+import {
+    DocsCallout,
+    DocsHero,
+    DocsLinkCard,
+    DocsSection,
+    DocsStat,
+} from "@/components/docs/docs-shell";
 
 export default async function DocsPage() {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
-    let userRole = null;
+    let userRole: string | null = null;
 
     if (user) {
         const dbUser = await prisma.user.findUnique({
             where: { email: user.email! },
-            select: { role: true }
+            select: { role: true },
         });
-        userRole = dbUser?.role;
+        userRole = dbUser?.role ?? null;
     }
 
-    // Auto-redirect based on role if possible, or show a landing page with options
-    if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
-        // Admins can see everything, but mainly admin docs
-        // We can just show the list
-    } else if (userRole === "ORGANIZER") {
+    if (userRole === "ORGANIZER") {
         redirect("/docs/organizer");
     }
 
-    // For customers or public (if we allow public docs later, but for now we'll stick to auth)
+    const docsCards = [
+        {
+            href: "/docs/admin",
+            title: "Admin operations guide",
+            description:
+                "Platform oversight, moderation workflow, finance queues, settings controls, and workspace review patterns.",
+            icon: ShieldCheck,
+            tone: "admin" as const,
+            badge: "Admin",
+            visible: userRole === "ADMIN" || userRole === "SUPER_ADMIN",
+        },
+        {
+            href: "/docs/organizer",
+            title: "Organizer operations guide",
+            description:
+                "Event publishing, gate and POS access, team coordination, wallet management, and day-of-show support flows.",
+            icon: Users,
+            tone: "organizer" as const,
+            badge: "Organizer",
+            visible: ["ADMIN", "SUPER_ADMIN", "ORGANIZER"].includes(userRole ?? ""),
+        },
+        {
+            href: "/docs/customer",
+            title: "Customer help center",
+            description:
+                "Ticket buying, account management, booking recovery, and support guidance for the current customer experience.",
+            icon: BookOpen,
+            tone: "customer" as const,
+            badge: "Customer",
+            visible: true,
+        },
+    ].filter((item) => item.visible);
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
-            <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight">Documentation Center</h1>
-                <p className="text-muted-foreground text-lg">Select the documentation relevant to your role.</p>
-            </div>
+        <div className="space-y-8">
+            <DocsHero
+                eyebrow="Documentation center"
+                title="Operational guidance for every Gelaran role"
+                description="Browse the refreshed docs hub for admin, organizer, and customer workflows. This pass aligns the documentation language with the current Gelaran UI system and the operational surfaces already implemented in the product."
+                actions={
+                    user ? (
+                        <div className="flex flex-wrap gap-3">
+                            {docsCards.slice(0, 2).map((card) => (
+                                <Link
+                                    key={card.href}
+                                    href={card.href}
+                                    className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-[rgba(41,179,182,0.28)] hover:text-(--accent-primary)"
+                                >
+                                    {card.badge} docs
+                                </Link>
+                            ))}
+                        </div>
+                    ) : (
+                        <Link
+                            href="/login?returnUrl=/docs"
+                            className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-2 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                        >
+                            Sign in to view role-specific docs
+                        </Link>
+                    )
+                }
+                meta={
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <DocsStat
+                            label="Audience"
+                            value="3 roles"
+                            description="Dedicated guidance for admins, organizers, and customers using the same editorial system."
+                        />
+                        <DocsStat
+                            label="Focus"
+                            value="Live ops"
+                            description="Explains the currently shipped workspaces, support routes, and day-to-day platform tasks."
+                        />
+                        <DocsStat
+                            label="Phase 10"
+                            value="Refined"
+                            description="Headers, cards, framing, and navigation were refreshed for consistency with the latest UI pass."
+                        />
+                    </div>
+                }
+            />
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {/* Admin Sections - Only visible to admins */}
-                {(userRole === "ADMIN" || userRole === "SUPER_ADMIN") && (
-                    <Link href="/docs/admin" className="block h-full">
-                        <Card className="h-full hover:bg-muted/50 transition-colors cursor-pointer border-primary/20">
-                            <CardHeader>
-                                <CardTitle className="text-primary">Admin Guide</CardTitle>
-                                <CardDescription>Platform management, user controls, and system settings.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <span className="text-sm font-medium text-primary">Access Admin Docs &rarr;</span>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                )}
-
-                {/* Organizer Sections */}
-                {/* Admins can also view organizer docs usually */}
-                {["ADMIN", "SUPER_ADMIN", "ORGANIZER"].includes(userRole || "") && (
-                    <Link href="/docs/organizer" className="block h-full">
-                        <Card className="h-full hover:bg-muted/50 transition-colors cursor-pointer border-indigo-500/20">
-                            <CardHeader>
-                                <CardTitle className="text-indigo-500">Organizer Guide</CardTitle>
-                                <CardDescription>Managing events, venues, ticketing, and scanning.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <span className="text-sm font-medium text-indigo-500">Access Organizer Docs &rarr;</span>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                )}
-
-                {/* Customer/General Sections */}
-                <Link href="/docs/customer" className="block h-full">
-                    <Card className="h-full hover:bg-muted/50 transition-colors cursor-pointer border-green-500/20">
-                        <CardHeader>
-                            <CardTitle className="text-green-500">User Guide</CardTitle>
-                            <CardDescription>Booking tickets, managing your profile, and FAQs.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <span className="text-sm font-medium text-green-500">Access User Docs &rarr;</span>
-                        </CardContent>
-                    </Card>
-                </Link>
-            </div>
-
-            {!user && (
-                <div className="rounded-lg bg-muted p-8 text-center">
-                    <p className="mb-4">You must be signed in to view specific documentation.</p>
-                    <Link href="/login" className="inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90">
-                        Sign In
-                    </Link>
+            <DocsSection
+                title="Choose your guide"
+                description="Each guide follows the same visual system and highlights the operational routes that matter for that role."
+            >
+                <div className="grid gap-4 lg:grid-cols-3">
+                    {docsCards.map((card) => (
+                        <DocsLinkCard
+                            key={card.href}
+                            href={card.href}
+                            title={card.title}
+                            description={card.description}
+                            icon={card.icon}
+                            tone={card.tone}
+                            badge={card.badge}
+                        />
+                    ))}
                 </div>
-            )}
+            </DocsSection>
+
+            <DocsSection
+                title="What this documentation covers"
+                description="The refreshed hub is intended to be the source of truth for workspace navigation, operational responsibilities, and support expectations across the product."
+            >
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {[
+                        {
+                            icon: ShieldCheck,
+                            title: "Admin governance",
+                            description: "Moderation queues, platform settings, user controls, and finance oversight.",
+                        },
+                        {
+                            icon: Users,
+                            title: "Organizer execution",
+                            description: "Event setup, team permissions, gate access, POS sessions, and wallet operations.",
+                        },
+                        {
+                            icon: Sparkles,
+                            title: "Customer support",
+                            description: "Bookings, account recovery, ticket access, and self-service help references.",
+                        },
+                        {
+                            icon: LifeBuoy,
+                            title: "Operational readiness",
+                            description: "Reference language for support handoff, day-of-event tools, and status communication.",
+                        },
+                    ].map((item) => (
+                        <article
+                            key={item.title}
+                            className="rounded-3xl border border-(--border) bg-(--surface-elevated) p-5 shadow-(--shadow-sm)"
+                        >
+                            <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary) shadow-(--shadow-xs)">
+                                <item.icon className="h-5 w-5" />
+                            </span>
+                            <h3 className="mt-4 text-base font-semibold text-foreground">{item.title}</h3>
+                            <p className="mt-2 text-sm leading-7 text-(--text-secondary)">{item.description}</p>
+                        </article>
+                    ))}
+                </div>
+            </DocsSection>
+
+            {!user ? (
+                <DocsCallout
+                    title="Signed-in access is required for protected role guides"
+                    description="Public visitors can browse the customer help center, while admin and organizer sections remain protected so operational procedures stay aligned with account permissions."
+                    href="/login?returnUrl=/docs"
+                    ctaLabel="Sign in"
+                />
+            ) : null}
         </div>
     );
 }

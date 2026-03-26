@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organizer Hub | Gelaran Academy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "surface-container-highest": "#e2e2e2",
+                "surface-container-low": "#f3f3f4",
+                "tertiary-fixed-dim": "#ffb598",
+                "on-error-container": "#93000a",
+                "on-surface": "#1a1c1c",
+                "on-tertiary-container": "#ffae8e",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed-dim": "#8ed2d2",
+                "inverse-primary": "#8ed2d2",
+                "tertiary-container": "#8d3100",
+                "outline": "#6f7978",
+                "on-tertiary": "#ffffff",
+                "surface-container": "#eeeeee",
+                "on-primary-fixed": "#002020",
+                "secondary": "#00696b",
+                "on-secondary-fixed": "#002021",
+                "on-primary": "#ffffff",
+                "surface-dim": "#dadada",
+                "primary-container": "#015959",
+                "on-secondary-fixed-variant": "#004f51",
+                "tertiary-fixed": "#ffdbce",
+                "inverse-surface": "#2f3131",
+                "primary-fixed": "#aaefee",
+                "outline-variant": "#bec8c8",
+                "on-tertiary-fixed-variant": "#7f2b00",
+                "on-primary-fixed-variant": "#004f50",
+                "on-secondary-container": "#007072",
+                "surface": "#f9f9f9",
+                "background": "#f9f9f9",
+                "secondary-fixed": "#7bf5f8",
+                "error": "#ba1a1a",
+                "tertiary": "#672200",
+                "surface-tint": "#1e6868",
+                "on-background": "#1a1c1c",
+                "surface-variant": "#e2e2e2",
+                "surface-container-high": "#e8e8e8",
+                "secondary-fixed-dim": "#5cd8db",
+                "inverse-on-surface": "#f0f1f1",
+                "primary": "#004040",
+                "on-secondary": "#ffffff",
+                "on-primary-container": "#89cdcd",
+                "on-error": "#ffffff",
+                "secondary-container": "#7bf5f8",
+                "on-surface-variant": "#3f4948",
+                "surface-bright": "#f9f9f9",
+                "error-container": "#ffdad6",
+                "on-tertiary-fixed": "#370e00",
+                "gelaran-orange": "#F95D00",
+                "gelaran-yellow": "#FBC117",
+                "gelaran-teal-dark": "#015959",
+                "gelaran-teal-light": "#29B3B6"
+              },
+              fontFamily: {
+                "headline": ["Noto Serif"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFFFFF; }
+        .serif-title { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.8); }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Top Navigation (Shared Component Integration) -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-nav">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="font-serif font-black text-gelaran-teal-dark text-2xl tracking-tight">Organizer Hub</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-gelaran-teal-dark font-bold border-b-2 border-gelaran-teal-dark pb-1 font-body text-sm uppercase tracking-wider" href="#">Resources</a>
+<a class="text-slate-600 font-medium hover:text-gelaran-teal-dark transition-colors font-body text-sm uppercase tracking-wider" href="#">Templates</a>
+<a class="text-slate-600 font-medium hover:text-gelaran-teal-dark transition-colors font-body text-sm uppercase tracking-wider" href="#">Community</a>
+<a class="text-slate-600 font-medium hover:text-gelaran-teal-dark transition-colors font-body text-sm uppercase tracking-wider" href="#">Support</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined text-gelaran-teal-dark">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined text-gelaran-teal-dark">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-20 max-w-7xl mx-auto px-6">
+<!-- Hero Section -->
+<header class="py-16 md:py-24 relative overflow-hidden">
+<div class="max-w-3xl">
+<h1 class="serif-title text-5xl md:text-7xl font-black text-gelaran-teal-dark leading-tight mb-8">
+                    Organizer Academy &amp; Resources
+                </h1>
+<div class="relative max-w-xl group">
+<input class="w-full pl-14 pr-6 py-5 rounded-full border-2 border-gelaran-teal-dark focus:ring-4 focus:ring-gelaran-teal-dark/10 focus:border-gelaran-teal-dark bg-white transition-all text-lg placeholder:text-slate-400" placeholder="Search for guides, templates, or FAQs..." type="text"/>
+<span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-gelaran-teal-dark text-3xl">search</span>
+</div>
+</div>
+<!-- Decorative Element -->
+<div class="absolute top-0 right-0 -z-10 w-1/3 h-full opacity-10">
+<div class="w-full h-full bg-gelaran-yellow rounded-full blur-[120px] translate-x-1/2"></div>
+</div>
+</header>
+<!-- Quick Starts -->
+<section class="mb-24">
+<div class="flex justify-between items-end mb-10">
+<h2 class="serif-title text-3xl font-bold text-gelaran-teal-dark">Quick Starts</h2>
+<a class="text-gelaran-teal-light font-bold flex items-center gap-2 group" href="#">
+                    View all modules <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="group cursor-pointer bg-surface-container-low p-8 rounded-xl hover:bg-white hover:shadow-2xl hover:shadow-gelaran-teal-dark/5 transition-all duration-300 transform hover:-translate-y-2">
+<div class="w-12 h-12 bg-gelaran-yellow rounded-lg flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-gelaran-teal-dark">person_add</span>
+</div>
+<h3 class="font-body text-xl font-bold text-gelaran-teal-dark mb-3">Setting up your Profile</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Complete your identity as an organizer to build trust with your future attendees.</p>
+<div class="h-1 w-0 group-hover:w-full bg-gelaran-teal-light transition-all duration-500"></div>
+</div>
+<!-- Card 2 -->
+<div class="group cursor-pointer bg-surface-container-low p-8 rounded-xl hover:bg-white hover:shadow-2xl hover:shadow-gelaran-teal-dark/5 transition-all duration-300 transform hover:-translate-y-2">
+<div class="w-12 h-12 bg-gelaran-teal-light rounded-lg flex items-center justify-center mb-6 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_available</span>
+</div>
+<h3 class="font-body text-xl font-bold text-gelaran-teal-dark mb-3">Creating your First Event</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Step-by-step walkthrough of our powerful event builder and media tools.</p>
+<div class="h-1 w-0 group-hover:w-full bg-gelaran-orange transition-all duration-500"></div>
+</div>
+<!-- Card 3 -->
+<div class="group cursor-pointer bg-surface-container-low p-8 rounded-xl hover:bg-white hover:shadow-2xl hover:shadow-gelaran-teal-dark/5 transition-all duration-300 transform hover:-translate-y-2">
+<div class="w-12 h-12 bg-gelaran-orange rounded-lg flex items-center justify-center mb-6 text-white">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h3 class="font-body text-xl font-bold text-gelaran-teal-dark mb-3">Ticket Pricing Strategy</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Learn how to maximize attendance using dynamic pricing and early-bird tiers.</p>
+<div class="h-1 w-0 group-hover:w-full bg-gelaran-yellow transition-all duration-500"></div>
+</div>
+</div>
+</section>
+<!-- Document Sections Bento Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-24">
+<!-- Platform Policies -->
+<div class="lg:col-span-4 bg-white p-8 border border-surface-container rounded-xl">
+<h2 class="serif-title text-2xl font-bold text-gelaran-teal-dark mb-8">Platform Policies</h2>
+<ul class="space-y-6">
+<li class="flex items-center justify-between group cursor-pointer">
+<span class="font-medium text-slate-700 group-hover:text-gelaran-teal-light transition-colors">Organizer Code of Conduct</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-gelaran-teal-light">open_in_new</span>
+</li>
+<li class="flex items-center justify-between group cursor-pointer">
+<span class="font-medium text-slate-700 group-hover:text-gelaran-teal-light transition-colors">Refund &amp; Cancellation Terms</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-gelaran-teal-light">open_in_new</span>
+</li>
+<li class="flex items-center justify-between group cursor-pointer">
+<span class="font-medium text-slate-700 group-hover:text-gelaran-teal-light transition-colors">Data Privacy Standards</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-gelaran-teal-light">open_in_new</span>
+</li>
+<li class="flex items-center justify-between group cursor-pointer">
+<span class="font-medium text-slate-700 group-hover:text-gelaran-teal-light transition-colors">Marketing &amp; Spam Policy</span>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-gelaran-teal-light">open_in_new</span>
+</li>
+</ul>
+<div class="mt-10 p-4 bg-gelaran-teal-light/5 rounded-lg border-l-4 border-gelaran-teal-light">
+<p class="text-xs text-gelaran-teal-dark/70 italic">Last updated: October 12, 2024</p>
+</div>
+</div>
+<!-- Financials & Payouts Checklist -->
+<div class="lg:col-span-8 bg-surface-container-low p-8 md:p-12 rounded-xl relative overflow-hidden">
+<div class="relative z-10 flex flex-col md:flex-row gap-12">
+<div class="md:w-1/2">
+<h2 class="serif-title text-3xl font-bold text-gelaran-teal-dark mb-4">Financials &amp; Payouts</h2>
+<p class="text-on-surface-variant mb-8">Ensuring your revenue reaches you swiftly and securely is our priority. Follow this verification sequence.</p>
+<img class="rounded-lg shadow-lg w-full h-48 object-cover opacity-80 grayscale hover:grayscale-0 transition-all duration-700" data-alt="Close-up of a high-end fountain pen resting on a financial ledger with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ra71pJ_cGPJalheRMwaaE3SZ4zgw_N7ldLHtwi2zb6Je-ONo5Yg8xNNJk2faDKp3hs6CaS1i6wAVX47xWRGneCC74PjvJlH6VxZfQFB3O7OjAm7MTRnRi87-FoGJiJfQcBsPDffGhcaOHsjnMifDnUeNT3iqhMbd5xA0aDQ4BAvz3VqXpqIyh020RQ_gbu4EluMY_5RTGonW4O43qI_kRlXN77CnCDoWfkiIKNPwZBTObqugcz44EoR0A-6cV-jMezjylt4qW_I"/>
+</div>
+<div class="md:w-1/2 bg-white p-6 md:p-8 rounded-xl shadow-sm">
+<h3 class="font-bold text-gelaran-teal-dark mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-gelaran-orange">task_alt</span>
+                            Verification Checklist
+                        </h3>
+<div class="space-y-5">
+<div class="flex gap-4 items-start">
+<div class="w-6 h-6 rounded border-2 border-gelaran-teal-light flex-shrink-0 mt-1"></div>
+<div class="text-sm font-medium">Link Business Bank Account</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-6 h-6 rounded border-2 border-gelaran-teal-light flex-shrink-0 mt-1"></div>
+<div class="text-sm font-medium">Submit Tax Identification (TIN)</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-6 h-6 rounded border-2 border-gelaran-teal-light flex-shrink-0 mt-1"></div>
+<div class="text-sm font-medium">Define Payout Schedule (Weekly/Monthly)</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-6 h-6 rounded border-2 border-gelaran-teal-light flex-shrink-0 mt-1"></div>
+<div class="text-sm font-medium">Verify Multi-factor Authentication</div>
+</div>
+</div>
+<button class="w-full mt-8 py-3 bg-gelaran-teal-dark text-white rounded-lg font-bold text-sm tracking-wide hover:bg-primary transition-colors">
+                            START VERIFICATION
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Gate Operations & Readiness Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+<!-- Gate Operations -->
+<div class="bg-white p-10 border border-slate-100 rounded-2xl flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1">
+<h3 class="serif-title text-2xl font-bold text-gelaran-teal-dark mb-4">Gate Operations &amp; Scanner Guide</h3>
+<p class="text-slate-600 mb-6 leading-relaxed">Everything your staff needs to know about managing entry flows and using the Curator Scanner App.</p>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 text-gelaran-teal-light font-bold text-sm px-4 py-2 bg-gelaran-teal-light/10 rounded-full hover:bg-gelaran-teal-light hover:text-white transition-all">
+<span class="material-symbols-outlined">picture_as_pdf</span> PDF GUIDE
+                        </button>
+<button class="flex items-center gap-2 text-gelaran-teal-light font-bold text-sm px-4 py-2 bg-gelaran-teal-light/10 rounded-full hover:bg-gelaran-teal-light hover:text-white transition-all">
+<span class="material-symbols-outlined">play_circle</span> VIDEO TUTORIAL
+                        </button>
+</div>
+</div>
+<div class="w-32 h-32 flex-shrink-0 bg-surface-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-gelaran-teal-dark">qr_code_scanner</span>
+</div>
+</div>
+<!-- Readiness Cards -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-gelaran-yellow/10 p-6 rounded-xl border-t-4 border-gelaran-yellow">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-gelaran-teal-dark">rocket_launch</span>
+<span class="text-[10px] font-bold uppercase tracking-widest bg-gelaran-yellow text-gelaran-teal-dark px-2 py-0.5 rounded">Checklist</span>
+</div>
+<h4 class="font-bold text-gelaran-teal-dark text-sm mb-2">Event Launch Readiness</h4>
+<p class="text-[11px] text-slate-500 uppercase font-semibold">12 Critical Steps</p>
+</div>
+<div class="bg-gelaran-orange/10 p-6 rounded-xl border-t-4 border-gelaran-orange">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-gelaran-teal-dark">analytics</span>
+<span class="text-[10px] font-bold uppercase tracking-widest bg-gelaran-orange text-white px-2 py-0.5 rounded">Analytics</span>
+</div>
+<h4 class="font-bold text-gelaran-teal-dark text-sm mb-2">Pre-Event Tracking</h4>
+<p class="text-[11px] text-slate-500 uppercase font-semibold">Pixel Setup</p>
+</div>
+<div class="bg-gelaran-teal-light/10 p-6 rounded-xl border-t-4 border-gelaran-teal-light">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-gelaran-teal-dark">campaign</span>
+<span class="text-[10px] font-bold uppercase tracking-widest bg-gelaran-teal-light text-white px-2 py-0.5 rounded">Promo</span>
+</div>
+<h4 class="font-bold text-gelaran-teal-dark text-sm mb-2">Brand Asset Library</h4>
+<p class="text-[11px] text-slate-500 uppercase font-semibold">Logos &amp; Fonts</p>
+</div>
+<div class="bg-gelaran-teal-dark/10 p-6 rounded-xl border-t-4 border-gelaran-teal-dark">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-gelaran-teal-dark">groups</span>
+<span class="text-[10px] font-bold uppercase tracking-widest bg-gelaran-teal-dark text-white px-2 py-0.5 rounded">Staff</span>
+</div>
+<h4 class="font-bold text-gelaran-teal-dark text-sm mb-2">Team Permissions</h4>
+<p class="text-[11px] text-slate-500 uppercase font-semibold">User Management</p>
+</div>
+</div>
+</section>
+<!-- Support Block -->
+<section class="mb-12">
+<div class="bg-gelaran-teal-dark rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
+<!-- Abstract Background -->
+<div class="absolute inset-0 -z-0 opacity-10 pointer-events-none">
+<div class="absolute -right-20 -top-20 w-80 h-80 border-[40px] border-white rounded-full"></div>
+<div class="absolute left-10 bottom-10 w-40 h-40 bg-gelaran-yellow rounded-full"></div>
+</div>
+<div class="flex-1 relative z-10 text-center md:text-left">
+<h2 class="serif-title text-4xl md:text-5xl font-black text-white mb-6">Direct Curator Support</h2>
+<p class="text-on-primary-container text-lg max-w-xl mb-8 leading-relaxed">Need a personal touch for your large-scale production? Our Curator success team is ready to assist with complex ticketing logic and VIP logistics.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+<button class="bg-gelaran-orange text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-gelaran-orange/20">
+                            Book a Consultation
+                        </button>
+<button class="border-2 border-gelaran-teal-light text-gelaran-teal-light px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/5 transition-all">
+                            Live Chat Now
+                        </button>
+</div>
+</div>
+<div class="w-full md:w-1/3 relative z-10">
+<div class="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Professional customer success manager with a friendly expression in a modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7bFSkkVciKM8nV-cSHVe32V9hjEClN0Ktt21H118ym9zghfkpb9mjFCUhuY3dZV5P7mlfI4KEufd1bt0ZZnsfbsZx8FLoKU41z3JQg5O1iR1Ft4bjyvx-YorJFzCBzbgCaodBfbDOFg6O9ALqjqXv-fBEJVBbLAnF_Nk6eDHMiTBiczTYG5GpKAbUpRRiy_ntsNyS1gHJW7AlwcpO1etg9yeJAAEY9sSrKsiqZ4ycY_qLAEf9VpWW1d-Evy4SCQRSiPH13rfNRLI"/>
+</div>
+<div>
+<h4 class="text-white font-bold">Sarah Jenkins</h4>
+<p class="text-gelaran-teal-light text-xs font-semibold uppercase tracking-widest">Head Curator</p>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3 text-white/80 text-sm">
+<span class="material-symbols-outlined text-gelaran-yellow">schedule</span>
+                                Response time: ~15 mins
+                            </div>
+<div class="flex items-center gap-3 text-white/80 text-sm">
+<span class="material-symbols-outlined text-gelaran-yellow">star</span>
+                                98% Satisfaction rate
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component Integration) -->
+<footer class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-6 border-t border-slate-100 bg-white">
+<div class="font-serif italic text-slate-400">Curator Event Platform</div>
+<div class="flex gap-8">
+<a class="font-sans text-xs uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors" href="#">Privacy Policy</a>
+<a class="font-sans text-xs uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors" href="#">Terms of Service</a>
+<a class="font-sans text-xs uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors" href="#">API Docs</a>
+<a class="font-sans text-xs uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors" href="#">Status Page</a>
+</div>
+<div class="font-sans text-xs uppercase tracking-widest text-slate-400">© 2024 Curator Event Platform. All rights reserved.</div>
+</footer>
+</body></html>

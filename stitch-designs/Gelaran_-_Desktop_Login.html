@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-low": "#f4f3f1",
+                        "primary": "#672200",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#251a00",
+                        "on-tertiary-container": "#f1b803",
+                        "surface-container-high": "#e9e8e6",
+                        "on-primary-fixed": "#370e00",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3130",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#aaefee",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "tertiary-container": "#654b00",
+                        "primary-fixed-dim": "#ffb598",
+                        "error": "#ba1a1a",
+                        "surface": "#faf9f7",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#246d6d",
+                        "primary-fixed": "#ffdbce",
+                        "surface-dim": "#dadad8",
+                        "secondary-container": "#a7eceb",
+                        "surface-bright": "#faf9f7",
+                        "on-error": "#ffffff",
+                        "outline": "#6f7978",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "tertiary": "#483500",
+                        "on-primary-container": "#ffae8e",
+                        "on-surface": "#1a1c1b",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#a63b00",
+                        "secondary": "#1e6868",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bec8c8",
+                        "on-surface-variant": "#3f4948",
+                        "primary-container": "#8d3100",
+                        "background": "#faf9f7",
+                        "tertiary-fixed": "#ffdf9a",
+                        "surface-variant": "#e3e2e0",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "on-secondary-fixed": "#002020",
+                        "inverse-primary": "#ffb598",
+                        "surface-container": "#efeeec",
+                        "on-background": "#1a1c1b",
+                        "inverse-on-surface": "#f1f1ef"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0px 20px 50px rgba(0, 32, 32, 0.04);
+        }
+        .cta-gradient {
+            background: linear-gradient(to top, #672200, #8d3100);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 z-50 bg-white dark:bg-[#faf9f7] no-border bg-[#faf9f7] flat no shadows">
+<nav class="flex justify-between items-center w-full px-12 py-6">
+<div class="text-2xl font-['Noto_Serif'] font-black text-[#015959] dark:text-[#015959]">
+                Gelaran
+            </div>
+<div class="flex items-center gap-6">
+<button class="hover:bg-[#efeeec] transition-colors duration-300 p-2 rounded-full flex items-center justify-center text-[#015959]">
+<span class="material-symbols-outlined" data-icon="light_mode">light_mode</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="min-h-screen flex items-stretch">
+<!-- Left/Brand Panel: Editorial Brand Image -->
+<section class="hidden lg:flex lg:w-3/5 relative overflow-hidden bg-surface-container">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-90 mix-blend-multiply grayscale-[0.2]" data-alt="Stunning architectural detail of a Javanese palace heritage site in Solo, Indonesia, featuring intricate wood carvings and soft morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmsN8i1VFRYb23lkGJh1NyRupq1_s6H9YdW7UijQAiZ8qscXpnh9Y_BYHCqLL98eOu7-0OEIQKHges0gxr2eHTWrTjYJSVRyYzjgvkCZ1LYZ3VeTiJ9FvtBTll7WQEXqFYP9fmJFBDBsEe5_88KHe8xm_PIT9hD8qeHUGMO0NVcSbbfUN0JBJOySBKdV6vPCD0rAKr1IupHNa-zfwkAq7T0x9EzJRv-AiPLPU_Y0vVJROxrsncUCrPan4L9NKnn6uOcDu6YQWOqNw"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-surface-container/80 to-transparent z-10"></div>
+<div class="relative z-20 flex flex-col justify-end p-24 max-w-3xl">
+<h1 class="font-headline font-black text-6xl lg:text-7xl text-[#015959] leading-[1.1] tracking-tight mb-8">
+                    Rediscover Solo's Heritage
+                </h1>
+<div class="flex items-center gap-4 py-4 px-6 bg-surface-container-lowest/40 backdrop-blur-md rounded-lg w-fit border border-white/20">
+<span class="material-symbols-outlined text-[#015959]" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="text-[#002020] font-medium tracking-wide text-sm uppercase">Preserving culture for future generations.</p>
+</div>
+</div>
+</section>
+<!-- Right/Login Panel: Pure White Background -->
+<section class="w-full lg:w-2/5 bg-surface-container-lowest flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 relative">
+<!-- Secure Accent Chip -->
+<div class="absolute top-32 right-12 lg:right-24">
+<div class="flex items-center gap-2 px-3 py-1 bg-[#FBC117]/10 rounded-full">
+<span class="material-symbols-outlined text-[#483500] text-sm" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-[#483500]">Secure Access</span>
+</div>
+</div>
+<div class="max-w-md w-full mx-auto editorial-shadow p-10 bg-white rounded-xl border border-outline-variant/10">
+<header class="mb-12">
+<h2 class="font-headline text-4xl font-bold text-[#015959] mb-3 leading-tight">Welcome Back</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed">Enter your credentials to access the digital archives of the royal city.</p>
+</header>
+<form class="space-y-8">
+<!-- Email Field -->
+<div class="relative group">
+<label class="block text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2" for="email">Email Address</label>
+<input class="w-full bg-surface-container-low border-b-2 border-outline-variant focus:border-[#1e6868] focus:ring-0 transition-all duration-300 py-3 px-0 placeholder:text-outline/40 outline-none appearance-none rounded-none" id="email" placeholder="archivist@gelaran.com" type="email"/>
+</div>
+<!-- Password Field -->
+<div class="relative group">
+<label class="block text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2" for="password">Password</label>
+<input class="w-full bg-surface-container-low border-b-2 border-outline-variant focus:border-[#1e6868] focus:ring-0 transition-all duration-300 py-3 px-0 outline-none appearance-none rounded-none" id="password" placeholder="••••••••" type="password"/>
+<div class="mt-3 flex justify-end">
+<a class="text-[#29B3B6] text-xs font-semibold hover:underline underline-offset-4 decoration-[#29B3B6] transition-all" href="#">Forgot Password?</a>
+</div>
+</div>
+<!-- CTA Button -->
+<button class="cta-gradient w-full py-5 rounded-lg text-white font-bold text-sm uppercase tracking-widest shadow-xl shadow-primary/10 hover:opacity-90 active:scale-[0.98] transition-all duration-300" type="submit">
+                        Sign In
+                    </button>
+</form>
+<footer class="mt-12 text-center">
+<p class="text-on-surface-variant text-sm">
+                        New to the archive? 
+                        <a class="text-[#29B3B6] font-bold hover:underline underline-offset-4 ml-1" href="#">Create an Account</a>
+</p>
+</footer>
+</div>
+<!-- Contextual Footer (Simplified for Login) -->
+<div class="mt-auto pt-12 flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-[#015959]/40">
+<a class="hover:text-[#015959] transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-[#015959] transition-colors" href="#">Terms of Service</a>
+<span class="cursor-default">© 2024 Gelaran Archivist</span>
+</div>
+</section>
+</main>
+<!-- Global Footer Shared Component -->
+<footer class="fixed bottom-8 w-full flex justify-center gap-8 px-16 w-full bg-transparent no-border flat no shadows">
+<!-- Using links from JSON -->
+<div class="flex gap-8 items-center">
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#015959]/50 hover:text-[#015959] hover:underline decoration-[#29B3B6] underline-offset-4 transition-all" href="#">Privacy Policy</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#015959]/50 hover:text-[#015959] hover:underline decoration-[#29B3B6] underline-offset-4 transition-all" href="#">Terms of Service</a>
+<a class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#015959]/50 hover:text-[#015959] hover:underline decoration-[#29B3B6] underline-offset-4 transition-all" href="#">Cookie Settings</a>
+</div>
+</footer>
+</body></html>

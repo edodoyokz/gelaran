@@ -291,7 +291,7 @@ export function POSSeatSelector({
                                 <div className="space-y-2 overflow-x-auto pb-4 max-h-96">
                                     {section.rows.map((row) => (
                                         <div key={row.id} className="flex items-center gap-2">
-                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-right flex-shrink-0">
+                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-right shrink-0">
                                                 {row.rowLabel}
                                             </span>
                                             <div className="flex gap-1 flex-wrap">
@@ -325,7 +325,7 @@ export function POSSeatSelector({
                                                     );
                                                 })}
                                             </div>
-                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-left flex-shrink-0">
+                                            <span className="w-6 text-xs font-mono font-bold text-gray-400 text-left shrink-0">
                                                 {row.rowLabel}
                                             </span>
                                         </div>

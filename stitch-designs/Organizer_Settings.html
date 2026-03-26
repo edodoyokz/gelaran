@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organizer Settings | Gelaran</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus_Jakarta_Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#edeee9",
+              "outline": "#8f7065",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "tertiary": "#755800",
+              "on-tertiary-container": "#fffbff",
+              "on-tertiary-fixed": "#251a00",
+              "secondary": "#1e6868",
+              "on-background": "#1a1c19",
+              "secondary-fixed-dim": "#8ed2d2",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed-dim": "#f7be11",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "on-primary-fixed-variant": "#7f2b00",
+              "tertiary-container": "#936f00",
+              "surface-container-low": "#f3f4ef",
+              "on-primary-fixed": "#370e00",
+              "inverse-primary": "#ffb598",
+              "primary": "#a23a00",
+              "surface-variant": "#e2e3de",
+              "surface-container-highest": "#e2e3de",
+              "on-secondary-container": "#246d6d",
+              "on-surface-variant": "#5b4137",
+              "on-secondary-fixed": "#002020",
+              "surface-dim": "#d9dad6",
+              "background": "#f9faf5",
+              "error": "#ba1a1a",
+              "surface-container-high": "#e8e9e4",
+              "surface-bright": "#f9faf5",
+              "primary-fixed": "#ffdbce",
+              "on-error-container": "#93000a",
+              "outline-variant": "#e3bfb1",
+              "secondary-fixed": "#aaefee",
+              "surface": "#f9faf5",
+              "inverse-surface": "#2f312e",
+              "inverse-on-surface": "#f0f1ec",
+              "tertiary-fixed": "#ffdf9a",
+              "primary-fixed-dim": "#ffb598",
+              "on-tertiary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-tint": "#a63b00",
+              "on-surface": "#1a1c19",
+              "primary-container": "#cb4a00",
+              "on-secondary-fixed-variant": "#004f50",
+              "on-primary": "#ffffff",
+              "secondary-container": "#a7eceb"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #1a1c19; }
+        .serif-text { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .primary-gradient { background: linear-gradient(135deg, #a23a00 0%, #cb4a00 100%); }
+    </style>
+</head>
+<body class="bg-surface-container-lowest min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md shadow-sm dark:shadow-none flex justify-between items-center px-8 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-['Noto_Serif'] font-black text-[#a23a00] dark:text-[#f95d00]">Gelaran</span>
+<div class="hidden md:flex gap-6">
+<a class="text-neutral-600 dark:text-neutral-400 font-['Plus_Jakarta_Sans'] hover:text-[#a23a00] transition-colors duration-200" href="#">Events</a>
+<a class="text-neutral-600 dark:text-neutral-400 font-['Plus_Jakarta_Sans'] hover:text-[#a23a00] transition-colors duration-200" href="#">Attendees</a>
+<a class="text-neutral-600 dark:text-neutral-400 font-['Plus_Jakarta_Sans'] hover:text-[#a23a00] transition-colors duration-200" href="#">Reports</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 mr-4">
+<span class="material-symbols-outlined text-neutral-600">notifications</span>
+<span class="material-symbols-outlined text-neutral-600">help</span>
+</div>
+<button class="primary-gradient text-white px-5 py-2 rounded-xl font-bold text-sm shadow-sm transition-opacity active:opacity-80">
+                Create Event
+            </button>
+<img alt="Organizer Profile" class="w-8 h-8 rounded-full ml-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM7ttUlyArfVrS0tEHUIcT4dwQjovM4tKC0Oez0Ia_otOZTYRQoT7WtYqhuhCHPahT2nakXOX69IKBdUNGagwnBj1ISzIVLZA-c5asUFIc3t9POaobjoY6qgvlGKowtIp0cJxBWUEOCYGoNdicaqqi4D9Kw9A3QysXlZT1dDHeOoDd_v9xTdlsQ2AuYRDU3RCWKA4bjqZRIeTLRBCWo1_cVywm5s1iwM1BS3tBLl2QzBr2pKBhoBqDc4Idl9tPWMhGMXDWiBprrGQ"/>
+</div>
+</nav>
+<div class="flex pt-16">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 pt-20 bg-[#f3f4ef] dark:bg-neutral-900 flex flex-col">
+<div class="px-8 mb-8">
+<h2 class="font-['Noto_Serif'] text-[#1e6868] font-bold text-lg">Organizer Settings</h2>
+<p class="text-xs text-neutral-500 font-medium uppercase tracking-widest mt-1">Cultural Curator Portal</p>
+</div>
+<nav class="flex-1">
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-[#1e6868] dark:text-[#2a8a8a] font-bold rounded-l-xl ml-4 pl-4 py-3 shadow-sm transition-transform active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Profile</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 dark:text-neutral-400 hover:text-[#1e6868] px-8 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Payouts</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 dark:text-neutral-400 hover:text-[#1e6868] px-8 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">palette</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Branding</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 dark:text-neutral-400 hover:text-[#1e6868] px-8 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Notifications</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 dark:text-neutral-400 hover:text-[#1e6868] px-8 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Team &amp; Roles</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 dark:text-neutral-400 hover:text-[#1e6868] px-8 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Security</span>
+</a>
+</nav>
+<div class="p-6">
+<button class="w-full py-3 px-4 rounded-xl border-2 border-[#1e6868] text-[#1e6868] font-bold text-xs hover:bg-[#1e6868] hover:text-white transition-colors">
+                    View Public Page
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 p-12 bg-white">
+<div class="max-w-5xl mx-auto">
+<header class="mb-12">
+<h1 class="serif-text text-5xl font-black text-on-surface mb-2 tracking-tight">Profile &amp; Identity</h1>
+<p class="text-on-surface-variant text-lg font-medium">Manage how your cultural organization is presented to the world.</p>
+</header>
+<div class="grid grid-cols-12 gap-8">
+<!-- Organization Profile Section (Bento Style) -->
+<section class="col-span-8 flex flex-col gap-8">
+<div class="bg-surface-container-low rounded-xl p-8 transition-all hover:shadow-md">
+<div class="flex items-start justify-between mb-8">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<img class="w-24 h-24 rounded-xl object-cover shadow-sm" data-alt="modern minimalist company logo design on clean studio background featuring abstract geometric shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA5PWA3wvjHd2m5K1d143TqSO2j7S7MCohQc5yAjy4Neb2gyEel2GzPUL-hcRu1KAbwn-2ijnF1s-dSoO0qPH8TbS4Lv7V21Wr5ArVCEnUgV6ljjhm2_1xx7bPUqUkgYDVd4UMSj5RxTCd4hmXgrKfPdLoyijDLq93fnhRCzhZETGSpfCFKv1xwkgK3VtWycw1h5mjmYUMUdvqLndYYKgztwDh5kD7XsALFQ4OnpbxmjMi5-Q4CbEcP3tJFtdYlTCIBCRNNakDE4g"/>
+<div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-white">photo_camera</span>
+</div>
+</div>
+<div>
+<h3 class="serif-text text-2xl font-bold text-on-surface">Artisan Collective</h3>
+<p class="text-secondary font-semibold">Premium Member since 2021</p>
+</div>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">Verified Hub</span>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="col-span-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Organization Bio</label>
+<textarea class="w-full bg-surface-container-high border-none rounded-xl p-4 text-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" rows="3">A curated ecosystem for independent artists, musicians, and performance poets in the heart of the city.</textarea>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Display Name</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl p-4 text-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" type="text" value="Artisan Collective"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Contact Email</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl p-4 text-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all" type="email" value="curator@artisan.co"/>
+</div>
+</div>
+</div>
+<!-- Payout Settings Card -->
+<div class="bg-surface-container-low rounded-xl p-8">
+<div class="flex justify-between items-center mb-6">
+<h3 class="serif-text text-xl font-bold">Payout Infrastructure</h3>
+<span class="material-symbols-outlined text-secondary">payments</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary-container flex items-center justify-center rounded-lg text-secondary">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Citibank Business **** 9201</p>
+<p class="text-xs text-on-surface-variant font-medium">Default Payout Account</p>
+</div>
+</div>
+<button class="text-secondary font-bold text-sm px-4 py-2 hover:bg-secondary-container rounded-lg transition-colors">Change</button>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-white p-4 rounded-xl shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Frequency</p>
+<p class="font-bold text-on-surface">Weekly</p>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Tax Status</p>
+<p class="font-bold text-secondary">Completed</p>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Next Payout</p>
+<p class="font-bold text-primary">Oct 12</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Sidebar Content (Settings) -->
+<aside class="col-span-4 flex flex-col gap-8">
+<!-- Branding Panel -->
+<div class="bg-surface-container-high rounded-xl p-6">
+<h3 class="serif-text text-lg font-bold mb-4">Branding &amp; Aesthetics</h3>
+<p class="text-xs text-on-surface-variant mb-6 leading-relaxed">Customize how your public event pages appear to attendees.</p>
+<div class="mb-6">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">Primary Theme Color</label>
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-[#a23a00] border-4 border-white shadow-sm ring-2 ring-primary cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-[#1e6868] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-[#fbc117] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-[#000000] hover:scale-110 transition-transform cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-xs">add</span>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/20 mb-4">
+<p class="text-xs font-bold mb-2">Logo Placement</p>
+<div class="flex gap-2">
+<div class="flex-1 h-12 bg-surface-container-high rounded-lg flex items-center justify-center border-2 border-primary">
+<span class="material-symbols-outlined text-sm">format_align_left</span>
+</div>
+<div class="flex-1 h-12 bg-surface-container-high rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">format_align_center</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Notifications Quick-Toggles -->
+<div class="bg-white rounded-xl shadow-sm p-6 border border-surface-container-high">
+<h3 class="serif-text text-lg font-bold mb-4">Notifications</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-on-surface">System Alerts</span>
+<div class="w-10 h-5 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-on-surface">Sales Reports</span>
+<div class="w-10 h-5 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm font-medium text-on-surface-variant">Guest Inquiries</span>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full relative">
+<div class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Roles & Team Members (Full Width) -->
+<section class="mt-12 bg-surface-container-low rounded-xl p-8">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="serif-text text-2xl font-bold">Team &amp; Permissions</h3>
+<p class="text-on-surface-variant text-sm font-medium">Manage access for your organization's staff.</p>
+</div>
+<button class="flex items-center gap-2 bg-secondary text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg">person_add</span>
+                            Invite Member
+                        </button>
+</div>
+<div class="space-y-2">
+<!-- List Item 1 -->
+<div class="group flex items-center justify-between p-5 bg-white rounded-xl hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<img alt="Sarah Chen" class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRbeV6aa5X-zoUgQFI4AYeX99xhzLzjjIQ9j2IGwyP8kbQmEWt59M7Wo-UyCrTB7h5M7w0bjr7XtPK4KNEd892Nug31ndz4SSW6_HanP6j8CFZf_aZWh6m8Ta8criIDu00ICP5CLsbMBE5Sf1hTYCkEart-7neTvqlU4hEPNpUijvDbKhDiF0FA_auCL9G4Xi7fmxJCkbTt3x1xfouf75RW7fkDecGxpY-e89VocscQXdG7FxZ13T5BwXPxWbVPVTYtICOmYy2kHQ"/>
+<div>
+<p class="font-bold text-on-surface">Sarah Chen</p>
+<p class="text-xs text-on-surface-variant">sarah.c@artisan.co</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-xs font-bold">Admin</span>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="group flex items-center justify-between p-5 bg-white rounded-xl hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<img alt="Marcus Aurelius" class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6eJ0ZD38AZlYDO2W01p57ihoW_cMluDoBYvoDEWZcQUc7ySAOyvW_S7GBymj2yhFERhpFkxzeNqNGa841LrOuvZrp4r8Y-VjI_hi_kLwEoWDMgOpJuW9lQNHc-9arlnc0Hsg-qiwDEcFscI-L938Oc_NHgufvyTVFouaikGvXKS4CYGyeZf0Qg-5v4Upxdy5vjOdx06SgnBI1j_5Bu9mqe3Ba_5G5KEd7YgvxYu0jFVYnf2R2OOGB8FqjWctPZ-fDnfjfv_8HwPM"/>
+<div>
+<p class="font-bold text-on-surface">Marcus Aurelius</p>
+<p class="text-xs text-on-surface-variant">m.a@artisan.co</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="bg-surface-container-highest text-on-surface-variant px-4 py-1.5 rounded-full text-xs font-bold">Editor</span>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="group flex items-center justify-between p-5 bg-white rounded-xl hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<img alt="Tiana J." class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpCG9JTifIQIYStAzuQCqdLJUOqdtu4Hlv_juUFgwvUgOX1E8KZ1xa4Ug_cw6X7gZI14urPH-kXsm3LwBAVE1yQgUmTDdsFI97-B5XpStsu5lG6XpDdMTNK03XpZaa9UNG1CjjCSszwwGPcziNikeG5s6EgiSBi5hTSaiyfgKxyX-HP49FuShAp6YRfY74mKytM7bPP-6XtYQwfAh_bE-yjyG-8JUXtpVmYUYuMDXgK5OCl7wwxXD9-R49Vz2WeeIwD2zxzSWgDys"/>
+<div>
+<p class="font-bold text-on-surface">Tiana Jenkins</p>
+<p class="text-xs text-on-surface-variant">tiana@artisan.co</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-4 py-1.5 rounded-full text-xs font-bold">Gate Staff</span>
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Section (Horizontal Grid) -->
+<section class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+<div class="bg-[#f9faf5] border border-surface-container-high rounded-xl p-8">
+<div class="flex items-center gap-4 mb-6">
+<div class="p-3 bg-red-50 text-error rounded-xl">
+<span class="material-symbols-outlined">shield_lock</span>
+</div>
+<h3 class="serif-text text-xl font-bold">Account Security</h3>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-bold text-sm">Two-Factor Authentication</p>
+<p class="text-xs text-on-surface-variant">Secure your account with SMS or App</p>
+</div>
+<div class="w-12 h-6 bg-secondary rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<hr class="border-surface-container"/>
+<button class="text-primary font-bold text-sm hover:underline flex items-center gap-2">
+                                Change Password <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="bg-[#f9faf5] border border-surface-container-high rounded-xl p-8">
+<h3 class="serif-text text-lg font-bold mb-4">Active Sessions</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">laptop_mac</span>
+<div>
+<p class="font-bold">Chrome on MacOS</p>
+<p class="text-[10px] text-on-surface-variant">IP: 192.168.1.45 • London, UK</p>
+</div>
+</div>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-tighter">Current</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">smartphone</span>
+<div>
+<p class="font-bold">iPhone 13 Pro</p>
+<p class="text-[10px] text-on-surface-variant">IP: 172.20.10.1 • London, UK</p>
+</div>
+</div>
+<button class="text-[10px] font-bold text-error uppercase hover:underline">Revoke</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Floating Save Button -->
+<div class="fixed bottom-8 right-8 flex gap-4">
+<button class="bg-white border-2 border-primary text-primary px-8 py-3 rounded-xl font-bold text-sm shadow-lg hover:bg-primary/5 transition-colors">
+            Discard Changes
+        </button>
+<button class="primary-gradient text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all">
+            Save Settings
+        </button>
+</div>
+</body></html>

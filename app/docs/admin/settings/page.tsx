@@ -1,83 +1,91 @@
+import { CreditCard, Globe, Mail, Settings } from "lucide-react";
 import { Breadcrumb } from "@/components/docs/Breadcrumb";
 import { FeatureCard } from "@/components/docs/FeatureCard";
-import { Settings, CreditCard, Mail, Globe } from "lucide-react";
+import { DocsChecklist, DocsHero, DocsSection, DocsStat } from "@/components/docs/docs-shell";
 
 export default function AdminSettingsDocsPage() {
     return (
-        <div className="animate-fade-in">
+        <div className="space-y-8 animate-fade-in">
             <Breadcrumb
                 items={[
-                    { label: "Dokumentasi", href: "/docs" },
+                    { label: "Documentation", href: "/docs" },
                     { label: "Admin", href: "/docs/admin" },
                     { label: "Settings" },
                 ]}
             />
 
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-                Platform Settings
-            </h1>
-            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                Panduan untuk mengonfigurasi pengaturan platform Gelaran.
-            </p>
+            <DocsHero
+                eyebrow="Platform controls"
+                title="Manage global settings without breaking operational consistency"
+                description="The settings workspace centralizes the platform defaults that affect organizer economics, notifications, and platform-level behavior."
+                meta={
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <DocsStat
+                            label="Control type"
+                            value="Global"
+                            description="Changes in this area affect how multiple operational surfaces behave across Gelaran."
+                        />
+                        <DocsStat
+                            label="Primary use"
+                            value="Stewardship"
+                            description="Treat settings changes as controlled updates backed by current operational context."
+                        />
+                        <DocsStat
+                            label="Review habit"
+                            value="Validate impact"
+                            description="Check adjacent finance and support routes after major settings changes."
+                        />
+                    </div>
+                }
+            />
 
-            {/* Feature Cards */}
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Pengaturan Tersedia</h2>
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-                <FeatureCard
-                    icon={Globe}
-                    title="Pengaturan Umum"
-                    description="Konfigurasi nama, logo, dan branding platform."
-                    iconBgColor="bg-blue-100"
-                    iconColor="text-blue-600"
-                />
-                <FeatureCard
-                    icon={CreditCard}
-                    title="Payment Gateway"
-                    description="Konfigurasi Midtrans dan metode pembayaran lainnya."
-                    iconBgColor="bg-green-100"
-                    iconColor="text-green-600"
-                />
-                <FeatureCard
-                    icon={Mail}
-                    title="Email Notifikasi"
-                    description="Atur template email dan konfigurasi SMTP."
-                    iconBgColor="bg-purple-100"
-                    iconColor="text-purple-600"
-                />
-                <FeatureCard
-                    icon={Settings}
-                    title="Biaya Platform"
-                    description="Tentukan persentase fee platform untuk setiap transaksi."
-                    iconBgColor="bg-amber-100"
-                    iconColor="text-amber-600"
-                />
-            </div>
-
-            {/* Settings List */}
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Konfigurasi Penting</h2>
-            <div className="space-y-4 mb-12">
-                <div className="p-4 border border-slate-200 rounded-lg">
-                    <h3 className="font-semibold text-slate-900 mb-2">Payment Gateway</h3>
-                    <ul className="list-disc list-inside space-y-1 text-slate-600 text-sm">
-                        <li>Server Key dan Client Key Midtrans</li>
-                        <li>Mode sandbox atau production</li>
-                        <li>Callback URL untuk webhook</li>
-                    </ul>
+            <DocsSection
+                title="Settings groups"
+                description="The settings area is organized around the controls that shape brand presence, payments, communication, and commercial defaults."
+            >
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    <FeatureCard
+                        icon={Globe}
+                        title="General settings"
+                        description="Maintain branding, core platform identity, and foundational public-facing defaults."
+                    />
+                    <FeatureCard
+                        icon={CreditCard}
+                        title="Payment configuration"
+                        description="Review gateway credentials, environment alignment, and downstream payment behavior."
+                        iconBgColor="bg-(--success-bg)"
+                        iconColor="text-emerald-600"
+                    />
+                    <FeatureCard
+                        icon={Mail}
+                        title="Communication rules"
+                        description="Adjust email-oriented behavior and related notification expectations for the platform."
+                        iconBgColor="bg-[rgba(99,102,241,0.08)]"
+                        iconColor="text-indigo-600"
+                    />
+                    <FeatureCard
+                        icon={Settings}
+                        title="Commercial defaults"
+                        description="Manage platform fee expectations and other settings that affect organizer operations."
+                        iconBgColor="bg-(--warning-bg)"
+                        iconColor="text-amber-600"
+                    />
                 </div>
-                <div className="p-4 border border-slate-200 rounded-lg">
-                    <h3 className="font-semibold text-slate-900 mb-2">Platform Fee</h3>
-                    <ul className="list-disc list-inside space-y-1 text-slate-600 text-sm">
-                        <li>Persentase fee per transaksi (default: 5%)</li>
-                        <li>Fee minimum per transaksi</li>
-                        <li>Jadwal payout ke organizer</li>
-                    </ul>
-                </div>
-            </div>
+            </DocsSection>
 
-            {/* Footer */}
-            <div className="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
-                <span>Terakhir diperbarui: Januari 2026</span>
-            </div>
+            <DocsSection
+                title="Critical review checklist"
+                description="Use a lightweight checklist before shipping platform-level changes so finance and support teams stay aligned."
+            >
+                <DocsChecklist
+                    items={[
+                        "Confirm the intended change, why it is needed, and which operational surfaces will feel the impact first.",
+                        "Validate external integrations such as payment and communication settings before applying production updates.",
+                        "Check whether organizer-facing economics, customer messaging, or admin review flows need to be revalidated after the change.",
+                        "Record the update in the implementation or operational plan when it materially affects procedures or expectations."
+                    ]}
+                />
+            </DocsSection>
         </div>
     );
 }

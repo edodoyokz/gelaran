@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EventPoint POS - Gelaran</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-primary": "#8ed2d2",
+              "surface-bright": "#e2fffe",
+              "tertiary-fixed": "#7bf5f8",
+              "surface-tint": "#1e6868",
+              "primary-container": "#015959",
+              "tertiary-fixed-dim": "#5cd8db",
+              "surface-container-high": "#aff5f4",
+              "surface-container": "#b5faf9",
+              "on-tertiary-fixed": "#002021",
+              "on-surface-variant": "#3f4948",
+              "on-secondary": "#ffffff",
+              "outline-variant": "#bec8c8",
+              "on-tertiary-fixed-variant": "#004f51",
+              "tertiary-container": "#00595b",
+              "background": "#e2fffe",
+              "surface-variant": "#aaefee",
+              "surface-dim": "#a1e6e5",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "secondary": "#a63b00",
+              "on-secondary-container": "#521900",
+              "on-primary-container": "#89cdcd",
+              "primary": "#004040",
+              "on-primary-fixed": "#002020",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#8ed2d2",
+              "inverse-surface": "#003737",
+              "secondary-fixed-dim": "#ffb598",
+              "primary-fixed": "#aaefee",
+              "on-secondary-fixed-variant": "#7f2b00",
+              "surface-container-low": "#c1fffe",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed-variant": "#004f50",
+              "on-secondary-fixed": "#370e00",
+              "on-tertiary-container": "#56d4d6",
+              "on-background": "#002020",
+              "secondary-fixed": "#ffdbce",
+              "on-tertiary": "#ffffff",
+              "on-surface": "#002020",
+              "on-error": "#ffffff",
+              "on-error-container": "#93000a",
+              "surface": "#e2fffe",
+              "secondary-container": "#fd6005",
+              "tertiary": "#004041",
+              "surface-container-highest": "#aaefee",
+              "outline": "#6f7978"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-on-surface">
+<!-- Left Sidebar: SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 bg-teal-50 w-64 z-20">
+<div class="px-6 mb-8">
+<h1 class="font-serif text-2xl font-bold text-teal-900">Gelaran</h1>
+<div class="mt-4 p-4 bg-white rounded-xl shadow-sm">
+<div class="flex items-center gap-3">
+<img alt="Operator" class="w-10 h-10 rounded-full" data-alt="professional portrait of a young man with a friendly expression in a modern business setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr0iM_3h6cxOaVLi_Yjpn1jsSO9C4n1uRc2PoDoo6MruxzIHUh7Vo1Wh6VH9dmeWEmykv0RXkHNq34JOFYfy0AZLfr6WPXTiVK7HZ9PztyPpLT79MLEA8b70XNtPoo9Jb4ovbW1JbkLl1ovq850Z5MVBkffgOmk98FZ2BY6MF1A66EiUVcpXYo-PWt1CqnVHDPQCwCiAZWt4sWVpwBBGGMmbAuKynsV5vH2vhfF5RHg3W6_FcgwdwEi7b3bItzrVSd8OHbZKeag1Q"/>
+<div>
+<p class="font-sans uppercase tracking-widest text-[10px] text-teal-900/60">Terminal 04</p>
+<p class="font-bold text-teal-900 text-sm">Active Session</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-white text-teal-900 shadow-sm rounded-l-xl ml-4 pl-4 py-3 flex items-center gap-3 translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-sans uppercase tracking-widest text-xs">Dashboard</span>
+</a>
+<a class="text-teal-800/60 ml-4 pl-4 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-sans uppercase tracking-widest text-xs">Ticket Office</span>
+</a>
+<a class="text-teal-800/60 ml-4 pl-4 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-sans uppercase tracking-widest text-xs">Customers</span>
+</a>
+<a class="text-teal-800/60 ml-4 pl-4 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-sans uppercase tracking-widest text-xs">Analytics</span>
+</a>
+<a class="text-teal-800/60 ml-4 pl-4 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="font-sans uppercase tracking-widest text-xs">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 px-4 border border-teal-900/20 text-teal-900 font-bold text-xs uppercase tracking-widest hover:bg-teal-900 hover:text-white transition-colors">
+                Close Register
+            </button>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="flex flex-col flex-1 ml-64 mr-96 overflow-hidden">
+<!-- TopAppBar Anchor -->
+<header class="flex justify-between items-center w-full px-8 py-4 bg-white">
+<div class="flex items-center gap-8">
+<div class="relative w-96">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-zinc-400" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-teal-50 border-none focus:ring-2 focus:ring-primary text-sm font-body" placeholder="Search for events, venues, or tickets..." type="text"/>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-teal-900 border-b-2 border-teal-900 font-bold pb-1 text-sm font-sans tracking-tight" href="#">Sales</a>
+<a class="text-zinc-500 font-medium pb-1 hover:text-teal-700 transition-colors text-sm font-sans tracking-tight" href="#">Events</a>
+<a class="text-zinc-500 font-medium pb-1 hover:text-teal-700 transition-colors text-sm font-sans tracking-tight" href="#">Inventory</a>
+<a class="text-zinc-500 font-medium pb-1 hover:text-teal-700 transition-colors text-sm font-sans tracking-tight" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-6 py-2 bg-primary text-white font-bold text-sm transition-transform active:scale-95">
+                    New Order
+                </button>
+<div class="flex gap-2">
+<span class="material-symbols-outlined p-2 hover:bg-teal-50 cursor-pointer transition-colors text-teal-900" data-icon="settings">settings</span>
+<span class="material-symbols-outlined p-2 hover:bg-teal-50 cursor-pointer transition-colors text-teal-900" data-icon="help">help</span>
+<span class="material-symbols-outlined p-2 hover:bg-teal-50 cursor-pointer transition-colors text-teal-900" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto p-8 space-y-12">
+<!-- Section: Event Selection -->
+<section>
+<div class="flex justify-between items-end mb-6">
+<div>
+<h2 class="font-serif text-3xl font-bold text-teal-900">Active Events</h2>
+<p class="text-zinc-500 text-sm mt-1">Select an event to start processing tickets</p>
+</div>
+<button class="text-primary font-bold text-sm hover:underline decoration-2">View Calendar</button>
+</div>
+<!-- Bento Grid for Events -->
+<div class="grid grid-cols-12 gap-4 h-[400px]">
+<!-- Primary Feature Event -->
+<div class="col-span-8 relative group overflow-hidden bg-primary rounded-xl">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="vibrant music festival stage with colorful lights and a large crowd of people enjoying the performance at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMEcIwSQuMpiXrsUhHHn6b1zUKT_6LHPNOUOmYkryVQUZX0PTTgrm0pRm_4b2dOTJVTylKI17ENREF95CggQZoCPvq_6Oei-gunGSM5B8yT6rSy8VsM7KiA1FWW0EOwD2RkElXKfL-BDEdot-Y-gepkyNBdS8Etx02x4cEZ6ekfbjlO5CEBrfH2sBNk6fjhqe19MDN9lMpI_Ibc1Vswo2gwM9qLoGI_Xe7tY_hbIeTG_7GwydcJW1cKQMyV8iKD4dDJRWwEKOrYHQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8 w-full">
+<span class="inline-block px-3 py-1 bg-secondary-container text-white text-[10px] font-bold tracking-widest uppercase mb-4">Tonight • 20:00</span>
+<h3 class="font-serif text-4xl text-white font-bold leading-tight">Neon Skyline Music Festival 2024</h3>
+<div class="flex justify-between items-center mt-6">
+<p class="text-teal-100/80 text-sm max-w-sm">Main Arena • North Gate Entry • 1,240 tickets remaining</p>
+<button class="px-8 py-4 bg-white text-teal-900 font-bold text-lg shadow-xl active:scale-95 transition-all">SELECT EVENT</button>
+</div>
+</div>
+</div>
+<!-- Secondary Event Stack -->
+<div class="col-span-4 flex flex-col gap-4">
+<div class="flex-1 relative group overflow-hidden bg-zinc-100 rounded-xl">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="professional auditorium with soft lighting and empty seating focused on a minimalist presentation stage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrBXVlkzKQGP8xdfMnmScu-nfSaMhz-dOxDaIGanIX4_uyQxdcWKdM4hwHNOEeg9aNPkp8835hNFp_FBYY7zM2M25r7qrx5bo_MAm1mq5KzF0UJ1WwCIdgB1AQM-YyiWf-y5QNhZgEYOncbdA7HiQ0eFZVOj1tdfPqWE7Fy6OY5g578VDIIg0dd2kLKK6YL5idfoV42aZRbxOFtdmo0FmfqSXJ3-0xL6PES79KXJj9qYU2bUG6NdRIRddPC4982Q7PGL4dYmj7sWM"/>
+<div class="relative p-6 h-full flex flex-col">
+<h4 class="font-serif text-xl font-bold text-teal-950">Tech Summit 2024</h4>
+<p class="text-teal-900/60 text-xs mt-1">Conference Hall B • Tomorrow</p>
+<button class="mt-auto self-start px-4 py-2 border border-teal-900 text-teal-900 font-bold text-xs uppercase tracking-widest hover:bg-teal-900 hover:text-white transition-all">Select</button>
+</div>
+</div>
+<div class="flex-1 relative group overflow-hidden bg-zinc-100 rounded-xl">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="interior of a luxury art gallery with sleek white walls and minimalist sculptures under warm spotlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgU7Wcf-tQ82H3667ExjQmUPD-DH0GhlMWGfZuKHPgdOYQjQY2WycO_eGw8fYh-LidCWvOfZhRm_DGJSAFNIAAj7v7ZPVaJpriRIc_99DanNLAxLtwQomUmmv2-XZEjPyeBtyLvKqfyaVy8UULi9X5N2PkodbG5BN6ksfVcGKozkEMynruJOV8rIqlki3aiISNph2Vgz2pug1WH_BtptcraGgX1Pzo9XkODVFcBU9RDCrqt55bn9nes_6sskP1YL9e42buiI_UuUo"/>
+<div class="relative p-6 h-full flex flex-col">
+<h4 class="font-serif text-xl font-bold text-teal-950">Grand Art Gala</h4>
+<p class="text-teal-900/60 text-xs mt-1">Exhibition Wing • Sat, 15 Oct</p>
+<button class="mt-auto self-start px-4 py-2 border border-teal-900 text-teal-900 font-bold text-xs uppercase tracking-widest hover:bg-teal-900 hover:text-white transition-all">Select</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Ticket Selection -->
+<section class="pb-12">
+<div class="flex items-center gap-4 mb-6">
+<h2 class="font-serif text-2xl font-bold text-teal-900">Neon Skyline • Ticket Options</h2>
+<div class="h-px flex-1 bg-teal-50"></div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<!-- Ticket Card: VIP -->
+<div class="bg-surface-container-lowest p-6 flex justify-between items-center border-l-4 border-secondary-container shadow-sm">
+<div>
+<span class="text-secondary font-bold text-[10px] tracking-widest uppercase">Premium Experience</span>
+<h4 class="font-serif text-xl font-bold text-teal-950 mt-1">VIP Backstage Access</h4>
+<p class="text-zinc-500 text-sm mt-1">Priority Entry + Lounge Access</p>
+<p class="text-teal-900 font-bold text-2xl mt-4">$249.00</p>
+</div>
+<div class="flex items-center gap-4 bg-teal-50 p-2">
+<button class="w-12 h-12 flex items-center justify-center bg-white text-teal-900 border border-teal-100 hover:bg-teal-100 transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="text-3xl font-serif font-bold w-12 text-center text-teal-900">0</span>
+<button class="w-12 h-12 flex items-center justify-center bg-teal-900 text-white hover:bg-teal-800 transition-colors shadow-lg">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Ticket Card: Regular -->
+<div class="bg-surface-container-lowest p-6 flex justify-between items-center border-l-4 border-primary shadow-sm">
+<div>
+<span class="text-teal-600 font-bold text-[10px] tracking-widest uppercase">Standard Entry</span>
+<h4 class="font-serif text-xl font-bold text-teal-950 mt-1">General Admission</h4>
+<p class="text-zinc-500 text-sm mt-1">Main Floor Access Only</p>
+<p class="text-teal-900 font-bold text-2xl mt-4">$85.00</p>
+</div>
+<div class="flex items-center gap-4 bg-teal-50 p-2">
+<button class="w-12 h-12 flex items-center justify-center bg-white text-teal-900 border border-teal-100 hover:bg-teal-100 transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="text-3xl font-serif font-bold w-12 text-center text-teal-900">2</span>
+<button class="w-12 h-12 flex items-center justify-center bg-teal-900 text-white hover:bg-teal-800 transition-colors shadow-lg">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Ticket Card: Early Bird -->
+<div class="bg-surface-container-lowest p-6 flex justify-between items-center border-l-4 border-zinc-200 shadow-sm opacity-60">
+<div>
+<span class="text-zinc-400 font-bold text-[10px] tracking-widest uppercase">Discounted</span>
+<h4 class="font-serif text-xl font-bold text-zinc-400 mt-1">Early Bird Special</h4>
+<p class="text-zinc-400 text-sm mt-1">Sold Out • Expired 01 Oct</p>
+<p class="text-zinc-400 font-bold text-2xl mt-4">$60.00</p>
+</div>
+<div class="bg-zinc-50 px-4 py-2 text-zinc-400 font-bold uppercase text-[10px] tracking-widest border border-zinc-200">
+                            Unavailable
+                        </div>
+</div>
+<!-- Ticket Card: Student -->
+<div class="bg-surface-container-lowest p-6 flex justify-between items-center border-l-4 border-tertiary shadow-sm">
+<div>
+<span class="text-tertiary font-bold text-[10px] tracking-widest uppercase">Verification Required</span>
+<h4 class="font-serif text-xl font-bold text-teal-950 mt-1">Student / Faculty</h4>
+<p class="text-zinc-500 text-sm mt-1">Valid ID must be presented</p>
+<p class="text-teal-900 font-bold text-2xl mt-4">$45.00</p>
+</div>
+<div class="flex items-center gap-4 bg-teal-50 p-2">
+<button class="w-12 h-12 flex items-center justify-center bg-white text-teal-900 border border-teal-100 hover:bg-teal-100 transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<span class="text-3xl font-serif font-bold w-12 text-center text-teal-900">0</span>
+<button class="w-12 h-12 flex items-center justify-center bg-teal-900 text-white hover:bg-teal-800 transition-colors shadow-lg">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Right Panel: Order Summary -->
+<aside class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl z-30 flex flex-col">
+<div class="p-8 flex-1 flex flex-col overflow-y-auto">
+<h2 class="font-serif text-2xl font-bold text-teal-900 mb-6">Order Summary</h2>
+<!-- Customer Fields -->
+<div class="space-y-4 mb-8">
+<div>
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Customer Name</label>
+<input class="w-full border-0 border-b-2 border-zinc-100 focus:border-teal-900 focus:ring-0 px-0 py-2 font-body text-sm placeholder:text-zinc-300" placeholder="John Doe" type="text"/>
+</div>
+<div>
+<label class="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Phone Number</label>
+<input class="w-full border-0 border-b-2 border-zinc-100 focus:border-teal-900 focus:ring-0 px-0 py-2 font-body text-sm placeholder:text-zinc-300" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+</div>
+<!-- Cart Items -->
+<div class="space-y-4 flex-1">
+<div class="flex justify-between items-start group">
+<div>
+<p class="font-bold text-teal-900 text-sm">General Admission × 2</p>
+<p class="text-xs text-zinc-500 mt-1">Neon Skyline Music Festival</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-teal-900 text-sm">$170.00</p>
+<button class="text-[10px] text-error font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity">Remove</button>
+</div>
+</div>
+<div class="h-px bg-zinc-50"></div>
+<!-- Placeholder for empty cart states or extra items -->
+<div class="flex flex-col items-center justify-center h-48 border-2 border-dashed border-zinc-100 rounded-lg">
+<span class="material-symbols-outlined text-zinc-200 text-4xl" data-icon="shopping_basket">shopping_basket</span>
+<p class="text-zinc-300 text-xs mt-2 uppercase tracking-widest">Add more items</p>
+</div>
+</div>
+<!-- Totals -->
+<div class="mt-8 pt-6 border-t border-teal-50 space-y-3">
+<div class="flex justify-between text-zinc-500 text-sm">
+<span>Subtotal</span>
+<span>$170.00</span>
+</div>
+<div class="flex justify-between text-zinc-500 text-sm">
+<span>Tax (8.5%)</span>
+<span>$14.45</span>
+</div>
+<div class="flex justify-between text-teal-900 font-serif text-3xl font-bold pt-4">
+<span>Total</span>
+<span>$184.45</span>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Buttons -->
+<div class="p-8 bg-zinc-50 space-y-3">
+<button class="w-full py-5 bg-secondary-container text-white font-bold text-xl uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-[0.98] transition-all">
+                CONFIRM SALE
+            </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="py-3 px-4 border border-zinc-200 text-zinc-500 font-bold text-xs uppercase tracking-widest hover:bg-white transition-all">
+                    CLEAR
+                </button>
+<button class="py-3 px-4 border border-teal-900/20 text-teal-900 font-bold text-xs uppercase tracking-widest hover:bg-white transition-all">
+                    PRINT QUOTE
+                </button>
+</div>
+</div>
+</aside>
+</body></html>

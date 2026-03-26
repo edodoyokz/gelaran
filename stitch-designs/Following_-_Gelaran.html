@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#ffdf9a",
+              "surface-variant": "#aaefee",
+              "on-secondary-fixed": "#002020",
+              "on-primary-fixed-variant": "#7f2b00",
+              "outline-variant": "#bec8c8",
+              "on-surface-variant": "#3f4948",
+              "on-secondary": "#ffffff",
+              "secondary-fixed-dim": "#8ed2d2",
+              "background": "#ffffff",
+              "primary-container": "#8d3100",
+              "on-background": "#002020",
+              "surface-container": "#b5faf9",
+              "inverse-on-surface": "#b8fdfc",
+              "inverse-primary": "#ffb598",
+              "surface-bright": "#e2fffe",
+              "on-error": "#ffffff",
+              "surface-tint": "#a63b00",
+              "on-surface": "#002020",
+              "on-error-container": "#93000a",
+              "secondary": "#1e6868",
+              "tertiary-fixed-dim": "#f7be11",
+              "outline": "#6f7978",
+              "on-primary-container": "#ffae8e",
+              "tertiary": "#483500",
+              "surface": "#ffffff",
+              "on-secondary-fixed-variant": "#004f50",
+              "surface-container-highest": "#aaefee",
+              "secondary-fixed": "#aaefee",
+              "primary-fixed-dim": "#ffb598",
+              "error": "#ba1a1a",
+              "tertiary-container": "#654b00",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "surface-dim": "#a1e6e5",
+              "primary-fixed": "#ffdbce",
+              "secondary-container": "#a7eceb",
+              "on-tertiary": "#ffffff",
+              "on-secondary-container": "#246d6d",
+              "on-tertiary-container": "#f1b803",
+              "on-tertiary-fixed": "#251a00",
+              "on-primary": "#ffffff",
+              "surface-container-high": "#aff5f4",
+              "surface-container-low": "#c1fffe",
+              "primary": "#672200",
+              "inverse-surface": "#003737",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed": "#370e00",
+              "brand-teal": "#015959",
+              "brand-orange": "#F95D00",
+              "brand-yellow": "#FBC117",
+              "brand-light-teal": "#29B3B6"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="docked w-full top-0 z-50 bg-white dark:bg-slate-900 flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-200">
+<span class="material-symbols-outlined text-brand-teal">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-xl tracking-tight text-brand-teal">Following</h1>
+</div>
+<div class="flex items-center">
+<button class="active:scale-95 duration-200 p-2 hover:bg-[#b5faf9]/30 transition-colors rounded-full">
+<span class="material-symbols-outlined text-brand-teal">search</span>
+</button>
+</div>
+</header>
+<div class="bg-[#c1fffe] h-[1px] opacity-20 w-full"></div>
+<main class="pb-32">
+<!-- Search Section -->
+<section class="px-6 py-8">
+<div class="relative group">
+<input class="w-full bg-surface-container-low border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-brand-light-teal transition-all duration-300 font-medium" placeholder="Find more curators or venues..." type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-brand-teal/60 group-focus-within:text-brand-light-teal">person_add</span>
+</div>
+</section>
+<!-- Curators/Venues Horizontal Scroll -->
+<section class="mb-12">
+<div class="px-6 mb-4 flex justify-between items-center">
+<h2 class="font-headline font-bold text-lg text-brand-teal">People You Follow</h2>
+<span class="bg-brand-yellow text-[10px] font-extrabold uppercase tracking-widest px-2 py-1 rounded-full text-on-tertiary-fixed">8 New</span>
+</div>
+<div class="flex overflow-x-auto gap-6 px-6 no-scrollbar snap-x">
+<!-- Curator 1 -->
+<div class="flex flex-col items-center gap-3 min-w-[100px] snap-start">
+<div class="relative">
+<img class="w-20 h-20 rounded-full object-cover border-4 border-surface-container-highest" data-alt="ancient ornate stone gateway of a Javanese palace in soft afternoon light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ_OcJJU7rGq9hTYtsU3YKgrXP8krGgCNAptp-b2T2bdagKs_UkRth-1oq7wNJaue6VYeYvVruwEdKRU8Se8zxrrYOC2wZQ5rfhQwlXHIgOgAiDXpHVZkJaUQOWaVgp20-9k8OkDvVCKuUu6SNJXQQ0E4pP8hq58rdjNSLdSHp2dVo3lIZL_5Bg9J58M_SKIQgythKXZieAbpfBCC_bjmedwueTTEhIz3Rv6AxQE9SiUWzCoTNnHeR578sOpXkleDioH8rYj3q8IY"/>
+<div class="absolute -bottom-1 -right-1 bg-brand-light-teal rounded-full p-1 border-2 border-white">
+<span class="material-symbols-outlined text-[12px] text-white" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-sm text-brand-teal leading-tight">Mangkunegaran</p>
+<button class="text-[10px] font-bold text-outline uppercase tracking-wider mt-2 hover:text-error transition-colors">Unfollow</button>
+</div>
+</div>
+<!-- Curator 2 -->
+<div class="flex flex-col items-center gap-3 min-w-[100px] snap-start">
+<img class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm" data-alt="close up of a vintage saxophone with golden reflections and dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJHqt0LtOGMpWpJqD_nqsZP_zNgxSFKQAec1KQYv7hiYyj-SUZOo4RwXixr_wTFsBzzCUVFxBSS9HPU_h5QrtbIGX-c_ZynRKLM746mMvMU_CmSqjdmLySF8clDXcb1QqAfpTKnCaFVZ4ry444_szkPWhrnPDT4jSfUYfKQWF-ujTzVXD3HHsOlJ_XyyN_OxIYiDa4fnJGicIcE0M_-nDwAph7cLtSfSyi2QfaYfPoHvnls2s24XpowSebc5NjlYFYz500rotMBiI"/>
+<div class="text-center">
+<p class="font-headline font-bold text-sm text-brand-teal leading-tight">Solo Jazz Society</p>
+<button class="text-[10px] font-bold text-outline uppercase tracking-wider mt-2 hover:text-error transition-colors">Unfollow</button>
+</div>
+</div>
+<!-- Curator 3 -->
+<div class="flex flex-col items-center gap-3 min-w-[100px] snap-start">
+<img class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm" data-alt="detail of intricate hand-painted batik fabric with traditional indigo and brown patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa0EwaPNb1w88XzsGk97TSbqLCKoBvNKYXOBGBzTwsxSHpYLFf0UCWn-du95Z2MBVGspThbr1p54zcAg-Tr53a3aKKV654NM2al9mF8_31CZctpxxOifWfGMyWMtHT3t3Fdv7m9XV0jk-N4ab0xRX0kq-ogib1kuR2bLFgXnZBRKtHfk5Er-7rjCtwJ_c9o95eFlt6sRC07Jf_3OBQNdQ-r9W5hafR_FuVVjkRkcEe5SYE82HjWBrsPLl1Nhvvj_IKiAcgegE-uZ8"/>
+<div class="text-center">
+<p class="font-headline font-bold text-sm text-brand-teal leading-tight">Batik Heritage</p>
+<button class="text-[10px] font-bold text-outline uppercase tracking-wider mt-2 hover:text-error transition-colors">Unfollow</button>
+</div>
+</div>
+<!-- Curator 4 -->
+<div class="flex flex-col items-center gap-3 min-w-[100px] snap-start">
+<img class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-sm" data-alt="wooden puppet shadow play theater detail from an Indonesian Wayang Kulit performance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2zxxPhLWrE8f3LJe1NLJuyCKGbWjXfZFbLNusXDeO7iHX2yqEXxUoYHUXOhhrwUEwwChfUMSt10Q2CdhWu7-tWJasTHvHUq2rBTH-sTk9bIovZ6G2ieFV5zyU4U1RHBL6hl2ezpRZB1EUk1eDFdJWdnu3mb9mD11VU39lLOn-KCZgY4MACau3NVvHYo6ueCW-pu1EJV2d6vCQhipZQYtaVVcoYZsl3xaFhZK1dzOsnN2Qh2cO4hO9imLKHwY_dg2NrKiuqMSjyTY"/>
+<div class="text-center">
+<p class="font-headline font-bold text-sm text-brand-teal leading-tight">Wayang Kulit</p>
+<button class="text-[10px] font-bold text-outline uppercase tracking-wider mt-2 hover:text-error transition-colors">Unfollow</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Activity Feed -->
+<section class="px-6 space-y-10">
+<h2 class="font-headline font-bold text-2xl text-brand-teal italic border-l-4 border-brand-light-teal pl-4">Latest Updates</h2>
+<!-- Card Type A: Upcoming Event -->
+<article class="bg-surface-container-highest rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" data-alt="a majestic traditional Javanese dance performance on stage with glowing stage lights and smoke" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLPT8jDxUrI6MbcSsRRunudkfmqoOa73yN16smbYDeKdg54CRajNKt7SCIzDZ_wUw7B6eEYrT2ZWKlP3aZM595BVOfjEVF60LfH0s7UsOZG3DKCPFdxsp4A1MkqLai33jZqGSvMx6-PM7iXLAfYtXSSfBKr33bHSS_2w5Ay8smLrnEkWZsqvKCLFDZRldXQQdJVUmHrSA9y7b54pBsHGPDjz3jWLKkTHtSINfPcNn0dcISKPfCG8Ev5R13UGvLhqCdFLiUdIZDyeM"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full shadow-sm">
+<span class="text-[10px] font-extrabold text-brand-teal uppercase tracking-widest">Event</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex gap-2 items-center mb-3">
+<span class="material-symbols-outlined text-brand-light-teal text-sm">calendar_month</span>
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">Sept 28, 2024 • 19:00 WIB</p>
+</div>
+<h3 class="font-headline font-bold text-2xl text-brand-teal mb-4 leading-snug">Kirab Pusaka Malam 1 Suro</h3>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="close up of a palace crest or emblem" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgXjfp-vyZ_s9ugvex0LPGroMGKduFpz-P0Wg1m3ybeg2b35njMTAnNAuDlAap0GVKpgeIAFET0vmpYpihTQSuk7nG-SOYKgwmoDUF5v6IiKXp6-akGkqAmjyPw9ppwCk57fO5IiOlD8XiTDGXRIX5TXI9TYRhPVm5FHoKpQGCfWbp3ayckbdJXGI56Tx-p2KPhPl-CoelS8KifPeYn2Vj2qclUVlZLIN1e2Mhmp1XrrPdBIjkNSAFciHuJP9jUga2VG2ea0dl9j0"/>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Mangkunegaran</p>
+</div>
+<button class="bg-brand-orange text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest active:translate-y-1 transition-all shadow-[0_4px_12px_rgba(249,93,0,0.2)]">
+                            Remind Me
+                        </button>
+</div>
+</div>
+</article>
+<!-- Card Type B: Profile Update/Post -->
+<article class="p-8 rounded-2xl border border-brand-light-teal/10 bg-white relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-yellow/10 rounded-full blur-3xl"></div>
+<div class="flex items-center gap-4 mb-6">
+<img class="w-12 h-12 rounded-full object-cover ring-2 ring-brand-light-teal/20" data-alt="solo jazz festival profile icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUPblPGoBjVpPNcKPtG0gAyB2UQ9K0SVBxWK1-uLThlO8S7gWtXeqjKfAA6GKkuAT7F4G98esvW81noEUBEFPiA6nG_xkpxRpAAD84wj6ckM8DRkWs8pLPF3CtMH7qg2RPzFwk0e7SrsKYPvBHPVskLScP-BIPezynrB9uy-OuydFtaX4uHnRJCoVTshy0KfpN5dZKWrFOqyjeTRZUYtMD-D7dHCt3x_1RcWpduEjO4KadKlnC8W57hEUsdg16VtPWbOu3EMs-MfA"/>
+<div>
+<h4 class="font-headline font-bold text-brand-teal">Solo Jazz Society</h4>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Post Update • 2h ago</p>
+</div>
+</div>
+<div class="space-y-4">
+<p class="font-headline text-lg leading-relaxed text-on-surface">
+                        "The soul of the city resonates in every beat. We're thrilled to announce the open call for local musicians for the upcoming Summer Sync."
+                    </p>
+<div class="grid grid-cols-2 gap-3">
+<div class="aspect-square rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="silhouette of a trumpeter playing at a dimly lit jazz club with blue stage lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeLDCbTeMe8nuRzbvU97NrtyUNVjit68xYWQryNa1nTitLlhPchfQo_ct7qDykZ2Y0OG4QnCw4ilPQ0Rg2HZ2bU_ZjcPeR_inv4SuHadr05seInQ9UqKgjzT4hSl7r8bIZFOu0ZrU3U7q8CbghvWDYGvSDgv--ET--q_0quE4fmlYkIjRn54bm_bpPDBRv1j41npW6a8-cosxUPdxR02j7QVn_QKcU5eGEEo8LVCXow1pQo1K_N3ZKkLas4F8Z1sSu42R1oJyhJtw"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="abstract musical notes on a chalkboard background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxyLh6SK6BpO54h6fQmOhIbIAlzEoNdajJI6D5ZSDw-kKFqQducZU06APBW9FS-rM7Aft2qPTp-FstFx88BY2bCynb5t9J0IPCZTRxOP1L4oYi1VyqGOVIp0l4O5gFwHyAlbxp_yFfhEuyqtfjZfzC-BF4B74-Kb7OVQEJ84yoZdQkaCF0crrI6ls0unZkFOoQ_NCzdof3IULNzHjMSScRdE6G6bwBAQbf_Yxkw3xH4Ou5GNZ-oiS3EH6MTwJOu6-X2oREurfdsJI"/>
+<div class="absolute inset-0 bg-brand-teal/40 backdrop-blur-sm flex items-center justify-center">
+<span class="text-white font-black text-xl">+4</span>
+</div>
+</div>
+</div>
+<div class="pt-4 flex items-center gap-6">
+<button class="flex items-center gap-2 text-brand-teal group">
+<span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">favorite</span>
+<span class="text-[10px] font-black uppercase tracking-widest">128</span>
+</button>
+<button class="flex items-center gap-2 text-brand-teal group">
+<span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">share</span>
+<span class="text-[10px] font-black uppercase tracking-widest">Share</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card Type A: Another Event -->
+<article class="bg-brand-teal rounded-2xl overflow-hidden shadow-2xl relative">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+<div class="p-8">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-brand-yellow text-brand-teal px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Exclusive</span>
+<span class="material-symbols-outlined text-white/40">bookmark</span>
+</div>
+<h3 class="font-headline font-bold text-3xl text-white mb-2 leading-tight">Royal Batik Workshop</h3>
+<p class="text-white/60 text-sm font-medium mb-8">Learn the ancient art of Canting from the palace's master artisans.</p>
+<div class="flex items-center gap-4 mb-8">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-brand-teal bg-slate-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-brand-teal bg-slate-300"></div>
+<div class="w-8 h-8 rounded-full border-2 border-brand-teal bg-slate-400"></div>
+</div>
+<p class="text-[10px] text-white/80 font-bold uppercase tracking-widest">12 friends attending</p>
+</div>
+<button class="w-full bg-white text-brand-teal py-4 rounded-xl font-black uppercase tracking-[0.2em] text-xs hover:bg-brand-yellow transition-colors duration-300">
+                        Secure Spot
+                    </button>
+</div>
+</article>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#a7eceb]/80 dark:bg-slate-950/80 backdrop-blur-xl rounded-t-[1.5rem] shadow-[0_-4px_24px_rgba(0,32,32,0.06)]">
+<a class="flex flex-col items-center justify-center text-[#015959] opacity-60 px-4 py-2 hover:opacity-100 transition-all active:translate-y-1 duration-300" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#015959] opacity-60 px-4 py-2 hover:opacity-100 transition-all active:translate-y-1 duration-300" href="#">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#015959] text-white rounded-[1rem] px-4 py-2 scale-110 active:translate-y-1 duration-300" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">subscriptions</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Following</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#015959] opacity-60 px-4 py-2 hover:opacity-100 transition-all active:translate-y-1 duration-300" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+</body></html>

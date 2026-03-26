@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus_Jakarta_Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #001717; /* Based on Design System Base Layer */
+        }
+        .headline-font {
+            font-family: 'Noto Serif', serif;
+        }
+        .glass-panel {
+            background: rgba(0, 65, 65, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        /* Custom scrollbar for teal aesthetic */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #001717; }
+        ::-webkit-scrollbar-thumb { background: #003c3c; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #29b3b6; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#aaefee",
+              "on-primary-fixed": "#370e00",
+              "tertiary-fixed": "#ffdf9a",
+              "background": "#001717",
+              "surface-container-low": "#002020",
+              "primary-fixed": "#ffdbce",
+              "secondary-fixed": "#7bf5f8",
+              "error-container": "#93000a",
+              "surface-dim": "#001717",
+              "surface-tint": "#ffb598",
+              "surface-container": "#002424",
+              "on-surface-variant": "#bec8c8",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "inverse-primary": "#a63b00",
+              "secondary-container": "#00a4a7",
+              "surface-container-high": "#003030",
+              "on-secondary": "#003738",
+              "on-error-container": "#ffdad6",
+              "on-surface": "#aaefee",
+              "secondary-fixed-dim": "#5cd8db",
+              "surface-container-highest": "#003c3c",
+              "tertiary": "#f7be11",
+              "tertiary-container": "#654b00",
+              "primary": "#ffb598",
+              "on-primary-container": "#ffae8e",
+              "primary-container": "#8d3100",
+              "surface": "#001717",
+              "inverse-surface": "#aaefee",
+              "on-secondary-fixed": "#002021",
+              "outline": "#899392",
+              "secondary": "#5cd8db",
+              "surface-container-lowest": "#001111",
+              "inverse-on-surface": "#003737",
+              "on-secondary-fixed-variant": "#004f51",
+              "surface-bright": "#004141",
+              "on-tertiary-fixed": "#251a00",
+              "surface-variant": "#003c3c",
+              "primary-fixed-dim": "#ffb598",
+              "on-primary": "#591c00",
+              "tertiary-fixed-dim": "#f7be11",
+              "on-primary-fixed-variant": "#7f2b00",
+              "outline-variant": "#3f4948",
+              "on-error": "#690005",
+              "error": "#ffb4ab",
+              "on-secondary-container": "#003233",
+              "on-tertiary-container": "#f1b803",
+              "on-tertiary": "#3f2e00"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="text-on-surface selection:bg-primary selection:text-on-primary">
+<!-- SIDE NAV BAR (Authority: JSON) -->
+<aside class="flex flex-col justify-between py-6 h-screen w-64 fixed left-0 top-0 border-r border-[#3f4948]/15 bg-[#002020] dark:bg-[#002020] font-['Plus_Jakarta_Sans'] text-sm tracking-wide z-50">
+<div class="px-6">
+<div class="mb-10">
+<span class="font-['Noto_Serif'] font-bold text-xl text-[#29b3b6]">Gelaran Admin</span>
+<p class="text-[10px] uppercase tracking-[0.2em] text-outline mt-1">Sovereign Curator</p>
+</div>
+<nav class="space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#899392] hover:text-[#29b3b6] hover:bg-[#003030] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Users (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#f95d00] font-bold border-r-4 border-[#f95d00] bg-[#002424] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Users</span>
+</a>
+<!-- Events -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#899392] hover:text-[#29b3b6] hover:bg-[#003030] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span>Events</span>
+</a>
+<!-- Transactions -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#899392] hover:text-[#29b3b6] hover:bg-[#003030] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Transactions</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#899392] hover:text-[#29b3b6] hover:bg-[#003030] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Analytics</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#899392] hover:text-[#29b3b6] hover:bg-[#003030] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<div class="px-6">
+<div class="p-4 rounded-xl bg-surface-container-high border border-outline-variant/10 flex items-center gap-3">
+<div class="relative">
+<img alt="Admin User Profile" class="w-10 h-10 rounded-full object-cover" data-alt="Close-up portrait of a sophisticated man in a dark turtleneck against a moody teal background with dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcYbBnVWWyeiPK2QP0Hp2BbGeBc_1scy6suGf3CgwMtBs2wTl0X8-UASQM8x_0uzwtT5f56OO53W4PLDha2HVFUVWgiJ3YCS_GYRz1FYiFUgISkP4Zq340XUIIB6oZq-tonk28corDace2N4b-x-DmN_OkP446M3fblZFzwrihD8OTQKccuWQ6TlsWA14LYYC8VoNdNhkDPl2yb1PxRWp7RyrbDk-f66Gl3LA9OiWH6ORldj6hnHLTg1WQskNexH9aghdekgvfEW4"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-secondary border-2 border-surface-container-high rounded-full"></span>
+</div>
+<div>
+<p class="font-bold text-on-surface text-xs">Admin User</p>
+<p class="text-[10px] text-outline">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TOP BAR (Authority: JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-[#3f4948]/15 bg-[#001717]/80 backdrop-blur-md flex justify-between items-center px-8 ml-64">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl group-focus-within:text-secondary transition-colors">search</span>
+<input class="w-full bg-surface-container-high/50 border-none rounded-lg pl-11 pr-4 py-2 text-sm focus:ring-1 focus:ring-secondary/30 transition-all placeholder:text-outline/50" placeholder="Search curated database..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-outline hover:text-[#fbc117] transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-[#f95d00] rounded-full ring-2 ring-background"></span>
+</button>
+<button class="p-2 text-outline hover:text-[#fbc117] transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- MAIN CONTENT CANVAS -->
+<main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-10">
+<div class="space-y-1">
+<h1 class="headline-font font-black text-4xl text-on-surface tracking-tight">User Management</h1>
+<p class="text-outline font-medium tracking-wide">Orchestrating the ecosystem of Gelaran curators and users.</p>
+</div>
+<button class="px-6 py-3 bg-gradient-to-br from-[#f95d00] to-[#8d3100] text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-[#f95d00]/10 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_add</span>
+                Add New User
+            </button>
+</div>
+<!-- Executive Summary Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+<!-- Total Users -->
+<div class="p-6 rounded-xl bg-surface-container border border-outline-variant/5 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 rounded-lg bg-secondary/10 text-secondary">
+<span class="material-symbols-outlined">groups</span>
+</span>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest bg-secondary/5 px-2 py-1 rounded">+12.5%</span>
+</div>
+<p class="text-outline text-xs uppercase tracking-widest font-bold">Total Users</p>
+<h3 class="headline-font text-3xl font-bold mt-1">12,482</h3>
+<div class="absolute bottom-0 right-0 opacity-5 -mb-4 -mr-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-8xl">groups</span>
+</div>
+</div>
+<!-- Active Now -->
+<div class="p-6 rounded-xl bg-surface-container border border-outline-variant/5 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 rounded-lg bg-green-500/10 text-green-400">
+<span class="material-symbols-outlined">bolt</span>
+</span>
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+<span class="text-[10px] font-bold text-green-400 uppercase tracking-widest">Live Pulse</span>
+</span>
+</div>
+<p class="text-outline text-xs uppercase tracking-widest font-bold">Active Now</p>
+<h3 class="headline-font text-3xl font-bold mt-1">1,204</h3>
+<div class="absolute bottom-0 right-0 opacity-5 -mb-4 -mr-4">
+<span class="material-symbols-outlined text-8xl">sensors</span>
+</div>
+</div>
+<!-- Pending Verifications -->
+<div class="p-6 rounded-xl bg-surface-container border border-outline-variant/5 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 rounded-lg bg-tertiary/10 text-tertiary">
+<span class="material-symbols-outlined">verified_user</span>
+</span>
+<span class="px-2 py-1 rounded bg-tertiary/20 text-tertiary text-[10px] font-bold uppercase tracking-widest border border-tertiary/20">Urgent</span>
+</div>
+<p class="text-outline text-xs uppercase tracking-widest font-bold">Pending Verifications</p>
+<h3 class="headline-font text-3xl font-bold mt-1">42</h3>
+<div class="absolute bottom-0 right-0 opacity-5 -mb-4 -mr-4">
+<span class="material-symbols-outlined text-8xl">gavel</span>
+</div>
+</div>
+<!-- Weekly Growth -->
+<div class="p-6 rounded-xl bg-surface-container border border-outline-variant/5 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</span>
+</div>
+<p class="text-outline text-xs uppercase tracking-widest font-bold">Weekly Growth</p>
+<h3 class="headline-font text-3xl font-bold mt-1">+342</h3>
+<div class="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3"></div>
+</div>
+</div>
+</div>
+<!-- Filter & Table Section -->
+<div class="bg-surface-container rounded-2xl border border-outline-variant/5 shadow-2xl overflow-hidden">
+<!-- Filter Bar -->
+<div class="p-6 border-b border-outline-variant/10 flex flex-wrap gap-4 items-center justify-between bg-surface-container-low/50">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-sm">
+<span class="text-outline font-bold uppercase tracking-tighter text-[10px]">Role:</span>
+<div class="flex bg-surface-container-highest p-1 rounded-lg">
+<button class="px-4 py-1.5 rounded-md bg-secondary text-on-secondary font-bold text-xs transition-all">All</button>
+<button class="px-4 py-1.5 rounded-md text-outline hover:text-on-surface font-bold text-xs transition-all">Admin</button>
+<button class="px-4 py-1.5 rounded-md text-outline hover:text-on-surface font-bold text-xs transition-all">Curator</button>
+<button class="px-4 py-1.5 rounded-md text-outline hover:text-on-surface font-bold text-xs transition-all">Customer</button>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm">
+<span class="text-outline font-bold uppercase tracking-tighter text-[10px]">Status:</span>
+<select class="bg-surface-container-highest border-none text-xs font-bold rounded-lg text-on-surface focus:ring-1 focus:ring-secondary/30 pr-8">
+<option>All Status</option>
+<option>Verified</option>
+<option>Unverified</option>
+</select>
+</div>
+</div>
+<button class="flex items-center gap-2 text-xs font-bold text-secondary uppercase tracking-widest px-4 py-2 rounded-lg border border-secondary/20 hover:bg-secondary/5 transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                    Advanced Filters
+                </button>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/30">
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-outline/70">User Identity</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-outline/70">Contact Info</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-outline/70 text-center">Role</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-outline/70 text-center">Status</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-outline/70 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<!-- User Row 1 -->
+<tr class="group hover:bg-surface-container-high/40 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex-shrink-0 overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="Portrait of a creative designer with glasses and a thoughtful expression, warm studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwsUrfEdShqu7eyvLNNgYvGUfJ3xe5-cx4H7Im7nvWxrxrAVCw6i73ZvU1R0HhqizN5HpgrI1nsd73P2EOpYNF8kCMOaTKS9nOj5aSsifw3lLB_cHEP3Ag9UhccggkwzZwZ2zyDLe_BgiflqE8JuVY96u7gztfcvkP_0ow2-A_yrL2u82jmigHmHHwAraov7JN2Oni337CqioZswU6JRJXLOmGeOe6UFwqB7Z_hi0BqyD4-5UUZdwBZruICwz6XlgrdUj_KoQ-LV4"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Alex Sovereign</p>
+<p class="text-[10px] text-outline font-medium">Joined Oct 12, 2023</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface/80">alex.v@gelaran.com</p>
+<p class="text-[10px] text-outline">verified mobile attached</p>
+</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary border border-primary/20">Admin</span>
+</td>
+<td class="px-8 py-5 text-center">
+<div class="flex items-center justify-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full shadow-[0_0_8px_#29b3b6]"></span>
+<span class="text-xs font-bold text-secondary">Verified</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-secondary hover:bg-secondary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- User Row 2 -->
+<tr class="group hover:bg-surface-container-high/40 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex-shrink-0 overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="Modern professional woman smiling confidently, clean minimalist background with teal accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD92rSscw2JWysmKMkJguQPUqDJUWgZEfJ_0ABlZMAnyzbdvnwyz_F3pUyH5fYxP377DRHp8fK42I-V02GKqTGZstGvVAKKvTKflIaH7CbywfwWGqKDCo5xEwhQ4S2gNQvhtWUhAYHPraCqT8hshu8G1Ly-xW3A3EgYfBCQXGXW8VlRw5S5AyBsmsw22BgbHogn3m8ayR8qD2bDzE47-ouyoeCswBvY6Z7VcDHEK4s1fi-WKiMuf3pMuEuPirNwklJthcb-a313wg4"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Elena Mist</p>
+<p class="text-[10px] text-outline font-medium">Joined Nov 04, 2023</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface/80">elena.m@curators.art</p>
+<p class="text-[10px] text-outline">private portfolio linked</p>
+</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-secondary/10 text-secondary border border-secondary/20">Curator</span>
+</td>
+<td class="px-8 py-5 text-center">
+<div class="flex items-center justify-center gap-2">
+<span class="w-2 h-2 bg-tertiary rounded-full animate-pulse shadow-[0_0_8px_#fbc117]"></span>
+<span class="text-xs font-bold text-tertiary">Pending</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-secondary hover:bg-secondary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- User Row 3 -->
+<tr class="group hover:bg-surface-container-high/40 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex-shrink-0 overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="Close-up of a man with a beard and intense eyes, dark cinematic portrait style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxefOLPFTMWzMPehOCJj_9Jb1y_hz5UCRHPwaRIK3CHI4E7V5gwAq-__DDN7sdHu9PU8Vb0yl5JJAgD1K6EkvptkL-z00LVU3lD61IAnpCVK5yJxt1Y6aZeYN4Ezdv4WiJKm519zdK8dtl12vjAHv5zpTJmQfAWiZcytbj81KgBfzuxpNhJBj_2wXRpjgftvdkKunGO57peRhP2umniWykfR2S_wNv6_2oYG2hCzcTfiNIkIaNewh04vtJe6QxBjtuqPkdrXssmvs"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Marcus Thorne</p>
+<p class="text-[10px] text-outline font-medium">Joined Dec 21, 2023</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface/80">m.thorne@global.com</p>
+<p class="text-[10px] text-outline">standard account</p>
+</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-outline/10 text-outline border border-outline/20">Customer</span>
+</td>
+<td class="px-8 py-5 text-center">
+<div class="flex items-center justify-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full shadow-[0_0_8px_#29b3b6]"></span>
+<span class="text-xs font-bold text-secondary">Verified</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-secondary hover:bg-secondary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- User Row 4 -->
+<tr class="group hover:bg-surface-container-high/40 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex-shrink-0 overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="Artistic portrait of a woman looking sideways, soft directional light casting elegant shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTgdPKuw6V0I3oagV528uD11ktxSOxBsfbAJnz8UCNPLv-y-qG7boGUyi-X25Xi1qARsBzY1XAl7NzORy7ffm5HM1KbX2WtoJEOyhLQGTsnfa7CXGPnAMsSwSkK4_rNeuTU4Ra5HtEwPt_z70GyrD8IxQftNi08SXkWv7C72Hr_AGpGQ2ckHttffmNDdG5_naxzXcXDtdjhUyeXLuFh1bmn94a4ZjQ_Xe0ldY4tbdVgxu9xCqZr89GkLdkWJX1W422l2UFMPhW-hA"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Sienna Vale</p>
+<p class="text-[10px] text-outline font-medium">Joined Jan 02, 2024</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface/80">s.vale@curators.art</p>
+<p class="text-[10px] text-outline">identity check required</p>
+</td>
+<td class="px-8 py-5 text-center">
+<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-secondary/10 text-secondary border border-secondary/20">Curator</span>
+</td>
+<td class="px-8 py-5 text-center">
+<div class="flex items-center justify-center gap-2">
+<span class="w-2 h-2 bg-error rounded-full shadow-[0_0_8px_#ffb4ab]"></span>
+<span class="text-xs font-bold text-error">Unverified</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-outline hover:text-secondary hover:bg-secondary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-6 border-t border-outline-variant/5 flex justify-between items-center bg-surface-container-low/30">
+<p class="text-xs text-outline">Showing <span class="text-on-surface font-bold">1-10</span> of <span class="text-on-surface font-bold">1,240</span> users</p>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-outline-variant/10 text-outline hover:text-on-surface hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-black">1</button>
+<button class="px-4 py-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-highest text-xs font-bold">2</button>
+<button class="px-4 py-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-highest text-xs font-bold">3</button>
+<span class="flex items-end px-2 text-outline">...</span>
+<button class="px-4 py-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-highest text-xs font-bold">124</button>
+<button class="p-2 rounded-lg border border-outline-variant/10 text-outline hover:text-on-surface hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal Overlay (Visual Style Example) -->
+<div class="hidden fixed inset-0 z-[100] bg-background/80 backdrop-blur-md flex items-center justify-center p-6">
+<div class="w-full max-w-lg bg-surface-container rounded-2xl border border-secondary/20 shadow-2xl p-8">
+<h2 class="headline-font text-2xl font-bold mb-4">Verification Needed</h2>
+<p class="text-outline text-sm mb-8 leading-relaxed">
+                User <span class="text-on-surface font-bold">Elena Mist</span> is requesting curator status. Please review her portfolio before approving.
+            </p>
+<div class="flex gap-4">
+<button class="flex-1 py-3 rounded-xl border border-outline/20 font-bold hover:bg-surface-container-high transition-all">Discard</button>
+<button class="flex-1 py-3 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold shadow-lg shadow-primary/10">Approve Access</button>
+</div>
+</div>
+</div>
+</body></html>

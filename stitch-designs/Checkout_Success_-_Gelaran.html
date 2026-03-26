@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Confirmed | Gelaran</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-container": "#a7eceb",
+              "surface-container-highest": "#aaefee",
+              "on-secondary-fixed": "#002020",
+              "on-secondary-container": "#246d6d",
+              "surface-bright": "#e2fffe",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-dim": "#a1e6e5",
+              "surface-container-low": "#c1fffe",
+              "surface-tint": "#a63b00",
+              "on-tertiary-fixed": "#251a00",
+              "on-error-container": "#93000a",
+              "on-background": "#002020",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed-dim": "#f7be11",
+              "tertiary": "#483500",
+              "background": "#ffffff",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "tertiary-fixed": "#ffdf9a",
+              "surface-variant": "#aaefee",
+              "on-tertiary": "#ffffff",
+              "on-surface": "#002020",
+              "on-tertiary-container": "#f1b803",
+              "on-secondary-fixed-variant": "#004f50",
+              "surface-container-high": "#aff5f4",
+              "primary": "#F95D00",
+              "on-primary": "#ffffff",
+              "error-container": "#ffdad6",
+              "outline-variant": "#bec8c8",
+              "primary-fixed": "#ffdbce",
+              "error": "#ba1a1a",
+              "primary-container": "#8d3100",
+              "on-error": "#ffffff",
+              "secondary": "#015959",
+              "on-primary-fixed": "#370e00",
+              "inverse-primary": "#ffb598",
+              "secondary-fixed-dim": "#8ed2d2",
+              "inverse-surface": "#003737",
+              "outline": "#6f7978",
+              "on-surface-variant": "#3f4948",
+              "primary-fixed-dim": "#ffb598",
+              "secondary-fixed": "#aaefee",
+              "tertiary-container": "#654b00",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed-variant": "#7f2b00",
+              "surface": "#ffffff",
+              "surface-container": "#b5faf9",
+              "on-primary-container": "#ffae8e",
+              "brand-light-teal": "#29B3B6",
+              "brand-yellow": "#FBC117"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ticket-shape {
+            mask-image: radial-gradient(circle at 0 50%, transparent 12px, black 13px),
+                        radial-gradient(circle at 100% 50%, transparent 12px, black 13px);
+            mask-position: 0 0, 100% 0;
+            mask-size: 51% 100%;
+            mask-repeat: no-repeat;
+        }
+        .ticket-dash {
+            background-image: linear-gradient(to bottom, #015959 50%, transparent 50%);
+            background-size: 1px 12px;
+            background-repeat: repeat-y;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- Top Navigation Bar -->
+<header class="bg-[#e2fffe] dark:bg-slate-900 sticky top-0 z-50">
+<nav class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-black text-[#015959] dark:text-[#aaefee] font-['Noto_Serif'] tracking-tight">Gelaran</div>
+<div class="hidden md:flex items-center gap-8 font-['Noto_Serif'] font-bold tracking-tight">
+<a class="text-[#002020] dark:text-slate-400 hover:text-[#672200] transition-colors duration-200" href="#">Discover</a>
+<a class="text-[#002020] dark:text-slate-400 hover:text-[#672200] transition-colors duration-200" href="#">Schedule</a>
+<a class="text-[#002020] dark:text-slate-400 hover:text-[#672200] transition-colors duration-200" href="#">Venues</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#672200] scale-95 active:opacity-80 transition-transform">notifications</button>
+<button class="material-symbols-outlined text-[#672200] scale-95 active:opacity-80 transition-transform">person</button>
+</div>
+</nav>
+<div class="bg-[#b5faf9] dark:bg-slate-800 h-[1px] w-full"></div>
+</header>
+<main class="max-w-4xl mx-auto px-6 py-16 md:py-24">
+<!-- Success Header -->
+<div class="text-center mb-16">
+<div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-brand-light-teal/10 text-brand-light-teal mb-6">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="font-headline text-5xl md:text-6xl text-secondary mb-4 tracking-tight">Booking Confirmed!</h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-lg mx-auto leading-relaxed">
+                Your place is reserved. We've sent a digital copy of your pass to your email. Get ready for an unforgettable evening.
+            </p>
+</div>
+<div class="grid md:grid-cols-5 gap-12 items-start">
+<!-- Booking Summary -->
+<div class="md:col-span-2 space-y-8">
+<section>
+<h2 class="text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-4">Transaction Details</h2>
+<div class="space-y-4">
+<div class="flex justify-between items-baseline">
+<span class="text-on-surface-variant font-medium">Order Number</span>
+<span class="font-bold font-headline text-secondary">#GLR-2024-8892</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="text-on-surface-variant font-medium">Total Paid</span>
+<span class="font-bold font-headline text-secondary">IDR 450.000</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="text-on-surface-variant font-medium">Transaction Date</span>
+<span class="font-bold font-headline text-secondary">Oct 24, 2023</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="text-on-surface-variant font-medium">Payment Method</span>
+<span class="font-bold font-headline text-secondary">Virtual Account</span>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="pt-8 space-y-4">
+<button class="w-full bg-primary hover:bg-primary-container text-white py-5 px-8 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-primary/20 transition-all hover:-translate-y-1">
+<span class="material-symbols-outlined">download</span>
+                        Download Ticket (PDF)
+                    </button>
+<a class="flex items-center justify-center gap-2 text-brand-light-teal font-bold py-3 hover:opacity-80 transition-opacity" href="#">
+                        Go to Dashboard
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- QR Ticket Preview -->
+<div class="md:col-span-3">
+<div class="relative group">
+<!-- Ticket Decoration -->
+<div class="absolute -inset-4 bg-brand-yellow/10 rounded-3xl -rotate-2 group-hover:rotate-0 transition-transform duration-500"></div>
+<!-- Main Ticket Stub -->
+<div class="relative bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col md:flex-row min-h-[400px]">
+<!-- Visual Left Side -->
+<div class="relative md:w-2/5 h-48 md:h-auto overflow-hidden">
+<img alt="The Heritage Soundscape" class="w-full h-full object-cover" data-alt="dramatic stage lighting on traditional Indonesian gamelan instruments in a grand palace hall with warm golden atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRsicYfudbpeHjq-IfF7klPdtgQfgptg624axPa3Wb8BXsxqFWAOl03qIoHVtHJJl5R3Y2rpq9MynSWSumSZLo43MRwNcFJZC1gaNWe03gmA511FOBLKaT2Sky4IhjrDX3oa44cmS1p6rMazM8GDn6_ynegNckX4nXcMwB3lMNGrDl6598DR97JE9kriPEJdelYJr_X3zg_DZHdJNZx4iwesggU7_eowAHyQiWP5dsRs4zNKNgnyvUhfLk6hrGII4q_WA2tcg6_JA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent flex items-end p-6">
+<span class="bg-brand-yellow text-on-tertiary-fixed px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Premium Entry</span>
+</div>
+</div>
+<!-- Info Right Side -->
+<div class="flex-1 p-8 bg-surface-container-lowest flex flex-col justify-between relative">
+<!-- Concave ticket notch effect via absolute elements -->
+<div class="absolute left-[-12px] top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full hidden md:block border-r border-outline-variant/20"></div>
+<div>
+<h3 class="font-headline text-3xl text-secondary mb-2 leading-tight">The Heritage Soundscape 2024</h3>
+<p class="text-on-surface-variant text-sm font-medium mb-6">Solo Cultural Heritage Series</p>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-brand-light-teal">calendar_today</span>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Date &amp; Time</p>
+<p class="font-bold text-secondary">Saturday, Dec 14 • 19:00 WIB</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-brand-light-teal">location_on</span>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Venue</p>
+<p class="font-bold text-secondary">Solo Cultural Pavilion</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-end justify-between border-t border-surface-container pt-6">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">Pass ID</p>
+<p class="font-mono text-xs font-bold text-secondary">A1-99827-SQR</p>
+</div>
+<div class="bg-white p-2 rounded-lg shadow-sm border border-surface-container">
+<img alt="QR Code" class="w-16 h-16 grayscale contrast-125" data-alt="simple black and white square qr code for digital check-in authentication on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYFY5kARVEeU_H_FcmRF2fiqn1YNKVNf9k0c59ZViNGsd7EN61LLLTtFqlHlv_D8IRsYFhdEkjy28XMeZ558NCKRZJrHy49XRRZvVyc7TXhGOU9M0J3wRgR_0wEBP6tOXQ3OYzTj34vMlcb7ZwlkidF1eSVlZ50XRxpcnwlfy4D-ceLxMBHvwpUlrCQiUorSKGkzW8nT1AtYRZnUa5GRRWyDuELDWoiQSCkEUd6_w7-4TtFz5eW6_AH3kPR0FKXHVZHqqFc1FDUqs"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Ticket Footer Note -->
+<p class="mt-6 text-center text-sm text-on-surface-variant italic">
+                    * Please present this QR code at the entrance for scanning. No printed copy required.
+                </p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#015959] dark:bg-black w-full px-12 py-16 mt-20">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl mx-auto">
+<div>
+<div class="text-lg font-bold text-white mb-4">Gelaran</div>
+<p class="text-[#aaefee] font-['Plus_Jakarta_Sans'] text-sm tracking-wide max-w-sm">
+                    © 2024 Gelaran Surakarta. Preserving Heritage through Digital Excellence. Supporting local arts and sustainable tourism.
+                </p>
+</div>
+<div class="flex flex-wrap gap-x-12 gap-y-4 justify-start md:justify-end">
+<a class="text-[#c1fffe] opacity-80 hover:text-white underline underline-offset-4 font-['Plus_Jakarta_Sans'] text-sm tracking-wide transition-opacity" href="#">Terms of Service</a>
+<a class="text-[#c1fffe] opacity-80 hover:text-white underline underline-offset-4 font-['Plus_Jakarta_Sans'] text-sm tracking-wide transition-opacity" href="#">Privacy Policy</a>
+<a class="text-[#c1fffe] opacity-80 hover:text-white underline underline-offset-4 font-['Plus_Jakarta_Sans'] text-sm tracking-wide transition-opacity" href="#">Cultural Archive</a>
+<a class="text-[#c1fffe] opacity-80 hover:text-white underline underline-offset-4 font-['Plus_Jakarta_Sans'] text-sm tracking-wide transition-opacity" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

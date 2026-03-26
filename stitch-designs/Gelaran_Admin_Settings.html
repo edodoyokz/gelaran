@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin - Branding Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff;
+        }
+        h1, h2, h3, .font-noto-serif {
+            font-family: 'Noto Serif', serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#e2fffe",
+                        "on-primary-fixed": "#002020",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#aff5f4",
+                        "on-tertiary-fixed-variant": "#004f51",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#a1e6e5",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#b5faf9",
+                        "primary": "#004040",
+                        "background": "#ffffff",
+                        "tertiary-fixed-dim": "#5cd8db",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#8ed2d2",
+                        "surface-tint": "#1e6868",
+                        "outline": "#6f7978",
+                        "tertiary-fixed": "#7bf5f8",
+                        "surface-variant": "#aaefee",
+                        "outline-variant": "#bec8c8",
+                        "on-background": "#002020",
+                        "secondary": "#a63b00",
+                        "surface": "#e2fffe",
+                        "on-tertiary-container": "#56d4d6",
+                        "on-tertiary-fixed": "#002021",
+                        "secondary-fixed": "#ffdbce",
+                        "secondary-fixed-dim": "#ffb598",
+                        "secondary-container": "#fd6005",
+                        "surface-container-low": "#c1fffe",
+                        "inverse-on-surface": "#b8fdfc",
+                        "primary-fixed-dim": "#8ed2d2",
+                        "on-primary-container": "#89cdcd",
+                        "on-secondary-fixed": "#370e00",
+                        "tertiary-container": "#00595b",
+                        "on-secondary-fixed-variant": "#7f2b00",
+                        "tertiary": "#004041",
+                        "inverse-surface": "#003737",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#002020",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#004f50",
+                        "primary-fixed": "#aaefee",
+                        "primary-container": "#015959",
+                        "on-secondary-container": "#521900",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#aaefee",
+                        "on-surface-variant": "#3f4948"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-white text-on-surface overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-cyan-50 flex flex-col py-8 px-4 z-40">
+<div class="mb-12 px-4">
+<h1 class="text-2xl font-bold text-teal-900 italic font-noto-serif">Gelaran</h1>
+<p class="text-xs text-teal-700/60 font-medium tracking-wider uppercase mt-1">Enterprise Admin</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active Tab: Branding -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-900 font-bold border-r-4 border-orange-500 bg-white/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="palette">palette</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Branding</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 hover:text-teal-900 hover:bg-white/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Payments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 hover:text-teal-900 hover:bg-white/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 hover:text-teal-900 hover:bg-white/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="gpp_bad">gpp_bad</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Fraud Controls</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 hover:text-teal-900 hover:bg-white/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Permissions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 hover:text-teal-900 hover:bg-white/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-noto-serif text-sm font-medium tracking-tight">Audit Log</span>
+</a>
+</nav>
+<div class="mt-auto px-4 flex items-center gap-3 border-t border-teal-100 pt-6">
+<img alt="Admin Profile" class="w-10 h-10 rounded-full object-cover" data-alt="Professional headshot of a senior administrator in a minimalist office setting, warm studio lighting, neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnH1Q3rKiILc3KImtMgYOXaDPkngxvF-4PKWIz6bs89RJjuxrDbnLSbFq5-7j-Ip4Fwvui3ZTfjVTGPh8OkhRArVVfxMAFxWeoHcfoRawkP3VlDH5NJAmAQ3XITVxCcfrPH8T58Hwp5DmbRB8UoZpxrso1rUBkmBKZRf-rvAdAGTLovmWILvzU6XhKLAKyNQpPFsKvNViybK1abs-UN-zdQ9RoK3uhCBDVVqRExfE7xp4W889l99bPAITo5ULeQVKhwL3Mw-WANFM"/>
+<div>
+<p class="text-sm font-bold text-teal-900">Admin Profile</p>
+<p class="text-xs text-teal-700/60">System Controller</p>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 bg-white/80 backdrop-blur-md border-b border-teal-50 shadow-sm flex justify-between items-center h-16 px-8 ml-64">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-teal-800/40" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-primary-container w-64 transition-all" placeholder="Search settings..." type="text"/>
+</div>
+<nav class="flex gap-8">
+<a class="font-noto-serif text-lg text-teal-800/60 hover:text-teal-900 transition-all" href="#">Dashboard</a>
+<a class="font-noto-serif text-lg text-teal-800/60 hover:text-teal-900 transition-all" href="#">Analytics</a>
+<a class="font-noto-serif text-lg text-orange-600 font-semibold border-b-2 border-orange-500 pb-1" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-teal-800/60 hover:text-teal-900 transition-all" data-icon="help_outline">help_outline</button>
+<button class="material-symbols-outlined text-teal-800/60 hover:text-teal-900 transition-all" data-icon="settings_suggest">settings_suggest</button>
+<button class="material-symbols-outlined text-teal-800/60 hover:text-teal-900 transition-all" data-icon="apps">apps</button>
+<div class="h-8 w-px bg-teal-100 mx-2"></div>
+<button class="bg-secondary-container text-on-secondary px-6 py-2 rounded-lg font-bold text-sm tracking-tight shadow-lg shadow-secondary-container/20 hover:scale-105 transition-transform active:scale-95">
+                Save Changes
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-white">
+<div class="max-w-6xl mx-auto px-12 py-16">
+<!-- Header Section -->
+<div class="mb-16 border-l-8 border-primary-container pl-8 py-2">
+<h2 class="text-4xl font-headline font-bold text-primary-container tracking-tight">System Configuration</h2>
+<p class="text-on-surface-variant font-body text-lg mt-2 max-w-2xl">Manage your organization's core identity, transactional logic, and security protocols from a single authoritative dashboard.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- 1. Branding Section -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container-low p-10 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-9xl" data-icon="palette">palette</span>
+</div>
+<h3 class="text-2xl font-headline font-bold text-primary mb-8 flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+                        Organization Identity
+                    </h3>
+<div class="grid grid-cols-2 gap-12">
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Primary Brandmark</label>
+<div class="flex items-center gap-6">
+<div class="w-24 h-24 bg-white rounded-lg flex items-center justify-center border-2 border-dashed border-outline-variant hover:border-primary-container transition-colors cursor-pointer group/upload">
+<span class="material-symbols-outlined text-outline-variant group-hover/upload:text-primary-container" data-icon="upload">upload</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Upload a high-resolution SVG or PNG. Recommended size: 512x512px.</p>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Brand Voice</label>
+<input class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary-container outline-none py-2 transition-all font-body text-lg text-primary" type="text" value="The Curatorial Engine"/>
+</div>
+</div>
+<div class="space-y-6">
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-3">Color Architecture</label>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-white rounded-lg border border-teal-50 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#F95D00]"></div>
+<span class="text-sm font-mono font-medium">#F95D00</span>
+</div>
+<div class="p-4 bg-white rounded-lg border border-teal-50 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#FBC117]"></div>
+<span class="text-sm font-mono font-medium">#FBC117</span>
+</div>
+<div class="p-4 bg-white rounded-lg border border-teal-50 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#015959]"></div>
+<span class="text-sm font-mono font-medium">#015959</span>
+</div>
+<div class="p-4 bg-white rounded-lg border border-teal-50 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#29B3B6]"></div>
+<span class="text-sm font-mono font-medium">#29B3B6</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Payment Settings -->
+<section class="col-span-12 lg:col-span-4 bg-primary-container text-white p-10 rounded-xl flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-headline font-bold mb-6">Payment Hub</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-fixed-dim" data-icon="account_balance">account_balance</span>
+<div>
+<p class="text-sm font-bold">Stripe Connect</p>
+<p class="text-xs opacity-60">Production Live</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="check_circle" data-weight="fill">check_circle</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined opacity-60" data-icon="payments">payments</span>
+<div>
+<p class="text-sm font-bold">BCA API</p>
+<p class="text-xs opacity-60">Not Configured</p>
+</div>
+</div>
+<button class="text-xs font-bold text-secondary-fixed-dim hover:underline">Link</button>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-white/10">
+<label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-3">Settlement Rules</label>
+<select class="w-full bg-transparent border-b border-white/30 py-2 outline-none appearance-none cursor-pointer">
+<option>T+2 Standard Settlement</option>
+<option>Next-Day Priority</option>
+<option>Manual Disbursement</option>
+</select>
+</div>
+</section>
+<!-- 3. Notification Rules & Audit Log (Middle Row) -->
+<section class="col-span-12 lg:col-span-6 border-2 border-surface-container-low p-10 rounded-xl">
+<h3 class="text-2xl font-headline font-bold text-primary mb-8">Notification Triggers</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20">
+<div>
+<p class="font-bold text-on-surface">New Booking Confirmation</p>
+<p class="text-sm text-on-surface-variant">Email to Customer &amp; Curator</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-12 h-6 bg-secondary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20">
+<div>
+<p class="font-bold text-on-surface">Payout Processing</p>
+<p class="text-sm text-on-surface-variant">SMS to Merchant Account</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-12 h-6 bg-outline-variant/30 rounded-full relative">
+<div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between py-4 border-b border-outline-variant/20">
+<div>
+<p class="font-bold text-on-surface">Failed Login Alert</p>
+<p class="text-sm text-on-surface-variant">Internal Security Webhook</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-12 h-6 bg-secondary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="col-span-12 lg:col-span-6 bg-surface-container p-10 rounded-xl overflow-hidden relative">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-2xl font-headline font-bold text-primary">Audit Trail</h3>
+<button class="text-sm font-bold text-primary-container hover:underline underline-offset-4 flex items-center gap-2">
+                            Export Logs <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="bg-white p-4 rounded border-l-4 border-primary-container flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="text-xs font-mono text-on-surface-variant">14:22:01</div>
+<div class="text-sm font-medium text-on-surface">Brand palette modified by <span class="text-primary font-bold">Admin_User</span></div>
+</div>
+<span class="text-xs font-bold text-tertiary">SUCCESS</span>
+</div>
+<div class="bg-white/60 p-4 rounded border-l-4 border-secondary flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="text-xs font-mono text-on-surface-variant">12:10:45</div>
+<div class="text-sm font-medium text-on-surface">Failed API handshake with Stripe_v3</div>
+</div>
+<span class="text-xs font-bold text-secondary">RETRYING</span>
+</div>
+<div class="bg-white/60 p-4 rounded border-l-4 border-primary-container flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="text-xs font-mono text-on-surface-variant">09:15:33</div>
+<div class="text-sm font-medium text-on-surface">New role 'Curator_Senior' created</div>
+</div>
+<span class="text-xs font-bold text-tertiary">SUCCESS</span>
+</div>
+<div class="bg-white/60 p-4 rounded border-l-4 border-primary-container flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="text-xs font-mono text-on-surface-variant">08:00:12</div>
+<div class="text-sm font-medium text-on-surface">Daily system backup completed</div>
+</div>
+<span class="text-xs font-bold text-tertiary">SUCCESS</span>
+</div>
+</div>
+</section>
+<!-- 4. Fraud Controls -->
+<section class="col-span-12 lg:col-span-7 bg-white p-10 border-2 border-surface-container-low rounded-xl">
+<h3 class="text-2xl font-headline font-bold text-primary mb-8">Fraud Mitigation</h3>
+<div class="grid grid-cols-2 gap-10">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-secondary mb-3">Velocity Limit (Hourly)</label>
+<input class="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary" type="range"/>
+<div class="flex justify-between mt-2 text-xs font-bold text-on-surface-variant">
+<span>10 Requests</span>
+<span>Current: 500</span>
+<span>10,000 Requests</span>
+</div>
+<p class="mt-6 text-sm text-on-surface-variant leading-relaxed">Limit the number of transactions per individual card per hour to prevent brute-force attacks.</p>
+</div>
+<div class="space-y-4">
+<label class="block text-xs font-bold uppercase tracking-widest text-primary mb-3">Blacklist Management</label>
+<div class="flex items-center gap-2">
+<input class="flex-1 bg-surface-container-lowest border border-outline-variant px-4 py-2 text-sm rounded" placeholder="IP Address or Email..." type="text"/>
+<button class="bg-primary text-white p-2 rounded hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
+                                    192.168.1.1 <button class="material-symbols-outlined text-[14px]" data-icon="close">close</button>
+</span>
+<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
+                                    spam@domain.com <button class="material-symbols-outlined text-[14px]" data-icon="close">close</button>
+</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Role Permissions -->
+<section class="col-span-12 lg:col-span-5 bg-surface-container-highest p-10 rounded-xl">
+<h3 class="text-2xl font-headline font-bold text-primary mb-8">RBAC Definitions</h3>
+<div class="space-y-4">
+<div class="p-4 bg-white rounded-lg flex items-center gap-4 border border-primary/10">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Super Admin</p>
+<p class="text-xs text-on-surface-variant">Full Unrestricted Access</p>
+</div>
+<span class="text-xs font-bold text-primary">ACTIVE</span>
+</div>
+<div class="p-4 bg-white/40 rounded-lg flex items-center gap-4 border border-transparent">
+<div class="w-10 h-10 rounded-lg bg-tertiary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Curator</p>
+<p class="text-xs text-on-surface-variant">Listing &amp; Content Mgmt</p>
+</div>
+<button class="text-xs font-bold text-tertiary hover:underline">Edit</button>
+</div>
+<div class="p-4 bg-white/40 rounded-lg flex items-center gap-4 border border-transparent">
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="monetization_on">monetization_on</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Finance</p>
+<p class="text-xs text-on-surface-variant">Payouts &amp; Tax Docs</p>
+</div>
+<button class="text-xs font-bold text-tertiary hover:underline">Edit</button>
+</div>
+<button class="w-full mt-4 py-3 border-2 border-dashed border-primary/20 text-primary font-bold text-sm rounded-lg hover:bg-primary/5 transition-colors">
+                            + Create Custom Role
+                        </button>
+</div>
+</section>
+</div>
+<!-- Footer Save Anchor -->
+<div class="mt-20 flex justify-between items-center pt-8 border-t border-teal-100">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="info" data-weight="fill">info</span>
+<span class="text-sm italic">Last updated: Today at 14:22:01 by Admin_User</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-8 py-3 text-primary font-bold text-sm hover:bg-surface-container rounded transition-colors">Discard Draft</button>
+<button class="px-10 py-3 bg-secondary-container text-on-secondary font-bold text-sm rounded-lg shadow-xl shadow-secondary-container/20 hover:scale-105 transition-all active:scale-95">Commit Global Changes</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

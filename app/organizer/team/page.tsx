@@ -1,18 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { AlertCircle, CheckCircle, Loader2, Mail, Shield, Trash2, UserPlus, Users } from "lucide-react";
 import {
-    Users,
-    UserPlus,
-    Mail,
-    Shield,
-    Clock,
-    CheckCircle,
-    Loader2,
-    AlertCircle,
-    Trash2,
-} from "lucide-react";
+    EmptyState,
+    OrganizerMetricCard,
+    OrganizerPanel,
+    OrganizerStatusBadge,
+    OrganizerWorkspaceHeader,
+} from "@/components/organizer/organizer-workspace-primitives";
 
 interface TeamMember {
     id: string;
@@ -36,10 +32,10 @@ const ROLE_LABELS: Record<string, string> = {
     FINANCE: "Keuangan",
 };
 
-const ROLE_COLORS: Record<string, string> = {
-    MANAGER: "bg-purple-500/10 text-purple-700",
-    SCANNER: "bg-blue-500/10 text-blue-700",
-    FINANCE: "bg-green-500/10 text-green-700",
+const ROLE_TONES: Record<string, "default" | "warning" | "success" | "info"> = {
+    MANAGER: "info",
+    SCANNER: "default",
+    FINANCE: "success",
 };
 
 export default function OrganizerTeamPage() {
@@ -117,7 +113,7 @@ export default function OrganizerTeamPage() {
                 return;
             }
 
-            setTeam(team.filter((m) => m.id !== memberId));
+            setTeam(team.filter((member) => member.id !== memberId));
         } catch {
             alert("Terjadi kesalahan saat menghapus anggota");
         } finally {
@@ -127,10 +123,10 @@ export default function OrganizerTeamPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat tim...</p>
+                    <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-(--accent-primary)" />
+                    <p className="text-(--text-muted)">Memuat tim...</p>
                 </div>
             </div>
         );
@@ -138,210 +134,158 @@ export default function OrganizerTeamPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
-                    <Link href="/organizer" className="text-[var(--accent-primary)] hover:text-indigo-500">
-                        Kembali ke Dashboard
-                    </Link>
+                    <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
+                    <p className="mb-2 font-medium text-foreground">{error}</p>
                 </div>
             </div>
         );
     }
 
+    const activeCount = team.filter((member) => member.isActive).length;
+    const managerCount = team.filter((member) => member.role === "MANAGER").length;
+
     return (
-        <div className="min-h-screen bg-[var(--bg-secondary)]">
-            <header className="bg-[var(--surface)] border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/organizer" className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
-                                <Users className="h-5 w-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">Manajemen Tim</h1>
-                                <p className="text-sm text-[var(--text-muted)] mt-1">Kelola akses anggota tim Anda</p>
-                            </div>
-                        </div>
+        <>
+            <div className="space-y-6">
+                <OrganizerWorkspaceHeader
+                    title="Manajemen tim"
+                    description="Atur anggota tim organizer, pantau status akses, dan undang role operasional yang dibutuhkan untuk event."
+                    actions={
                         <button
                             type="button"
                             onClick={() => setShowInviteModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90"
+                            className="inline-flex items-center gap-2 rounded-full bg-(--accent-primary) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-sm) transition-opacity hover:opacity-90"
                         >
                             <UserPlus className="h-4 w-4" />
-                            Undang Anggota
+                            Undang anggota
                         </button>
-                    </div>
-                </div>
-            </header>
+                    }
+                />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid sm:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                <Users className="h-5 w-5 text-[var(--accent-primary)]" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{team.length}</p>
-                                <p className="text-sm text-[var(--text-muted)]">Total Anggota</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{team.filter((m) => m.isActive).length}</p>
-                                <p className="text-sm text-[var(--text-muted)]">Aktif</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-[var(--surface)] rounded-xl p-5 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[var(--bg-secondary)] rounded-lg flex items-center justify-center">
-                                <Shield className="h-5 w-5 text-[var(--text-secondary)]" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">
-                                    {team.filter((m) => m.role === "MANAGER").length}
-                                </p>
-                                <p className="text-sm text-[var(--text-muted)]">Manager</p>
-                            </div>
-                        </div>
-                    </div>
+                <div className="grid gap-4 md:grid-cols-3">
+                    <OrganizerMetricCard label="Total anggota" value={team.length} lucideIcon={Users} meta="Semua role organizer" />
+                    <OrganizerMetricCard label="Anggota aktif" value={activeCount} lucideIcon={CheckCircle} tone="success" meta="Sudah menerima akses" />
+                    <OrganizerMetricCard label="Manager" value={managerCount} lucideIcon={Shield} tone="accent" meta="Role dengan kontrol paling luas" />
                 </div>
 
-                {team.length === 0 ? (
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-12 text-center">
-                        <Users className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Belum ada anggota tim</h3>
-                        <p className="text-[var(--text-muted)] mb-6">Mulai dengan mengundang anggota untuk membantu mengelola event Anda.</p>
-                        <button
-                            type="button"
-                            onClick={() => setShowInviteModal(true)}
-                            className="inline-flex items-center gap-2 text-[var(--accent-primary)] font-medium"
-                        >
-                            <UserPlus className="h-4 w-4" />
-                            Undang Anggota Pertama
-                        </button>
-                    </div>
-                ) : (
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
-                        <div className="divide-y">
+                <OrganizerPanel title="Daftar anggota" description="Gunakan daftar ini untuk meninjau role, status aktif, dan menghapus akses bila diperlukan.">
+                    {team.length === 0 ? (
+                        <EmptyState
+                            title="Belum ada anggota tim"
+                            description="Mulai dengan mengundang manager, scanner, atau finance untuk membantu operasional event."
+                            icon={Users}
+                            action={
+                                <button
+                                    type="button"
+                                    onClick={() => setShowInviteModal(true)}
+                                    className="inline-flex items-center gap-2 rounded-full bg-(--accent-primary) px-5 py-3 text-sm font-semibold text-white"
+                                >
+                                    <UserPlus className="h-4 w-4" />
+                                    Undang anggota pertama
+                                </button>
+                            }
+                        />
+                    ) : (
+                        <div className="space-y-3">
                             {team.map((member) => (
-                                <div key={member.id} className="p-6 hover:bg-[var(--surface-hover)]">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 bg-[var(--border)] rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
-                                                {member.user.avatarUrl ? (
-                                                    <img
-                                                        src={member.user.avatarUrl}
-                                                        alt=""
-                                                        className="w-12 h-12 rounded-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <span className="text-[var(--text-muted)] font-medium">
-                                                        {member.user.name?.charAt(0).toUpperCase() || "?"}
-                                                    </span>
-                                                )}
+                                <div
+                                    key={member.id}
+                                    className="flex flex-col gap-4 rounded-[1.25rem] border border-(--border) bg-(--surface-elevated) p-4 sm:flex-row sm:items-center sm:justify-between"
+                                >
+                                    <div className="flex min-w-0 items-start gap-3">
+                                        {member.user.avatarUrl ? (
+                                            <img src={member.user.avatarUrl} alt="" className="h-12 w-12 rounded-2xl object-cover" />
+                                        ) : (
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-(--border) bg-(--surface)">
+                                                <span className="font-semibold text-(--text-muted)">{member.user.name?.charAt(0).toUpperCase() || "?"}</span>
                                             </div>
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="font-semibold text-[var(--text-primary)]">{member.user.name}</h3>
-                                                    <span
-                                                        className={`px-2 py-0.5 text-xs font-medium rounded-full ${ROLE_COLORS[member.role]}`}
-                                                    >
-                                                        {ROLE_LABELS[member.role]}
-                                                    </span>
-                                                    {!member.isActive && (
-                                                        <span className="px-2 py-0.5 bg-red-500/10 text-red-700 text-xs rounded-full">
-                                                            Non-aktif
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                                                    <Mail className="h-3.5 w-3.5" />
-                                                    <span>{member.user.email}</span>
-                                                </div>
-                                                <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mt-2">
-                                                    <Clock className="h-3 w-3.5" />
-                                                    <span>Bergabung: {new Date(member.acceptedAt).toLocaleDateString("id-ID")}</span>
-                                                </div>
+                                        )}
+                                        <div className="min-w-0 space-y-1">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <p className="font-semibold text-foreground">{member.user.name}</p>
+                                                <OrganizerStatusBadge tone={ROLE_TONES[member.role]}>{ROLE_LABELS[member.role]}</OrganizerStatusBadge>
+                                                {!member.isActive ? <OrganizerStatusBadge tone="warning">Non-aktif</OrganizerStatusBadge> : null}
                                             </div>
+                                            <div className="flex items-center gap-2 text-sm text-(--text-secondary)">
+                                                <Mail className="h-4 w-4" />
+                                                <span className="truncate">{member.user.email}</span>
+                                            </div>
+                                            <p className="text-sm text-(--text-muted)">
+                                                {member.acceptedAt
+                                                    ? `Bergabung ${new Date(member.acceptedAt).toLocaleDateString("id-ID")}`
+                                                    : `Diundang ${new Date(member.invitedAt).toLocaleDateString("id-ID")}`}
+                                            </p>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemove(member.id)}
-                                            disabled={actionLoading === member.id}
-                                            className="p-2 text-[var(--text-muted)] hover:text-red-600 hover:bg-red-500/10 rounded-lg disabled:opacity-50"
-                                            title="Hapus Anggota"
-                                        >
-                                            {actionLoading === member.id ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            ) : (
-                                                <Trash2 className="h-4 w-4" />
-                                            )}
-                                        </button>
                                     </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemove(member.id)}
+                                        disabled={actionLoading === member.id}
+                                        className="inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(220,38,38,0.2)] bg-[rgba(220,38,38,0.08)] px-4 py-2 text-sm font-semibold text-[rgb(185,28,28)] transition-opacity hover:opacity-90 disabled:opacity-50"
+                                    >
+                                        {actionLoading === member.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                                        Hapus akses
+                                    </button>
                                 </div>
                             ))}
                         </div>
-                    </div>
-                )}
-            </main>
+                    )}
+                </OrganizerPanel>
+            </div>
 
-            {showInviteModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--surface)] rounded-2xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Undang Anggota Tim</h3>
-                        <form onSubmit={handleInvite} className="space-y-4">
+            {showInviteModal ? (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-[1.75rem] border border-(--border) bg-(--surface) p-6 shadow-(--shadow-xl)">
+                        <h2 className="text-xl font-semibold text-foreground">Undang anggota tim</h2>
+                        <p className="mt-1 text-sm text-(--text-secondary)">Tentukan email dan role agar akses organizer lebih terstruktur.</p>
+                        <form onSubmit={handleInvite} className="mt-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Email</label>
+                                <label className="mb-1 block text-sm font-medium text-(--text-secondary)">Email</label>
                                 <input
                                     name="email"
                                     type="email"
                                     required
                                     placeholder="contoh@email.com"
-                                    className="w-full px-3 py-2 border rounded-lg"
+                                    className="w-full rounded-xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none transition-colors focus:border-(--accent-primary)"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Role</label>
+                                <label className="mb-1 block text-sm font-medium text-(--text-secondary)">Role</label>
                                 <select
                                     name="role"
                                     required
-                                    className="w-full px-3 py-2 border rounded-lg"
+                                    className="w-full rounded-xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none transition-colors focus:border-(--accent-primary)"
                                 >
                                     <option value="">Pilih role</option>
-                                    <option value="MANAGER">Manager - Akses penuh</option>
-                                    <option value="SCANNER">Scanner - Check-in tiket</option>
-                                    <option value="FINANCE">Keuangan - Kelola pembayaran</option>
+                                    <option value="MANAGER">Manager - akses penuh</option>
+                                    <option value="SCANNER">Scanner - check-in tiket</option>
+                                    <option value="FINANCE">Keuangan - kelola pembayaran</option>
                                 </select>
                             </div>
-                            <div className="pt-4 flex gap-3">
+                            <div className="flex gap-3 pt-2">
                                 <button
                                     type="button"
                                     onClick={() => setShowInviteModal(false)}
-                                    className="flex-1 px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)]"
+                                    className="inline-flex flex-1 items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-foreground"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50"
+                                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-(--accent-primary) px-4 py-3 text-sm font-semibold text-white disabled:opacity-50"
                                 >
-                                    {isSubmitting ? "Mengirim..." : "Undang"}
+                                    {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                                    {isSubmitting ? "Mengirim..." : "Undang anggota"}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
-            )}
-        </div>
+            ) : null}
+        </>
     );
 }

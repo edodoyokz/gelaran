@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Solo Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#8d3100",
+                        "on-primary-fixed": "#370e00",
+                        "primary": "#672200",
+                        "on-tertiary-fixed": "#251a00",
+                        "background": "#e2fffe",
+                        "inverse-on-surface": "#b8fdfc",
+                        "surface-variant": "#aaefee",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bec8c8",
+                        "secondary-container": "#a7eceb",
+                        "surface-container-highest": "#aaefee",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "error": "#ba1a1a",
+                        "secondary": "#1e6868",
+                        "on-secondary-fixed": "#002020",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "outline": "#6f7978",
+                        "tertiary-container": "#654b00",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#f1b803",
+                        "surface-bright": "#e2fffe",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#ffb598",
+                        "on-surface": "#002020",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "on-surface-variant": "#3f4948",
+                        "on-secondary-container": "#246d6d",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#ffb598",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#ffae8e",
+                        "secondary-fixed": "#aaefee",
+                        "surface-container-low": "#c1fffe",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "surface-tint": "#a63b00",
+                        "surface-container": "#b5faf9",
+                        "surface": "#e2fffe",
+                        "tertiary": "#483500",
+                        "primary-fixed": "#ffdbce",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "surface-container-high": "#aff5f4",
+                        "tertiary-fixed": "#ffdf9a",
+                        "inverse-surface": "#003737",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#a1e6e5",
+                        "on-background": "#002020",
+                        "gelaran-primary": "#F95D00",
+                        "gelaran-secondary": "#29B3B6",
+                        "gelaran-dark": "#015959",
+                        "gelaran-yellow": "#FBC117"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .serif-text { font-family: 'Noto Serif', serif; }
+        input:focus { border-color: #29B3B6 !important; ring-color: #29B3B6 !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Header (Shared Component: TopNavBar) -->
+<header class="bg-[#e2fffe] dark:bg-[#002020] docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-serif tracking-tighter text-[#002020] dark:text-[#e2fffe]">Solo Curator</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[#3f4948] dark:text-[#b5faf9] hover:text-[#015959] transition-colors duration-300" href="#">Exhibitions</a>
+<a class="text-[#3f4948] dark:text-[#b5faf9] hover:text-[#015959] transition-colors duration-300" href="#">Performances</a>
+<a class="text-[#3f4948] dark:text-[#b5faf9] hover:text-[#015959] transition-colors duration-300" href="#">Journal</a>
+<a class="text-[#3f4948] dark:text-[#b5faf9] hover:text-[#015959] transition-colors duration-300" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#3f4948] dark:text-[#b5faf9] p-2">dark_mode</button>
+<button class="material-symbols-outlined text-[#3f4948] dark:text-[#b5faf9] p-2">shopping_cart</button>
+<button class="material-symbols-outlined text-[#3f4948] dark:text-[#b5faf9] p-2">account_circle</button>
+</div>
+</div>
+<div class="bg-[#c1fffe] dark:bg-[#003030] h-[1px] w-full"></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-screen-2xl mx-auto px-8 py-12">
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-16">
+<!-- Left Column: Forms & Payment (65%) -->
+<div class="lg:col-span-6 space-y-12">
+<!-- Section 1: Attendee Information -->
+<section>
+<div class="flex items-center gap-3 mb-8">
+<span class="bg-secondary-container text-on-secondary-container w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
+<h2 class="text-3xl serif-text font-bold text-gelaran-dark">Attendee Details</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant">First Name</label>
+<input class="w-full p-4 bg-surface-container-high border-none rounded-lg focus:ring-2 focus:ring-gelaran-secondary outline-none transition-all" placeholder="e.g. Aditi" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant">Last Name</label>
+<input class="w-full p-4 bg-surface-container-high border-none rounded-lg focus:ring-2 focus:ring-gelaran-secondary outline-none transition-all" placeholder="e.g. Verma" type="text"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-sm font-semibold text-on-surface-variant">Email Address</label>
+<input class="w-full p-4 bg-surface-container-high border-none rounded-lg focus:ring-2 focus:ring-gelaran-secondary outline-none transition-all" placeholder="aditi.v@example.com" type="email"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-sm font-semibold text-on-surface-variant">Phone Number</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-medium">+62</span>
+<input class="w-full p-4 pl-14 bg-surface-container-high border-none rounded-lg focus:ring-2 focus:ring-gelaran-secondary outline-none transition-all" placeholder="812 3456 7890" type="tel"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Payment Selection -->
+<section>
+<div class="flex items-center gap-3 mb-8">
+<span class="bg-secondary-container text-on-secondary-container w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
+<h2 class="text-3xl serif-text font-bold text-gelaran-dark">Payment Method</h2>
+</div>
+<div class="space-y-4">
+<label class="flex items-center p-5 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container transition-colors group">
+<input class="w-5 h-5 text-gelaran-secondary focus:ring-gelaran-secondary" name="payment" type="radio"/>
+<div class="ml-4 flex items-center justify-between w-full">
+<span class="font-semibold">Credit / Debit Card</span>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">credit_card</span>
+</div>
+</div>
+</label>
+<label class="flex items-center p-5 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container transition-colors group">
+<input class="w-5 h-5 text-gelaran-secondary focus:ring-gelaran-secondary" name="payment" type="radio"/>
+<div class="ml-4 flex items-center justify-between w-full">
+<span class="font-semibold">Bank Transfer (VA)</span>
+<span class="material-symbols-outlined text-on-surface-variant">account_balance</span>
+</div>
+</label>
+<label class="flex items-center p-5 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container transition-colors group">
+<input class="w-5 h-5 text-gelaran-secondary focus:ring-gelaran-secondary" name="payment" type="radio"/>
+<div class="ml-4 flex items-center justify-between w-full">
+<span class="font-semibold">Digital Wallet (OVO, Dana, GoPay)</span>
+<span class="material-symbols-outlined text-on-surface-variant">account_balance_wallet</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Trust Block -->
+<div class="bg-surface-container-low p-6 rounded-xl flex items-center gap-4">
+<div class="bg-white p-3 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-gelaran-secondary" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div>
+<p class="font-bold text-gelaran-dark">Secure Booking Guaranteed</p>
+<p class="text-sm text-on-surface-variant">Your transaction is encrypted and verified by Gelaran's security protocols.</p>
+</div>
+<div class="ml-auto hidden sm:block">
+<span class="px-4 py-2 bg-white text-gelaran-secondary text-xs font-bold rounded-full border border-gelaran-secondary/20">Verified by Gelaran</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Order Summary (35%) -->
+<div class="lg:col-span-4">
+<aside class="sticky top-28 space-y-6">
+<div class="bg-surface-container-lowest border border-surface-container p-8 rounded-xl shadow-sm">
+<h3 class="text-xl serif-text font-bold text-gelaran-dark mb-6">Order Summary</h3>
+<!-- Event Teaser -->
+<div class="flex gap-4 mb-8">
+<img alt="Event" class="w-20 h-20 object-cover rounded-lg" data-alt="dramatic stage lighting with silhouettes of performers at a high-end cultural music festival with warm amber tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW1I0B9h0QFbvzR4I5CrKJmVMnHWDfyv14x4PgsJUYRQbiC85YW3BUC-3LFXOCNqtT5thO1BJShqVDQl4xCwM5VEcpFWxlZmZisI3mTq3aM79h-hvtIcgewIjQpq_EwqW230FqxmTMyDvQzV0Ao1-NPbngiErUdlg417B7lQPZdAjupF_uDHlidhqJ9QFOunoBX5SrHEt8MCYTnfGnm6wPrOtkTWHxc6jnkTQ1rwt4s3QYdDdptmKjTMWvEp4EB_lfm3PDudHr3iM"/>
+<div class="flex flex-col justify-center">
+<h4 class="font-bold leading-tight">The Heritage Soundscape 2024</h4>
+<p class="text-xs text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    24 Oct, 19:30
+                                </p>
+<p class="text-xs text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    Solo Cultural Pavilion
+                                </p>
+</div>
+</div>
+<!-- Ticket Details -->
+<div class="space-y-4 py-6 border-y border-surface-container">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">1x VIP Pavilion Pass</span>
+<span class="font-semibold">IDR 1.250.000</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Booking Fee</span>
+<span class="font-medium">IDR 25.000</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Tax (11%)</span>
+<span class="font-medium">IDR 137.500</span>
+</div>
+</div>
+<!-- Promo Code -->
+<div class="py-6">
+<div class="bg-gelaran-yellow/10 p-3 rounded-lg mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-gelaran-dark text-sm" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-[11px] font-bold text-gelaran-dark uppercase tracking-wider">Limited Offer: EARLYBIRD10</p>
+</div>
+<div class="flex gap-2">
+<input class="flex-grow p-3 bg-surface-container-high border-none rounded-lg text-sm" placeholder="Promo code" type="text"/>
+<button class="bg-gelaran-secondary text-white px-6 py-3 rounded-lg font-bold text-sm hover:opacity-90 transition-all">Apply</button>
+</div>
+</div>
+<!-- Total -->
+<div class="pt-6 border-t border-surface-container space-y-6">
+<div class="flex justify-between items-baseline">
+<span class="text-lg font-bold text-gelaran-dark">Total Amount</span>
+<span class="text-2xl font-bold text-gelaran-primary">IDR 1.412.500</span>
+</div>
+<button class="w-full bg-gelaran-primary text-white py-5 rounded-lg font-bold text-lg shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
+                                Confirm &amp; Pay
+                            </button>
+<p class="text-[10px] text-center text-on-surface-variant uppercase tracking-widest leading-relaxed">
+                                By clicking Confirm &amp; Pay, you agree to our <a class="underline" href="#">Terms of Service</a> and <a class="underline" href="#">Privacy Policy</a>.
+                            </p>
+</div>
+</div>
+<!-- Secondary Highlight Chip -->
+<div class="bg-tertiary-fixed text-on-tertiary-fixed p-4 rounded-full flex items-center justify-center gap-2 text-xs font-bold">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+                        Authenticity Guaranteed for Every Ticket
+                    </div>
+</aside>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component: Footer) -->
+<footer class="bg-[#015959] dark:bg-[#001515] text-[#FBC117] full-width mt-20">
+<div class="w-full px-12 py-16 flex flex-col md:flex-row justify-between items-center gap-8 max-w-screen-2xl mx-auto">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="text-xl font-serif text-[#ffffff]">Solo Cultural Curator</span>
+<p class="text-[#e2fffe] opacity-80 text-sm font-body">© 2024 Solo Cultural Curator. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8 font-body">
+<a class="text-[#e2fffe] opacity-80 hover:text-[#F95D00] hover:underline hover:underline-offset-4 transition-colors" href="#">Terms of Service</a>
+<a class="text-[#e2fffe] opacity-80 hover:text-[#F95D00] hover:underline hover:underline-offset-4 transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#e2fffe] opacity-80 hover:text-[#F95D00] hover:underline hover:underline-offset-4 transition-colors" href="#">Authenticity Guarantee</a>
+<a class="text-[#e2fffe] opacity-80 hover:text-[#F95D00] hover:underline hover:underline-offset-4 transition-colors" href="#">Support</a>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-white opacity-80 cursor-pointer hover:text-gelaran-primary">public</span>
+<span class="material-symbols-outlined text-white opacity-80 cursor-pointer hover:text-gelaran-primary">alternate_email</span>
+</div>
+</div>
+</footer>
+</body></html>

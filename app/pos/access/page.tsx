@@ -3,22 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-    ShoppingCart,
-    Loader2,
     AlertCircle,
-    User,
     KeyRound,
+    Loader2,
+    ShoppingCart,
     Smartphone,
     Ticket,
-    Settings,
-    ExternalLink,
-    HelpCircle,
+    User,
 } from "lucide-react";
+import { AccessCredentialHelp } from "@/components/operations/AccessCredentialHelp";
 
 function generateDeviceFingerprint(): string {
     const nav = window.navigator;
     const screen = window.screen;
-    
+
     const components = [
         nav.userAgent,
         nav.language,
@@ -29,16 +27,16 @@ function generateDeviceFingerprint(): string {
         nav.hardwareConcurrency || "unknown",
         nav.platform,
     ];
-    
+
     const fingerprint = components.join("|");
-    
+
     let hash = 0;
     for (let i = 0; i < fingerprint.length; i++) {
         const char = fingerprint.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
+        hash = (hash << 5) - hash + char;
+        hash &= hash;
     }
-    
+
     return Math.abs(hash).toString(36) + Date.now().toString(36);
 }
 
@@ -67,8 +65,7 @@ export default function POSAccessPage() {
     };
 
     const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formatted = formatPin(e.target.value);
-        setPin(formatted);
+        setPin(formatPin(e.target.value));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -95,7 +92,7 @@ export default function POSAccessPage() {
 
         try {
             const deviceFingerprint = generateDeviceFingerprint();
-            
+
             const res = await fetch("/api/pos/access", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -119,7 +116,7 @@ export default function POSAccessPage() {
             localStorage.setItem("pos_event_id", data.data.event.id);
             localStorage.setItem("pos_event_title", data.data.event.title);
             localStorage.setItem("pos_event_slug", data.data.event.slug);
-            
+
             router.push("/pos");
         } catch {
             setError("Terjadi kesalahan. Coba lagi.");
@@ -128,28 +125,76 @@ export default function POSAccessPage() {
         }
     };
 
-    const isFormValid = eventSlug.trim().length > 0 && 
-                        pin.replace(/\D/g, "").length === 8 && 
-                        staffName.trim().length >= 2;
+    const isFormValid =
+        eventSlug.trim().length > 0 &&
+        pin.replace(/\D/g, "").length === 8 &&
+        staffName.trim().length >= 2;
 
     return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-            <div className="w-full max-w-md">
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 mb-4 shadow-lg shadow-emerald-500/30">
-                        <ShoppingCart className="h-10 w-10 text-white" />
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.2),transparent_28%),#061215] px-4 py-10 text-white">
+            <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
+                <section className="rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-950/30 backdrop-blur sm:p-8 lg:p-10">
+                    <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/30">
+                        <ShoppingCart className="h-7 w-7 text-white" />
                     </div>
-                    <h1 className="text-2xl font-bold text-white">POS Kasir</h1>
-                    <p className="text-gray-400 mt-2">
-                        Masukkan kode event dan PIN untuk akses penjualan on-site
-                    </p>
-                </div>
+                    <div className="mt-6 space-y-4">
+                        <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
+                            POS operations
+                        </span>
+                        <div className="space-y-3">
+                            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                                Access the on-site sales terminal with a staff-issued POS session
+                            </h1>
+                            <p className="max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                                Use organizer-issued credentials to open the cashier terminal for event-day sales. Each device is registered so the organizer can monitor active POS usage and revoke sessions when needed.
+                            </p>
+                        </div>
+                    </div>
 
-                <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                        {[
+                            {
+                                label: "Credential type",
+                                value: "Event slug + PIN",
+                                description: "Generated in Gate & POS management.",
+                            },
+                            {
+                                label: "Device status",
+                                value: "Registered",
+                                description: "This browser becomes an active cashier terminal.",
+                            },
+                            {
+                                label: "Best use",
+                                value: "On-site sales",
+                                description: "Supports staffed ticket sales during live events.",
+                            },
+                        ].map((item) => (
+                            <article
+                                key={item.label}
+                                className="rounded-2xl border border-white/10 bg-slate-950/30 p-4 shadow-lg shadow-black/10"
+                            >
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                                    {item.label}
+                                </p>
+                                <p className="mt-3 text-lg font-semibold text-white">{item.value}</p>
+                                <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="rounded-4xl border border-white/10 bg-slate-950/65 p-6 shadow-2xl shadow-black/30 backdrop-blur sm:p-8">
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-semibold text-white">POS Kasir login</h2>
+                        <p className="text-sm leading-6 text-slate-400">
+                            Identify the event, enter the access PIN, and register the cashier using this sales device.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                         <div>
-                            <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-                                <Ticket className="h-4 w-4" />
+                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200">
+                                <Ticket className="h-4 w-4 text-emerald-300" />
                                 Kode Event
                             </label>
                             <input
@@ -158,18 +203,16 @@ export default function POSAccessPage() {
                                 onChange={handleEventSlugChange}
                                 placeholder="contoh: konser-musik-2025"
                                 maxLength={100}
-                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-mono text-sm"
+                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-mono text-white placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                                 autoComplete="off"
                                 autoFocus
                             />
-                            <p className="mt-1.5 text-xs text-gray-500">
-                                Dapatkan kode event dari organizer
-                            </p>
+                            <p className="mt-1.5 text-xs text-slate-500">Gunakan kode event yang dibagikan organizer.</p>
                         </div>
 
                         <div>
-                            <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-                                <KeyRound className="h-4 w-4" />
+                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200">
+                                <KeyRound className="h-4 w-4 text-emerald-300" />
                                 PIN Akses
                             </label>
                             <input
@@ -179,14 +222,14 @@ export default function POSAccessPage() {
                                 onChange={handlePinChange}
                                 placeholder="XXXX-XXXX"
                                 maxLength={9}
-                                className="w-full px-4 py-4 bg-gray-700 border border-gray-600 rounded-xl text-white text-center text-2xl font-mono tracking-[0.3em] placeholder:text-gray-500 placeholder:tracking-[0.2em] focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center text-2xl font-mono tracking-[0.3em] text-white placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                                 autoComplete="off"
                             />
                         </div>
 
                         <div>
-                            <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-                                <User className="h-4 w-4" />
+                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200">
+                                <User className="h-4 w-4 text-emerald-300" />
                                 Nama Kasir
                             </label>
                             <input
@@ -195,30 +238,28 @@ export default function POSAccessPage() {
                                 onChange={(e) => setStaffName(e.target.value)}
                                 placeholder="Masukkan nama Anda"
                                 maxLength={100}
-                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                                 autoComplete="name"
                             />
-                            <p className="mt-1.5 text-xs text-gray-500">
-                                Nama akan tercatat di setiap transaksi penjualan
-                            </p>
+                            <p className="mt-1.5 text-xs text-slate-500">Nama kasir ini akan muncul pada transaksi penjualan yang diproses.</p>
                         </div>
 
-                        <div className="flex items-center gap-2 px-4 py-3 bg-gray-700/50 rounded-lg text-sm text-gray-400">
-                            <Smartphone className="h-4 w-4 flex-shrink-0" />
-                            <span>Device akan terdaftar sebagai POS Kasir</span>
+                        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
+                            <Smartphone className="h-4 w-4 shrink-0 text-emerald-300" />
+                            <span>Perangkat ini akan didaftarkan sebagai terminal POS aktif untuk event.</span>
                         </div>
 
-                        {error && (
-                            <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
-                                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                        {error ? (
+                            <div className="flex items-start gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
                                 <span>{error}</span>
                             </div>
-                        )}
+                        ) : null}
 
                         <button
                             type="submit"
                             disabled={isLoading || !isFormValid}
-                            className="w-full py-4 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+                            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-4 text-sm font-semibold text-white transition-all hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isLoading ? (
                                 <>
@@ -234,34 +275,11 @@ export default function POSAccessPage() {
                         </button>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-gray-700">
-                        <div className="bg-gray-700/50 rounded-xl p-4">
-                            <div className="flex items-start gap-3">
-                                <HelpCircle className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-white">Butuh PIN atau Kode Event?</p>
-                                    <p className="text-xs text-gray-400 mt-1">
-                                        Hubungi organizer untuk mendapatkan kredensial akses Gate Scanner dan POS Kasir.
-                                    </p>
-                                    <a
-                                        href="/organizer/gate"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 mt-3 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
-                                    >
-                                        <Settings className="h-4 w-4" />
-                                        Pengaturan Gate & POS
-                                        <ExternalLink className="h-3 w-3" />
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <p className="text-center text-gray-500 text-sm mt-6">
-                    Gelaran - POS System
-                </p>
+                    <AccessCredentialHelp
+                        accent="emerald"
+                        description="Organizer dapat membuat atau mengganti kredensial kasir dari Gate & POS management pada event terkait."
+                    />
+                </section>
             </div>
         </div>
     );

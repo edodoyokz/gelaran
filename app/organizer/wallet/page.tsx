@@ -1,21 +1,29 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
-    Wallet,
-    ArrowUpRight,
     ArrowDownLeft,
-    CreditCard,
-    Clock,
+    ArrowUpRight,
     CheckCircle,
-    Plus,
+    Clock,
+    CreditCard,
+    Wallet,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import prisma from "@/lib/prisma/client";
 import { formatCurrency } from "@/lib/utils";
+import {
+    EmptyState,
+    OrganizerMetricCard,
+    OrganizerPanel,
+    OrganizerStatusBadge,
+    OrganizerWorkspaceHeader,
+} from "@/components/organizer/organizer-workspace-primitives";
 
 export default async function OrganizerWalletPage() {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
         redirect("/login?returnUrl=/organizer/wallet");
@@ -46,150 +54,161 @@ export default async function OrganizerWalletPage() {
     const totalWithdrawn = Number(profile.totalWithdrawn);
 
     return (
-        <div className="min-h-screen">
-            <header className="bg-[var(--surface)] border-b sticky top-0 z-10">
-                <div className="px-6 py-4">
-                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">Wallet</h1>
-                    <p className="text-[var(--text-muted)] text-sm">Kelola saldo dan penarikan dana</p>
-                </div>
-            </header>
-
-            <main className="p-6 space-y-6">
-                <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-8 text-white">
-                    <div className="flex items-center gap-3 mb-4">
-                        <Wallet className="h-8 w-8" />
-                        <span className="text-lg opacity-90">Saldo Tersedia</span>
-                    </div>
-                    <p className="text-4xl font-bold mb-6">{formatCurrency(balance)}</p>
-                    <div className="flex gap-4">
+        <div className="space-y-6">
+            <OrganizerWorkspaceHeader
+                title="Wallet organizer"
+                description="Pantau saldo, rekening bank, dan riwayat penarikan dalam satu permukaan yang lebih konsisten dengan workspace organizer Gelaran."
+                actions={
+                    <>
                         <Link
                             href="/organizer/wallet/withdraw"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--surface)] text-[var(--accent-primary)] rounded-xl font-medium hover:bg-[var(--surface-hover)] transition-colors"
+                            className="inline-flex items-center gap-2 rounded-full bg-(--accent-primary) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-sm) transition-opacity hover:opacity-90"
                         >
-                            <ArrowUpRight className="h-5 w-5" />
-                            Tarik Dana
+                            <ArrowUpRight className="h-4 w-4" />
+                            Tarik dana
                         </Link>
                         <Link
                             href="/organizer/wallet/bank-account"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--surface)]/20 text-white rounded-xl font-medium hover:bg-[var(--surface)]/30 transition-colors"
+                            className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-elevated)"
                         >
-                            <CreditCard className="h-5 w-5" />
-                            Rekening Bank
+                            <CreditCard className="h-4 w-4" />
+                            Rekening bank
                         </Link>
-                    </div>
-                </div>
+                    </>
+                }
+            />
 
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm border border-[var(--border)]">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
-                                <ArrowDownLeft className="h-6 w-6 text-green-600" />
+            <section className="overflow-hidden rounded-4xl border border-[rgba(41,179,182,0.22)] bg-[linear-gradient(135deg,rgba(14,165,233,0.18),rgba(99,102,241,0.14),rgba(249,115,22,0.14))] p-6 shadow-(--shadow-lg) sm:p-8">
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
+                    <div className="space-y-4">
+                        <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/30 bg-white/70 text-(--accent-primary) shadow-(--shadow-sm)">
+                            <Wallet className="h-6 w-6" />
+                        </span>
+                        <div className="space-y-2">
+                            <p className="text-sm font-medium text-(--text-secondary)">Saldo tersedia</p>
+                            <h2 className="text-4xl font-semibold tracking-(--tracking-heading) text-foreground">{formatCurrency(balance)}</h2>
+                            <p className="max-w-2xl text-sm leading-7 text-(--text-secondary)">
+                                Gunakan wallet ini untuk memantau saldo siap cair, total pemasukan, dan histori payout tanpa mengubah alur transaksi organizer yang sudah berjalan.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="rounded-[1.75rem] border border-white/35 bg-white/72 p-5 shadow-(--shadow-md) backdrop-blur dark:bg-[rgba(15,23,42,0.45)]">
+                        <div className="space-y-3 text-sm text-(--text-secondary)">
+                            <div className="flex items-center justify-between gap-3">
+                                <span>Total pendapatan</span>
+                                <span className="font-semibold text-foreground">{formatCurrency(totalEarned)}</span>
                             </div>
-                            <div>
-                                <p className="text-sm text-[var(--text-muted)]">Total Pendapatan</p>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{formatCurrency(totalEarned)}</p>
+                            <div className="flex items-center justify-between gap-3">
+                                <span>Total ditarik</span>
+                                <span className="font-semibold text-foreground">{formatCurrency(totalWithdrawn)}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-3">
+                                <span>Rekening terhubung</span>
+                                <span className="font-semibold text-foreground">{profile.bankAccounts.length}</span>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm border border-[var(--border)]">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
-                                <ArrowUpRight className="h-6 w-6 text-purple-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-[var(--text-muted)]">Total Ditarik</p>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{formatCurrency(totalWithdrawn)}</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+            </section>
 
-                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)]">
-                    <div className="px-6 py-4 border-b flex items-center justify-between">
-                        <h2 className="text-lg font-semibold flex items-center gap-2">
-                            <CreditCard className="h-5 w-5 text-[var(--text-muted)]" />
-                            Rekening Bank
-                        </h2>
+            <div className="grid gap-4 md:grid-cols-3">
+                <OrganizerMetricCard label="Saldo wallet" value={formatCurrency(balance)} lucideIcon={Wallet} tone="accent" meta="Dana yang tersedia untuk payout" />
+                <OrganizerMetricCard label="Total pendapatan" value={formatCurrency(totalEarned)} lucideIcon={ArrowDownLeft} tone="success" meta="Akumulasi pendapatan organizer" />
+                <OrganizerMetricCard label="Total ditarik" value={formatCurrency(totalWithdrawn)} lucideIcon={ArrowUpRight} meta="Riwayat seluruh penarikan dana" />
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+                <OrganizerPanel
+                    title="Rekening bank"
+                    description="Kelola rekening penerima payout organizer dan lihat status rekening utama dengan cepat."
+                    action={
                         <Link
                             href="/organizer/wallet/bank-account"
-                            className="text-[var(--accent-primary)] text-sm font-medium hover:text-indigo-500 flex items-center gap-1"
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-(--accent-primary) transition-opacity hover:opacity-80"
                         >
-                            <Plus className="h-4 w-4" />
-                            Tambah
+                            Tambah / kelola rekening
                         </Link>
-                    </div>
-                    <div className="divide-y">
-                        {profile.bankAccounts.length === 0 ? (
-                            <div className="p-8 text-center">
-                                <CreditCard className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
-                                <p className="text-[var(--text-muted)] mb-4">Belum ada rekening bank</p>
+                    }
+                >
+                    {profile.bankAccounts.length === 0 ? (
+                        <EmptyState
+                            title="Belum ada rekening bank"
+                            description="Tambahkan rekening agar wallet siap dipakai untuk penarikan dana organizer."
+                            icon={CreditCard}
+                            action={
                                 <Link
                                     href="/organizer/wallet/bank-account"
-                                    className="inline-flex items-center gap-2 text-[var(--accent-primary)] font-medium"
+                                    className="inline-flex items-center gap-2 rounded-full bg-(--accent-primary) px-5 py-3 text-sm font-semibold text-white"
                                 >
-                                    <Plus className="h-4 w-4" />
-                                    Tambah Rekening
+                                    <CreditCard className="h-4 w-4" />
+                                    Tambah rekening
                                 </Link>
-                            </div>
-                        ) : (
-                            profile.bankAccounts.map((account) => (
-                                <div key={account.id} className="px-6 py-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                            <CreditCard className="h-5 w-5 text-[var(--accent-primary)]" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-[var(--text-primary)]">{account.bankName}</p>
-                                            <p className="text-sm text-[var(--text-muted)]">
-                                                {account.accountNumber} • {account.accountHolderName}
-                                            </p>
-                                        </div>
+                            }
+                        />
+                    ) : (
+                        <div className="space-y-3">
+                            {profile.bankAccounts.map((account) => (
+                                <div
+                                    key={account.id}
+                                    className="flex flex-col gap-4 rounded-[1.25rem] border border-(--border) bg-(--surface-elevated) p-4 sm:flex-row sm:items-center sm:justify-between"
+                                >
+                                    <div className="space-y-1">
+                                        <p className="font-semibold text-foreground">{account.bankName}</p>
+                                        <p className="text-sm text-(--text-secondary)">{account.accountNumber} • {account.accountHolderName}</p>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        {account.isPrimary && (
-                                            <span className="px-2.5 py-1 bg-indigo-100 text-[var(--accent-primary)] text-xs font-medium rounded-full">
-                                                Utama
-                                            </span>
-                                        )}
-                                        {account.isVerified && (
-                                            <CheckCircle className="h-5 w-5 text-green-500" />
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {account.isPrimary ? <OrganizerStatusBadge tone="info">Utama</OrganizerStatusBadge> : null}
+                                        {account.isVerified ? (
+                                            <OrganizerStatusBadge tone="success">
+                                                <CheckCircle className="h-3.5 w-3.5" />
+                                                Terverifikasi
+                                            </OrganizerStatusBadge>
+                                        ) : (
+                                            <OrganizerStatusBadge tone="warning">Perlu verifikasi</OrganizerStatusBadge>
                                         )}
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
-                </div>
+                            ))}
+                        </div>
+                    )}
+                </OrganizerPanel>
 
-                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)]">
-                    <div className="px-6 py-4 border-b">
-                        <h2 className="text-lg font-semibold">Riwayat Penarikan</h2>
-                    </div>
-                    <div className="divide-y">
-                        {profile.payouts.length === 0 ? (
-                            <div className="p-8 text-center">
-                                <Clock className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
-                                <p className="text-[var(--text-muted)]">Belum ada riwayat penarikan</p>
-                            </div>
-                        ) : (
-                            profile.payouts.map((payout) => (
-                                <div key={payout.id} className="px-6 py-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${payout.status === "COMPLETED"
-                                                ? "bg-green-500/10"
-                                                : payout.status === "REQUESTED" || payout.status === "PROCESSING"
-                                                    ? "bg-yellow-500/10"
-                                                    : "bg-red-500/10"
-                                            }`}>
-                                            {payout.status === "COMPLETED" ? (
-                                                <CheckCircle className="h-5 w-5 text-green-600" />
-                                            ) : (
-                                                <Clock className="h-5 w-5 text-yellow-600" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-[var(--text-primary)]">{payout.payoutCode}</p>
-                                            <p className="text-sm text-[var(--text-muted)]">
+                <OrganizerPanel title="Riwayat penarikan" description="Riwayat payout terbaru untuk memantau request, processing, hingga completed.">
+                    {profile.payouts.length === 0 ? (
+                        <EmptyState
+                            title="Belum ada riwayat penarikan"
+                            description="Setelah organizer mengajukan payout, histori penarikan akan muncul di panel ini."
+                            icon={Clock}
+                        />
+                    ) : (
+                        <div className="space-y-3">
+                            {profile.payouts.map((payout) => {
+                                const tone =
+                                    payout.status === "COMPLETED"
+                                        ? "success"
+                                        : payout.status === "REQUESTED"
+                                            ? "warning"
+                                            : payout.status === "PROCESSING"
+                                                ? "info"
+                                                : "danger";
+
+                                const label =
+                                    payout.status === "COMPLETED"
+                                        ? "Selesai"
+                                        : payout.status === "REQUESTED"
+                                            ? "Menunggu"
+                                            : payout.status === "PROCESSING"
+                                                ? "Diproses"
+                                                : payout.status;
+
+                                return (
+                                    <div
+                                        key={payout.id}
+                                        className="flex flex-col gap-3 rounded-[1.25rem] border border-(--border) bg-(--surface-elevated) p-4 sm:flex-row sm:items-center sm:justify-between"
+                                    >
+                                        <div className="space-y-1">
+                                            <p className="font-semibold text-foreground">{payout.payoutCode}</p>
+                                            <p className="text-sm text-(--text-secondary)">
                                                 {new Date(payout.requestedAt).toLocaleDateString("id-ID", {
                                                     day: "numeric",
                                                     month: "short",
@@ -197,28 +216,17 @@ export default async function OrganizerWalletPage() {
                                                 })}
                                             </p>
                                         </div>
+                                        <div className="flex flex-col items-start gap-2 sm:items-end">
+                                            <p className="font-semibold text-foreground">{formatCurrency(Number(payout.netAmount))}</p>
+                                            <OrganizerStatusBadge tone={tone}>{label}</OrganizerStatusBadge>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="font-medium text-[var(--text-primary)]">{formatCurrency(Number(payout.netAmount))}</p>
-                                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${payout.status === "COMPLETED"
-                                                ? "bg-green-500/10 text-green-700"
-                                                : payout.status === "REQUESTED"
-                                                    ? "bg-yellow-500/10 text-yellow-700"
-                                                    : payout.status === "PROCESSING"
-                                                        ? "bg-blue-500/10 text-blue-700"
-                                                        : "bg-red-500/10 text-red-700"
-                                            }`}>
-                                            {payout.status === "COMPLETED" ? "Selesai" : 
-                                             payout.status === "REQUESTED" ? "Menunggu" :
-                                             payout.status === "PROCESSING" ? "Diproses" : payout.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            </main>
+                                );
+                            })}
+                        </div>
+                    )}
+                </OrganizerPanel>
+            </div>
         </div>
     );
 }

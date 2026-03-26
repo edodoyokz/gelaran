@@ -1,26 +1,29 @@
 "use client";
 
 import { useState, useEffect, useCallback, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
+    AlertCircle,
+    ArrowLeft,
     Camera,
     CheckCircle,
-    XCircle,
-    AlertCircle,
-    Users,
-    ArrowLeft,
-    RefreshCw,
+    Keyboard,
     Loader2,
-    Keyboard
+    RefreshCw,
+    Ticket,
+    XCircle,
 } from "lucide-react";
+import QRScanner from "@/components/gate/QRScanner";
+import { getGateResultDisplay, type GateDisplayResultCode } from "@/lib/gate/result-display";
 
 interface CheckInResult {
-    result: "SUCCESS" | "ALREADY_CHECKED_IN" | "INVALID" | "WRONG_EVENT";
+    result: GateDisplayResultCode;
+    message?: string;
     ticket?: {
         ticketType: string;
         attendeeName: string;
-        attendeeEmail: string;
+        attendeeEmail?: string;
         bookingCode: string;
         eventTitle: string;
         checkedInAt: string;
@@ -35,87 +38,142 @@ interface CheckInStats {
     percentage: number;
 }
 
+type CheckInApiPayload = {
+    success?: boolean;
+    data?: {
+        ticket?: CheckInResult["ticket"];
+    };
+    error?: {
+        message?: string;
+        data?: {
+            result?: GateDisplayResultCode;
+            checkedInAt?: string;
+        };
+    };
+};
+
 function ScannerContent() {
     const searchParams = useSearchParams();
-    const _router = useRouter();
     const eventId = searchParams.get("event");
 
     const [ticketCode, setTicketCode] = useState("");
-    const [isScanning, setIsScanning] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [lastResult, setLastResult] = useState<CheckInResult | null>(null);
     const [stats, setStats] = useState<CheckInStats | null>(null);
-    const [manualMode, setManualMode] = useState(true);
+    const [mode, setMode] = useState<"manual" | "camera">("camera");
 
-    // Fetch stats
     const fetchStats = useCallback(async () => {
         if (!eventId) return;
+
         try {
             const res = await fetch(`/api/check-in?eventId=${eventId}`);
             const data = await res.json();
             if (data.success) {
                 setStats(data.data);
             }
-        } catch (error) {
-            console.error("Failed to fetch stats:", error);
-        }
+        } catch { }
     }, [eventId]);
 
     useEffect(() => {
         fetchStats();
-        const interval = setInterval(fetchStats, 10000);
+        const interval = setInterval(fetchStats, 15000);
         return () => clearInterval(interval);
     }, [fetchStats]);
 
-    const handleScan = async (code: string) => {
-        if (!code.trim()) return;
+    const mapCheckInPayload = (payload: CheckInApiPayload): CheckInResult => {
+        if (payload.success) {
+            return {
+                result: "SUCCESS",
+                ticket: payload.data?.ticket,
+            };
+        }
 
-        setIsScanning(true);
+        return {
+            result: payload.error?.data?.result || "INVALID",
+            checkedInAt: payload.error?.data?.checkedInAt,
+            message: payload.error?.message,
+        };
+    };
+
+    const handleCheckIn = useCallback(
+        async (code: string): Promise<CheckInResult> => {
+            if (!eventId) {
+                return {
+                    result: "ACCESS_DENIED",
+                    message: "Event tidak ditemukan. Buka scanner dari halaman event organizer.",
+                };
+            }
+
+            try {
+                const res = await fetch("/api/check-in", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ticketCode: code.trim().toUpperCase(), eventId }),
+                });
+
+                const payload = (await res.json()) as CheckInApiPayload;
+                const result = mapCheckInPayload(payload);
+
+                if (result.result === "SUCCESS") {
+                    fetchStats();
+                }
+
+                return result;
+            } catch {
+                return {
+                    result: "INVALID",
+                    message: "Gagal menghubungi layanan check-in.",
+                };
+            }
+        },
+        [eventId, fetchStats],
+    );
+
+    const handleManualSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!ticketCode.trim()) return;
+
+        setIsSubmitting(true);
         setLastResult(null);
 
         try {
-            const res = await fetch("/api/check-in", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ticketCode: code.trim(), eventId }),
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                setLastResult({ result: "SUCCESS", ticket: data.data.ticket });
-                fetchStats();
-            } else {
-                setLastResult({
-                    result: data.error?.data?.result || "INVALID",
-                    checkedInAt: data.error?.data?.checkedInAt,
-                });
-            }
-        } catch {
-            setLastResult({ result: "INVALID" });
+            const result = await handleCheckIn(ticketCode);
+            setLastResult(result);
         } finally {
-            setIsScanning(false);
+            setIsSubmitting(false);
             setTicketCode("");
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        handleScan(ticketCode);
+    const getResultIcon = (result: GateDisplayResultCode) => {
+        const display = getGateResultDisplay(result);
+
+        if (display.tone === "success") {
+            return <CheckCircle className="h-12 w-12 text-emerald-500" />;
+        }
+
+        if (display.tone === "warning") {
+            return <AlertCircle className="h-12 w-12 text-yellow-500" />;
+        }
+
+        return <XCircle className="h-12 w-12 text-red-500" />;
     };
 
     if (!eventId) {
         return (
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-                <div className="text-center">
-                    <AlertCircle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-                    <h1 className="text-xl font-bold text-white mb-2">Event ID Required</h1>
-                    <p className="text-gray-400 mb-4">Please select an event to scan tickets.</p>
+            <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.2),transparent_28%),#07111f] px-4 py-10 text-white">
+                <div className="mx-auto max-w-2xl rounded-3xl border border-white/10 bg-slate-950/65 p-8 text-center shadow-2xl shadow-black/30 backdrop-blur">
+                    <AlertCircle className="mx-auto mb-4 h-14 w-14 text-yellow-500" />
+                    <h1 className="text-2xl font-semibold text-white">Event ID required</h1>
+                    <p className="mt-2 text-sm leading-7 text-slate-300">
+                        Scanner membutuhkan parameter event dari organizer workspace sebelum check-in bisa dijalankan.
+                    </p>
                     <Link
                         href="/organizer/events"
-                        className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300"
+                        className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 hover:text-white"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Back to Events
+                        Kembali ke daftar event
                     </Link>
                 </div>
             </div>
@@ -123,174 +181,198 @@ function ScannerContent() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900">
-            {/* Header */}
-            <header className="bg-gray-800 border-b border-gray-700">
-                <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
-                    <Link href="/organizer" className="text-gray-400 hover:text-white">
-                        <ArrowLeft className="h-5 w-5" />
-                    </Link>
-                    <h1 className="text-lg font-semibold text-white">QR Scanner</h1>
-                    <button
-                        onClick={fetchStats}
-                        className="text-gray-400 hover:text-white"
-                    >
-                        <RefreshCw className="h-5 w-5" />
-                    </button>
-                </div>
-            </header>
-
-            <main className="max-w-lg mx-auto px-4 py-6">
-                {/* Stats */}
-                {stats && (
-                    <div className="bg-gray-800 rounded-xl p-4 mb-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-2">
-                                <Users className="h-5 w-5 text-gray-400" />
-                                <span className="text-gray-300">Check-in Progress</span>
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.2),transparent_28%),#07111f] px-4 py-6 text-white sm:py-8">
+            <div className="mx-auto w-full max-w-3xl space-y-6">
+                <header className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-2xl shadow-black/30 backdrop-blur sm:p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 text-indigo-200">
+                                <Camera className="h-5 w-5" />
+                                <h1 className="truncate text-lg font-semibold text-white sm:text-xl">Scanner Utility</h1>
                             </div>
-                            <span className="text-2xl font-bold text-white">{stats.percentage}%</span>
+                            <p className="mt-1 text-sm text-slate-400">Mode check-in ringkas untuk operasional event.</p>
                         </div>
-                        <div className="w-full bg-gray-700 rounded-full h-3 mb-2">
+                        <div className="flex items-center gap-2">
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">
+                                Event: {eventId}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={fetchStats}
+                                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                                title="Refresh stats"
+                            >
+                                <RefreshCw className="h-5 w-5" />
+                            </button>
+                            <Link
+                                href="/organizer/events"
+                                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                                title="Back to organizer events"
+                            >
+                                <ArrowLeft className="h-5 w-5" />
+                            </Link>
+                        </div>
+                    </div>
+                </header>
+
+                {stats && (
+                    <section className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-xl shadow-black/20 backdrop-blur sm:p-5">
+                        <div className="grid gap-3 sm:grid-cols-3">
+                            <article className="rounded-2xl border border-white/10 bg-white/5 p-3.5">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Total tiket</p>
+                                <p className="mt-2 text-2xl font-semibold text-white">{stats.total}</p>
+                            </article>
+                            <article className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-3.5">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">Checked-in</p>
+                                <p className="mt-2 text-2xl font-semibold text-emerald-200">{stats.checkedIn}</p>
+                            </article>
+                            <article className="rounded-2xl border border-indigo-400/20 bg-indigo-400/10 p-3.5">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-200">Progress</p>
+                                <p className="mt-2 text-2xl font-semibold text-indigo-100">{stats.percentage}%</p>
+                            </article>
+                        </div>
+                        <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-slate-800/80">
                             <div
-                                className="bg-green-500 h-3 rounded-full transition-all duration-500"
+                                className="h-full rounded-full bg-linear-to-r from-indigo-500 to-emerald-500 transition-all duration-500"
                                 style={{ width: `${stats.percentage}%` }}
                             />
                         </div>
-                        <div className="flex justify-between text-sm text-gray-400">
-                            <span>{stats.checkedIn} checked in</span>
-                            <span>{stats.remaining} remaining</span>
-                        </div>
-                    </div>
+                        <p className="mt-2 text-sm text-slate-400">{stats.remaining} tiket belum check-in.</p>
+                    </section>
                 )}
 
-                {/* Mode Toggle */}
-                <div className="flex gap-2 mb-6">
+                <div className="flex gap-2 rounded-2xl border border-white/10 bg-slate-950/65 p-2 shadow-lg shadow-black/20 backdrop-blur">
                     <button
-                        onClick={() => setManualMode(true)}
-                        className={`flex-1 py-3 rounded-lg font-medium flex items-center justify-center gap-2 ${manualMode
-                                ? "bg-indigo-600 text-white"
-                                : "bg-gray-800 text-gray-400"
+                        type="button"
+                        onClick={() => setMode("camera")}
+                        className={`flex-1 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${mode === "camera"
+                            ? "bg-indigo-600 text-white"
+                            : "bg-transparent text-slate-400 hover:bg-white/5 hover:text-white"
                             }`}
                     >
-                        <Keyboard className="h-5 w-5" />
-                        Manual Input
+                        <span className="inline-flex items-center gap-2">
+                            <Camera className="h-4 w-4" />
+                            Kamera
+                        </span>
                     </button>
                     <button
-                        onClick={() => setManualMode(false)}
-                        className={`flex-1 py-3 rounded-lg font-medium flex items-center justify-center gap-2 ${!manualMode
-                                ? "bg-indigo-600 text-white"
-                                : "bg-gray-800 text-gray-400"
+                        type="button"
+                        onClick={() => setMode("manual")}
+                        className={`flex-1 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${mode === "manual"
+                            ? "bg-indigo-600 text-white"
+                            : "bg-transparent text-slate-400 hover:bg-white/5 hover:text-white"
                             }`}
                     >
-                        <Camera className="h-5 w-5" />
-                        Camera
+                        <span className="inline-flex items-center gap-2">
+                            <Keyboard className="h-4 w-4" />
+                            Manual
+                        </span>
                     </button>
                 </div>
 
-                {/* Scanner Area */}
-                {manualMode ? (
-                    <form onSubmit={handleSubmit} className="mb-6">
-                        <input
-                            type="text"
-                            value={ticketCode}
-                            onChange={(e) => setTicketCode(e.target.value.toUpperCase())}
-                            placeholder="Enter ticket code..."
-                            className="w-full px-4 py-4 bg-gray-800 border border-gray-700 rounded-xl text-white text-center text-xl font-mono tracking-wider placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            autoFocus
-                            autoComplete="off"
+                {mode === "camera" ? (
+                    <section className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-2xl shadow-black/30 backdrop-blur sm:p-5">
+                        <QRScanner
+                            onCheckIn={handleCheckIn}
+                            onScanComplete={(result) => {
+                                setLastResult(result);
+                                if (result.result === "SUCCESS") {
+                                    fetchStats();
+                                }
+                            }}
                         />
-                        <button
-                            type="submit"
-                            disabled={isScanning || !ticketCode.trim()}
-                            className="w-full mt-4 py-4 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
-                        >
-                            {isScanning ? (
-                                <>
-                                    <Loader2 className="h-5 w-5 animate-spin" />
-                                    Checking...
-                                </>
-                            ) : (
-                                <>
-                                    <CheckCircle className="h-5 w-5" />
-                                    Check In
-                                </>
-                            )}
-                        </button>
-                    </form>
+                    </section>
                 ) : (
-                    <div className="aspect-square bg-gray-800 rounded-xl mb-6 flex items-center justify-center">
-                        <div className="text-center text-gray-400">
-                            <Camera className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                            <p>Camera scanning coming soon</p>
-                            <p className="text-sm">Use manual input for now</p>
-                        </div>
-                    </div>
+                    <section className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-2xl shadow-black/30 backdrop-blur sm:p-5">
+                        <form onSubmit={handleManualSubmit}>
+                            <label htmlFor="ticket-code" className="mb-2 block text-sm font-medium text-slate-300">
+                                Kode tiket
+                            </label>
+                            <input
+                                id="ticket-code"
+                                type="text"
+                                value={ticketCode}
+                                onChange={(e) => setTicketCode(e.target.value.toUpperCase())}
+                                placeholder="Contoh: ABCD1234"
+                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center font-mono text-xl tracking-[0.2em] text-white placeholder:text-slate-500 focus:border-indigo-400/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                autoComplete="off"
+                                autoFocus
+                            />
+                            <button
+                                type="submit"
+                                disabled={isSubmitting || !ticketCode.trim()}
+                                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-4 text-sm font-semibold text-white transition-all hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                        Memproses...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Ticket className="h-5 w-5" />
+                                        Check in tiket
+                                    </>
+                                )}
+                            </button>
+                        </form>
+                    </section>
                 )}
 
-                {/* Result Display */}
-                {lastResult && (
-                    <div
-                        className={`rounded-xl p-6 mb-6 ${lastResult.result === "SUCCESS"
-                                ? "bg-green-900/50 border border-green-700"
-                                : lastResult.result === "ALREADY_CHECKED_IN"
-                                    ? "bg-yellow-900/50 border border-yellow-700"
-                                    : "bg-red-900/50 border border-red-700"
-                            }`}
-                    >
-                        <div className="flex items-center gap-3 mb-4">
-                            {lastResult.result === "SUCCESS" ? (
-                                <CheckCircle className="h-12 w-12 text-green-500" />
-                            ) : lastResult.result === "ALREADY_CHECKED_IN" ? (
-                                <AlertCircle className="h-12 w-12 text-yellow-500" />
-                            ) : (
-                                <XCircle className="h-12 w-12 text-red-500" />
+                {lastResult && mode === "manual" && (() => {
+                    const display = getGateResultDisplay(lastResult.result);
+                    const toneClasses =
+                        display.tone === "success"
+                            ? "border-emerald-500/30 bg-emerald-500/10"
+                            : display.tone === "warning"
+                                ? "border-yellow-500/30 bg-yellow-500/10"
+                                : "border-red-500/30 bg-red-500/10";
+                    const titleClasses =
+                        display.tone === "success"
+                            ? "text-emerald-300"
+                            : display.tone === "warning"
+                                ? "text-yellow-300"
+                                : "text-red-300";
+
+                    return (
+                        <section className={`rounded-3xl border p-5 ${toneClasses}`}>
+                            <div className="flex items-start gap-3">
+                                {getResultIcon(lastResult.result)}
+                                <div className="min-w-0 flex-1">
+                                    <h2 className={`text-xl font-semibold ${titleClasses}`}>{display.title}</h2>
+                                    <p className="mt-1 text-sm text-slate-300">{lastResult.message || display.description}</p>
+                                </div>
+                            </div>
+                            {lastResult.ticket && (
+                                <div className="mt-4 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">
+                                    <p><span className="text-slate-400">Nama:</span> {lastResult.ticket.attendeeName}</p>
+                                    <p><span className="text-slate-400">Tiket:</span> {lastResult.ticket.ticketType}</p>
+                                    <p><span className="text-slate-400">Booking:</span> {lastResult.ticket.bookingCode}</p>
+                                    <p><span className="text-slate-400">Event:</span> {lastResult.ticket.eventTitle}</p>
+                                </div>
                             )}
-                            <div>
-                                <h3 className={`text-xl font-bold ${lastResult.result === "SUCCESS"
-                                        ? "text-green-400"
-                                        : lastResult.result === "ALREADY_CHECKED_IN"
-                                            ? "text-yellow-400"
-                                            : "text-red-400"
-                                    }`}>
-                                    {lastResult.result === "SUCCESS"
-                                        ? "Check-in Successful!"
-                                        : lastResult.result === "ALREADY_CHECKED_IN"
-                                            ? "Already Checked In"
-                                            : lastResult.result === "WRONG_EVENT"
-                                                ? "Wrong Event"
-                                                : "Invalid Ticket"}
-                                </h3>
-                            </div>
-                        </div>
-
-                        {lastResult.ticket && (
-                            <div className="space-y-2 text-gray-300">
-                                <p><span className="text-gray-500">Name:</span> {lastResult.ticket.attendeeName}</p>
-                                <p><span className="text-gray-500">Ticket:</span> {lastResult.ticket.ticketType}</p>
-                                <p><span className="text-gray-500">Booking:</span> {lastResult.ticket.bookingCode}</p>
-                            </div>
-                        )}
-
-                        {lastResult.checkedInAt && (
-                            <p className="text-gray-400 text-sm mt-4">
-                                Checked in at: {new Date(lastResult.checkedInAt).toLocaleString("id-ID")}
-                            </p>
-                        )}
-                    </div>
-                )}
-            </main>
+                            {lastResult.checkedInAt && (
+                                <p className="mt-3 text-xs text-slate-400">
+                                    Check-in pada: {new Date(lastResult.checkedInAt).toLocaleString("id-ID")}
+                                </p>
+                            )}
+                        </section>
+                    );
+                })()}
+            </div>
         </div>
     );
 }
 
 export default function ScannerPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="flex min-h-screen items-center justify-center bg-[#07111f]">
+                    <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+                </div>
+            }
+        >
             <ScannerContent />
         </Suspense>
     );

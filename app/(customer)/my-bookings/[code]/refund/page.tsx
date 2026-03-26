@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, Suspense } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
     ArrowLeft,
@@ -14,6 +15,11 @@ import {
     User,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import {
+    CustomerHero,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface Refund {
     id: string;
@@ -95,7 +101,7 @@ function RefundPageContent() {
 
     const handleSubmitRefund = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!reason.trim()) {
             setError("Alasan wajib diisi");
             return;
@@ -121,7 +127,7 @@ function RefundPageContent() {
             setSuccessMessage("Permintaan refund berhasil dikirim!");
             setReason("");
             setShowRequestForm(false);
-            
+
             await fetchRefundData();
         } catch (err) {
             const message = err instanceof Error ? err.message : "Terjadi kesalahan";
@@ -134,221 +140,186 @@ function RefundPageContent() {
     const getRefundTypeBadge = (type: string) => {
         switch (type) {
             case "FULL":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">
-                        Full Refund
-                    </span>
-                );
+                return <CustomerStatusBadge label="Full refund" tone="danger" />;
             case "PARTIAL":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
-                        Partial Refund
-                    </span>
-                );
+                return <CustomerStatusBadge label="Partial refund" tone="warning" />;
             default:
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full">
-                        {type}
-                    </span>
-                );
+                return <CustomerStatusBadge label={type} tone="neutral" />;
         }
     };
 
     const getStatusBadge = (status: string) => {
         switch (status) {
             case "REQUESTED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
-                        <Clock className="h-3 w-3" />
-                        Menunggu Review
-                    </span>
-                );
+                return <CustomerStatusBadge label="Menunggu review" tone="warning" icon={Clock} />;
             case "APPROVED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
-                        <RefreshCw className="h-3 w-3" />
-                        Disetujui
-                    </span>
-                );
+                return <CustomerStatusBadge label="Disetujui" tone="accent" icon={RefreshCw} />;
             case "PROCESSING":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">
-                        <RefreshCw className="h-3 w-3" />
-                        Sedang Diproses
-                    </span>
-                );
+                return <CustomerStatusBadge label="Sedang diproses" tone="accent" icon={RefreshCw} />;
             case "COMPLETED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                        <CheckCircle className="h-3 w-3" />
-                        Selesai
-                    </span>
-                );
+                return <CustomerStatusBadge label="Selesai" tone="success" icon={CheckCircle} />;
             case "REJECTED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">
-                        <XCircle className="h-3 w-3" />
-                        Ditolak
-                    </span>
-                );
+                return <CustomerStatusBadge label="Ditolak" tone="danger" icon={XCircle} />;
             default:
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full">
-                        {status}
-                    </span>
-                );
+                return <CustomerStatusBadge label={status} tone="neutral" />;
         }
     };
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <RefreshCw className="h-12 w-12 text-amber-600 animate-spin" />
-                    <p className="text-gray-600">Memuat data refund...</p>
+                    <RefreshCw className="h-12 w-12 animate-spin text-(--accent-primary)" />
+                    <p className="text-(--text-muted)">Memuat data refund...</p>
                 </div>
             </div>
         );
     }
 
+    if (error && !booking) {
+        return (
+            <DashboardSection>
+                <div className="flex min-h-[45vh] items-center justify-center">
+                    <div className="max-w-md text-center">
+                        <AlertCircle className="mx-auto mb-4 h-12 w-12 text-(--error)" />
+                        <h2 className="mb-2 text-xl font-semibold text-foreground">Refund belum bisa dimuat</h2>
+                        <p className="mb-6 text-(--text-secondary)">{error}</p>
+                        <button
+                            onClick={() => router.push("/my-bookings")}
+                            className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Kembali ke pesanan
+                        </button>
+                    </div>
+                </div>
+            </DashboardSection>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-gray-100">
-            <div className="max-w-4xl mx-auto px-4 py-8">
-                <div className="mb-6">
-                    <button
-                        onClick={() => router.push("/my-bookings")}
-                        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Refund center"
+                title="Refund pesanan"
+                description="Ajukan refund untuk booking yang memenuhi syarat dan pantau seluruh proses pengembaliannya dalam satu halaman."
+                meta={
+                    booking ? (
+                        <>
+                            <CustomerStatusBadge label={booking.bookingCode} tone="accent" />
+                            <CustomerStatusBadge label={booking.status} tone="neutral" />
+                        </>
+                    ) : undefined
+                }
+                actions={
+                    <Link
+                        href={`/my-bookings/${bookingCode}`}
+                        className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        <span>Kembali ke Daftar Pesanan</span>
-                    </button>
-                </div>
+                        Kembali ke detail booking
+                    </Link>
+                }
+            />
 
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Refund Pesanan</h1>
-                    <p className="text-gray-600">Ajukan permintaan refund untuk pesanan yang memenuhi syarat dan ketentuan.</p>
-                </div>
-
-                {booking && (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                        <div className="flex justify-between items-start">
+            {booking ? (
+                <DashboardSection
+                    title="Ringkasan pesanan"
+                    description="Pastikan event dan nominal pembayaran sesuai sebelum mengajukan refund baru."
+                >
+                    <div className="rounded-[1.75rem] border border-(--border-light) bg-(--surface-elevated) p-5">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
-                                <h2 className="text-lg font-bold text-gray-900 mb-2">{booking.event.title}</h2>
-                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                    <span className="font-mono font-medium">{booking.bookingCode}</span>
-                                    {getStatusBadge(booking.status)}
-                                </div>
+                                <h2 className="text-xl font-semibold text-foreground">{booking.event.title}</h2>
+                                <p className="mt-2 text-sm text-(--text-secondary)">Kode booking {booking.bookingCode}</p>
                             </div>
-                            <div className="text-right">
-                                <p className="text-sm text-gray-500">Total Pembayaran</p>
-                                <p className="text-2xl font-bold text-indigo-600">{formatCurrency(Number(booking.totalAmount))}</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {refundPolicy && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
-                        <div className="flex items-start gap-3">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <AlertTriangle className="h-5 w-5 text-blue-600" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="font-bold text-blue-900 mb-2">Kebijakan Refund</h3>
-                                <div className="prose text-sm text-blue-800">
-                                    {refundPolicy.split("\n").map((line, idx) => (
-                                        <p key={idx}>{line}</p>
-                                    ))}
-                                </div>
+                            <div className="text-left sm:text-right">
+                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">Total pembayaran</p>
+                                <p className="mt-2 text-2xl font-semibold text-foreground">
+                                    {formatCurrency(Number(booking.totalAmount))}
+                                </p>
                             </div>
                         </div>
                     </div>
-                )}
+                </DashboardSection>
+            ) : null}
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                                <h3 className="font-semibold text-gray-900">Riwayat Refund</h3>
-                                {canRequestRefund && (
-                                    <button
-                                        onClick={() => setShowRequestForm(!showRequestForm)}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
-                                    >
-                                        {showRequestForm ? (
-                                            <>
-                                                <ChevronUp className="h-4 w-4" />
-                                                Tutup Form
-                                            </>
-                                        ) : (
-                                            <>
-                                                <AlertCircle className="h-4 w-4" />
-                                                Ajukan Refund Baru
-                                            </>
-                                        )}
-                                    </button>
-                                )}
-                            </div>
+            {refundPolicy ? (
+                <DashboardSection
+                    title="Kebijakan refund"
+                    description="Ringkasan aturan event terkait pengembalian dana yang perlu dibaca sebelum mengirim permintaan."
+                >
+                    <div className="rounded-[1.75rem] border border-[rgba(41,179,182,0.22)] bg-(--surface-brand-soft) p-5 text-sm leading-7 text-(--text-secondary)">
+                        {refundPolicy.split("\n").map((line, idx) => (
+                            <p key={idx}>{line}</p>
+                        ))}
+                    </div>
+                </DashboardSection>
+            ) : null}
 
-                            {successMessage && (
-                                <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
+            <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                <div className="space-y-6">
+                    <DashboardSection
+                        title="Riwayat refund"
+                        description="Lihat semua pengajuan refund sebelumnya beserta status review dan catatan admin bila tersedia."
+                        actionLabel={canRequestRefund && !showRequestForm ? "Ajukan refund baru" : undefined}
+                    >
+                        <div className="space-y-4">
+                            {successMessage ? (
+                                <div className="rounded-2xl border border-[rgba(19,135,108,0.18)] bg-(--success-bg) p-4 text-(--success-text)">
                                     <div className="flex items-center gap-3">
-                                        <CheckCircle className="h-5 w-5 text-green-600" />
-                                        <p className="font-medium text-green-800">{successMessage}</p>
+                                        <CheckCircle className="h-5 w-5" />
+                                        <p>{successMessage}</p>
                                     </div>
                                 </div>
-                            )}
+                            ) : null}
 
-                            {error && (
-                                <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
+                            {error ? (
+                                <div className="rounded-2xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-4 text-(--error-text)">
                                     <div className="flex items-center gap-3">
-                                        <XCircle className="h-5 w-5 text-red-600" />
-                                        <p className="font-medium text-red-800">{error}</p>
+                                        <XCircle className="h-5 w-5" />
+                                        <p>{error}</p>
                                     </div>
                                 </div>
-                            )}
+                            ) : null}
+
+                            {canRequestRefund ? (
+                                <button
+                                    onClick={() => setShowRequestForm(!showRequestForm)}
+                                    className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
+                                >
+                                    {showRequestForm ? <ChevronUp className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                                    {showRequestForm ? "Tutup form" : "Ajukan refund baru"}
+                                </button>
+                            ) : null}
 
                             {showRequestForm ? (
-                                <form onSubmit={handleSubmitRefund} className="p-6 space-y-4">
+                                <form onSubmit={handleSubmitRefund} className="space-y-4 rounded-[1.75rem] border border-(--border-light) bg-(--surface-elevated) p-5">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                            Jenis Refund *
+                                        <label className="mb-2 block text-sm font-medium text-(--text-secondary)">
+                                            Jenis refund *
                                         </label>
-                                        <div className="flex gap-4">
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="refundType"
-                                                    value="FULL"
-                                                    checked={refundType === "FULL"}
-                                                    onChange={() => setRefundType("FULL")}
-                                                    className="hidden"
-                                                />
-                                                <div className="w-4 h-4 rounded-full border-2 border-indigo-300 bg-white flex items-center justify-center">
-                                                    <div className={`w-2 h-2 rounded-full ${refundType === "FULL" ? "bg-indigo-600" : "border-indigo-300"}`} />
-                                                </div>
-                                                <span className="text-sm">Full Refund (100%)</span>
-                                            </label>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="refundType"
-                                                    value="PARTIAL"
-                                                    checked={refundType === "PARTIAL"}
-                                                    onChange={() => setRefundType("PARTIAL")}
-                                                    className="hidden"
-                                                />
-                                                <div className="w-4 h-4 rounded-full border-2 border-indigo-300 bg-white flex items-center justify-center">
-                                                    <div className={`w-2 h-2 rounded-full ${refundType === "PARTIAL" ? "bg-indigo-600" : "border-indigo-300"}`} />
-                                                </div>
-                                                <span className="text-sm">Partial Refund</span>
-                                            </label>
+                                        <div className="flex flex-wrap gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setRefundType("FULL")}
+                                                className={`rounded-full px-4 py-2.5 text-sm font-semibold ${refundType === "FULL" ? "bg-(--accent-gradient) text-white" : "border border-(--border) bg-(--surface) text-(--text-secondary)"}`}
+                                            >
+                                                Full refund (100%)
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setRefundType("PARTIAL")}
+                                                className={`rounded-full px-4 py-2.5 text-sm font-semibold ${refundType === "PARTIAL" ? "bg-(--accent-gradient) text-white" : "border border-(--border) bg-(--surface) text-(--text-secondary)"}`}
+                                            >
+                                                Partial refund
+                                            </button>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1.5">
-                                            Alasan Refund *
+                                        <label htmlFor="reason" className="mb-2 block text-sm font-medium text-(--text-secondary)">
+                                            Alasan refund *
                                         </label>
                                         <textarea
                                             id="reason"
@@ -356,10 +327,10 @@ function RefundPageContent() {
                                             onChange={(e) => setReason(e.target.value)}
                                             placeholder="Jelaskan mengapa Anda ingin mengajukan refund..."
                                             rows={4}
-                                            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                            className="input resize-none"
                                             required
                                         />
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="mt-2 text-xs text-(--text-muted)">
                                             Alasan akan dikirim ke tim admin untuk ditinjau.
                                         </p>
                                     </div>
@@ -367,133 +338,120 @@ function RefundPageContent() {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) disabled:opacity-60"
                                     >
                                         {isSubmitting ? (
                                             <>
-                                                <RefreshCw className="h-5 w-5 animate-spin" />
+                                                <RefreshCw className="h-4 w-4 animate-spin" />
                                                 Mengirim...
                                             </>
                                         ) : (
                                             <>
-                                                <AlertCircle className="h-5 w-5" />
-                                                Ajukan Permintaan Refund
+                                                <AlertCircle className="h-4 w-4" />
+                                                Ajukan permintaan refund
                                             </>
                                         )}
                                     </button>
                                 </form>
-                            ) : (
-                                <div className="p-6">
-                                    {refundHistory.length === 0 ? (
-                                        <div className="text-center py-12">
-                                            <User className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                            <p className="text-gray-500">Belum ada riwayat refund</p>
-                                            {canRequestRefund && (
-                                                <button
-                                                    onClick={() => setShowRequestForm(true)}
-                                                    className="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
-                                                >
-                                                    Ajukan Refund
-                                                </button>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-4">
-                                            {refundHistory.map((refund) => (
-                                                <div
-                                                    key={refund.id}
-                                                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                                                >
-                                                    <div className="flex items-start justify-between mb-2">
-                                                        <div className="flex items-center gap-3">
-                                                            {getRefundTypeBadge(refund.refundType)}
-                                                            <span className="text-sm text-gray-500">
-                                                                {formatDate(refund.requestedAt)}
-                                                            </span>
-                                                        </div>
-                                                        {getStatusBadge(refund.status)}
-                                                    </div>
+                            ) : null}
 
-                                                    <div className="space-y-2">
-                                                        <div className="flex justify-between items-center text-sm">
-                                                            <span className="text-gray-600">Jumlah:</span>
-                                                            <span className="font-bold text-gray-900">
-                                                                {formatCurrency(Number(refund.refundAmount))}
-                                                            </span>
-                                                        </div>
-
-                                                        <div>
-                                                            <p className="text-xs text-gray-500 mb-1">Alasan:</p>
-                                                            <p className="text-sm text-gray-800">{refund.reason}</p>
-                                                        </div>
-
-                                                        {refund.adminNotes && (
-                                                            <div className="mt-3 p-3 bg-gray-50 rounded">
-                                                                <p className="text-xs text-gray-500 mb-1">Catatan Admin:</p>
-                                                                <p className="text-sm text-gray-700">{refund.adminNotes}</p>
-                                                            </div>
-                                                        )}
-
-                                                        {refund.processedAt && (
-                                                            <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
-                                                                <span>Diproses: {formatDate(refund.processedAt)}</span>
-                                                                {refund.completedAt && (
-                                                                    <span>Selesai: {formatDate(refund.completedAt)}</span>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                            {refundHistory.length === 0 ? (
+                                <div className="rounded-[1.75rem] border border-dashed border-(--border-strong) bg-(--surface-elevated) p-10 text-center">
+                                    <User className="mx-auto mb-4 h-12 w-12 text-(--text-muted)" />
+                                    <p className="font-medium text-foreground">Belum ada riwayat refund</p>
+                                    <p className="mt-2 text-sm text-(--text-secondary)">
+                                        Pengajuan refund yang berhasil dibuat akan muncul di sini lengkap dengan status peninjauannya.
+                                    </p>
                                 </div>
+                            ) : (
+                                refundHistory.map((refund) => (
+                                    <article
+                                        key={refund.id}
+                                        className="rounded-[1.75rem] border border-(--border-light) bg-(--surface-elevated) p-5"
+                                    >
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                            <div className="space-y-2">
+                                                <div className="flex flex-wrap gap-2">
+                                                    {getRefundTypeBadge(refund.refundType)}
+                                                    {getStatusBadge(refund.status)}
+                                                </div>
+                                                <p className="text-sm text-(--text-secondary)">
+                                                    Diajukan {formatDate(refund.requestedAt)}
+                                                </p>
+                                            </div>
+                                            <p className="text-lg font-semibold text-foreground">
+                                                {formatCurrency(Number(refund.refundAmount))}
+                                            </p>
+                                        </div>
+
+                                        <div className="mt-4 space-y-3 text-sm text-(--text-secondary)">
+                                            <div>
+                                                <p className="text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">Alasan</p>
+                                                <p className="mt-1">{refund.reason}</p>
+                                            </div>
+                                            {refund.adminNotes ? (
+                                                <div className="rounded-2xl border border-(--border-light) bg-(--surface) p-4">
+                                                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">Catatan admin</p>
+                                                    <p className="mt-1">{refund.adminNotes}</p>
+                                                </div>
+                                            ) : null}
+                                            {refund.processedAt ? (
+                                                <p>Diproses {formatDate(refund.processedAt)}</p>
+                                            ) : null}
+                                            {refund.completedAt ? (
+                                                <p>Selesai {formatDate(refund.completedAt)}</p>
+                                            ) : null}
+                                        </div>
+                                    </article>
+                                ))
                             )}
                         </div>
+                    </DashboardSection>
+                </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <h3 className="font-semibold text-gray-900 mb-4">Informasi Refund</h3>
-                            <div className="space-y-3 text-sm">
-                                <div className="flex items-start gap-3">
-                                    <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-gray-900">Pengajuan Refund</p>
-                                        <p className="text-gray-600">
-                                            Kirim permintaan refund melalui form. Permintaan akan direview oleh admin dalam 1-3 hari kerja.
-                                        </p>
-                                    </div>
+                <DashboardSection
+                    title="Alur refund"
+                    description="Panduan singkat tentang bagaimana Gelaran memproses refund setelah permintaan diajukan."
+                >
+                    <div className="space-y-4 text-sm text-(--text-secondary)">
+                        <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4">
+                            <div className="flex items-start gap-3">
+                                <CheckCircle className="mt-0.5 h-5 w-5 text-(--success)" />
+                                <div>
+                                    <p className="font-semibold text-foreground">Pengajuan refund</p>
+                                    <p className="mt-1">Kirim permintaan refund melalui form. Tim admin akan memeriksa kelengkapan alasan dan status pesanan.</p>
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <RefreshCw className="h-5 w-5 text-amber-600 flex-shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-gray-900">Proses Review</p>
-                                        <p className="text-gray-600">
-                                            Admin akan memverifikasi alasan dan memutuskan apakah refund dapat disetujui.
-                                        </p>
-                                    </div>
+                            </div>
+                        </div>
+                        <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4">
+                            <div className="flex items-start gap-3">
+                                <RefreshCw className="mt-0.5 h-5 w-5 text-(--accent-primary)" />
+                                <div>
+                                    <p className="font-semibold text-foreground">Proses review</p>
+                                    <p className="mt-1">Admin akan memverifikasi alasan dan memutuskan apakah refund dapat disetujui atau perlu informasi tambahan.</p>
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <User className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-gray-900">Pemrosesan</p>
-                                        <p className="text-gray-600">
-                                            Jika disetujui, refund akan diproses ke metode pembayaran asal dalam 3-7 hari kerja.
-                                        </p>
-                                    </div>
+                            </div>
+                        </div>
+                        <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4">
+                            <div className="flex items-start gap-3">
+                                <User className="mt-0.5 h-5 w-5 text-(--info)" />
+                                <div>
+                                    <p className="font-semibold text-foreground">Pemrosesan dana</p>
+                                    <p className="mt-1">Jika disetujui, refund akan diproses ke metode pembayaran asal dalam kisaran 3-7 hari kerja.</p>
                                 </div>
-                                <div className="flex items-start gap-3">
-                                    <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-gray-900">Syarat & Ketentuan</p>
-                                        <p className="text-gray-600">
-                                            Refund hanya dapat diajukan untuk pesanan berstatus &quot;PAID&quot; atau &quot;CONFIRMED&quot;.
-                                        </p>
-                                    </div>
+                            </div>
+                        </div>
+                        <div className="rounded-2xl border border-[rgba(251,193,23,0.28)] bg-(--warning-bg) p-4 text-(--warning-text)">
+                            <div className="flex items-start gap-3">
+                                <AlertTriangle className="mt-0.5 h-5 w-5" />
+                                <div>
+                                    <p className="font-semibold">Syarat utama</p>
+                                    <p className="mt-1">Refund hanya dapat diajukan untuk pesanan berstatus <strong>PAID</strong> atau <strong>CONFIRMED</strong>.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </DashboardSection>
             </div>
         </div>
     );
@@ -501,11 +459,13 @@ function RefundPageContent() {
 
 export default function RefundPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-                <RefreshCw className="h-12 w-12 text-gray-400 animate-spin" />
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className="min-h-[60vh] flex items-center justify-center">
+                    <RefreshCw className="h-12 w-12 animate-spin text-(--accent-primary)" />
+                </div>
+            }
+        >
             <RefundPageContent />
         </Suspense>
     );

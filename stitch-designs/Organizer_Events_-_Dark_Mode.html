@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heritage Ops | Organizer Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-container": "#ffae8e",
+                        "primary-fixed": "#ffdbce",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "primary-fixed-dim": "#ffb598",
+                        "on-secondary-container": "#003233",
+                        "on-tertiary": "#3f2e00",
+                        "background": "#001717",
+                        "surface": "#001717",
+                        "tertiary-fixed": "#ffdf9a",
+                        "surface-container": "#002424",
+                        "on-background": "#aaefee",
+                        "surface-dim": "#001717",
+                        "secondary": "#5cd8db",
+                        "inverse-primary": "#a63b00",
+                        "surface-container-low": "#002020",
+                        "tertiary": "#f7be11",
+                        "primary": "#ffb598",
+                        "on-error": "#690005",
+                        "on-primary-fixed": "#370e00",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "outline-variant": "#3f4948",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "secondary-fixed": "#7bf5f8",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "surface-bright": "#004141",
+                        "outline": "#899392",
+                        "surface-container-lowest": "#001111",
+                        "on-primary": "#591c00",
+                        "surface-container-high": "#003030",
+                        "on-tertiary-container": "#f1b803",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-surface": "#aaefee",
+                        "primary-container": "#8d3100",
+                        "tertiary-container": "#654b00",
+                        "on-tertiary-fixed": "#251a00",
+                        "secondary-container": "#00a4a7",
+                        "on-secondary": "#003738",
+                        "surface-container-highest": "#003c3c",
+                        "inverse-on-surface": "#003737",
+                        "surface-variant": "#003c3c",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "surface-tint": "#ffb598",
+                        "on-surface-variant": "#bec8c8",
+                        "inverse-surface": "#aaefee",
+                        "on-secondary-fixed": "#002021"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #001717;
+            color: #aaefee;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(0, 60, 60, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-6 pb-4 bg-[#002020] dark:bg-[#002020] h-screen w-64 border-r border-[#3f4948]/15 shadow-[32px_0_32px_-15px_rgba(170,239,238,0.08)] z-50">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Curator Logo" class="w-full h-full object-cover" data-alt="minimalist golden emblem of a Javanese crown on a deep teal background with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwEA1YBDL5jy19APi_uw2D1et9pFoPw2zWnnacFoLme087xNnT1UmDN0ttu3Z3bvMweH0qeWRjHP4iQ8vAi1a9jxaFJUv17JfnmUpfAu1o7ffzhEsU-m5U-ugQb8YYik9o2WtvMsgL6HjxtWrtNmWTfsb-9jOJb-n4Ts4UEwxc1XmweUxJvlB8Ocx1YLxcGGkOYAraj_dqf3ZN4-TEaak0aJ1xlzInQe-VMyt90lsaWoroIH8lwLd_t-im1wNW04T0wCLsFDYXlpk"/>
+</div>
+<div>
+<h1 class="text-lg font-serif text-[#aaefee] dark:text-[#aaefee] leading-tight">Heritage Ops</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">Event Organizer</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#aaefee]/60 dark:text-[#aaefee]/60 hover:text-[#5cd8db] dark:hover:text-[#5cd8db] hover:bg-[#003030] transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#ffb598] dark:text-[#ffb598] bg-[#002424] dark:bg-[#002424] rounded-r-full transition-all duration-300 ease-in-out border-l-4 border-primary" href="#">
+<span class="material-symbols-outlined" data-icon="event" style="font-variation-settings: 'FILL' 1;">event</span>
+<span class="font-medium">Events</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#aaefee]/60 dark:text-[#aaefee]/60 hover:text-[#5cd8db] dark:hover:text-[#5cd8db] hover:bg-[#003030] transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-medium">Sales</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#aaefee]/60 dark:text-[#aaefee]/60 hover:text-[#5cd8db] dark:hover:text-[#5cd8db] hover:bg-[#003030] transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#aaefee]/60 dark:text-[#aaefee]/60 hover:text-[#5cd8db] dark:hover:text-[#5cd8db] hover:bg-[#003030] transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-medium">Team</span>
+</a>
+</nav>
+<div class="px-4 py-6">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span>Create Event</span>
+</button>
+</div>
+<div class="mt-auto border-t border-outline-variant/15 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-[#aaefee]/60 dark:text-[#aaefee]/60 hover:text-[#5cd8db] dark:hover:text-[#5cd8db] hover:bg-[#003030] transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-medium">Help</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-error/80 hover:bg-error-container/10 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-medium">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen relative">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-8 py-4 bg-[#001717] dark:bg-[#001717] fixed top-0 right-0 left-64 z-40">
+<div class="flex items-center gap-8">
+<h2 class="text-2xl font-serif font-bold text-[#aaefee] dark:text-[#aaefee]">My Events</h2>
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-outline-variant/10 w-80">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-on-surface placeholder:text-on-surface-variant/50" placeholder="Search events..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/20 mx-2"></div>
+<div class="flex items-center gap-3 pl-2 cursor-pointer hover:bg-surface-container-low p-1 rounded-full pr-4 transition-colors">
+<img alt="Organizer Profile" class="w-8 h-8 rounded-full border border-secondary/30" data-alt="portrait of an elegant professional in dark attire with a subtle traditional batik scarf accessory" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4dPaNqhKtpd706Ufcw1o783J666hPEX4bBBdqye9551p0rhqm90GLD0D5SzH9EbRnIxfUFQSwME0gKtfIN1uoIeiXuxNdPodmGuqfcuPRegNwHDQ8sDY4wKBvao02Y6IVRU0_TecMOAVkSwDVEaGd-gosqCGF7Dq2alDQHOX7QuwKk1ORa--Kg1-fhjqMYrUNpjDrqu_ttCW4qRwijGnWJ9tYQlgWmtlrTi_OTy5FO9hWDrifwE9gzrOhxqqqlN3Ul7Ic8BiM55E"/>
+<span class="text-sm font-medium text-on-surface">Adi Wijaya</span>
+</div>
+</div>
+</header>
+<!-- Canvas Content -->
+<div class="pt-24 px-8 pb-12">
+<!-- Filters & Stats Bento Layout -->
+<div class="grid grid-cols-12 gap-6 mb-10">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-3xl p-6 border border-outline-variant/5">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex p-1 bg-surface-container-lowest rounded-2xl w-fit border border-outline-variant/5">
+<button class="px-6 py-2 rounded-xl bg-surface-container-highest text-primary font-bold shadow-sm transition-all text-sm">All</button>
+<button class="px-6 py-2 rounded-xl text-on-surface-variant hover:text-on-surface transition-all text-sm">Active</button>
+<button class="px-6 py-2 rounded-xl text-on-surface-variant hover:text-on-surface transition-all text-sm">Past</button>
+<button class="px-6 py-2 rounded-xl text-on-surface-variant hover:text-on-surface transition-all text-sm">Draft</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 bg-surface-container-highest px-4 py-2.5 rounded-xl border border-outline-variant/10 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-lg" data-icon="calendar_month">calendar_month</span>
+<span>Jan 2024 - Dec 2024</span>
+<span class="material-symbols-outlined text-lg" data-icon="expand_more">expand_more</span>
+</div>
+<button class="flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2.5 rounded-xl hover:bg-secondary/20 transition-all text-sm font-medium">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+<span>More Filters</span>
+</button>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-primary-container/10 rounded-3xl p-6 border border-primary/10 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10 flex flex-col justify-between h-full">
+<div class="flex justify-between items-start">
+<span class="text-on-primary-container text-xs font-bold uppercase tracking-widest">Total Revenue (YTD)</span>
+<span class="material-symbols-outlined text-primary" data-icon="trending_up">trending_up</span>
+</div>
+<div>
+<span class="text-3xl font-serif text-primary font-bold">Rp 1.428.500.000</span>
+<p class="text-on-surface-variant text-xs mt-1">+12% from previous year</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Table Content -->
+<div class="bg-surface-container rounded-[2rem] overflow-hidden border border-outline-variant/10 shadow-2xl">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/50 border-b border-outline-variant/10">
+<th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Event Details</th>
+<th class="px-6 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Date &amp; Venue</th>
+<th class="px-6 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Status</th>
+<th class="px-6 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Sales Progress</th>
+<th class="px-6 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant text-right">Revenue</th>
+<th class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-5">
+<div class="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-outline-variant/10 shrink-0">
+<img alt="Sekaten Solo 2024" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="dramatic night view of a traditional Javanese palace festival with glowing paper lanterns and ornate temple structures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3WGpbtHs23WRHhcKgwDswcIxYdyoozG9vaRQ2oBdVPMRspD3ccSmt1nhmwOOtwXp0Zz9oTZle1-YMy0fn4M-ufrOYTeQgf9YaSNnu_KrN5AouEmeXeNXInPPMXX5LgR5sPS-SNhaN_USj3ByQRhJ61o4DCTWvk8-MR8bejY6YuL_NUfb0H60XY--kTTke0B-Dy7q2YTpARl-GO_UNTqGiCSgr21_iPiK-AupeS8wrm0nzVlKD7HUVQkVD5Z3p2G_i1p_sUmgG_PQ"/>
+</div>
+<div>
+<h4 class="font-serif text-lg font-bold text-on-surface group-hover:text-primary transition-colors">Sekaten Solo 2024</h4>
+<p class="text-xs text-on-surface-variant mt-1">Cultural Festival • Heritage</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Oct 12-24, 2024</span>
+<span class="text-xs text-on-surface-variant mt-1">Keraton Surakarta Hadiningrat</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-tertiary/10 text-tertiary border border-tertiary/20">
+                                        LIVE
+                                    </span>
+</td>
+<td class="px-6 py-6">
+<div class="w-48">
+<div class="flex justify-between items-end mb-2">
+<span class="text-xs font-bold text-on-surface">850 / 1000</span>
+<span class="text-[10px] font-bold text-secondary">85%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full shadow-[0_0_8px_rgba(92,216,219,0.5)]" style="width: 85%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-right font-serif font-bold text-on-surface">
+                                    Rp 425,000,000
+                                </td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest hover:text-secondary transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest hover:text-secondary transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="analytics">analytics</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-5">
+<div class="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-outline-variant/10 shrink-0">
+<img alt="Malam Selikuran" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="a majestic procession of royal guards in traditional attire carrying ornate torches in a dimly lit courtyard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIoXNR_v1Axx1VpUvOF1X_3jseGyFPCitlFlNwducunyc2BXHJDHNhjgjBbEW9tJtalyTNfKWtsh0zn5lVjJwZlzZsJ7ZYfQt8-8xh17B3SibpqhDkpnEUINrNieLerpdxOrmo5IJ9gePHUCMlIEVe7Uk4XZ3byRpZaNd80559R7NMgnnxRCyV29Y15Q1O5aztXItcS5kk8qqd1yoNh69rQJwRQbp2FOOLbiAcbn1XKRNbHA9VmzHycxpSLN2DsOTNquXk3AeLdf4"/>
+</div>
+<div>
+<h4 class="font-serif text-lg font-bold text-on-surface group-hover:text-primary transition-colors">Malam Selikuran</h4>
+<p class="text-xs text-on-surface-variant mt-1">Spiritual Procession • Ritual</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Nov 05, 2024</span>
+<span class="text-xs text-on-surface-variant mt-1">Sriwedari Park</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-error/10 text-error border border-error/20">
+                                        SOLD OUT
+                                    </span>
+</td>
+<td class="px-6 py-6">
+<div class="w-48">
+<div class="flex justify-between items-end mb-2">
+<span class="text-xs font-bold text-on-surface">500 / 500</span>
+<span class="text-[10px] font-bold text-error">100%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full shadow-[0_0_8px_rgba(255,180,171,0.5)]" style="width: 100%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-right font-serif font-bold text-on-surface">
+                                    Rp 125,000,000
+                                </td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest hover:text-secondary transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest hover:text-secondary transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="analytics">analytics</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-5">
+<div class="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border border-outline-variant/10 shrink-0">
+<img alt="Gala Karawitan" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="close up of intricate bronze gamelan instruments with golden highlights and soft warm stage lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSioAOS0uiKld3G7joKkQwWhYPtvuFIoQI-pWRmcAJl64mzr3tgHH85NF-wIqJ3pCQXSyd5RFHBl2s429verLhWchCAi2kXY7D1HxL6bGTk1WCTFWt4QLZgkD15P0988fCjUq1QDSXrrCNXQU3Kx5b1GiMHyqbZVFXaexBfkwgrkTq10PJzWW7uMV2oFQCgNdjvVKoskNjiQDocH-LAaDnHjsepVqyTjAPrsbkTzDxQ7YNGPVHIftrS6wrrLqHbegrn_N_QYw99W0"/>
+</div>
+<div>
+<h4 class="font-serif text-lg font-bold text-on-surface group-hover:text-primary transition-colors">Gala Karawitan</h4>
+<p class="text-xs text-on-surface-variant mt-1">Classical Music • Orchestra</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Dec 20, 2024</span>
+<span class="text-xs text-on-surface-variant mt-1">Pendopo Ageng</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-outline-variant/20 text-on-surface-variant border border-outline-variant/30">
+                                        DRAFT
+                                    </span>
+</td>
+<td class="px-6 py-6">
+<div class="w-48">
+<div class="flex justify-between items-end mb-2">
+<span class="text-xs font-bold text-on-surface-variant">0 / 300</span>
+<span class="text-[10px] font-bold text-on-surface-variant">0%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-outline-variant/40 rounded-full" style="width: 0%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-right font-serif font-bold text-on-surface-variant">
+                                    —
+                                </td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest hover:text-secondary transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest hover:text-secondary transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="analytics">analytics</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-8 py-5 bg-surface-container-high/20 border-t border-outline-variant/10 flex items-center justify-between">
+<p class="text-xs text-on-surface-variant">Showing <span class="text-on-surface font-bold">1-10</span> of <span class="text-on-surface font-bold">24</span> events</p>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/20 text-primary border border-primary/30 text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all text-xs font-bold">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all text-xs font-bold">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Decorative Background -->
+<div class="fixed top-0 right-0 -z-10 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
+<div class="fixed bottom-0 left-64 -z-10 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none opacity-30"></div>
+</main>
+</body></html>

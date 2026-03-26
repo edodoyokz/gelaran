@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin - Payouts</title>
+<!-- Google Fonts: Noto Serif for headlines, Plus Jakarta Sans for UI/Data -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;800&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#181c20",
+              "surface-tint": "#a63b00",
+              "on-error": "#ffffff",
+              "tertiary-container": "#936f00",
+              "on-primary-container": "#fffbff",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-secondary-fixed-variant": "#004f50",
+              "inverse-surface": "#2d3135",
+              "tertiary": "#755800",
+              "surface-container-lowest": "#ffffff",
+              "on-surface-variant": "#5b4137",
+              "tertiary-fixed": "#ffdf9a",
+              "outline": "#8f7065",
+              "background": "#ffffff",
+              "primary-container": "#cb4a00",
+              "on-tertiary-container": "#fffbff",
+              "on-secondary-container": "#246d6d",
+              "tertiary-fixed-dim": "#f7be11",
+              "outline-variant": "#e3bfb1",
+              "on-primary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed": "#370e00",
+              "surface-container-highest": "#dfe3e8",
+              "primary": "#F95D00", /* Brand Primary Orange */
+              "inverse-primary": "#ffb598",
+              "inverse-on-surface": "#eef1f7",
+              "primary-fixed-dim": "#ffb598",
+              "primary-fixed": "#ffdbce",
+              "surface-bright": "#f7f9ff",
+              "on-surface": "#181c20",
+              "error-container": "#ffdad6",
+              "on-error-container": "#93000a",
+              "surface-container": "#ebeef4",
+              "secondary-fixed": "#aaefee",
+              "secondary-fixed-dim": "#8ed2d2",
+              "secondary": "#015959", /* Brand Dark Teal */
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed": "#002020",
+              "error": "#ba1a1a",
+              "surface": "#f7f9ff",
+              "surface-dim": "#d7dae0",
+              "surface-container-low": "#f1f4fa",
+              "on-tertiary-fixed": "#251a00",
+              "surface-container-high": "#e5e8ee",
+              "surface-variant": "#dfe3e8",
+              "secondary-container": "#29B3B6", /* Brand Light Teal */
+              "on-primary-fixed-variant": "#7f2b00"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif", "serif"],
+              "body": ["Plus Jakarta Sans", "sans-serif"],
+              "label": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #181c20; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .serif-headline { font-family: 'Noto Serif', serif; }
+        .tonal-carving { background-color: #f1f4fa; }
+        .active-nav-shadow { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="flex flex-col h-screen w-64 docked left-0 bg-[#f7f9ff] border-r border-slate-100 flex-shrink-0 sticky top-0">
+<div class="px-6 py-8">
+<h1 class="text-2xl font-serif font-bold text-[#015959]">Gelaran</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-1">Enterprise Portal</p>
+</div>
+<nav class="flex flex-col h-full py-6 px-4 space-y-2">
+<!-- Dashboard Tab -->
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<!-- Payouts Tab (ACTIVE) -->
+<a class="flex items-center space-x-3 px-4 py-3 bg-white text-[#F95D00] font-bold rounded-lg shadow-sm border border-slate-50" href="#">
+<span class="material-symbols-outlined" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-medium text-sm">Payouts</span>
+</a>
+<!-- Organizers Tab -->
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-medium text-sm">Organizers</span>
+</a>
+<!-- Events Tab -->
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-medium text-sm">Events</span>
+</a>
+<!-- Transactions Tab -->
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-medium text-sm">Transactions</span>
+</a>
+<!-- System Logs Tab -->
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span class="font-medium text-sm">System Logs</span>
+</a>
+<!-- Support Tab -->
+<a class="flex items-center space-x-3 px-4 py-3 text-slate-600 hover:bg-slate-200/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-medium text-sm">Support</span>
+</a>
+<div class="mt-auto pt-10 px-4">
+<div class="flex items-center space-x-3 p-2 bg-white/50 rounded-xl">
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full bg-slate-200" data-alt="professional portrait of a male administrative officer in a modern minimal office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPjxxG3qMWqM0tnSjNw9nSsXuR7hYweuD2VJwqT308Whu4oq_PWYsC224LU_LONe0KCsbw52Yl3eiaw-Roy6wGpbvg_VlV8c7rWW7NA-t5sgbEGNd-NCu1JOG_IeSZH9Z1gM2lPHfFume8D1hgdx1IBc_fyTrs-fhNq5cE9Zggi5kM6Lmi42NVWC9SP7bKTE84tKYut_UyhIsm9nwOE54s-uUqoNaKITBx2-rg4ovqHv9IA50OGaLE2Zg2LB0k5wbUvnHJgcW74Z0"/>
+<div>
+<p class="text-xs font-bold text-[#015959]">Admin Profile</p>
+<p class="text-[10px] text-slate-400">Super Admin</p>
+</div>
+</div>
+</div>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-white">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-8 h-16 border-b border-slate-100 bg-white sticky top-0 z-10">
+<div class="flex items-center space-x-4">
+<span class="text-slate-400 text-sm">Admin / Payouts</span>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-secondary cursor-pointer" data-icon="notifications">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-slate-400 hover:text-secondary cursor-pointer" data-icon="settings">settings</span>
+<div class="h-8 w-[1px] bg-slate-100"></div>
+<button class="flex items-center space-x-2 text-sm font-bold text-[#015959] hover:opacity-80 transition-opacity">
+<span>Export CSV</span>
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+</button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-10 space-y-10">
+<!-- Section 1: Header/Summary (Editorial Moment) -->
+<section class="grid grid-cols-12 gap-8">
+<div class="col-span-12">
+<h2 class="serif-headline text-4xl font-bold text-[#015959] mb-2">Payout Queue</h2>
+<p class="text-slate-500 font-medium">Manage and authorize organizer funds distribution for the current cycle.</p>
+</div>
+<!-- Summary Cards: Tonal Layering -->
+<div class="col-span-4 bg-[#f1f4fa] p-8 rounded-xl border border-transparent flex flex-col justify-between">
+<span class="text-xs font-bold uppercase tracking-widest text-[#015959]/60">Total Pending Payouts</span>
+<div class="mt-4">
+<p class="serif-headline text-3xl font-bold text-[#015959]">IDR 1.240.500.000</p>
+<p class="text-xs text-slate-500 mt-2 font-medium">+12% from last week</p>
+</div>
+</div>
+<div class="col-span-4 bg-white p-8 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+<span class="text-xs font-bold uppercase tracking-widest text-[#015959]/60">Approved this Month</span>
+<div class="mt-4">
+<p class="serif-headline text-3xl font-bold text-[#29B3B6]">IDR 4.829.000.000</p>
+<div class="flex items-center text-xs text-[#29B3B6] mt-2 font-bold">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="check_circle">check_circle</span>
+<span>Target Achieved</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 bg-[#fff9f5] p-8 rounded-xl border border-[#F95D00]/10 flex flex-col justify-between">
+<span class="text-xs font-bold uppercase tracking-widest text-[#F95D00]/80">Pending Review</span>
+<div class="mt-4">
+<p class="serif-headline text-3xl font-bold text-[#F95D00]">48 Requests</p>
+<p class="text-xs text-[#F95D00]/70 mt-2 font-medium">Requiring immediate attention</p>
+</div>
+</div>
+</section>
+<!-- Section 2: Filter Bar (Clean & Functional) -->
+<section class="bg-[#f7f9ff] p-4 rounded-xl flex items-center justify-between gap-4">
+<div class="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-100 w-96 group focus-within:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-slate-400 mr-3" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400" placeholder="Search by organizer name..." type="text"/>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<span class="text-xs font-bold text-slate-400 uppercase">Status:</span>
+<select class="text-sm font-semibold text-[#015959] bg-transparent border-none focus:ring-0 cursor-pointer">
+<option>All Statuses</option>
+<option>Pending</option>
+<option>On Hold</option>
+<option>Approved</option>
+</select>
+</div>
+<div class="h-6 w-[1px] bg-slate-200 mx-2"></div>
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-slate-400" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-semibold text-[#015959]">Oct 1, 2023 - Oct 31, 2023</span>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer" data-icon="expand_more">expand_more</span>
+</div>
+<button class="bg-[#015959] text-white px-6 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
+                        Apply Filters
+                    </button>
+</div>
+</section>
+<!-- Section 3: Payout Queue Table (Tabular Data Precision) -->
+<section class="overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#f1f4fa] text-[#015959] uppercase text-[10px] font-extrabold tracking-widest">
+<th class="px-6 py-4 rounded-tl-xl">Organizer Name</th>
+<th class="px-6 py-4">Request Date</th>
+<th class="px-6 py-4">Amount (IDR)</th>
+<th class="px-6 py-4">Bank Details</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4 text-right rounded-tr-xl">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="group hover:bg-slate-50 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="Logo" data-alt="minimal logo for a music concert organizer with abstract geometric shapes in teal color" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAldDc-KerzCGzVN7RlX2pUAU56Y2TBWfzOCQsDz4pI3csdtEQUnvajagkIY8OErheP7vRVdC3_ZFxTRFRO1BD9mY4cyjx8L678QcxSwUxBl-vhhnzEy7J-_z5V_Uu8-uAfioxZ31hoZvu8DCzfHv1wEYjdWKI3jyiurYdXIBR7mWl7NrEsEJmAi98l3Yai6R48Oj4_Uub38J5UUgrImI5usS4rtNVBvn5niQ0pfoiKZlmz6dF132AFVJwTlOBpklmOF6Y4reAFC8Q"/>
+</div>
+<div>
+<p class="text-sm font-bold text-[#015959]">Jakarta Soundscapes</p>
+<p class="text-[11px] text-slate-400">ID: ORG-8821</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-sm text-slate-600 font-medium">Oct 24, 2023</td>
+<td class="px-6 py-6 text-sm font-bold text-[#015959]">245,000,000</td>
+<td class="px-6 py-6">
+<div class="flex items-center space-x-2">
+<span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">BCA</span>
+<span class="text-sm text-slate-500 font-mono">**** 5590</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-tertiary-fixed text-on-tertiary-fixed-variant uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim mr-1.5"></span>
+                                    Pending
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center justify-end space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-[#F95D00] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Approve</button>
+<button class="bg-[#015959] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Review</button>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#015959] cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-slate-50 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="Logo" data-alt="elegant typography logo for a boutique arts and crafts festival organizer in orange tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNa_sJ3RKmJo27KmXDnRZtSPT2q7Ajh_8BWlxIuFBRBQKaon556fX3bkog4oXBHwRaH7tNves4zHPpYxwqbChfIf21Wh2buJB5EkJ1n6_4_dRsPwYquNLT62bW6VAmtQSsiXmaGDYFKhw1a5YMxkw52OsRzFxraBAuXM_OA8E_CS_aU1juSMzpP_p2pFrofDKV8aazrdTIP__ItXEfEJiLU_1TomlnlyDPrjNSbTbifa679HYoX88cCPKcYuY5u_XVAJ6iKD0qfOY"/>
+</div>
+<div>
+<p class="text-sm font-bold text-[#015959]">Bali Art Fest</p>
+<p class="text-[11px] text-slate-400">ID: ORG-1029</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-sm text-slate-600 font-medium">Oct 23, 2023</td>
+<td class="px-6 py-6 text-sm font-bold text-[#015959]">89,250,000</td>
+<td class="px-6 py-6">
+<div class="flex items-center space-x-2">
+<span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Mandiri</span>
+<span class="text-sm text-slate-500 font-mono">**** 1121</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-50 text-error uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-error mr-1.5"></span>
+                                    On Hold
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center justify-end space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-[#F95D00] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Approve</button>
+<button class="bg-[#015959] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Review</button>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#015959] cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-slate-50 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="Logo" data-alt="clean modern logo for a technology exhibition company featuring a stylized X in dark teal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9V3aPAPQ9HSmZqJxwWNx7cyN7aDhYHTUOjtB6ErSVoJYolI6ruQu8ticitUearxAgIbwP-d-_dRsbp3WzoQ3KDAVJhGV-Ab4p3c44rwRO9KHvdExIIwewzKZbwAZOZq0vZQkyqnA2muodi_bDCgB3OyVzCxEHVKZoT4WFsZsgxKWHcm4T151CnghFvlLuEEbEc4vXr_1glORWKjSxbovmTEPAoflRliwjg7fB-TdQe2mGI5FPygPCwzVSTm6HOMwF1_6VRefsiQ8"/>
+</div>
+<div>
+<p class="text-sm font-bold text-[#015959]">Tech Expo Hub</p>
+<p class="text-[11px] text-slate-400">ID: ORG-5512</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-sm text-slate-600 font-medium">Oct 22, 2023</td>
+<td class="px-6 py-6 text-sm font-bold text-[#015959]">520,000,000</td>
+<td class="px-6 py-6">
+<div class="flex items-center space-x-2">
+<span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">BCA</span>
+<span class="text-sm text-slate-500 font-mono">**** 0042</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-secondary-fixed text-on-secondary-fixed-variant uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                    Approved
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center justify-end space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-slate-200 text-slate-400 px-4 py-1.5 rounded-lg text-[11px] font-bold cursor-not-allowed">Approve</button>
+<button class="bg-[#015959] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Review</button>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#015959] cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-slate-50 transition-colors">
+<td class="px-6 py-6">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden">
+<img alt="Logo" data-alt="creative logo for an underground music collective using bold yellow and dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_ZdP3CfU1nnsVlWq3IyMtvuRWRxLx1foPQk1MzRLiCl-VskbsmGRWR4vg1Xn83SxX5PJgsxJAWzjPnIkpwDhGO7Oz7IJCnsfYLffNiYJ_PuOn07VHLEA3N2mkKFv6gbJPi3vGXbvnPx6oTIJe2K1TfmjZFWceprURv4KW_zi07aP6OtkW8OakBNmv9Ivnq9bpeRzGoIGVtvIiwI_QTmbz5r-lpCkJT1kJsbevDbz5MjGqyv3gAj9vClAO8SExUJt7EIT1kFV3_Oo"/>
+</div>
+<div>
+<p class="text-sm font-bold text-[#015959]">Underground Musics</p>
+<p class="text-[11px] text-slate-400">ID: ORG-9932</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6 text-sm text-slate-600 font-medium">Oct 21, 2023</td>
+<td class="px-6 py-6 text-sm font-bold text-[#015959]">12,500,000</td>
+<td class="px-6 py-6">
+<div class="flex items-center space-x-2">
+<span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Mandiri</span>
+<span class="text-sm text-slate-500 font-mono">**** 9028</span>
+</div>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-tertiary-fixed text-on-tertiary-fixed-variant uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim mr-1.5"></span>
+                                    Pending
+                                </span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center justify-end space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-[#F95D00] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Approve</button>
+<button class="bg-[#015959] text-white px-4 py-1.5 rounded-lg text-[11px] font-bold hover:shadow-lg transition-all">Review</button>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#015959] cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<!-- Pagination/Footer Context -->
+<footer class="flex items-center justify-between py-6">
+<p class="text-xs text-slate-400 font-medium">Showing 1-10 of 48 pending requests</p>
+<div class="flex items-center space-x-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-100 text-slate-400 hover:bg-slate-50">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#015959] text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-50">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-50">3</button>
+<span class="px-2 text-slate-300">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-50">5</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-100 text-slate-400 hover:bg-slate-50">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</footer>
+</div>
+</main>
+</body></html>

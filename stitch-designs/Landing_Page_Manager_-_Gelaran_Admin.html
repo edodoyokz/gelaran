@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin | Landing Page Manager</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary": "#a63b00",
+              "surface": "#e2fffe",
+              "error": "#ba1a1a",
+              "tertiary-fixed-dim": "#5cd8db",
+              "on-tertiary": "#ffffff",
+              "secondary-fixed": "#ffdbce",
+              "primary-fixed": "#aaefee",
+              "surface-dim": "#a1e6e5",
+              "error-container": "#ffdad6",
+              "secondary-container": "#fd6005",
+              "on-secondary-fixed-variant": "#7f2b00",
+              "on-primary": "#ffffff",
+              "primary": "#004040",
+              "surface-container-highest": "#aaefee",
+              "on-tertiary-fixed-variant": "#004f51",
+              "secondary-fixed-dim": "#ffb598",
+              "tertiary": "#004041",
+              "on-primary-container": "#89cdcd",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#c1fffe",
+              "surface-container": "#b5faf9",
+              "surface-bright": "#e2fffe",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed": "#370e00",
+              "on-primary-fixed-variant": "#004f50",
+              "background": "#ffffff",
+              "surface-container-high": "#aff5f4",
+              "outline": "#6f7978",
+              "on-background": "#002020",
+              "on-tertiary-fixed": "#002021",
+              "on-surface-variant": "#3f4948",
+              "on-surface": "#002020",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed": "#7bf5f8",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#b8fdfc",
+              "tertiary-container": "#00595b",
+              "surface-variant": "#aaefee",
+              "on-secondary-container": "#521900",
+              "outline-variant": "#bec8c8",
+              "inverse-surface": "#003737",
+              "inverse-primary": "#8ed2d2",
+              "surface-tint": "#1e6868",
+              "primary-fixed-dim": "#8ed2d2",
+              "on-tertiary-container": "#56d4d6",
+              "on-primary-fixed": "#002020",
+              "primary-container": "#015959"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+      .font-noto-serif { font-family: 'Noto Serif', serif; }
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-teal-50 dark:bg-teal-950 flex flex-col py-6 z-40">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-noto-serif font-bold text-teal-900 dark:text-teal-50">Gelaran Admin</h1>
+<p class="text-xs text-teal-700/60 font-medium tracking-wider">Platform Manager</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 px-6 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label font-medium">Dashboard</span>
+</a>
+<a class="bg-white dark:bg-teal-900 text-teal-900 dark:text-teal-50 font-semibold shadow-sm rounded-r-full px-6 py-3 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="view_quilt">view_quilt</span>
+<span class="font-label">Hero Editor</span>
+</a>
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 px-6 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="format_list_numbered">format_list_numbered</span>
+<span class="font-label">Events Ordering</span>
+</a>
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 px-6 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+<span class="font-label">Campaigns</span>
+</a>
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 px-6 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-label">Categories</span>
+</a>
+<a class="text-teal-700 dark:text-teal-300 hover:text-teal-900 px-6 py-3 flex items-center gap-3 hover:bg-teal-100/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary-container text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                Create New Event
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen bg-white">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full px-8 h-16 bg-white/80 backdrop-blur-xl docked full-width top-0 sticky z-50 border-b border-teal-50 shadow-sm shadow-teal-900/5">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-noto-serif font-black text-teal-900">Gelaran</span>
+<div class="flex gap-6 items-center">
+<span class="text-teal-900 font-bold border-b-2 border-teal-700 py-5 cursor-pointer">Editor</span>
+<span class="text-teal-600 font-medium cursor-pointer hover:bg-teal-50 transition-colors px-2 py-1 rounded">Analytics</span>
+<span class="text-teal-600 font-medium cursor-pointer hover:bg-teal-50 transition-colors px-2 py-1 rounded">History</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Status</p>
+<p class="text-sm font-semibold text-teal-900">Last Published: Oct 20</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-primary font-bold hover:bg-surface-container-low transition-colors rounded-lg">Preview Website</button>
+<button class="px-6 py-2 bg-secondary-container text-white font-bold rounded-lg shadow-md shadow-secondary-container/30 active:scale-95 duration-150">Publish Changes</button>
+</div>
+<div class="h-8 w-[1px] bg-teal-100 mx-2"></div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-teal-900" data-icon="notifications">notifications</span>
+<img alt="Admin Profile" class="w-8 h-8 rounded-full border border-teal-100" data-alt="professional male headshot with clean background and modern lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzsZFEl_7_rlbw9nvRR8sy8FQclJ_OVXaeRt-2FdVLMyHYcOa_xlVt_-SWO97zPFu2j5tIn_CalnKMR6Is6xIIz7xx_EpVWxBvFVJzPgD9TykGjvpYnh0FyuggtG2X1UqaCtXggKT2H43mxQkKaAWx1N_oHFnHxkSCOvJTulJWrxvQ4V8UitBuThEHkGkxwjIWFNLpDxdch700jYepTgJCLRkQIjTbi9U4ht6c5D8n72MOvJ4qyb3qwH5AKBEcWAODKpTzsUD_WQI"/>
+</div>
+</div>
+</header>
+<div class="p-12 max-w-7xl mx-auto space-y-16">
+<!-- Section 1: Hero Editor -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<div class="lg:col-span-5 space-y-8">
+<div>
+<h2 class="text-4xl font-noto-serif font-black text-teal-900 leading-tight mb-2">Hero Section Editor</h2>
+<p class="text-on-surface-variant max-w-md">Customize the primary visual entry point for the Solo cultural ecosystem.</p>
+</div>
+<div class="space-y-6">
+<div class="group">
+<label class="text-xs font-bold uppercase tracking-widest text-teal-800 mb-2 block">Main Headline</label>
+<input class="w-full border-b-2 border-outline-variant focus:border-primary bg-transparent py-2 text-xl font-noto-serif focus:ring-0 transition-colors" type="text" value="Discover the Soul of Solo"/>
+</div>
+<div class="group">
+<label class="text-xs font-bold uppercase tracking-widest text-teal-800 mb-2 block">Subtext / Description</label>
+<textarea class="w-full border-b-2 border-outline-variant focus:border-primary bg-transparent py-2 resize-none focus:ring-0 transition-colors" rows="3">Experience centuries of heritage through the finest batik, gamelan performances, and traditional festivals in the heart of Java.</textarea>
+</div>
+<div class="flex gap-4">
+<button class="flex-1 border border-primary text-primary py-3 rounded font-bold flex items-center justify-center gap-2 hover:bg-teal-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+                                Replace Background
+                            </button>
+<button class="flex-1 bg-primary text-white py-3 rounded font-bold hover:bg-primary-container transition-all">Save Section</button>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7">
+<div class="relative rounded-xl overflow-hidden shadow-2xl group">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/80 to-transparent z-10"></div>
+<img alt="Hero Preview" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700" data-alt="stunning wide shot of a traditional Javanese dancer in intricate costume performing at night with warm spotlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDkJTeStboo3Iyn_ekbemeqvVfhL1CA-EvlGNnbkBgqMrWbxdRLN3Zp8OrA2dE6EXBP3_Y5PdWeVa4Hs5H0vIIbSxOTOzBFhF71VZXrEx5c08aSPe8k_GZVmTVfOk4lK_jm-qvxJ_-TZ2qFY8lm26hnrEVkniX10pEtlcIvby_rJQcNv5IzEYa7TBg8OeWK-ogJ4WoW-C1A5qT84Z6GnpYDuGXqir9_kzmobmeXUtAUfN0kvpXZ98Ts5Bd265I9fyZxDe7DHW95So"/>
+<div class="absolute bottom-12 left-12 z-20 max-w-md space-y-4">
+<h3 class="text-4xl font-noto-serif font-bold text-white">Discover the Soul of Solo</h3>
+<p class="text-teal-50/80 text-sm">Experience centuries of heritage through the finest batik, gamelan performances, and traditional festivals.</p>
+</div>
+<div class="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-white font-bold tracking-widest uppercase">Live Preview</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Events Ordering (Bento Style) -->
+<section class="space-y-8">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-noto-serif font-bold text-teal-900 mb-2">Featured Events Ordering</h2>
+<p class="text-on-surface-variant">Drag to reorder current spotlight events on the homepage.</p>
+</div>
+<button class="text-tertiary font-bold flex items-center gap-1 hover:underline">
+                        View All Events <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Event Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg border border-teal-50 shadow-sm hover:shadow-md transition-shadow group cursor-move">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary-container/10 text-primary px-2 py-1 rounded text-[10px] font-black uppercase">Priority 01</span>
+<span class="material-symbols-outlined text-teal-200 group-hover:text-teal-400 transition-colors" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<img alt="Wayang Kulit" class="w-full h-32 object-cover rounded mb-4" data-alt="close-up of a shadow puppet being manipulated against a backlit screen with warm amber glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIvd5ENy5gQ-P15T7-PsH3UbeL0gUGISnK5zdkmzrMhZMTAXw3lyWWn3fYh6zdwRPPo17_65pHabyOTEfW7VyWAlQ-iJvPe3O21J70VF-P-Z3npPe1647Ed41cnkFrGY0kCZFqmzlG3iAhXDNCxIpthv6N53epxQwrD4c2jQnZ3ZxUE3EytrILDC0QPfdIgp7HmFRHivmrfS6MCNPNYNBqQfh2W5cZ6WzumBNOTkv0OroVq9PCQvAfAX222612IzEGB00ZpwX8xKs"/>
+<h4 class="font-bold text-teal-900 mb-1">Wayang Kulit Night</h4>
+<p class="text-xs text-on-surface-variant line-clamp-1">Sriwedari Cultural Hall • Oct 28</p>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg border border-teal-50 shadow-sm hover:shadow-md transition-shadow group cursor-move">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary-container/10 text-primary px-2 py-1 rounded text-[10px] font-black uppercase">Priority 02</span>
+<span class="material-symbols-outlined text-teal-200 group-hover:text-teal-400 transition-colors" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<img alt="Solo Keroncong" class="w-full h-32 object-cover rounded mb-4" data-alt="musical ensemble playing traditional instruments in an elegant outdoor garden setting at twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC13dyOA06-Mqi9GpWyTo6cThRlxZU8ccN010cJ6VOXlYmpcGoMkGkrCTjPSo3_pEj7Gi2DiLKWucvX15-GD6M5lnvWQkIZZwxRrXi_jILwrpl-OPeGqf-1tvPzXnPPg_YAQjSNGvVL3EmZNiZh63_sEfZoD79E_GCX6l_p9TzyvspQ2eEccv_0GWWlCY-J8Xz2cFCipNPihYtvoWyG5qHlGEqWWMnoL5JFe3nAVu8Q-5mAU-AIzVojaS2uCsCnFKRA49W2DPjKCKw"/>
+<h4 class="font-bold text-teal-900 mb-1">Solo Keroncong Festival</h4>
+<p class="text-xs text-on-surface-variant line-clamp-1">Vastenburg Fort • Nov 02</p>
+</div>
+<!-- Event Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-lg border border-teal-50 shadow-sm hover:shadow-md transition-shadow group cursor-move">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary-container/10 text-primary px-2 py-1 rounded text-[10px] font-black uppercase">Priority 03</span>
+<span class="material-symbols-outlined text-teal-200 group-hover:text-teal-400 transition-colors" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<img alt="Batik Workshop" class="w-full h-32 object-cover rounded mb-4" data-alt="artisan hand drawing patterns with wax on white fabric for batik creation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEOpTWcJFiXy-pXWsWxpOrQNyOaXTvG5jWXIdZmPGS_8HXde5W2McCiTuUMEHTORs7B-VyiYJyCT76ZN6-bvzQ9ow5AxrA5tkTB9wE-cRyUTp-5l8yUG_eLRRCadlC2su30PciJiJU9O-HMr1tUVZtJgb9EuwwsD8j2aj2siKCoumxQHl1efk10dpHEuXWvYigJGgUUR3kWjXE8y7p9t2mZL63N6ePz7yBSQ-QyoecaoikQJrWH4lNs6H-yx-guUgh_DIxIw0F5L8"/>
+<h4 class="font-bold text-teal-900 mb-1">Royal Batik Workshop</h4>
+<p class="text-xs text-on-surface-variant line-clamp-1">Museum Batik Danar Hadi • Daily</p>
+</div>
+<!-- Event Card 4 -->
+<div class="bg-white border-2 border-dashed border-teal-100 rounded-lg flex flex-col items-center justify-center p-5 text-teal-300 hover:text-teal-600 hover:border-teal-300 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="add_circle">add_circle</span>
+<span class="font-bold text-sm">Add Event Slot</span>
+</div>
+</div>
+</section>
+<!-- Section 3 & 4 Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Section 3: Campaign Banner Manager -->
+<section class="space-y-6">
+<h2 class="text-2xl font-noto-serif font-bold text-teal-900">Campaign Banner Manager</h2>
+<div class="bg-surface-container-low rounded-xl p-1 space-y-1">
+<!-- Banner Row 1 -->
+<div class="bg-white p-4 rounded-lg flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+</div>
+<div>
+<h5 class="font-bold text-teal-900">Heritage Pass 2024</h5>
+<p class="text-xs text-on-surface-variant">Active • Ends Dec 31</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-5 bg-primary-container rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+<span class="material-symbols-outlined text-teal-400 cursor-pointer" data-icon="edit">edit</span>
+</div>
+</div>
+<!-- Banner Row 2 -->
+<div class="bg-white p-4 rounded-lg flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-tertiary/10 rounded-lg flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<h5 class="font-bold text-teal-900">Culinary Trail: Solo</h5>
+<p class="text-xs text-on-surface-variant">Scheduled • Starts Nov 15</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-5 bg-teal-200 rounded-full relative cursor-pointer">
+<div class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</div>
+<span class="material-symbols-outlined text-teal-400 cursor-pointer" data-icon="edit">edit</span>
+</div>
+</div>
+</div>
+<button class="w-full border-2 border-dashed border-teal-100 py-3 rounded text-teal-700 font-bold hover:bg-teal-50 transition-colors">
+                        + New Campaign Banner
+                    </button>
+</section>
+<!-- Section 4: Category Highlight Slots -->
+<section class="space-y-6">
+<h2 class="text-2xl font-noto-serif font-bold text-teal-900">Category Highlight Slots</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="relative group cursor-pointer">
+<img alt="Wayang" class="w-full h-24 object-cover rounded-lg" data-alt="artistic shot of leather puppets stacked against a wall with cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqtMyoztyvoeKQzfLtoi8hE_h3jBm6A3GVoJPlsk96-4YDbQLQuOwgOFhNBKvNtcrMllP4PgdAd9oScBEZr-c0XCXKLVrdpaq4vvVRpvtzpeqYJQeNThYI39EfaOoSznVYA3MG0D2si1rDjsWEfOQvo6FEuvvIRthTVxZIJlEKyf64ZA-O0hxP6BEi2cbhfAlw7vdvfrMbDehhLUz8lX2xt8XZ5NBNFFZkQt39y58EfEZHv5rXQyTwEeT5YNunvj5RR4FdSB54G1A"/>
+<div class="absolute inset-0 bg-primary/40 rounded-lg flex items-center justify-center">
+<span class="text-white font-black tracking-widest text-sm uppercase">Wayang</span>
+</div>
+<div class="absolute top-2 right-2 bg-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="close">close</span>
+</div>
+</div>
+<div class="relative group cursor-pointer">
+<img alt="Batik" class="w-full h-24 object-cover rounded-lg" data-alt="detailed texture of traditional javanese batik fabric with intricate brown and cream patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsML9oHzcFXaqxUggb5Ycn3j4fVqgC3r8mw1kA1VOIeIeKQvSmBykoZFt_ydx_uNVhuCz4GXcyrgAqNeTwLLH3JZ7bTYTyEOnG_t8xid1_9gaxZsLC_GnrS13aq-VsxElYUEe1oMcOEMDCBm-uFZ5zaQl19KJsMXbiK1Tq8WD47xa4iY_dN1KsuwaOYfn92ISooJ9MmeXh3pyrR8VyXjhPUClO_bqOsUkSQQLgMCx8GdBC14Kxo_y96YINzfmbiEXVZEgs0qqfw6k"/>
+<div class="absolute inset-0 bg-primary/40 rounded-lg flex items-center justify-center">
+<span class="text-white font-black tracking-widest text-sm uppercase">Batik</span>
+</div>
+<div class="absolute top-2 right-2 bg-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="close">close</span>
+</div>
+</div>
+<div class="relative group cursor-pointer">
+<img alt="Gamelan" class="w-full h-24 object-cover rounded-lg" data-alt="golden bronze gongs of a gamelan set arranged in a traditional palace pavilion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBubUAVWkkMCNpYls8DHTLb1tD9VPk7fJ_r4BS1PR3gHKhJ3EW7s7SDlonITbvBTCFApC9VPIIbQuWJDe-bLyIyOHx_AjGHfeQUwCGcK7ITPV9F96uBUzC4n5iVNMU8Txb7wkMBmvSrjCUvwl4HFLmkzB0RkGpxjEm7Kz-DcGB1VAPm2tYVrgy25AmijkPhuogO353Nl6booVh5elJhle31hotG0F_yo_HjFgIHubIOTSTR4GvpkQprwjEXXiMLE3HMKyZTCYYZ7z0"/>
+<div class="absolute inset-0 bg-primary/40 rounded-lg flex items-center justify-center">
+<span class="text-white font-black tracking-widest text-sm uppercase">Gamelan</span>
+</div>
+<div class="absolute top-2 right-2 bg-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="close">close</span>
+</div>
+</div>
+<div class="bg-surface-container border-2 border-dashed border-teal-200 rounded-lg flex items-center justify-center h-24 text-teal-500 hover:text-teal-800 hover:border-teal-400 transition-all cursor-pointer">
+<div class="text-center">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<p class="text-[10px] font-bold uppercase tracking-tight">Add Category</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Global Footer / Quick Stats -->
+<footer class="pt-12 border-t border-teal-50 flex flex-wrap gap-12">
+<div class="flex-1 min-w-[200px]">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Editor Sessions</p>
+<div class="flex items-center gap-4">
+<span class="text-4xl font-noto-serif font-black text-teal-900">24</span>
+<div class="bg-tertiary-fixed-dim/20 text-tertiary px-2 py-1 rounded text-xs font-bold">+12% growth</div>
+</div>
+</div>
+<div class="flex-1 min-w-[200px]">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Live Conversions</p>
+<div class="flex items-center gap-4">
+<span class="text-4xl font-noto-serif font-black text-teal-900">1,208</span>
+<div class="bg-secondary-fixed/50 text-secondary px-2 py-1 rounded text-xs font-bold">Stable</div>
+</div>
+</div>
+<div class="flex-1 min-w-[200px]">
+<p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Memory Usage</p>
+<div class="w-full bg-surface-container h-2 rounded-full mt-4 overflow-hidden">
+<div class="bg-primary w-2/3 h-full rounded-full"></div>
+</div>
+</div>
+</footer>
+</div>
+</main>
+</body></html>

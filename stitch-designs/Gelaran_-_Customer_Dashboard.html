@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "inverse-primary": "#ffb598",
+              "secondary-fixed": "#aaefee",
+              "on-surface": "#002020",
+              "on-primary-fixed": "#370e00",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-secondary-container": "#246d6d",
+              "on-background": "#002020",
+              "tertiary-fixed-dim": "#f7be11",
+              "tertiary-container": "#654b00",
+              "secondary-fixed-dim": "#8ed2d2",
+              "secondary": "#1e6868",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-tint": "#a63b00",
+              "surface-container-low": "#c1fffe",
+              "primary-fixed": "#ffdbce",
+              "on-secondary-fixed": "#002020",
+              "background": "#e2fffe",
+              "tertiary-fixed": "#ffdf9a",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#bec8c8",
+              "on-surface-variant": "#3f4948",
+              "on-error": "#ffffff",
+              "surface-variant": "#aaefee",
+              "surface": "#e2fffe",
+              "surface-container": "#b5faf9",
+              "on-primary-container": "#ffae8e",
+              "surface-dim": "#a1e6e5",
+              "on-primary-fixed-variant": "#7f2b00",
+              "inverse-surface": "#003737",
+              "surface-bright": "#e2fffe",
+              "primary-fixed-dim": "#ffb598",
+              "outline": "#6f7978",
+              "error-container": "#ffdad6",
+              "secondary-container": "#a7eceb",
+              "primary-container": "#8d3100",
+              "tertiary": "#483500",
+              "on-secondary-fixed-variant": "#004f50",
+              "surface-container-high": "#aff5f4",
+              "on-tertiary-container": "#f1b803",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#251a00",
+              "surface-container-highest": "#aaefee",
+              "primary": "#672200",
+              "surface-container-lowest": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ticket-stub-mask {
+            mask-image: radial-gradient(circle at left, transparent 15px, black 16px), radial-gradient(circle at right, transparent 15px, black 16px);
+            mask-position: -15px center, calc(100% + 15px) center;
+            mask-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-white dark:bg-slate-950 text-[#015959] dark:text-[#29B3B6] docked full-width top-0 z-50 border-b border-slate-100 dark:border-slate-800 shadow-sm fixed w-full px-8 py-3 h-16 flex justify-between items-center">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#015959] dark:text-[#29B3B6] tracking-tighter font-headline">Gelaran</span>
+<div class="hidden md:flex items-center bg-surface-container-lowest rounded-full px-4 py-1.5 border border-outline-variant/20">
+<span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-outline-variant" placeholder="Search events..." type="text"/>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-6 font-['Noto_Serif'] font-bold text-lg">
+<a class="text-[#F95D00] font-bold border-b-2 border-[#F95D00] pb-1" href="#">Explore</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#015959] transition-colors" href="#">Help</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-[#015959] transition-colors" href="#">Partner</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-[#F95D00] rounded-full"></span>
+</button>
+<div class="flex items-center gap-2 ml-2 pl-4 border-l border-outline-variant/30">
+<img alt="User profile avatar" class="w-8 h-8 rounded-full object-cover" data-alt="Close-up portrait of a smiling young woman with professional attire against a soft-focus warm interior background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzikTMUIlYc4BnXR8Rgln7Qvk9VpD856oSCf-HROO19_IXvnUYoK_tlBtTaSjtlQ1-b7UAebjTED26o6jH7QJqLc6f9-SYYNcybTEo3SUTpHZSc2L60hdTa9t81l-ditYxuokLjAr3dv6vMZHZIKhBnou8aoxYgZBscAwzQXp4pCWH_nbZVU_lOAfd5_1RE0HiQM49HRppb0uLCTJj0IfQ1RPqQFtFQ3Tzj2qCAhlxemuHbJI1IGNBt82rivYeCZpH7vhNcOu6_0U"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="bg-[#e2fffe] dark:bg-[#002020] text-[#015959] dark:text-[#29B3B6] h-screen w-64 fixed left-0 top-16 tonal-shift bg-[#b5faf9] dark:bg-[#015959]/20 flex flex-col p-6 gap-2">
+<div class="mb-8 px-2">
+<p class="font-headline font-bold text-lg text-[#015959] dark:text-[#29B3B6]">Cultural Curator</p>
+<p class="text-xs font-medium opacity-70">Premium Member</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-[#aaefee] dark:bg-[#1e6868] text-[#015959] dark:text-white rounded-lg font-bold transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body text-sm">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#c1fffe] dark:hover:bg-[#1e6868]/50 rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-body text-sm">My Tickets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#c1fffe] dark:hover:bg-[#1e6868]/50 rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-body text-sm">Wishlist</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#c1fffe] dark:hover:bg-[#1e6868]/50 rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-body text-sm">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#c1fffe] dark:hover:bg-[#1e6868]/50 rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body text-sm">Settings</span>
+</a>
+</nav>
+<button class="mt-4 bg-[#015959] text-white py-3 rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95">
+            Book New Event
+        </button>
+<div class="mt-auto pt-4 border-t border-outline-variant/20">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#c1fffe] dark:hover:bg-[#1e6868]/50 rounded-lg transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body text-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 mt-16 p-10 bg-surface-container-lowest min-h-screen">
+<div class="max-w-6xl mx-auto space-y-12">
+<!-- Welcome Banner -->
+<section class="relative overflow-hidden rounded-3xl bg-secondary p-12 text-white flex justify-between items-center">
+<div class="relative z-10 max-w-xl">
+<h1 class="font-headline text-5xl font-black mb-4 tracking-tight">Welcome back, Aditi!</h1>
+<p class="text-lg opacity-90 leading-relaxed font-body">Your cultural journey continues. You have <span class="font-bold text-tertiary-fixed">2 upcoming events</span> this week and reached Gold Status.</p>
+</div>
+<div class="relative z-10 hidden lg:block">
+<div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+<p class="text-sm font-bold uppercase tracking-widest opacity-70 mb-1">Loyalty Points</p>
+<p class="text-4xl font-headline font-black">2,450 <span class="text-sm font-body font-normal opacity-80">PTS</span></p>
+</div>
+</div>
+<!-- Abstract decorative element -->
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/20 rounded-full blur-3xl"></div>
+<div class="absolute -left-20 -bottom-20 w-80 h-80 bg-secondary-container/20 rounded-full blur-3xl"></div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<!-- Upcoming Ticket Card & Recent Bookings (Left/Center Column) -->
+<div class="lg:col-span-2 space-y-12">
+<!-- Featured Upcoming Ticket -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline text-2xl font-bold text-[#015959]">Next Event</h2>
+<a class="text-secondary font-bold text-sm hover:underline" href="#">View All Tickets</a>
+</div>
+<div class="bg-[#015959] rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl transition-transform hover:scale-[1.01]">
+<div class="md:w-1/2 relative h-64 md:h-auto">
+<img alt="Solo Batik Workshop" class="w-full h-full object-cover" data-alt="Close-up of intricate hand-painted batik fabric with traditional Javanese patterns in warm brown and indigo tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCqpCZMpd_K7vrN-4wmypH-8R_fl42VC6uBHvSsICt2l-nWXtgwwcaqzOUlxTAM8pB8A9xhk143Vk188UnMjePZ6NYm-qbsfylSre59yO20DsZwmJQyPnOZlt99s_I6_4mNaQE7eEvjnp507FTm_t1pAI6h0_euRd-DDk-DbTUROoKTLEsGBSLTQYxKww7ZvO1s8ZGW6fmI1Zd8vLPX6mGq6zJndPKdxiKDq9m0x_gegSu26MgzNsutUpDIDuNIRzzBkIVZurkMpw"/>
+<div class="absolute top-4 left-4">
+<span class="bg-tertiary-fixed-dim text-on-tertiary-fixed px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">Workshop</span>
+</div>
+</div>
+<div class="md:w-1/2 p-8 flex flex-col justify-between text-white relative">
+<div>
+<h3 class="font-headline text-3xl font-bold mb-2">Mastering Solo Batik Workshop</h3>
+<div class="flex items-center gap-4 text-sm opacity-80 font-medium mb-6">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                                            Oct 24, 2024
+                                        </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                            10:00 AM
+                                        </div>
+</div>
+<div class="bg-white p-4 rounded-xl inline-block mb-6 shadow-inner">
+<!-- Simulated QR Code placeholder -->
+<div class="w-24 h-24 bg-slate-900 flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-white text-5xl">qr_code_2</span>
+</div>
+</div>
+</div>
+<button class="bg-[#F95D00] text-white py-3 px-8 rounded-xl font-bold text-sm hover:bg-primary-container transition-all flex items-center justify-center gap-2 group">
+                                    View Ticket
+                                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Recent Bookings Table -->
+<section>
+<h2 class="font-headline text-2xl font-bold text-[#015959] mb-6">Recent Bookings</h2>
+<div class="bg-surface-container rounded-2xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-on-surface-variant/70 text-xs font-bold uppercase tracking-wider">
+<th class="px-6 py-4">Event</th>
+<th class="px-6 py-4">Date</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Price</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed-dim/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">music_note</span>
+</div>
+<div>
+<p class="font-bold text-sm">Keroncong Malam Solo</p>
+<span class="bg-[#f7be11]/20 text-[#251a00] text-[10px] px-2 py-0.5 rounded-full font-bold">PREMIUM</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Oct 12, 2024</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-secondary">
+<span class="w-1.5 h-1.5 bg-secondary rounded-full"></span>
+                                                Paid
+                                            </span>
+</td>
+<td class="px-6 py-5 font-bold text-sm">IDR 250k</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">theater_comedy</span>
+</div>
+<div>
+<p class="font-bold text-sm">Wayang Kulit Performance</p>
+<span class="bg-[#f7be11]/20 text-[#251a00] text-[10px] px-2 py-0.5 rounded-full font-bold">EARLY BIRD</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Oct 05, 2024</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-secondary">
+<span class="w-1.5 h-1.5 bg-secondary rounded-full"></span>
+                                                Paid
+                                            </span>
+</td>
+<td class="px-6 py-5 font-bold text-sm">IDR 120k</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+</div>
+<div>
+<p class="font-bold text-sm">Surakarta Culinary Tour</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Sep 28, 2024</td>
+<td class="px-6 py-5">
+<span class="flex items-center gap-1.5 text-xs font-bold text-outline">
+<span class="w-1.5 h-1.5 bg-outline rounded-full"></span>
+                                                Pending
+                                            </span>
+</td>
+<td class="px-6 py-5 font-bold text-sm">IDR 450k</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Notifications & Sidebar content (Right Column) -->
+<div class="space-y-12">
+<!-- Notifications Panel -->
+<section class="bg-surface-container-highest rounded-3xl p-8 border border-outline-variant/10">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline text-xl font-bold text-[#015959]">Alerts</h2>
+<span class="bg-[#F95D00] text-white text-[10px] px-2 py-0.5 rounded-full font-bold">2 NEW</span>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-10 h-10 shrink-0 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-xl">confirmation_number</span>
+</div>
+<div>
+<p class="text-sm font-bold group-hover:text-secondary transition-colors">Ticket confirmed</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Your booking for 'Batik Workshop' is now confirmed. See you there!</p>
+<span class="text-[10px] text-outline font-medium uppercase mt-1 block">2 hours ago</span>
+</div>
+</div>
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-10 h-10 shrink-0 rounded-full bg-tertiary-container/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-xl" data-weight="fill">notifications_active</span>
+</div>
+<div>
+<p class="text-sm font-bold group-hover:text-secondary transition-colors">New event in your area</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Mangkunegaran Jazz Festival has just been announced for next month.</p>
+<span class="text-[10px] text-outline font-medium uppercase mt-1 block">Yesterday</span>
+</div>
+</div>
+<div class="flex gap-4 group cursor-pointer opacity-60">
+<div class="w-10 h-10 shrink-0 rounded-full bg-outline-variant/20 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-xl">local_offer</span>
+</div>
+<div>
+<p class="text-sm font-bold">Promo expiring</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Your 20% discount for museum tours expires in 24 hours.</p>
+<span class="text-[10px] text-outline font-medium uppercase mt-1 block">Oct 20</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-8 py-3 border border-outline-variant/30 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-white transition-colors">
+                            Clear All Alerts
+                        </button>
+</section>
+<!-- Ticket Stub Decor -->
+<div class="bg-[#015959] p-6 rounded-2xl relative overflow-hidden text-white flex flex-col items-center text-center ticket-stub-mask">
+<span class="material-symbols-outlined text-4xl mb-4 text-[#f7be11]">stars</span>
+<h4 class="font-headline font-bold text-lg mb-1">VIP Membership</h4>
+<p class="text-xs opacity-70 mb-4">Unlimited access to palace grounds and priority seating.</p>
+<button class="bg-white text-[#015959] px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:scale-105 transition-transform">Renew</button>
+</div>
+</div>
+</div>
+<!-- Wishlist Preview Section -->
+<section class="pb-20">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="font-headline text-3xl font-bold text-[#015959]">Saved for Later</h2>
+<p class="text-on-surface-variant font-medium">Experiences you don't want to miss</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant/20 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 border border-outline-variant/20 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Event Card 1 -->
+<div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+<div class="relative h-48 overflow-hidden">
+<img alt="Gamelan Concert" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Traditional Javanese gamelan orchestra instruments arranged on a wooden stage with golden accents and atmospheric warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbsykQHhDPmwfRzxje-IAkc5gPB5avz9Hs7pBhe8n5sW6G0dx1IxovGRW4Ocu-v_BqgyD7poQ9VfaA1bGO0wy-BWgywnaNrOyQQrcDAD41gY6YquD-VYn150GBnzPbkeKLPr8K4PIawBgc0C_snwSm0F1v5d_9R97UEf44u4J-o82Ya9iSjwswPlmK9G9hL3Rut2UhAG4OAdR6FdioaABeI3YdhbFHSJv78Q5HHcAOqJwSn43DwVOAw4iQH7LJEwG8iKInGF2M9tk"/>
+<button class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full text-[#29B3B6] shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-6">
+<p class="text-[10px] font-bold text-[#29B3B6] uppercase tracking-widest mb-2">Music &amp; Arts</p>
+<h4 class="font-headline text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">Royal Gamelan Night</h4>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<span class="font-bold text-secondary">IDR 85,000</span>
+<span class="text-xs text-on-surface-variant">Nov 02</span>
+</div>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+<div class="relative h-48 overflow-hidden">
+<img alt="Solo Street Food Tour" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Vibrant night market scene in Solo with steam rising from local food stalls and glowing colorful lanterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzVw3l8IRpGWTigkOJPj6h5TgypaVGda5B0GoLWclGA1rBswscRV-w9IxwduHO-pB8fYvfT1ZSH1eu7WQsfNRdkj_E-kIkH0VfRt_-Kfw_bAEq7DPCWnXWEnT6D_iaqWFTRGJ-Mp4jtk5LCcEYDArWVvDXtsNMBm2y0d2XqQQcY9mgA7YMUiviaJDaCCHwO-_G61xautQzKMYz7SXaF7TzTiIvOmpGanRTTnUm6x09RwNAbz4F4T0mAqOk9f8wnjo318CADwVACn4"/>
+<button class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full text-[#29B3B6] shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-6">
+<p class="text-[10px] font-bold text-[#29B3B6] uppercase tracking-widest mb-2">Culinary</p>
+<h4 class="font-headline text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">Solo Night Bites Tour</h4>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<span class="font-bold text-secondary">IDR 150,000</span>
+<span class="text-xs text-on-surface-variant">Oct 30</span>
+</div>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+<div class="relative h-48 overflow-hidden">
+<img alt="Keraton Palace Tour" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="The grand entrance of Keraton Surakarta Hadiningrat palace with ornate white architecture and blue accents under a clear sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATaUChe2GNina9go548yeuNQByz8BzlhKNRKQgn-h7p4I9KVxMcWfYmKkYFCk32kppzVDPS_Xy2_Nod7eh24Tagfe7bwUeK-QqTwz6YbP2gTf-2uJT3jy43udlsGbIuPTo1nxNTiZuEI8wEnEEC76cAxoqJOYTeDCFi5as74lNWvX7f9OUcCuI1-KDSSKcfwhvxDqLtwqGEV13mSWO1ltu8JOq0xd8QDmNBhJtJn6Q2rMpAioHOOmr0eDSFhQXN4BzC1HnXbhDUvo"/>
+<button class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full text-[#29B3B6] shadow-sm hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-6">
+<p class="text-[10px] font-bold text-[#29B3B6] uppercase tracking-widest mb-2">History</p>
+<h4 class="font-headline text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">Keraton Private Tour</h4>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<span class="font-bold text-secondary">IDR 200,000</span>
+<span class="text-xs text-on-surface-variant">Daily</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

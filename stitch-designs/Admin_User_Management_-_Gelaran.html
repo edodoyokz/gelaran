@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin | User Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff !important;
+        }
+        h1, h2, h3, .serif-headline {
+            font-family: 'Noto Serif', serif;
+        }
+        /* Custom scrollbar for refined editorial look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #ffffff; }
+        ::-webkit-scrollbar-thumb { background: #bec8c8; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-secondary-container": "#521900",
+                "background": "#ffffff",
+                "surface-container-low": "#c1fffe",
+                "on-secondary-fixed": "#370e00",
+                "on-tertiary-fixed-variant": "#004f51",
+                "surface-tint": "#1e6868",
+                "on-tertiary": "#ffffff",
+                "error-container": "#ffdad6",
+                "tertiary-fixed-dim": "#5cd8db",
+                "outline-variant": "#bec8c8",
+                "inverse-surface": "#003737",
+                "primary-fixed-dim": "#8ed2d2",
+                "surface-container-high": "#aff5f4",
+                "secondary-container": "#fd6005",
+                "secondary-fixed": "#ffdbce",
+                "secondary-fixed-dim": "#ffb598",
+                "tertiary-fixed": "#7bf5f8",
+                "on-surface-variant": "#3f4948",
+                "surface-container-lowest": "#ffffff",
+                "tertiary-container": "#00595b",
+                "on-secondary-fixed-variant": "#7f2b00",
+                "surface-container-highest": "#aaefee",
+                "inverse-primary": "#8ed2d2",
+                "surface": "#ffffff",
+                "on-primary": "#ffffff",
+                "inverse-on-surface": "#b8fdfc",
+                "on-secondary": "#ffffff",
+                "on-background": "#002020",
+                "surface-dim": "#a1e6e5",
+                "outline": "#6f7978",
+                "surface-container": "#b5faf9",
+                "surface-variant": "#aaefee",
+                "primary-fixed": "#aaefee",
+                "on-tertiary-fixed": "#002021",
+                "on-error": "#ffffff",
+                "on-error-container": "#93000a",
+                "tertiary": "#004041",
+                "on-surface": "#002020",
+                "on-primary-fixed": "#002020",
+                "surface-bright": "#ffffff",
+                "on-tertiary-container": "#56d4d6",
+                "secondary": "#a63b00",
+                "on-primary-container": "#89cdcd",
+                "primary": "#004040",
+                "on-primary-fixed-variant": "#004f50",
+                "error": "#ba1a1a",
+                "primary-container": "#015959"
+              },
+              fontFamily: {
+                "headline": ["Noto Serif"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+</head>
+<body class="text-on-surface antialiased bg-white">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-teal-900 flex flex-col p-4 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-2xl font-serif font-bold text-white tracking-tight">Gelaran</h1>
+<p class="text-xs text-teal-400 font-medium opacity-80 uppercase tracking-widest">Admin Console</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-teal-100/70 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label text-sm">Dashboard</span>
+</a>
+<!-- Active State: Users -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white/10 text-white rounded-lg font-bold transition-transform scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label text-sm">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-100/70 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-label text-sm">Events</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-100/70 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label text-sm">Transactions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-100/70 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label text-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-teal-800 rounded-xl flex items-center gap-3">
+<img alt="Gelaran Admin Profile" class="w-8 h-8 rounded-full bg-teal-600" data-alt="close-up professional headshot of an executive in a business suit with neutral studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJU4b_vLEn5gatVD-DfBpJnVGLE_iOOAQ6ZFpXxzzlFc6mgUNdEnM1uQ7VubbW01a77ghZm6jOZ7T4ygCWvUgGjaqelW1ByL82CnULixe9unp5SZubQIAc80T8WNogQoSvt5wsYp_jLVWMienW3_kw0NHLJJlcRe8KGmDbQG4hIqpCmZxdRTfJiLjmvU6-Kv2Qv0JdRBxMo1mw8kQLB3KixTpNrvNcXpBdHB-uxKV14HV8_UYyMJ7Tfj-KEUEPTDXRgj19VKVtDZ8"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-white truncate">Administrator</p>
+<p class="text-[10px] text-teal-300 truncate">Super Admin Access</p>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Integration -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-white/80 backdrop-blur-md z-40 border-b border-teal-50 flex justify-between items-center px-8">
+<div class="flex items-center gap-4 w-1/2">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="w-full bg-slate-50 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-teal-500/20 text-teal-900 placeholder-slate-400" placeholder="Search curated database..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-slate-500 hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500 hover:text-teal-600 transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<div class="h-8 w-px bg-slate-200"></div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-teal-900 font-label">Gelaran Admin</span>
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full border-2 border-teal-50" data-alt="minimalist logo of a teal and white circle icon representing a user profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLD5aOmOTK2xpnZGOl0KuXJFwY6r_QY1S5OYlHfpLZ-qEJPRGk9eBc8JOem6nWLTuaCMxd5rorn4A3Rv81PV62w8UmM80gVW0whp6gbrad61dgWHIWzb7zBgIVdb5jPY9SsJOpTrRfzFNWR-HSK2ME2n_GraY9s8TrxHZjbqOlrs31C1cZJTvhfYorpgcc_W5dOiOm9oOxgbqLBBsyw38qHm_Kfcv8dHzNu1aIcIjlsjAxWAJ8iVWwkCarKXdMv779QRinGF4dzAs"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-24 px-10 pb-16 bg-white min-h-screen">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-4xl font-serif font-bold text-[#015959] leading-tight">User Management</h2>
+<p class="text-slate-500 mt-2 font-medium">Overview and control of the Gelaran community ecosystem.</p>
+</div>
+<button class="bg-[#F95D00] text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-orange-200 hover:brightness-110 transition-all">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+                Add User
+            </button>
+</div>
+<!-- Metrics Section (Asymmetric Bento Grid) -->
+<section class="grid grid-cols-12 gap-6 mb-12">
+<div class="col-span-3 p-6 bg-slate-50 rounded-xl border-l-4 border-[#015959]">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Total Users</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-4xl font-serif font-bold text-[#015959]">12,842</h3>
+<span class="text-xs font-bold text-[#29B3B6] flex items-center">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 8%
+                    </span>
+</div>
+</div>
+<div class="col-span-3 p-6 bg-slate-50 rounded-xl">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Active Today</p>
+<h3 class="text-4xl font-serif font-bold text-[#015959]">1,104</h3>
+<div class="mt-4 flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-teal-200 border-2 border-white"></div>
+<div class="w-6 h-6 rounded-full bg-orange-200 border-2 border-white"></div>
+<div class="w-6 h-6 rounded-full bg-blue-200 border-2 border-white"></div>
+<div class="text-[10px] font-bold text-slate-400 self-center ml-4">+82 more</div>
+</div>
+</div>
+<div class="col-span-3 p-6 bg-[#FBC117]/10 rounded-xl border border-[#FBC117]/20">
+<div class="flex justify-between items-start mb-4">
+<p class="text-xs font-bold text-[#866a0d] uppercase tracking-widest">Verification Pending</p>
+<span class="px-2 py-0.5 bg-[#FBC117] text-[#015959] text-[10px] font-black rounded uppercase">Action Required</span>
+</div>
+<h3 class="text-4xl font-serif font-bold text-[#015959]">42</h3>
+<p class="text-xs text-[#866a0d] mt-2 font-medium underline cursor-pointer">Review applicants</p>
+</div>
+<div class="col-span-3 p-6 bg-slate-50 rounded-xl">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">New This Week</p>
+<h3 class="text-4xl font-serif font-bold text-[#015959]">312</h3>
+<div class="w-full bg-slate-200 h-1 mt-6 rounded-full overflow-hidden">
+<div class="bg-[#29B3B6] h-full w-[65%]"></div>
+</div>
+</div>
+</section>
+<!-- Search & Filters -->
+<div class="bg-white p-6 rounded-xl border border-teal-50 mb-6 flex flex-wrap items-center gap-4">
+<div class="flex-grow flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400" data-icon="filter_list">filter_list</span>
+<span class="text-sm font-bold text-[#015959]">Quick Filters:</span>
+<div class="flex gap-2">
+<select class="text-xs font-bold border-none bg-slate-100 rounded-lg py-1.5 px-3 text-slate-600 focus:ring-0">
+<option>All Roles</option>
+<option>Admin</option>
+<option>Curator</option>
+<option>Customer</option>
+</select>
+<select class="text-xs font-bold border-none bg-slate-100 rounded-lg py-1.5 px-3 text-slate-600 focus:ring-0">
+<option>All Status</option>
+<option>Verified</option>
+<option>Unverified</option>
+</select>
+</div>
+</div>
+<div class="text-xs text-slate-400 font-medium">
+                Showing 1-10 of 12,842 users
+            </div>
+</div>
+<!-- User Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-2">
+<thead>
+<tr class="text-on-surface-variant font-label text-[11px] uppercase tracking-widest">
+<th class="px-6 py-3 font-bold">User Identity</th>
+<th class="px-6 py-3 font-bold">Email Address</th>
+<th class="px-6 py-3 font-bold">Assigned Role</th>
+<th class="px-6 py-3 font-bold text-center">Verification</th>
+<th class="px-6 py-3 font-bold text-right">Operations</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<!-- Row 1 -->
+<tr class="bg-white hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-4 rounded-l-xl">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="close-up of a smiling young professional woman with glasses in a modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmDUlq3Y_rFwMybfa5dYf5BfnxoBSSyrHvEAsJRq9VJXwqyrXqPg9IvT9MtVxpV7SGaDi5kxervfKafTNGyDEThlkag6JUSSrv0ODZ1Vy7nj64Zyr1eNgzTk-ygvety13yrjV63iW0ys032cPNAfM1H1vZ6ALA0WBR6MEXH23bNftXga9FoHNp_UO_u02IHXyO6UaQy2pf_Od0RDVwj1jytguC4pJ2bwdw_7JRbfJe2-2dYFattqG4bossL2TQF9Q49D_PdSqyenA"/>
+<div>
+<p class="font-bold text-[#015959]">Aditya Saputra</p>
+<p class="text-[10px] text-slate-400 font-medium">Joined 12 Oct 2023</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 font-medium">aditya.s@gelaran.id</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-teal-50 text-[#015959] text-[10px] font-black rounded-full uppercase">Curator</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1.5 text-[#29B3B6] font-bold text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#29B3B6]"></span>
+                                Verified
+                            </span>
+</td>
+<td class="px-6 py-4 text-right rounded-r-xl">
+<div class="flex justify-end gap-3">
+<button class="text-[#29B3B6] hover:bg-teal-50 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="text-slate-400 hover:text-teal-600 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="text-slate-400 hover:text-red-500 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-white hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-4 rounded-l-xl">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="portrait of a man with artistic style wearing a linen shirt standing in a sunny garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1GNWQZThx0pD7hFc20Oz_RaH1PJ4WwMp7aMNt5SBqpbnRRO_55-mXaVMWnYfhHFHS-otFjH5eRkEMh4snbmNiWqvRDNMy47PUrkCgLYKWWuQ7cgZp_m_kuzdMyE36GAjEI3EPwx5Q3ZNzv82Qu9IuKd5AagwPkktW4gNd3Gr9DGOhTwtgg0DR9lQqKYsMJl7aeBlx5Bh-7vcOntR8Qywow1K0ryw-N0mDaR_rBPLvDYvYNBdUe6y-GVwDNqbd7FlTmK-4BjnuFTM"/>
+<div>
+<p class="font-bold text-[#015959]">Rina Mahendra</p>
+<p class="text-[10px] text-slate-400 font-medium">Joined 15 Oct 2023</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 font-medium">rina.m@curate.com</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-black rounded-full uppercase">Customer</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1.5 text-[#F95D00] font-bold text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#F95D00]"></span>
+                                Unverified
+                            </span>
+</td>
+<td class="px-6 py-4 text-right rounded-r-xl">
+<div class="flex justify-end gap-3">
+<button class="bg-[#015959] text-white px-3 py-1 text-[10px] font-black rounded uppercase hover:brightness-125 transition-all">Verify Now</button>
+<button class="text-slate-400 hover:text-teal-600 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="bg-white hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-4 rounded-l-xl">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="corporate headshot of an older executive man with a friendly expression in a modern high-rise office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQZKHmRTVF8B37zAGWHITPOB502yYsq1XqDLyzWsOju53PzYKh-T9pw3HX5O9FGbV3cVdOLP_1eoVM2j41d2d4ZA19pGm87hdW2VUouYlgzm1c3dOGu7ZtFwmrq4zg98-cFqMG5Xkkk44UdUjFxPzcI4pfHmxodCAqBTBc1mXURXMXDNjWnkNvfJu3p2NHP9pKSeq45JVWt947XV7OrEMNb5KHAcOTFwJvbWbLPe9GDEkPDZzyZ4Kcvioq1So9nHAb4S5xw0tzSi4"/>
+<div>
+<p class="font-bold text-[#015959]">Budi Kusuma</p>
+<p class="text-[10px] text-slate-400 font-medium">Joined 01 Sep 2023</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 font-medium">budi.k@gelaran.id</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-orange-50 text-[#F95D00] text-[10px] font-black rounded-full uppercase">Admin</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1.5 text-[#29B3B6] font-bold text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#29B3B6]"></span>
+                                Verified
+                            </span>
+</td>
+<td class="px-6 py-4 text-right rounded-r-xl">
+<div class="flex justify-end gap-3">
+<button class="text-[#29B3B6] hover:bg-teal-50 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="text-slate-400 hover:text-teal-600 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="text-slate-400 hover:text-red-500 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="bg-white hover:bg-slate-50 transition-colors group">
+<td class="px-6 py-4 rounded-l-xl">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="candid lifestyle shot of a creative professional woman working on a laptop in a vibrant shared workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjHYtTy6ivBv-jtX4ChZBTkW-LEC9p4Zkxy-ZEejlMKN09p6NxghcvQd6ao1K6tv1G0WAH_jVgXs0uxnq3FpDZ00I9xJSlptmg18O9zkTe1OV4pFUX1UMeHZrVkZ9Jyjou03b--wu46PofK3GMBfj7Oqh464yeBg3I1QusQkXpzLg4OKA2YXyxylxudphVxHiMvhbp2zG49RtUHH85t9gesmFftKhuQ08u5IKqUgfXNmwV3jCWHrd-slGO8VflYiiJ2-5_mLeyJ_Q"/>
+<div>
+<p class="font-bold text-[#015959]">Fitriani Taufiq</p>
+<p class="text-[10px] text-slate-400 font-medium">Joined 18 Oct 2023</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 font-medium">fitri.taufiq@gmail.com</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-teal-50 text-[#015959] text-[10px] font-black rounded-full uppercase">Curator</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1.5 text-[#29B3B6] font-bold text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#29B3B6]"></span>
+                                Verified
+                            </span>
+</td>
+<td class="px-6 py-4 text-right rounded-r-xl">
+<div class="flex justify-end gap-3">
+<button class="text-[#29B3B6] hover:bg-teal-50 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span></button>
+<button class="text-slate-400 hover:text-teal-600 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="edit">edit</span></button>
+<button class="text-slate-400 hover:text-red-500 p-1.5 rounded transition-colors"><span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Analytical Style) -->
+<div class="mt-12 flex justify-between items-center border-t border-teal-50 pt-8">
+<div class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                Page 01 <span class="mx-2 text-slate-200">/</span> 128
+            </div>
+<div class="flex gap-4">
+<button class="p-2 border border-teal-50 rounded-full text-slate-400 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-2 border border-teal-50 rounded-full text-[#015959] hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Floating Action Background Pattern (Visual Texture only, as requested no lines) -->
+<div class="fixed bottom-0 right-0 w-64 h-64 pointer-events-none opacity-5">
+<svg class="w-full h-full text-[#015959] fill-current" viewbox="0 0 100 100">
+<path d="M10,10 L90,10 L90,90 L10,90 Z" fill="none" stroke="currentColor" stroke-dasharray="2 2" stroke-width="0.5"></path>
+</svg>
+</div>
+</body></html>

@@ -1,26 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { Activity, Eye, Loader2, Search, Shield, UserCheck, Users } from "lucide-react";
 import {
-    Search,
-    UserCheck,
-    UserX,
-    Shield,
-    Loader2,
-    AlertCircle,
-    Ban,
-    CheckCircle,
-    Eye,
-    Download,
-    ChevronDown,
-    ChevronUp,
-} from "lucide-react";
-import { AdminHeader } from "@/components/admin/AdminHeader";
-import { useToast } from "@/components/ui/toast-provider";
-import { LineChart, Line, PieChart, Pie, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+    AdminDataTable,
+    AdminFilterBar,
+    AdminMetricCard,
+    AdminNotice,
+    AdminStatusBadge,
+    AdminWorkspacePage,
+} from "@/components/admin/admin-workspace";
 
 interface OrganizerProfile {
     organizationName: string | null;
@@ -61,35 +52,15 @@ interface StatsData {
     activeLastMonth: number;
 }
 
-interface ChartDataPoint {
-    name: string;
-    value: number;
-}
-
-interface GrowthDataPoint {
-    date: string;
-    count: number;
-}
-
-interface ChartsData {
-    roleDistribution: ChartDataPoint[];
-    verificationStatus: ChartDataPoint[];
-    userGrowth: GrowthDataPoint[];
-    genderDistribution: ChartDataPoint[];
-    ageDistribution: ChartDataPoint[];
-    topCities: ChartDataPoint[];
-}
-
-const ROLE_COLORS: Record<string, string> = {
-    CUSTOMER: "bg-[var(--bg-secondary)] text-[var(--text-primary)]",
-    ORGANIZER: "bg-purple-500/10 text-purple-500",
-    ADMIN: "bg-red-500/10 text-red-500",
-    SUPER_ADMIN: "bg-red-500/10 text-red-500",
+const roleTone: Record<string, "default" | "success" | "warning" | "danger" | "accent"> = {
+    CUSTOMER: "default",
+    ORGANIZER: "accent",
+    ADMIN: "warning",
+    SUPER_ADMIN: "danger",
 };
 
 export default function AdminUsersPage() {
     const router = useRouter();
-    const { showToast } = useToast();
     const [users, setUsers] = useState<AdminUser[]>([]);
     const [pagination, setPagination] = useState<PaginationMeta | null>(null);
     const [stats, setStats] = useState<StatsData>({
@@ -99,55 +70,25 @@ export default function AdminUsersPage() {
         admins: 0,
         activeLastMonth: 0,
     });
-    const [charts, setCharts] = useState<ChartsData>({
-        roleDistribution: [],
-        verificationStatus: [],
-        userGrowth: [],
-        genderDistribution: [],
-        ageDistribution: [],
-        topCities: [],
-    });
-    const [showAnalytics, setShowAnalytics] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    
-    const [roleFilter, setRoleFilter] = useState<string>("");
-    const [verificationFilter, setVerificationFilter] = useState<string>("");
-    const [statusFilter, setStatusFilter] = useState<string>("");
+    const [roleFilter, setRoleFilter] = useState("");
+    const [verificationFilter, setVerificationFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
     const [search, setSearch] = useState("");
-    const [dateFrom, setDateFrom] = useState<string>("");
-    const [dateTo, setDateTo] = useState<string>("");
-    const [activityFilter, setActivityFilter] = useState<string>("");
-    
-    const [sortBy, setSortBy] = useState<string>("createdAt");
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-    
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-    
-    const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
-    const [isBulkActionLoading, setIsBulkActionLoading] = useState(false);
-    
-    const [actionLoading, setActionLoading] = useState<string | null>(null);
 
     const fetchUsers = useCallback(async () => {
         try {
             setIsLoading(true);
-            
+            setError(null);
             const params = new URLSearchParams();
-            params.set('page', currentPage.toString());
-            params.set('limit', itemsPerPage.toString());
-            
-            if (roleFilter) params.set('role', roleFilter);
-            if (verificationFilter) params.set('verification', verificationFilter);
-            if (statusFilter) params.set('status', statusFilter);
-            if (search) params.set('search', search);
-            if (dateFrom) params.set('dateFrom', dateFrom);
-            if (dateTo) params.set('dateTo', dateTo);
-            if (activityFilter) params.set('activity', activityFilter);
-            if (sortBy) params.set('sortBy', sortBy);
-            if (sortOrder) params.set('sortOrder', sortOrder);
-            
+            if (roleFilter) params.set("role", roleFilter);
+            if (verificationFilter) params.set("verification", verificationFilter);
+            if (statusFilter) params.set("status", statusFilter);
+            if (search) params.set("search", search);
+            params.set("page", "1");
+            params.set("limit", "20");
+
             const res = await fetch(`/api/admin/users?${params.toString()}`);
             const data = await res.json();
 
@@ -168,917 +109,123 @@ export default function AdminUsersPage() {
                 setUsers(data.data.users);
                 setPagination(data.data.pagination);
                 setStats(data.data.stats);
-                if (data.data.charts) {
-                    setCharts(data.data.charts);
-                }
             }
         } catch {
             setError("Failed to load users");
         } finally {
             setIsLoading(false);
         }
-    }, [router, currentPage, itemsPerPage, roleFilter, verificationFilter, statusFilter, search, dateFrom, dateTo, activityFilter, sortBy, sortOrder]);
+    }, [roleFilter, router, search, statusFilter, verificationFilter]);
 
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
 
-    const resetFilters = () => {
-        setRoleFilter("");
-        setVerificationFilter("");
-        setStatusFilter("");
-        setSearch("");
-        setDateFrom("");
-        setDateTo("");
-        setActivityFilter("");
-        setCurrentPage(1);
-    };
-    
-    const hasActiveFilters = !!(
-        roleFilter || 
-        verificationFilter || 
-        statusFilter || 
-        search || 
-        dateFrom || 
-        dateTo || 
-        activityFilter
-    );
-
-    const handleSort = (column: string) => {
-        if (sortBy === column) {
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortBy(column);
-            setSortOrder('desc');
-        }
-        setCurrentPage(1);
-    };
-    
-    const getSortIcon = (column: string) => {
-        if (sortBy !== column) {
-            return <span className="text-[var(--text-muted)]">⇅</span>;
-        }
-        return sortOrder === 'asc' ? <span className="text-[var(--accent-primary)]">↑</span> : <span className="text-[var(--accent-primary)]">↓</span>;
-    };
-
-    const handleVerify = async (userId: string, verify: boolean) => {
-        try {
-            setActionLoading(userId);
-            const res = await fetch(`/api/admin/users/${userId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ isVerified: verify }),
-            });
-
-            const data = await res.json();
-
-            if (!data.success) {
-                showToast(data.error?.message || "Failed to update user", "error");
-                return;
-            }
-
-            setUsers((prev) =>
-                prev.map((u) =>
-                    u.id === userId ? { ...u, isVerified: verify } : u
-                )
-            );
-            showToast("User updated", "success");
-        } catch {
-            showToast("Failed to update user", "error");
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
-    const handleSuspend = async (userId: string, suspend: boolean) => {
-        try {
-            setActionLoading(userId);
-            const res = await fetch(`/api/admin/users/${userId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: suspend ? "suspended" : "active" }),
-            });
-
-            const data = await res.json();
-
-            if (!data.success) {
-                showToast(data.error?.message || "Failed to update user", "error");
-                return;
-            }
-
-            setUsers((prev) =>
-                prev.map((u) =>
-                    u.id === userId
-                        ? { ...u, deletedAt: suspend ? new Date().toISOString() : null }
-                        : u
-                )
-            );
-            showToast("User updated", "success");
-        } catch {
-            showToast("Failed to update user", "error");
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
-    const handleExportCSV = async () => {
-        try {
-            const params = new URLSearchParams();
-            if (roleFilter) params.set('role', roleFilter);
-            if (verificationFilter) params.set('verification', verificationFilter);
-            if (statusFilter) params.set('status', statusFilter);
-            if (search) params.set('search', search);
-            if (dateFrom) params.set('dateFrom', dateFrom);
-            if (dateTo) params.set('dateTo', dateTo);
-            if (activityFilter) params.set('activity', activityFilter);
-            if (sortBy) params.set('sortBy', sortBy);
-            if (sortOrder) params.set('sortOrder', sortOrder);
-            
-            params.set('limit', '10000');
-            
-            const res = await fetch(`/api/admin/users?${params.toString()}`);
-            const data = await res.json();
-            
-            if (!data.success || !data.data.users) {
-                showToast("Failed to export users", "error");
-                return;
-            }
-            
-            const csvRows = [];
-            csvRows.push(['ID', 'Name', 'Email', 'Phone', 'Role', 'Verified', 'Status', 'Bookings', 'Events', 'Joined', 'Organization'].join(','));
-            
-            data.data.users.forEach((user: AdminUser) => {
-                const row = [
-                    user.id,
-                    `"${user.name.replace(/"/g, '""')}"`,
-                    user.email,
-                    user.phone || '',
-                    user.role,
-                    user.isVerified ? 'Yes' : 'No',
-                    user.deletedAt ? 'Suspended' : 'Active',
-                    user._count.bookings,
-                    user._count.events,
-                    new Date(user.createdAt).toLocaleDateString('id-ID'),
-                    user.organizerProfile?.organizationName ? `"${user.organizerProfile.organizationName.replace(/"/g, '""')}"` : '',
-                ];
-                csvRows.push(row.join(','));
-            });
-            
-            const csvContent = csvRows.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            const timestamp = new Date().toISOString().split('T')[0];
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', `users-export-${timestamp}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast(`Exported ${data.data.users.length} users`, "success");
-        } catch {
-            showToast("Failed to export users", "error");
-        }
-    };
-
-    const toggleSelectAll = () => {
-        if (selectedUsers.size === users.length) {
-            setSelectedUsers(new Set());
-        } else {
-            setSelectedUsers(new Set(users.map(u => u.id)));
-        }
-    };
-
-    const toggleSelectUser = (userId: string) => {
-        const newSelected = new Set(selectedUsers);
-        if (newSelected.has(userId)) {
-            newSelected.delete(userId);
-        } else {
-            newSelected.add(userId);
-        }
-        setSelectedUsers(newSelected);
-    };
-
-    const handleBulkAction = async (action: 'verify' | 'suspend' | 'activate') => {
-        if (selectedUsers.size === 0) {
-            showToast("No users selected", "error");
-            return;
-        }
-
-        const confirmMessage = 
-            action === 'verify' ? `Verify ${selectedUsers.size} selected users?` :
-            action === 'suspend' ? `Suspend ${selectedUsers.size} selected users?` :
-            `Activate ${selectedUsers.size} selected users?`;
-
-        if (!confirm(confirmMessage)) return;
-
-        try {
-            setIsBulkActionLoading(true);
-            const userIds = Array.from(selectedUsers);
-            
-            const promises = userIds.map(userId => {
-                const body = 
-                    action === 'verify' ? { isVerified: true } :
-                    action === 'suspend' ? { status: 'suspended' } :
-                    { status: 'active' };
-
-                return fetch(`/api/admin/users/${userId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body),
-                });
-            });
-
-            const results = await Promise.allSettled(promises);
-            const successCount = results.filter(r => r.status === 'fulfilled').length;
-            const failCount = results.length - successCount;
-
-            if (successCount > 0) {
-                await fetchUsers();
-                setSelectedUsers(new Set());
-                showToast(`${successCount} users updated${failCount > 0 ? `, ${failCount} failed` : ''}`, "success");
-            } else {
-                showToast("Failed to update users", "error");
-            }
-        } catch {
-            showToast("Failed to perform bulk action", "error");
-        } finally {
-            setIsBulkActionLoading(false);
-        }
-    };
-
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Loading users...</p>
-                </div>
+            <div className="flex min-h-[60vh] items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
-                    <Link href="/admin" className="text-[var(--accent-primary)] hover:opacity-80">
-                        Back to Dashboard
-                    </Link>
-                </div>
-            </div>
+            <AdminWorkspacePage eyebrow="Admin users" title="Identity and access" description="Review customer, organizer, and admin accounts from a single management table.">
+                <AdminNotice tone="warning" title="User data is unavailable" description={error} actionHref="/admin" actionLabel="Back to dashboard" />
+            </AdminWorkspacePage>
         );
     }
 
-    const PaginationControls = () => {
-        if (!pagination) return null;
-        
-        const { page, totalPages, hasNext, hasPrev, total } = pagination;
-        const startItem = (page - 1) * itemsPerPage + 1;
-        const endItem = Math.min(page * itemsPerPage, total);
-        
-        return (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] border border-[var(--border)]">
-                <div className="flex items-center gap-4">
-                    <p className="text-sm text-[var(--text-secondary)]">
-                        Showing <span className="font-medium">{startItem}</span> to{" "}
-                        <span className="font-medium">{endItem}</span> of{" "}
-                        <span className="font-medium">{total}</span> users
-                    </p>
-                    
-                    <select
-                        value={itemsPerPage}
-                        onChange={(e) => {
-                            setItemsPerPage(Number(e.target.value));
-                            setCurrentPage(1);
-                        }}
-                        className="px-3 py-1 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                    >
-                        <option value={10}>10 per page</option>
-                        <option value={20}>20 per page</option>
-                        <option value={50}>50 per page</option>
-                        <option value={100}>100 per page</option>
-                    </select>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={() => setCurrentPage(1)}
-                        disabled={!hasPrev}
-                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        First
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setCurrentPage(page - 1)}
-                        disabled={!hasPrev}
-                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Previous
-                    </button>
-                    
-                    <div className="flex items-center gap-1">
-                        {Array.from({ length: Math.min(5, totalPages) }, (_: unknown, i: number) => {
-                            let pageNum: number;
-                            if (totalPages <= 5) {
-                                pageNum = i + 1;
-                            } else if (page <= 3) {
-                                pageNum = i + 1;
-                            } else if (page >= totalPages - 2) {
-                                pageNum = totalPages - 4 + i;
-                            } else {
-                                pageNum = page - 2 + i;
-                            }
-                            
-                            return (
-                                <button
-                                    key={pageNum}
-                                    type="button"
-                                    onClick={() => setCurrentPage(pageNum)}
-                                    className={`px-3 py-1 text-sm border border-[var(--border)] rounded-lg ${
-                                        page === pageNum
-                                            ? "bg-[var(--accent-primary)] text-white border-indigo-600"
-                                            : "hover:bg-[var(--surface-hover)]"
-                                    }`}
-                                >
-                                    {pageNum}
-                                </button>
-                            );
-                        })}
-                    </div>
-                    
-                    <button
-                        type="button"
-                        onClick={() => setCurrentPage(page + 1)}
-                        disabled={!hasNext}
-                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Next
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setCurrentPage(totalPages)}
-                        disabled={!hasNext}
-                        className="px-3 py-1 text-sm border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Last
-                    </button>
-                </div>
-            </div>
-        );
-    };
-
     return (
-        <>
-            <AdminHeader 
-                title="User Management" 
-                backHref="/admin"
+        <AdminWorkspacePage eyebrow="Admin users" title="Identity and access" description="Review customer, organizer, and admin accounts from a single management table.">
+            <AdminNotice
+                tone="info"
+                title="Account health overview"
+                description={`${stats.activeLastMonth.toLocaleString("en-US")} users have logged in during the last 30 days, giving admins a quick view of active platform reach.`}
+                actionHref="/admin/settings"
+                actionLabel="Platform settings"
             />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</p>
-                        <p className="text-sm text-[var(--text-muted)]">Total Users</p>
-                    </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.customers}</p>
-                        <p className="text-sm text-[var(--text-muted)]">Customers</p>
-                    </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-purple-600">{stats.organizers}</p>
-                        <p className="text-sm text-[var(--text-muted)]">Organizers</p>
-                    </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-red-600">{stats.admins}</p>
-                        <p className="text-sm text-[var(--text-muted)]">Admins</p>
-                    </div>
-                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                        <p className="text-2xl font-bold text-green-600">{stats.activeLastMonth}</p>
-                        <p className="text-sm text-[var(--text-muted)]">Active (30d)</p>
-                    </div>
-                </div>
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <AdminMetricCard label="All users" value={stats.total.toLocaleString("en-US")} icon={Users} meta={`${stats.customers} customers`} />
+                <AdminMetricCard label="Organizers" value={stats.organizers.toLocaleString("en-US")} icon={Activity} tone="accent" meta="Workspace-enabled seller accounts" />
+                <AdminMetricCard label="Admins" value={stats.admins.toLocaleString("en-US")} icon={Shield} tone="warning" meta="Platform governance roles" />
+                <AdminMetricCard label="Active in 30 days" value={stats.activeLastMonth.toLocaleString("en-US")} icon={UserCheck} tone="success" meta="Users with a recent login signal" />
+            </section>
 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm mb-6 overflow-hidden">
-                    <button
-                        type="button"
-                        onClick={() => setShowAnalytics(!showAnalytics)}
-                        className="w-full px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-colors"
-                    >
-                        <h2 className="text-lg font-semibold text-[var(--text-primary)]">User Analytics</h2>
-                        {showAnalytics ? (
-                            <ChevronUp className="h-5 w-5 text-[var(--text-muted)]" />
-                        ) : (
-                            <ChevronDown className="h-5 w-5 text-[var(--text-muted)]" />
-                        )}
-                    </button>
-                    
-                    {showAnalytics && (
-                        <div className="p-6 border-t border-[var(--border)] bg-[var(--surface-hover)]">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Role Distribution</h3>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <PieChart>
-                                            <Pie
-                                                data={charts.roleDistribution as never[]}
-                                                cx="50%"
-                                                cy="50%"
-                                                labelLine={false}
-                                                label
-                                                outerRadius={80}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                            >
-                                                {charts.roleDistribution.map((_, index) => {
-                                                    const colors = ['#6366f1', '#a855f7', '#ef4444'];
-                                                    return <Cell key={`role-${index}`} fill={colors[index % colors.length]} />;
-                                                })}
-                                            </Pie>
-                                            <Tooltip />
-                                            <Legend />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                </div>
+            <AdminFilterBar>
+                <label className="relative block min-w-[16rem] flex-1">
+                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                    <input
+                        type="search"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Search by name or email"
+                        className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) py-3 pl-11 pr-4 text-sm text-foreground outline-none"
+                    />
+                </label>
+                <select value={roleFilter} onChange={(event) => setRoleFilter(event.target.value)} className="rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm">
+                    <option value="">All roles</option>
+                    <option value="CUSTOMER">Customer</option>
+                    <option value="ORGANIZER">Organizer</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="SUPER_ADMIN">Super admin</option>
+                </select>
+                <select value={verificationFilter} onChange={(event) => setVerificationFilter(event.target.value)} className="rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm">
+                    <option value="">All verification states</option>
+                    <option value="verified">Verified</option>
+                    <option value="unverified">Unverified</option>
+                </select>
+                <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm">
+                    <option value="">All account states</option>
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </AdminFilterBar>
 
-                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Verification Status</h3>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <PieChart>
-                                            <Pie
-                                                data={charts.verificationStatus as never[]}
-                                                cx="50%"
-                                                cy="50%"
-                                                labelLine={false}
-                                                label
-                                                outerRadius={80}
-                                                innerRadius={50}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                            >
-                                                {charts.verificationStatus.map((_, index) => {
-                                                    const colors = ['#10b981', '#f59e0b'];
-                                                    return <Cell key={`verification-${index}`} fill={colors[index % colors.length]} />;
-                                                })}
-                                            </Pie>
-                                            <Tooltip />
-                                            <Legend />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
+            <AdminDataTable
+                columns={["User", "Role", "Verification", "Activity", "State", "Created", "Action"]}
+                hasRows={users.length > 0}
+                emptyTitle="No users match the current filters"
+                emptyDescription="Adjust the role, verification, or account state filters to broaden the result set."
+            >
+                {users.map((user) => (
+                    <tr key={user.id} className="transition-colors hover:bg-(--surface-elevated)">
+                        <td className="px-5 py-4 align-top">
+                            <p className="text-sm font-semibold text-foreground">{user.name}</p>
+                            <p className="mt-1 text-xs text-(--text-secondary)">{user.email}</p>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <AdminStatusBadge label={user.role.replace("_", " ")} tone={roleTone[user.role] || "default"} />
+                            {user.organizerProfile?.organizationName ? (
+                                <p className="mt-2 text-xs text-(--text-secondary)">{user.organizerProfile.organizationName}</p>
+                            ) : null}
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <AdminStatusBadge label={user.isVerified ? "Verified" : "Unverified"} tone={user.isVerified ? "success" : "warning"} />
+                        </td>
+                        <td className="px-5 py-4 align-top text-sm text-(--text-secondary)">
+                            <p>{user._count.bookings.toLocaleString("en-US")} bookings</p>
+                            <p className="mt-1">{user._count.events.toLocaleString("en-US")} events</p>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <AdminStatusBadge label={user.deletedAt ? "Suspended" : "Active"} tone={user.deletedAt ? "danger" : "success"} />
+                        </td>
+                        <td className="px-5 py-4 align-top text-sm text-(--text-secondary)">
+                            {new Date(user.createdAt).toLocaleDateString("id-ID")}
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <Link href={`/admin/users/${user.id}`} className="inline-flex items-center gap-2 rounded-full border border-(--border) px-3 py-2 text-sm font-semibold text-foreground hover:text-(--accent-primary)">
+                                <Eye className="h-4 w-4" />
+                                View
+                            </Link>
+                        </td>
+                    </tr>
+                ))}
+            </AdminDataTable>
 
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
-                                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">User Growth (Last 30 Days)</h3>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <LineChart data={charts.userGrowth}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                                        <XAxis 
-                                            dataKey="date" 
-                                            tick={{ fontSize: 12 }}
-                                            tickFormatter={(value) => {
-                                                const date = new Date(value);
-                                                return `${date.getMonth() + 1}/${date.getDate()}`;
-                                            }}
-                                        />
-                                        <YAxis tick={{ fontSize: 12 }} />
-                                        <Tooltip 
-                                            labelFormatter={(value) => {
-                                                const date = new Date(value);
-                                                return date.toLocaleDateString('id-ID');
-                                            }}
-                                        />
-                                        <Legend />
-                                        <Line 
-                                            type="monotone" 
-                                            dataKey="count" 
-                                            stroke="#6366f1" 
-                                            strokeWidth={2}
-                                            name="New Users"
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Gender Distribution</h3>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <PieChart>
-                                            <Pie
-                                                data={charts.genderDistribution as never[]}
-                                                cx="50%"
-                                                cy="50%"
-                                                labelLine={false}
-                                                label
-                                                outerRadius={80}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                            >
-                                                {charts.genderDistribution.map((_: ChartDataPoint, index: number) => {
-                                                    const colors = ['#3b82f6', '#ec4899', '#8b5cf6', '#6b7280'];
-                                                    return <Cell key={`gender-${index}`} fill={colors[index % colors.length]} />;
-                                                })}
-                                            </Pie>
-                                            <Tooltip />
-                                            <Legend />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                </div>
-
-                                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm">
-                                    <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Age Distribution</h3>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <BarChart data={charts.ageDistribution}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                                            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                                            <YAxis tick={{ fontSize: 12 }} />
-                                            <Tooltip />
-                                            <Legend />
-                                            <Bar dataKey="value" fill="#6366f1" name="Users" />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
-
-                            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-4 shadow-sm mt-6">
-                                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4">Top 10 Cities</h3>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={charts.topCities} layout="vertical">
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                                        <XAxis type="number" tick={{ fontSize: 12 }} />
-                                        <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={100} />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Bar dataKey="value" fill="#10b981" name="Users" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <div className="flex justify-between items-center mb-4">
-                    {selectedUsers.size > 0 ? (
-                        <div className="flex items-center gap-3">
-                            <span className="text-sm text-[var(--text-secondary)]">
-                                {selectedUsers.size} user{selectedUsers.size > 1 ? 's' : ''} selected
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => handleBulkAction('verify')}
-                                disabled={isBulkActionLoading}
-                                className="px-3 py-1.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-                            >
-                                Verify Selected
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleBulkAction('suspend')}
-                                disabled={isBulkActionLoading}
-                                className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
-                            >
-                                Suspend Selected
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleBulkAction('activate')}
-                                disabled={isBulkActionLoading}
-                                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                            >
-                                Activate Selected
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSelectedUsers(new Set())}
-                                className="px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] rounded-lg"
-                            >
-                                Clear Selection
-                            </button>
-                        </div>
-                    ) : (
-                        <div />
-                    )}
-                    <button
-                        type="button"
-                        onClick={handleExportCSV}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 transition-colors"
-                    >
-                        <Download className="h-4 w-4" />
-                        Export to CSV
-                    </button>
-                </div>
-
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 mb-6">
-                    <div className="flex flex-wrap gap-4 mb-4">
-                        <div className="flex-1 min-w-[200px] relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
-                            <input
-                                type="text"
-                                placeholder="Search by name or email..."
-                                value={search}
-                                onChange={(e) => {
-                                    setSearch(e.target.value);
-                                    setCurrentPage(1);
-                                }}
-                                className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                            />
-                        </div>
-                        
-                        <select
-                            value={roleFilter}
-                            onChange={(e) => {
-                                setRoleFilter(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                        >
-                            <option value="">All Roles</option>
-                            <option value="CUSTOMER">Customer</option>
-                            <option value="ORGANIZER">Organizer</option>
-                            <option value="ADMIN">Admin</option>
-                        </select>
-                        
-                        <select
-                            value={verificationFilter}
-                            onChange={(e) => {
-                                setVerificationFilter(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                        >
-                            <option value="">All Verification</option>
-                            <option value="verified">Verified</option>
-                            <option value="unverified">Unverified</option>
-                        </select>
-                        
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => {
-                                setStatusFilter(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                        >
-                            <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="suspended">Suspended</option>
-                        </select>
-                        
-                        <select
-                            value={activityFilter}
-                            onChange={(e) => {
-                                setActivityFilter(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                            className="px-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                        >
-                            <option value="">All Activity</option>
-                            <option value="hasBookings">Has Bookings</option>
-                            <option value="hasEvents">Has Events</option>
-                            <option value="noActivity">No Activity</option>
-                        </select>
-                        
-                        {hasActiveFilters && (
-                            <button
-                                type="button"
-                                onClick={resetFilters}
-                                className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] rounded-lg hover:bg-[var(--surface-hover)]"
-                            >
-                                Clear Filters
-                            </button>
-                        )}
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-4">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-[var(--text-secondary)]">Joined:</span>
-                            <input
-                                type="date"
-                                value={dateFrom}
-                                onChange={(e) => {
-                                    setDateFrom(e.target.value);
-                                    setCurrentPage(1);
-                                }}
-                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                            />
-                            <span className="text-[var(--text-muted)]">to</span>
-                            <input
-                                type="date"
-                                value={dateTo}
-                                onChange={(e) => {
-                                    setDateTo(e.target.value);
-                                    setCurrentPage(1);
-                                }}
-                                className="px-3 py-2 border border-[var(--border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
-                            <tr>
-                                <th className="px-6 py-3">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedUsers.size === users.length && users.length > 0}
-                                        onChange={toggleSelectAll}
-                                        className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]"
-                                    />
-                                </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
-                                    onClick={() => handleSort('name')}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        User
-                                        {getSortIcon('name')}
-                                    </div>
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Role
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Status
-                                </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
-                                    onClick={() => handleSort('bookings')}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        Activity
-                                        {getSortIcon('bookings')}
-                                    </div>
-                                </th>
-                                <th 
-                                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase cursor-pointer hover:bg-[var(--bg-secondary)]"
-                                    onClick={() => handleSort('createdAt')}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        Joined
-                                        {getSortIcon('createdAt')}
-                                    </div>
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {users.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)]">
-                                        No users found
-                                    </td>
-                                </tr>
-                            ) : (
-                                users.map((u) => (
-                                    <tr
-                                        key={u.id}
-                                        className={`hover:bg-[var(--surface-hover)] ${u.deletedAt ? "opacity-50" : ""}`}
-                                    >
-                                        <td className="px-6 py-4">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedUsers.has(u.id)}
-                                                onChange={() => toggleSelectUser(u.id)}
-                                                disabled={u.role === 'SUPER_ADMIN'}
-                                                className="h-4 w-4 rounded border-[var(--border)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] disabled:opacity-50"
-                                            />
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-[var(--border)] rounded-full flex items-center justify-center overflow-hidden">
-                                                    {u.avatarUrl ? (
-                                                        <Image
-                                                            src={u.avatarUrl}
-                                                            alt=""
-                                                            width={40}
-                                                            height={40}
-                                                            className="rounded-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <span className="text-[var(--text-muted)] font-medium">
-                                                            {u.name?.charAt(0).toUpperCase() || "?"}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-[var(--text-primary)]">{u.name}</p>
-                                                    <p className="text-sm text-[var(--text-muted)]">{u.email}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span
-                                                className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${ROLE_COLORS[u.role]}`}
-                                            >
-                                                {u.role === "SUPER_ADMIN" && <Shield className="h-3 w-3" />}
-                                                {u.role}
-                                            </span>
-                                            {u.organizerProfile && (
-                                                <p className="text-xs text-[var(--text-muted)] mt-1">
-                                                    {u.organizerProfile.organizationName}
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {u.deletedAt ? (
-                                                <span className="inline-flex items-center gap-1 text-red-600 text-sm">
-                                                    <Ban className="h-4 w-4" />
-                                                    Suspended
-                                                </span>
-                                            ) : u.isVerified ? (
-                                                <span className="inline-flex items-center gap-1 text-green-600 text-sm">
-                                                    <UserCheck className="h-4 w-4" />
-                                                    Verified
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center gap-1 text-[var(--text-muted)] text-sm">
-                                                    <UserX className="h-4 w-4" />
-                                                    Unverified
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
-                                            <div>
-                                                {u._count.bookings} bookings
-                                            </div>
-                                            {u.role === "ORGANIZER" && (
-                                                <div>{u._count.events} events</div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
-                                            {new Date(u.createdAt).toLocaleDateString("id-ID")}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-1">
-                                                <Link
-                                                    href={`/admin/users/${u.id}`}
-                                                    className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] rounded-lg hover:bg-[var(--accent-primary)]/10"
-                                                    title="View Details"
-                                                >
-                                                    <Eye className="h-4 w-4" />
-                                                </Link>
-                                                {u.role !== "SUPER_ADMIN" && (
-                                                    <>
-                                                        {!u.isVerified && !u.deletedAt && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleVerify(u.id, true)}
-                                                                disabled={actionLoading === u.id}
-                                                                className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-500/10 disabled:opacity-50"
-                                                                title="Verify User"
-                                                            >
-                                                                {actionLoading === u.id ? (
-                                                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                                                ) : (
-                                                                    <CheckCircle className="h-4 w-4" />
-                                                                )}
-                                                            </button>
-                                                        )}
-                                                        {!u.deletedAt ? (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleSuspend(u.id, true)}
-                                                                disabled={actionLoading === u.id}
-                                                                className="p-2 text-red-500 hover:text-red-700 rounded-lg hover:bg-red-500/10 disabled:opacity-50"
-                                                                title="Suspend User"
-                                                            >
-                                                                <Ban className="h-4 w-4" />
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleSuspend(u.id, false)}
-                                                                disabled={actionLoading === u.id}
-                                                                className="p-2 text-green-500 hover:text-green-700 rounded-lg hover:bg-green-500/10 disabled:opacity-50"
-                                                                title="Reactivate User"
-                                                            >
-                                                                <CheckCircle className="h-4 w-4" />
-                                                            </button>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                    
-                    <PaginationControls />
-                </div>
-            </main>
-        </>
+            {pagination ? <div className="text-sm text-(--text-secondary)">Showing {users.length} of {pagination.total.toLocaleString("en-US")} users.</div> : null}
+        </AdminWorkspacePage>
     );
 }

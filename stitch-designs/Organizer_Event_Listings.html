@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Curator - Event Listings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error-container": "#93000a",
+              "on-primary": "#ffffff",
+              "on-background": "#002020",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#ffdbce",
+              "surface-container-high": "#aff5f4",
+              "on-primary-fixed-variant": "#7f2b00",
+              "error": "#ba1a1a",
+              "surface-bright": "#e2fffe",
+              "outline": "#6f7978",
+              "on-primary-container": "#ffae8e",
+              "secondary": "#1e6868",
+              "on-tertiary-fixed": "#251a00",
+              "tertiary-fixed": "#ffdf9a",
+              "on-secondary-fixed-variant": "#004f50",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-tertiary-container": "#f1b803",
+              "primary": "#672200",
+              "on-surface": "#002020",
+              "on-secondary-fixed": "#002020",
+              "inverse-surface": "#003737",
+              "on-tertiary": "#ffffff",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-container": "#b5faf9",
+              "primary-container": "#8d3100",
+              "surface-variant": "#aaefee",
+              "surface-container-highest": "#aaefee",
+              "secondary-container": "#a7eceb",
+              "on-surface-variant": "#3f4948",
+              "outline-variant": "#bec8c8",
+              "inverse-primary": "#ffb598",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#a1e6e5",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#e2fffe",
+              "surface-container-low": "#c1fffe",
+              "on-error": "#ffffff",
+              "primary-fixed-dim": "#ffb598",
+              "tertiary": "#483500",
+              "secondary-fixed-dim": "#8ed2d2",
+              "secondary-fixed": "#aaefee",
+              "on-primary-fixed": "#370e00",
+              "tertiary-fixed-dim": "#f7be11",
+              "on-secondary-container": "#246d6d",
+              "tertiary-container": "#654b00",
+              "surface-tint": "#a63b00",
+              "background": "#e2fffe"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+        .ticket-stub-shape {
+            mask-image: radial-gradient(circle at 0 50%, transparent 12px, black 13px), radial-gradient(circle at 100% 50%, transparent 12px, black 13px);
+            mask-composite: intersect;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar (from Shared Components JSON) -->
+<aside class="fixed left-0 top-0 h-screen flex flex-col py-8 h-full w-64 border-r-0 bg-[#e2fffe] dark:bg-slate-900 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-2xl font-bold text-[#015959] dark:text-[#c1fffe] font-['Noto_Serif'] tracking-tight">Gelaran Curator</h1>
+<p class="text-xs text-[#002020]/60 dark:text-slate-400 font-medium">Surakarta Heritage</p>
+</div>
+<nav class="flex-1 space-y-1 pr-4">
+<!-- Dashboard -->
+<a class="flex items-center space-x-3 text-[#002020] dark:text-slate-400 py-3 px-6 hover:bg-[#c1fffe] dark:hover:bg-slate-800 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Noto_Serif'] font-semibold tracking-tight">Dashboard</span>
+</a>
+<!-- Event Listings (ACTIVE) -->
+<a class="flex items-center space-x-3 bg-[#aaefee] dark:bg-slate-700 text-[#015959] dark:text-white rounded-r-full py-3 px-6 font-bold hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_note" style="font-variation-settings: 'FILL' 1;">event_note</span>
+<span class="font-['Noto_Serif'] font-semibold tracking-tight">Event Listings</span>
+</a>
+<!-- Ticket Management -->
+<a class="flex items-center space-x-3 text-[#002020] dark:text-slate-400 py-3 px-6 hover:bg-[#c1fffe] dark:hover:bg-slate-800 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-['Noto_Serif'] font-semibold tracking-tight">Ticket Management</span>
+</a>
+<!-- Cultural Analytics -->
+<a class="flex items-center space-x-3 text-[#002020] dark:text-slate-400 py-3 px-6 hover:bg-[#c1fffe] dark:hover:bg-slate-800 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Noto_Serif'] font-semibold tracking-tight">Cultural Analytics</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center space-x-3 text-[#002020] dark:text-slate-400 py-3 px-6 hover:bg-[#c1fffe] dark:hover:bg-slate-800 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Noto_Serif'] font-semibold tracking-tight">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-[#F95D00] text-white py-4 rounded-xl font-bold text-sm shadow-lg hover:bg-[#8d3100] transition-all flex items-center justify-center space-x-2 active:scale-95">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span>Create New Event</span>
+</button>
+<div class="mt-8 flex items-center space-x-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a professional Indonesian male cultural event organizer in formal attire with a warm confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0AoaGLYkbw_Knd7yDU0LfCIwHqL1nDFRpgqD2SPGvebi6VPuo_kD_73PfAheJJwYOhmBlZjiOrvnZbwi95cszxV9ww48ZijoCvAfUoqz-jDrr-_pe2lONW3KCZep8zbXzks0Bm9hL73vQUWknbvWtqBmVoU-kDfxxXIqQY2XRfNdRxlkNW9JMzHejlzC-N8Qa9RfEcPHzVFEYS_PDbt3bJIFDB6U1hj_JguObeQCAF-IhGCrbVyNb3YKPUJFyO4cizXAhzfU_-jE"/>
+<div>
+<p class="text-sm font-bold text-[#015959]">Aditya Solo</p>
+<p class="text-xs text-[#002020]/60">Lead Curator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen bg-white">
+<!-- TopNavBar (from Shared Components JSON) -->
+<header class="w-full h-16 sticky top-0 z-40 bg-[#e2fffe]/80 backdrop-blur-xl flex justify-between items-center px-8 border-b-0">
+<div class="flex items-center space-x-8">
+<span class="font-['Noto_Serif'] text-xl font-black text-[#015959]">Gelaran</span>
+<nav class="flex space-x-6">
+<a class="font-['Plus_Jakarta_Sans'] text-sm font-medium text-[#015959] border-b-2 border-[#F95D00] pb-1" href="#">Overview</a>
+<a class="font-['Plus_Jakarta_Sans'] text-sm font-medium text-[#002020]/60 hover:text-[#015959] transition-colors" href="#">Reports</a>
+<a class="font-['Plus_Jakarta_Sans'] text-sm font-medium text-[#002020]/60 hover:text-[#015959] transition-colors" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative group">
+<input class="pl-10 pr-4 py-2 bg-[#ffffff] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1e6868] w-64 transition-all" placeholder="Search events..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2 text-[#015959]/40" data-icon="search">search</span>
+</div>
+<button class="p-2 text-[#015959] hover:bg-[#b5faf9] rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-[#015959] hover:bg-[#b5faf9] rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-12 max-w-7xl mx-auto space-y-12">
+<!-- Page Header -->
+<div class="flex justify-between items-end border-b border-[#bec8c8]/20 pb-8">
+<div>
+<h2 class="font-['Noto_Serif'] text-5xl font-black text-[#015959] -tracking-tight">My Events</h2>
+<p class="text-[#002020]/60 mt-2 font-medium">Managing the heart of Surakarta's cultural pulse.</p>
+</div>
+<button class="bg-[#F95D00] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#8d3100] transition-all flex items-center space-x-3 shadow-[0_8px_30px_rgb(249,93,0,0.2)]">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>Create Event</span>
+</button>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-[#e2fffe] p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 text-[#015959]/5 transform rotate-12 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined !text-9xl" data-icon="payments">payments</span>
+</div>
+<p class="text-sm font-bold text-[#015959]/60 uppercase tracking-widest">Total Revenue</p>
+<h3 class="text-3xl font-black text-[#015959] mt-2 font-['Noto_Serif']">IDR 124.5M</h3>
+<div class="mt-4 flex items-center text-emerald-600 text-sm font-bold">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+<span>12.5% from last month</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-[#aaefee] p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 text-[#015959]/5 transform rotate-12 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined !text-9xl" data-icon="confirmation_number">confirmation_number</span>
+</div>
+<p class="text-sm font-bold text-[#015959]/60 uppercase tracking-widest">Tickets Sold</p>
+<h3 class="text-3xl font-black text-[#015959] mt-2 font-['Noto_Serif']">4,821</h3>
+<p class="mt-4 text-[#015959]/70 text-sm font-medium">85% average capacity filled</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#f7be11]/20 p-8 rounded-2xl border-2 border-transparent hover:border-[#f7be11]/30 transition-all relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 text-[#f7be11]/10 transform rotate-12 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined !text-9xl" data-icon="event_available">event_available</span>
+</div>
+<p class="text-sm font-bold text-[#015959]/60 uppercase tracking-widest">Active Events</p>
+<h3 class="text-3xl font-black text-[#015959] mt-2 font-['Noto_Serif']">12</h3>
+<p class="mt-4 text-[#015959]/70 text-sm font-medium">4 upcoming in the next 7 days</p>
+</div>
+</div>
+<!-- Filter & List Section -->
+<div class="space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex p-1 bg-[#e2fffe] rounded-xl">
+<button class="px-6 py-2 rounded-lg bg-white text-[#015959] font-bold shadow-sm transition-all">All</button>
+<button class="px-6 py-2 rounded-lg text-[#015959]/60 font-bold hover:text-[#015959] transition-all">Active</button>
+<button class="px-6 py-2 rounded-lg text-[#015959]/60 font-bold hover:text-[#015959] transition-all">Past</button>
+<button class="px-6 py-2 rounded-lg text-[#015959]/60 font-bold hover:text-[#015959] transition-all">Draft</button>
+</div>
+<div class="flex items-center space-x-3">
+<button class="flex items-center space-x-2 px-4 py-2 bg-white border border-[#bec8c8]/30 rounded-lg text-sm font-bold text-[#015959] hover:bg-[#e2fffe] transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+<span>Sort By: Newest</span>
+</button>
+<button class="flex items-center space-x-2 px-4 py-2 bg-white border border-[#bec8c8]/30 rounded-lg text-sm font-bold text-[#015959] hover:bg-[#e2fffe] transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+<span>Export Data</span>
+</button>
+</div>
+</div>
+<!-- Events Table-like Card List -->
+<div class="grid grid-cols-1 gap-6">
+<!-- Event Row 1 -->
+<div class="group bg-white rounded-3xl p-4 flex items-center gap-8 hover:bg-[#e2fffe]/30 transition-all border-b border-[#bec8c8]/10 last:border-0">
+<div class="w-48 h-32 rounded-2xl overflow-hidden shrink-0 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="vibrant traditional Javanese dance performance with golden costumes and dramatic theatrical lighting in a heritage palace courtyard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9Te4ROrotmtiID12lcsdqBRF4l5QOL15kqa2O1Abm7uii3SO7VYIcI_PyD8GEamLfxJJU1kK4EZ6lkGnurRBKoRzxBzA28bHCHj4TEfJqVSZqfe6-LO8BO-9CHwWvkvnUn26rbX9vKRu2Yo-lHuzkr5U_ItpZGRj8AAYayO0UxogDGYvmrWt_gssjYg3G5Q8BksVpNynaDuZxc4mjBy-2_zcT3kOeh5RSkmjqkrgLefaHVp-6tJG9E6N4Vm5xM2YzGkCUWI9cYVs"/>
+<div class="absolute top-2 left-2 px-3 py-1 bg-[#1e6868] text-white text-[10px] font-bold uppercase tracking-widest rounded-full">Active</div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-['Noto_Serif'] text-xl font-bold text-[#015959] truncate">Sekaten Night Festival 2024</h4>
+<div class="flex items-center mt-2 space-x-4 text-sm text-[#002020]/60">
+<span class="flex items-center"><span class="material-symbols-outlined text-sm mr-1" data-icon="calendar_today">calendar_today</span> Oct 12 - 15, 2024</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-sm mr-1" data-icon="location_on">location_on</span> Keraton Surakarta</span>
+</div>
+</div>
+<div class="w-48 px-4 border-l border-[#bec8c8]/20">
+<p class="text-xs font-bold text-[#015959]/40 uppercase tracking-tighter">Sales Progress</p>
+<div class="mt-2 w-full bg-[#e2fffe] h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#1e6868] h-full w-[75%] rounded-full"></div>
+</div>
+<p class="mt-2 text-sm font-bold text-[#015959]">450 / 600 <span class="text-[#015959]/50 font-medium">sold</span></p>
+</div>
+<div class="w-40 px-4 border-l border-[#bec8c8]/20">
+<p class="text-xs font-bold text-[#015959]/40 uppercase tracking-tighter">Revenue</p>
+<p class="mt-1 text-lg font-black text-[#015959]">IDR 45.2M</p>
+</div>
+<div class="flex items-center space-x-2">
+<button class="p-3 bg-[#e2fffe] text-[#015959] rounded-xl hover:bg-[#aaefee] transition-all" title="View Analytics">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+</button>
+<button class="p-3 bg-[#ffffff] border border-[#bec8c8]/30 text-[#015959] rounded-xl hover:bg-[#e2fffe] transition-all" title="Edit Event">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-3 bg-[#ffffff] border border-[#bec8c8]/30 text-[#015959] rounded-xl hover:bg-[#e2fffe] transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Event Row 2 -->
+<div class="group bg-white rounded-3xl p-4 flex items-center gap-8 hover:bg-[#e2fffe]/30 transition-all border-b border-[#bec8c8]/10 last:border-0">
+<div class="w-48 h-32 rounded-2xl overflow-hidden shrink-0 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="atmospheric outdoor night concert with warm amber string lights and a traditional wooden joglo pavilion stage background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoEkeAFZtXlIivTYEfa4HAGQouDXUd9XKGlFpsoKzsqAzU4TRd0ujwxFveyj7tT5hslCoILzov7Ayw_DASqQXfTDGaspXNuOiw3F2M5ITkIX4oWaAXVJxw4nA1E30O3v8PVSmLduPwLFdg8NuePYw9-2v981h2sLKkS4Ll8bVP6tj2_Joz9lKWBT6AJGo11Iec3xnVIJG4sFf9dsHuVy7yQANWlykJezx59kzxyL2j0y0GT4dkGI7Q3ro-fqUGrX81KJKAP9duKKA"/>
+<div class="absolute top-2 left-2 px-3 py-1 bg-[#F95D00] text-white text-[10px] font-bold uppercase tracking-widest rounded-full">Sold Out</div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-['Noto_Serif'] text-xl font-bold text-[#015959] truncate">Solo Keroncong Night</h4>
+<div class="flex items-center mt-2 space-x-4 text-sm text-[#002020]/60">
+<span class="flex items-center"><span class="material-symbols-outlined text-sm mr-1" data-icon="calendar_today">calendar_today</span> Sep 28, 2024</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-sm mr-1" data-icon="location_on">location_on</span> Benteng Vastenburg</span>
+</div>
+</div>
+<div class="w-48 px-4 border-l border-[#bec8c8]/20">
+<p class="text-xs font-bold text-[#015959]/40 uppercase tracking-tighter">Sales Progress</p>
+<div class="mt-2 w-full bg-[#e2fffe] h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#F95D00] h-full w-[100%] rounded-full"></div>
+</div>
+<p class="mt-2 text-sm font-bold text-[#F95D00]">1200 / 1200 <span class="text-[#015959]/50 font-medium text-sm">sold</span></p>
+</div>
+<div class="w-40 px-4 border-l border-[#bec8c8]/20">
+<p class="text-xs font-bold text-[#015959]/40 uppercase tracking-tighter">Revenue</p>
+<p class="mt-1 text-lg font-black text-[#015959]">IDR 72.0M</p>
+</div>
+<div class="flex items-center space-x-2">
+<button class="p-3 bg-[#e2fffe] text-[#015959] rounded-xl hover:bg-[#aaefee] transition-all" title="View Analytics">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+</button>
+<button class="p-3 bg-[#ffffff] border border-[#bec8c8]/30 text-[#015959] rounded-xl hover:bg-[#e2fffe] transition-all" title="Edit Event">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-3 bg-[#ffffff] border border-[#bec8c8]/30 text-[#015959] rounded-xl hover:bg-[#e2fffe] transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Event Row 3 -->
+<div class="group bg-white rounded-3xl p-4 flex items-center gap-8 hover:bg-[#e2fffe]/30 transition-all border-b border-[#bec8c8]/10 last:border-0">
+<div class="w-48 h-32 rounded-2xl overflow-hidden shrink-0 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60 grayscale-[0.5]" data-alt="overhead view of artisanal pottery and textile workshop with earthy tones and natural sunlight on a wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2nDPryEzWPVvhcLD2DTd8tJGXZpUS8dQgjVKrqjFBPKpad0q8BGoVC8M2BcOIEXczQiYIq_1DUTKjaO6K24LpJfWyOF51h4bio2rJaOobiX9DOxwP_RyN8Q86WS4197itndx498LpjEW0vHwqwZj4oj_kK69pCtniPmmwPgEkrTJUbOVzqQuJX8FGraQrCDYe2ZVxqNVtxR6G2LrTuDRaDITl4tzpMBiOFxW8xwoKMr8Rr3OSWJ2mEmv07NEXJ71JTNu83Ia6ig8"/>
+<div class="absolute top-2 left-2 px-3 py-1 bg-[#FBC117] text-[#251a00] text-[10px] font-bold uppercase tracking-widest rounded-full">Draft</div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-['Noto_Serif'] text-xl font-bold text-[#015959] truncate">Heritage Batik Workshop</h4>
+<div class="flex items-center mt-2 space-x-4 text-sm text-[#002020]/60">
+<span class="flex items-center"><span class="material-symbols-outlined text-sm mr-1" data-icon="calendar_today">calendar_today</span> Not Set</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-sm mr-1" data-icon="location_on">location_on</span> House of Danar Hadi</span>
+</div>
+</div>
+<div class="w-48 px-4 border-l border-[#bec8c8]/20">
+<p class="text-xs font-bold text-[#015959]/40 uppercase tracking-tighter">Sales Progress</p>
+<div class="mt-2 w-full bg-[#e2fffe] h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#bec8c8] h-full w-[0%] rounded-full"></div>
+</div>
+<p class="mt-2 text-sm font-bold text-[#015959]/40">0 / 50 <span class="text-[#015959]/50 font-medium">sold</span></p>
+</div>
+<div class="w-40 px-4 border-l border-[#bec8c8]/20">
+<p class="text-xs font-bold text-[#015959]/40 uppercase tracking-tighter">Revenue</p>
+<p class="mt-1 text-lg font-black text-[#015959]/30">IDR 0</p>
+</div>
+<div class="flex items-center space-x-2">
+<button class="p-3 bg-[#e2fffe] text-[#015959] rounded-xl hover:bg-[#aaefee] transition-all disabled:opacity-50" disabled="" title="View Analytics">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+</button>
+<button class="p-3 bg-[#ffffff] border border-[#bec8c8]/30 text-[#015959] rounded-xl hover:bg-[#e2fffe] transition-all" title="Edit Event">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-3 bg-[#ffffff] border border-[#bec8c8]/30 text-[#015959] rounded-xl hover:bg-[#e2fffe] transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Featured Component -->
+<section class="mt-16 bg-[#015959] rounded-[2.5rem] p-12 text-white flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+<div class="absolute right-0 top-0 w-1/2 h-full bg-[radial-gradient(circle_at_60%_20%,rgba(249,93,0,0.15),transparent)] pointer-events-none"></div>
+<div class="flex-1 space-y-6 z-10">
+<span class="inline-block px-4 py-1 bg-white/10 rounded-full text-xs font-bold uppercase tracking-widest text-[#aaefee]">Curator's Choice</span>
+<h2 class="font-['Noto_Serif'] text-4xl font-black leading-tight">Mastering Cultural Experiences</h2>
+<p class="text-[#aaefee]/80 text-lg">Elevate your heritage events with our new analytical dashboard designed specifically for traditional Surakarta arts.</p>
+<div class="flex space-x-4">
+<button class="bg-[#FBC117] text-[#251a00] px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform">Explore Reports</button>
+<button class="border border-white/20 text-white px-8 py-3 rounded-xl font-bold hover:bg-white/5 transition-all">Learn More</button>
+</div>
+</div>
+<div class="flex-1 w-full max-w-md z-10">
+<div class="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 ticket-stub-shape">
+<div class="flex justify-between items-start mb-8">
+<div>
+<p class="text-[10px] font-bold text-white/40 uppercase">Upcoming Highlight</p>
+<p class="text-xl font-bold mt-1">Solo International Performing Arts</p>
+</div>
+<span class="material-symbols-outlined text-[#F95D00]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="grid grid-cols-2 gap-4 text-sm">
+<div>
+<p class="text-white/40">Engagement</p>
+<p class="font-bold text-lg">94%</p>
+</div>
+<div>
+<p class="text-white/40">Reach</p>
+<p class="font-bold text-lg">12.5k</p>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-white/10 flex justify-center">
+<span class="material-symbols-outlined text-4xl opacity-20" data-icon="barcode">barcode</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer spacing -->
+<footer class="h-24"></footer>
+</main>
+</body></html>

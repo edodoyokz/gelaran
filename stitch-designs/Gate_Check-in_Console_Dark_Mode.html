@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gate Console | Gelaran Premiere</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface-variant": "#bec8c8",
+                        "tertiary-container": "#654b00",
+                        "surface-tint": "#ffb598",
+                        "primary-fixed": "#ffdbce",
+                        "inverse-on-surface": "#003737",
+                        "surface-variant": "#003c3c",
+                        "on-error": "#690005",
+                        "on-background": "#aaefee",
+                        "primary-container": "#8d3100",
+                        "inverse-primary": "#a63b00",
+                        "outline-variant": "#3f4948",
+                        "surface": "#001717",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "surface-container": "#002424",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "tertiary": "#f7be11",
+                        "surface-dim": "#001717",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "surface-bright": "#004141",
+                        "secondary-fixed": "#7bf5f8",
+                        "tertiary-fixed": "#ffdf9a",
+                        "primary": "#ffb598",
+                        "error": "#ffb4ab",
+                        "on-primary": "#591c00",
+                        "surface-container-low": "#002020",
+                        "outline": "#899392",
+                        "on-secondary": "#003738",
+                        "secondary": "#5cd8db",
+                        "on-tertiary": "#3f2e00",
+                        "inverse-surface": "#aaefee",
+                        "surface-container-highest": "#003c3c",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "primary-fixed-dim": "#ffb598",
+                        "on-surface": "#aaefee",
+                        "background": "#001717",
+                        "secondary-container": "#00a4a7",
+                        "on-secondary-container": "#003233",
+                        "surface-container-lowest": "#001111",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "on-tertiary-fixed": "#251a00",
+                        "on-secondary-fixed": "#002021",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-tertiary-container": "#f1b803",
+                        "on-primary-fixed": "#370e00",
+                        "on-primary-container": "#ffae8e",
+                        "surface-container-high": "#003030"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #001717; /* Base Layer: surface */
+            color: #aaefee;
+        }
+        .scan-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #5cd8db, transparent);
+            position: absolute;
+            width: 100%;
+            top: 50%;
+        }
+        .glass-overlay {
+            background: rgba(0, 65, 65, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar Execution -->
+<header class="bg-[#001717] flex justify-between items-center w-full px-8 h-16 fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold font-serif text-[#aaefee]">Gate Console</span>
+<div class="hidden md:flex gap-6 items-center">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase tracking-widest text-secondary/60 font-label">Current Gate</span>
+<span class="text-sm font-headline font-bold text-on-surface">Gate 04 - Main Entrance</span>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant/20"></div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs uppercase tracking-tighter text-on-surface-variant font-label">System Online</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group cursor-pointer hover:bg-[#003c3c] transition-colors duration-300 p-2 rounded-lg">
+<span class="material-symbols-outlined text-[#aaefee]/60">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface">Operator 12</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Shift A</p>
+</div>
+<img alt="Operator Profile Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="Close-up professional portrait of a security operator in a dark uniform, cinematic lighting with teal undertones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcV2o822GYog3votBb885gOWmS27ZpwbpTDTwogiSFlb1qDCEgJuZtM5IqMXUC1Ljf_3-xbhQ3uvvjg0SAOHjJX4nAZm5ITpmj_k2jpLMdUcENS3hVNuJGl1tRdSYgNRqIz2R6SqR0fNU8X6UdePLTEqm3W1OClnqevuy3kCmMpI8xx-sG_1IrkJPzlEBMvC0AFO-ABytSpNNjwI7xxTRRXLBA3B3GkQhqA7ETBGxthIJDMFStRev1ucBSxpsOPyRcTIpt-pn1sPU"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar Execution -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-[#002020] w-64 pt-20">
+<div class="px-6 mb-8">
+<h2 class="text-[#ffb598] font-serif text-lg">Gala Premiere</h2>
+<p class="text-[10px] uppercase tracking-widest text-[#aaefee]/50">North Gate Operations</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 text-[#aaefee]/50 px-6 py-4 hover:bg-[#003c3c]/50 hover:text-[#aaefee] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-xs uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 text-[#aaefee]/50 px-6 py-4 hover:bg-[#003c3c]/50 hover:text-[#aaefee] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-xs uppercase tracking-widest">Guest List</span>
+</a>
+<a class="flex items-center gap-4 bg-[#003c3c] text-[#ffb598] border-l-4 border-[#5cd8db] px-6 py-4 opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
+<span class="text-xs uppercase tracking-widest">Scan Zone</span>
+</a>
+<a class="flex items-center gap-4 text-[#aaefee]/50 px-6 py-4 hover:bg-[#003c3c]/50 hover:text-[#aaefee] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="equalizer">equalizer</span>
+<span class="text-xs uppercase tracking-widest">Capacity</span>
+</a>
+<a class="flex items-center gap-4 text-[#aaefee]/50 px-6 py-4 hover:bg-[#003c3c]/50 hover:text-[#aaefee] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-xs uppercase tracking-widest">Analytics</span>
+</a>
+</nav>
+<div class="p-6 space-y-4">
+<button class="w-full py-3 px-4 bg-error-container text-on-error-container rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">lock</span>
+                Emergency Lock
+            </button>
+<div class="pt-4 border-t border-outline-variant/10">
+<a class="flex items-center gap-4 text-[#aaefee]/50 px-2 py-2 hover:text-[#aaefee] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-[10px] uppercase tracking-widest">Support</span>
+</a>
+<a class="flex items-center gap-4 text-[#aaefee]/50 px-2 py-2 hover:text-[#aaefee] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-[10px] uppercase tracking-widest">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-8 grid grid-cols-12 gap-8 min-h-screen">
+<!-- Left & Center Column: Scanning & Capacity -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-8">
+<!-- Bento Grid Section 1: Scan Viewport -->
+<section class="bg-surface-container rounded-xl overflow-hidden flex flex-col border border-outline-variant/10">
+<div class="p-6 flex justify-between items-center border-b border-outline-variant/5">
+<div>
+<h1 class="font-headline text-2xl font-bold text-on-surface">Active Scan Zone</h1>
+<p class="text-label text-xs uppercase tracking-widest text-on-surface-variant">Central Viewport - Front Camera</p>
+</div>
+<div class="px-4 py-1 rounded-full bg-secondary-container/20 text-secondary border border-secondary/30 text-[10px] font-bold uppercase tracking-widest">
+                        Focus Mode
+                    </div>
+</div>
+<div class="relative aspect-video bg-black/40 group flex items-center justify-center">
+<img alt="Scanner Background" class="absolute inset-0 w-full h-full object-cover opacity-30 grayscale mix-blend-overlay" data-alt="High-tech futuristic circuit board patterns with glowing teal lights and geometric data overlays" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcom8ixCMNVXljb_5KjVJ7CA1zjOncsBo0IgblC_wo6hX-Yu0Zb5JKwmlX_E3zZsmqxR0XPh7Aq9Ml504e9sd0DYZdmvXqFcz4loYk5m_r2JUQmHC9WCW00-uKUJWCOfcMv6RneZ6zfoU_1Wu8OxZef6E8MjbEpe9rvWeZmbkfINm6CnCep4tzUtVdx_alsefxpqDL-xqcvlmuOS8eysX3ZSnAB_Dj5q2hOpzEGTmojLj_jl5-_UdgbR-jVMMZDlw6jGlI1xlt1xk"/>
+<!-- Scanning UI -->
+<div class="relative z-10 w-80 h-80 border-2 border-secondary/40 rounded-3xl flex items-center justify-center">
+<!-- Corners -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-secondary -translate-x-1 -translate-y-1 rounded-tl-xl"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-secondary translate-x-1 -translate-y-1 rounded-tr-xl"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-secondary -translate-x-1 translate-y-1 rounded-bl-xl"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-secondary translate-x-1 translate-y-1 rounded-br-xl"></div>
+<div class="scan-line"></div>
+<div class="text-center flex flex-col items-center gap-4">
+<span class="material-symbols-outlined text-6xl text-secondary animate-pulse" data-icon="qr_code_2">qr_code_2</span>
+<span class="text-xs font-bold tracking-[0.3em] uppercase text-secondary">Ready to Scan</span>
+</div>
+</div>
+<!-- Scan HUD Overlay -->
+<div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-[10px] text-secondary/70 uppercase tracking-widest font-bold">Latency</p>
+<p class="font-mono text-secondary text-sm">24ms</p>
+</div>
+<div class="flex gap-4">
+<button class="p-3 rounded-full bg-surface-container-highest border border-outline-variant/20 hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-on-surface" data-icon="flashlight_on">flashlight_on</span>
+</button>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-bold px-8 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+                                Start Scan
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Section 2: Capacity & Manual Entry -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Capacity Panel -->
+<div class="bg-surface-container rounded-xl p-8 border border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline text-lg font-bold">Capacity Status</h3>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-widest">Venue Occupancy</p>
+</div>
+<span class="material-symbols-outlined text-tertiary" data-icon="warning">warning</span>
+</div>
+<div class="flex items-end justify-between mb-2">
+<span class="text-4xl font-headline font-bold text-on-surface">482 <span class="text-lg text-on-surface-variant font-normal">/ 600</span></span>
+<span class="text-sm font-bold text-tertiary">80% Full</span>
+</div>
+<div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary" style="width: 80%"></div>
+</div>
+<p class="mt-4 text-[10px] text-on-surface-variant leading-relaxed">
+                        Approaching threshold. Please notify floor supervisor when count reaches 550.
+                    </p>
+</div>
+<!-- Manual Entry Panel -->
+<div class="bg-surface-container rounded-xl p-8 border border-outline-variant/10 flex flex-col justify-between">
+<div>
+<h3 class="font-headline text-lg font-bold">Manual Lookup</h3>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-widest mb-4">Fallback Entry</p>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-highest border-0 border-b-2 border-outline-variant/30 focus:border-tertiary focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 rounded-t-lg transition-all py-4 px-4" placeholder="Enter Ticket ID or Email..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+<div class="flex gap-2 mt-4">
+<span class="text-[10px] bg-secondary-container/10 text-secondary px-2 py-0.5 rounded uppercase tracking-tighter">Enter to Search</span>
+<span class="text-[10px] bg-secondary-container/10 text-secondary px-2 py-0.5 rounded uppercase tracking-tighter">Esc to Clear</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Activity Feed -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-8">
+<section class="bg-surface-container rounded-xl border border-outline-variant/10 flex flex-col h-full max-h-[calc(100vh-160px)]">
+<div class="p-6 border-b border-outline-variant/5">
+<h3 class="font-headline text-lg font-bold">Recent Activity</h3>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-widest">Real-time scan logs</p>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-4">
+<!-- Approved Activity -->
+<div class="group p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</div>
+<div>
+<h4 class="font-headline text-sm font-bold text-on-surface">Julianne Moore</h4>
+<p class="text-[10px] text-secondary font-bold uppercase tracking-tighter">VIP Guest Pass</p>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">14:22:10</span>
+</div>
+<div class="mt-3 flex justify-between items-center">
+<span class="text-[9px] text-on-surface-variant/60 uppercase">Code: GALA-7729-BM</span>
+<span class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Approved</span>
+</div>
+</div>
+<!-- Rejected Activity -->
+<div class="group p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-error/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-sm">cancel</span>
+</div>
+<div>
+<h4 class="font-headline text-sm font-bold text-on-surface">Unknown User</h4>
+<p class="text-[10px] text-error font-bold uppercase tracking-tighter">Duplicate Ticket</p>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">14:21:55</span>
+</div>
+<div class="mt-3 flex justify-between items-center">
+<span class="text-[9px] text-on-surface-variant/60 uppercase">Code: GALA-3301-RX</span>
+<span class="text-[10px] font-bold text-error uppercase tracking-widest">Rejected</span>
+</div>
+</div>
+<!-- Approved Activity -->
+<div class="group p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</div>
+<div>
+<h4 class="font-headline text-sm font-bold text-on-surface">Marcus Thorne</h4>
+<p class="text-[10px] text-secondary font-bold uppercase tracking-tighter">General Admission</p>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">14:20:02</span>
+</div>
+<div class="mt-3 flex justify-between items-center">
+<span class="text-[9px] text-on-surface-variant/60 uppercase">Code: GALA-8812-ZZ</span>
+<span class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Approved</span>
+</div>
+</div>
+<!-- Approved Activity -->
+<div class="group p-4 bg-surface-container-low rounded-xl hover:bg-surface-container-highest transition-all relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</div>
+<div>
+<h4 class="font-headline text-sm font-bold text-on-surface">Elena Rodriguez</h4>
+<p class="text-[10px] text-secondary font-bold uppercase tracking-tighter">Press / Media</p>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">14:18:45</span>
+</div>
+<div class="mt-3 flex justify-between items-center">
+<span class="text-[9px] text-on-surface-variant/60 uppercase">Code: PRESS-004-ER</span>
+<span class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Approved</span>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-highest/50 border-t border-outline-variant/10">
+<button class="w-full text-center text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant hover:text-on-surface transition-colors">
+                        View Complete Log
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<!-- FAB Suppression Logic: Not rendered on operational screen -->
+</body></html>

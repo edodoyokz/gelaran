@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "surface-variant": "#aaefee",
+                "outline": "#6f7978",
+                "tertiary-container": "#654b00",
+                "inverse-on-surface": "#b8fdfc",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-container": "#007072",
+                "on-primary": "#ffffff",
+                "secondary-container": "#7bf5f8",
+                "error-container": "#ffdad6",
+                "on-secondary-fixed-variant": "#004f51",
+                "on-secondary-fixed": "#002021",
+                "background": "#ffffff",
+                "on-tertiary": "#ffffff",
+                "primary-fixed": "#ffdbce",
+                "primary": "#672200",
+                "surface-container-low": "#c1fffe",
+                "surface-bright": "#e2fffe",
+                "primary-fixed-dim": "#ffb598",
+                "surface": "#e2fffe",
+                "tertiary": "#483500",
+                "on-background": "#002020",
+                "secondary-fixed-dim": "#5cd8db",
+                "primary-container": "#8d3100",
+                "outline-variant": "#bec8c8",
+                "on-error-container": "#93000a",
+                "on-error": "#ffffff",
+                "tertiary-fixed-dim": "#f7be11",
+                "surface-tint": "#a63b00",
+                "on-primary-fixed": "#370e00",
+                "on-tertiary-fixed-variant": "#5a4300",
+                "on-secondary": "#ffffff",
+                "on-primary-fixed-variant": "#7f2b00",
+                "secondary": "#00696b",
+                "on-tertiary-container": "#f1b803",
+                "on-primary-container": "#ffae8e",
+                "surface-dim": "#a1e6e5",
+                "surface-container-highest": "#aaefee",
+                "error": "#ba1a1a",
+                "surface-container-high": "#aff5f4",
+                "inverse-surface": "#003737",
+                "on-tertiary-fixed": "#251a00",
+                "on-surface-variant": "#3f4948",
+                "surface-container": "#b5faf9",
+                "inverse-primary": "#ffb598",
+                "tertiary-fixed": "#ffdf9a",
+                "secondary-fixed": "#7bf5f8",
+                "on-surface": "#002020"
+              },
+              fontFamily: {
+                "headline": ["Noto Serif"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #ffffff;
+            color: #002020;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .editorial-underline {
+            width: 24px;
+            height: 2px;
+            background-color: #F95D00;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden md:flex flex-col h-screen sticky left-0 top-0 bg-[#b5faf9] dark:bg-[#002020] text-[#015959] dark:text-[#b5faf9] w-64 border-r-0">
+<div class="p-6">
+<h1 class="font-['Noto_Serif'] text-lg text-[#015959]">Gate 4</h1>
+<p class="font-['Plus_Jakarta_Sans'] font-medium text-xs opacity-70">Main Entrance</p>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-[#015959] text-[#015959] dark:text-white rounded-l-lg font-bold Active: scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Check-in</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#002020] dark:text-[#aaefee] opacity-70 hover:bg-[#c1fffe] dark:hover:bg-[#3f4948] transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Guest List</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#002020] dark:text-[#aaefee] opacity-70 hover:bg-[#c1fffe] dark:hover:bg-[#3f4948] transition-all" href="#">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Alerts</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#002020] dark:text-[#aaefee] opacity-70 hover:bg-[#c1fffe] dark:hover:bg-[#3f4948] transition-all" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-sm">Support</span>
+</a>
+</nav>
+<div class="p-4 mt-auto">
+<button class="w-full py-3 bg-error text-white font-bold rounded-xl flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">dangerous</span>
+                Emergency Stop
+            </button>
+</div>
+</aside>
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-6 py-4 max-w-full bg-white dark:bg-[#002020] sticky top-0 z-40">
+<div class="flex items-center gap-6">
+<span class="font-['Noto_Serif'] text-xl font-black text-[#015959] dark:text-[#b5faf9]">GateScanner Pro</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-[#3f4948] dark:text-[#bec8c8] hover:text-[#015959] transition-colors font-['Noto_Serif'] font-bold text-lg" href="#">Gate Feed</a>
+<a class="text-[#3f4948] dark:text-[#bec8c8] hover:text-[#015959] transition-colors font-['Noto_Serif'] font-bold text-lg" href="#">History</a>
+<a class="text-[#3f4948] dark:text-[#bec8c8] hover:text-[#015959] transition-colors font-['Noto_Serif'] font-bold text-lg" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#3f4948] cursor-pointer">sync</span>
+<span class="material-symbols-outlined text-[#3f4948] cursor-pointer">settings</span>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional security operator wearing a dark uniform in a modern high-tech control room environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEMUK1mAgFfSMoQfvxdJylqEWAzGAOuOVm1uwM9in0FjtQf6bAck-Xikb4IGaWdUKQFyQzQvfil_GnHAMDgkOS4Jjw_Z1_k_QBxkBDfkfusa1FSGFUQpQZQMlLq7mWWsHAOyaKstSRC7BqrdbSbfJm7w6E7SC5pfPQHkKInX1JXvBB-3iMqNXIxZZaHaQC8PogwMlZYzk7oR0ecU083kmVH9582yQsUKjRGRJtbVQJ3BmqkexpnQjA4KrQuKBkRWYn2zfYMgJGDc4"/>
+</div>
+</div>
+</header>
+<div class="bg-[#b5faf9] h-[2px] w-full"></div>
+<!-- Main Content Area -->
+<main class="flex-1 p-8 space-y-12">
+<!-- Terminal Header -->
+<section>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-[0.2em] font-extrabold text-[#3f4948]">Operational Overview</span>
+<h2 class="font-['Noto_Serif'] text-4xl font-black mt-1 mb-2">Gate 4 Scan Results</h2>
+<div class="editorial-underline"></div>
+</section>
+<!-- Grid of Scan Results -->
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+<!-- 1. Valid Ticket (Success State) -->
+<article class="bg-surface-container-low rounded-xl p-8 flex flex-col justify-between border-l-8 border-[#015959] shadow-[0_12px_32px_rgba(0,32,32,0.06)] relative overflow-hidden">
+<div class="mb-6">
+<span class="inline-block px-3 py-1 bg-[#015959] text-white text-[10px] font-bold uppercase rounded-full mb-4">Live Result</span>
+<h3 class="font-['Noto_Serif'] text-3xl font-black text-[#015959]">Access Granted</h3>
+<p class="font-['Plus_Jakarta_Sans'] text-[#3f4948] mt-2 font-medium">Attendee: <span class="text-on-surface font-bold">Jonathan Sterling</span></p>
+<p class="font-['Plus_Jakarta_Sans'] text-[#3f4948] text-sm">Event: Global Summit 2024</p>
+</div>
+<button class="w-full py-4 bg-[#015959] text-white rounded-xl font-bold text-sm tracking-wide transition-all Active: opacity-80">DONE</button>
+<span class="material-symbols-outlined absolute -right-4 -top-4 text-[#015959]/10 text-9xl pointer-events-none" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</article>
+<!-- 2. VIP Pass (Premium Success) -->
+<article class="bg-surface-container-low rounded-xl p-8 flex flex-col justify-between border-l-8 border-[#f7be11] shadow-[0_12px_32px_rgba(0,32,32,0.06)] relative overflow-hidden">
+<div class="mb-6">
+<span class="inline-block px-3 py-1 bg-[#f7be11] text-[#002021] text-[10px] font-bold uppercase rounded-full mb-4">Elite Entry</span>
+<h3 class="font-['Noto_Serif'] text-3xl font-black text-[#002021]">VIP Access</h3>
+<p class="font-['Plus_Jakarta_Sans'] text-[#3f4948] mt-2 font-medium">Attendee: <span class="text-on-surface font-bold">Elena Rodriguez</span></p>
+<p class="font-['Plus_Jakarta_Sans'] text-[#3f4948] text-sm">Section: <span class="font-bold">Platinum Lounge · Table 12</span></p>
+</div>
+<button class="w-full py-4 bg-[#002021] text-[#f7be11] rounded-xl font-bold text-sm tracking-wide transition-all Active: opacity-80">WELCOME VIP</button>
+<span class="material-symbols-outlined absolute -right-4 -top-4 text-[#f7be11]/20 text-9xl pointer-events-none" style="font-variation-settings: 'FILL' 1;">star</span>
+</article>
+<!-- 3. Already Used (Warning State) -->
+<article class="bg-[#fff9e6] rounded-xl p-8 flex flex-col justify-between border-l-8 border-[#f7be11] shadow-[0_12px_32px_rgba(0,32,32,0.06)]">
+<div class="mb-6">
+<span class="inline-block px-3 py-1 bg-[#f7be11] text-on-tertiary-fixed font-bold text-[10px] uppercase rounded-full mb-4">Security Alert</span>
+<h3 class="font-['Noto_Serif'] text-3xl font-black text-[#483500]">Duplicate Entry</h3>
+<p class="font-['Plus_Jakarta_Sans'] text-[#5a4300] mt-4 font-semibold">First scanned today at 09:42 AM</p>
+<p class="font-['Plus_Jakarta_Sans'] text-[#5a4300] text-sm mt-1">Terminal: Gate 2 South</p>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 py-4 border-2 border-[#f7be11] text-[#483500] rounded-xl font-bold text-sm tracking-wide">DENY</button>
+<button class="flex-1 py-4 bg-[#f7be11] text-[#483500] rounded-xl font-bold text-sm tracking-wide">OVERRIDE</button>
+</div>
+</article>
+<!-- 4. Invalid QR (Error State) -->
+<article class="bg-[#fff2ed] rounded-xl p-8 flex flex-col justify-between border-l-8 border-[#F95D00] shadow-[0_12px_32px_rgba(0,32,32,0.06)]">
+<div class="mb-6">
+<span class="inline-block px-3 py-1 bg-[#F95D00] text-white text-[10px] font-bold uppercase rounded-full mb-4">Format Error</span>
+<h3 class="font-['Noto_Serif'] text-3xl font-black text-[#672200]">Invalid Code</h3>
+<p class="font-['Plus_Jakarta_Sans'] text-[#7f2b00] mt-4 font-medium">The scanned token is not recognized by this event system.</p>
+</div>
+<button class="w-full py-4 bg-[#F95D00] text-white rounded-xl font-bold text-sm tracking-wide flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">keyboard</span>
+                        MANUAL ENTRY
+                    </button>
+</article>
+<!-- 5. RefundED Ticket (Neutral/Warning) -->
+<article class="bg-surface-container rounded-xl p-8 flex flex-col justify-between border-l-8 border-[#3f4948] shadow-[0_12px_32px_rgba(0,32,32,0.06)] opacity-90">
+<div class="mb-6">
+<span class="inline-block px-3 py-1 bg-[#3f4948] text-white text-[10px] font-bold uppercase rounded-full mb-4">Status: Inactive</span>
+<h3 class="font-['Noto_Serif'] text-3xl font-black text-[#002020]">Ticket Refunded</h3>
+<p class="font-['Plus_Jakarta_Sans'] text-[#3f4948] mt-4 font-medium">Refund processed on <span class="font-bold">Oct 12, 2023</span></p>
+<p class="font-['Plus_Jakarta_Sans'] text-[#3f4948] text-sm">System: Auto-Cancellation</p>
+</div>
+<button class="w-full py-4 bg-white text-[#3f4948] rounded-xl font-bold text-sm tracking-wide border border-[#bec8c8]">VIEW DETAILS</button>
+</article>
+<!-- 6. Access Denied (Critical Error) -->
+<article class="bg-[#672200] rounded-xl p-8 flex flex-col justify-between shadow-[0_12px_32px_rgba(0,32,32,0.06)] relative overflow-hidden">
+<div class="mb-6 z-10 relative">
+<span class="inline-block px-3 py-1 bg-[#F95D00] text-white text-[10px] font-bold uppercase rounded-full mb-4">Access Violation</span>
+<h3 class="font-['Noto_Serif'] text-3xl font-black text-[#ffae8e]">Wrong Gate</h3>
+<p class="font-['Plus_Jakarta_Sans'] text-[#ffdbce] mt-4 font-medium">This ticket is assigned to <span class="font-bold underline">North Entrance Only</span>.</p>
+</div>
+<button class="w-full py-4 bg-[#F95D00] text-white rounded-xl font-bold text-sm tracking-wide z-10 relative">RE-DIRECT USER</button>
+<span class="material-symbols-outlined absolute right-[-20px] bottom-[-20px] text-white/5 text-[180px] pointer-events-none">cancel</span>
+</article>
+</div>
+<!-- Operational Metrics Footer -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6 pt-12">
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col">
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase font-extrabold text-[#3f4948]">Scans/Hour</span>
+<span class="font-['Noto_Serif'] text-4xl font-black text-[#015959] mt-2">412</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col">
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase font-extrabold text-[#3f4948]">Capacity</span>
+<span class="font-['Noto_Serif'] text-4xl font-black text-[#015959] mt-2">68%</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col">
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase font-extrabold text-[#3f4948]">Warnings</span>
+<span class="font-['Noto_Serif'] text-4xl font-black text-[#f7be11] mt-2">14</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col">
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase font-extrabold text-[#3f4948]">Last Sync</span>
+<span class="font-['Noto_Serif'] text-4xl font-black text-[#015959] mt-2">Now</span>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 md:hidden bg-white dark:bg-[#002020] shadow-[0_-12px_32px_rgba(0,32,32,0.06)] border-t border-[#bec8c8]/20">
+<div class="flex flex-col items-center justify-center bg-[#F95D00] text-white rounded-xl p-2 mx-2 Active: scale-95 duration-150">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-[10px] uppercase tracking-wider">Scan</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#3f4948] dark:text-[#aaefee] p-2 hover:bg-[#c1fffe] dark:hover:bg-[#3f4948]">
+<span class="material-symbols-outlined">search</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-[10px] uppercase tracking-wider">Lookup</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#3f4948] dark:text-[#aaefee] p-2 hover:bg-[#c1fffe] dark:hover:bg-[#3f4948]">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-[10px] uppercase tracking-wider">Status</span>
+</div>
+</nav>
+</body></html>

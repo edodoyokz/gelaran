@@ -20,9 +20,14 @@ import {
     Settings,
     Ticket,
     Heart,
-    ChevronRight,
 } from "lucide-react";
 import { uploadImage } from "@/lib/storage/upload";
+import {
+    CustomerHero,
+    CustomerInfoList,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface CustomerProfile {
     birthDate: string | null;
@@ -58,15 +63,40 @@ const GENDER_OPTIONS = [
 ];
 
 const PROVINCE_OPTIONS = [
-    "Aceh", "Bali", "Banten", "Bengkulu", "DI Yogyakarta", "DKI Jakarta",
-    "Gorontalo", "Jambi", "Jawa Barat", "Jawa Tengah", "Jawa Timur",
-    "Kalimantan Barat", "Kalimantan Selatan", "Kalimantan Tengah",
-    "Kalimantan Timur", "Kalimantan Utara", "Kepulauan Bangka Belitung",
-    "Kepulauan Riau", "Lampung", "Maluku", "Maluku Utara",
-    "Nusa Tenggara Barat", "Nusa Tenggara Timur", "Papua", "Papua Barat",
-    "Riau", "Sulawesi Barat", "Sulawesi Selatan", "Sulawesi Tengah",
-    "Sulawesi Tenggara", "Sulawesi Utara", "Sumatera Barat",
-    "Sumatera Selatan", "Sumatera Utara",
+    "Aceh",
+    "Bali",
+    "Banten",
+    "Bengkulu",
+    "DI Yogyakarta",
+    "DKI Jakarta",
+    "Gorontalo",
+    "Jambi",
+    "Jawa Barat",
+    "Jawa Tengah",
+    "Jawa Timur",
+    "Kalimantan Barat",
+    "Kalimantan Selatan",
+    "Kalimantan Tengah",
+    "Kalimantan Timur",
+    "Kalimantan Utara",
+    "Kepulauan Bangka Belitung",
+    "Kepulauan Riau",
+    "Lampung",
+    "Maluku",
+    "Maluku Utara",
+    "Nusa Tenggara Barat",
+    "Nusa Tenggara Timur",
+    "Papua",
+    "Papua Barat",
+    "Riau",
+    "Sulawesi Barat",
+    "Sulawesi Selatan",
+    "Sulawesi Tengah",
+    "Sulawesi Tenggara",
+    "Sulawesi Utara",
+    "Sumatera Barat",
+    "Sumatera Selatan",
+    "Sumatera Utara",
 ];
 
 type TabKey = "personal" | "address" | "preferences";
@@ -117,7 +147,9 @@ export default function ProfilePage() {
                     name: p.name || "",
                     phone: p.phone || "",
                     birthDate: p.customerProfile?.birthDate
-                        ? new Date(p.customerProfile.birthDate).toISOString().split("T")[0]
+                        ? new Date(p.customerProfile.birthDate)
+                            .toISOString()
+                            .split("T")[0]
                         : "",
                     gender: p.customerProfile?.gender || "",
                     address: p.customerProfile?.address || "",
@@ -127,6 +159,7 @@ export default function ProfilePage() {
                     locale: p.locale || "id",
                     timezone: p.timezone || "Asia/Jakarta",
                 });
+                setError(null);
             }
         } catch {
             setError("Gagal memuat profil");
@@ -176,7 +209,8 @@ export default function ProfilePage() {
 
             setTimeout(() => setSuccess(null), 3000);
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "Gagal memperbarui profil";
+            const errorMessage =
+                err instanceof Error ? err.message : "Gagal memperbarui profil";
             setError(errorMessage);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } finally {
@@ -259,8 +293,8 @@ export default function ProfilePage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat profil...</p>
+                    <Loader2 className="h-12 w-12 text-(--accent-primary) animate-spin mx-auto mb-4" />
+                    <p className="text-(--text-muted)">Memuat profil...</p>
                 </div>
             </div>
         );
@@ -268,372 +302,424 @@ export default function ProfilePage() {
 
     if (error && !profile) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="text-center card p-8 max-w-md">
-                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
+            <DashboardSection>
+                <div className="flex min-h-[45vh] items-center justify-center">
+                    <div className="text-center">
+                        <AlertCircle className="mx-auto mb-4 h-12 w-12 text-(--error)" />
+                        <p className="mb-4 text-lg font-semibold text-foreground">{error}</p>
+                        <Link
+                            href="/dashboard"
+                            className="inline-flex items-center justify-center rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white"
+                        >
+                            Kembali ke dashboard
+                        </Link>
                     </div>
-                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
-                    <Link href="/dashboard" className="text-[var(--accent-primary)] hover:underline">
-                        Kembali ke Dashboard
-                    </Link>
                 </div>
-            </div>
+            </DashboardSection>
         );
     }
 
     return (
-        <div className="space-y-6">
-            {success && (
-                <div className="p-4 bg-[var(--success-bg)] border border-[var(--success)]/20 rounded-xl flex items-center gap-3 animate-fade-in-down">
-                    <CheckCircle className="h-5 w-5 text-[var(--success)] flex-shrink-0" />
-                    <p className="text-[var(--success-text)]">{success}</p>
-                </div>
-            )}
-
-            {error && profile && (
-                <div className="p-4 bg-[var(--error-bg)] border border-[var(--error)]/20 rounded-xl flex items-center gap-3 animate-fade-in-down">
-                    <AlertCircle className="h-5 w-5 text-[var(--error)] flex-shrink-0" />
-                    <p className="text-[var(--error-text)]">{error}</p>
-                </div>
-            )}
-
-            <div className="card p-6 sm:p-8">
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                    <div className="relative group">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-[var(--accent-gradient)] shadow-xl relative">
-                            {profile?.avatarUrl ? (
-                                <Image
-                                    src={profile.avatarUrl}
-                                    alt={profile.name}
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <span className="text-4xl font-bold text-white drop-shadow-md">
-                                        {profile?.name.charAt(0).toUpperCase()}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/jpeg,image/png,image/webp"
-                            onChange={handleAvatarChange}
-                            className="hidden"
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Account settings"
+                title="Profil & pengaturan"
+                description="Perbarui identitas akun, alamat, dan preferensi personal agar pengalaman checkout, tiket, dan komunikasi event tetap relevan."
+                meta={
+                    <>
+                        {profile?.isVerified ? (
+                            <CustomerStatusBadge
+                                label="Akun terverifikasi"
+                                tone="success"
+                                icon={Shield}
+                            />
+                        ) : (
+                            <CustomerStatusBadge
+                                label="Belum terverifikasi"
+                                tone="warning"
+                                icon={AlertCircle}
+                            />
+                        )}
+                        <CustomerStatusBadge
+                            label={`Member sejak ${formatDate(profile?.createdAt || null)}`}
+                            tone="neutral"
+                            icon={Calendar}
                         />
-                        <button
-                            type="button"
-                            onClick={handleAvatarClick}
-                            disabled={isUploadingAvatar}
-                            className="absolute -bottom-2 -right-2 p-2.5 bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-lg hover:bg-[var(--surface-hover)] transition-colors disabled:opacity-50"
+                    </>
+                }
+                actions={
+                    <>
+                        <Link
+                            href="/my-bookings"
+                            className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                         >
-                            {isUploadingAvatar ? (
-                                <Loader2 className="h-4 w-4 text-[var(--text-muted)] animate-spin" />
-                            ) : (
-                                <Camera className="h-4 w-4 text-[var(--text-muted)]" />
-                            )}
-                        </button>
-                    </div>
+                            <Ticket className="h-4 w-4" />
+                            Pesanan saya
+                        </Link>
+                        <Link
+                            href="/wishlist"
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                        >
+                            <Heart className="h-4 w-4" />
+                            Wishlist
+                        </Link>
+                    </>
+                }
+            />
 
-                    <div className="text-center sm:text-left flex-1">
-                        <h1 className="text-2xl font-bold text-[var(--text-primary)]">{profile?.name}</h1>
-                        <p className="text-[var(--text-muted)]">{profile?.email}</p>
-
-                        <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-2">
-                            {profile?.isVerified ? (
-                                <span className="badge badge-success">
-                                    <Shield className="h-3.5 w-3.5" />
-                                    Terverifikasi
-                                </span>
-                            ) : (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--warning-bg)] text-[var(--warning-text)] rounded-full text-xs font-medium">
-                                    <AlertCircle className="h-3.5 w-3.5" />
-                                    Belum Terverifikasi
-                                </span>
-                            )}
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] rounded-full text-xs font-medium capitalize">
-                                {profile?.role.toLowerCase().replace("_", " ")}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="hidden lg:flex flex-col gap-2">
-                        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                            <Calendar className="h-4 w-4" />
-                            <span>Anggota sejak {formatDate(profile?.createdAt || null)}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                            <Clock className="h-4 w-4" />
-                            <span>Login terakhir {formatDate(profile?.lastLoginAt || null)}</span>
-                        </div>
+            {success ? (
+                <div className="rounded-2xl border border-[rgba(19,135,108,0.18)] bg-(--success-bg) p-4 text-(--success-text)">
+                    <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 shrink-0" />
+                        <p>{success}</p>
                     </div>
                 </div>
-            </div>
+            ) : null}
 
-            <div className="grid grid-cols-2 gap-3 lg:hidden">
-                <Link href="/my-bookings" className="card card-hover p-4 flex items-center gap-3">
-                    <div className="p-2 bg-indigo-500/10 rounded-xl">
-                        <Ticket className="h-5 w-5 text-indigo-500" />
+            {error && profile ? (
+                <div className="rounded-2xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-4 text-(--error-text)">
+                    <div className="flex items-center gap-3">
+                        <AlertCircle className="h-5 w-5 shrink-0" />
+                        <p>{error}</p>
                     </div>
-                    <div className="flex-1 min-w-0">
-                        <span className="font-medium text-[var(--text-primary)] text-sm">Pesanan</span>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" />
-                </Link>
-                <Link href="/wishlist" className="card card-hover p-4 flex items-center gap-3">
-                    <div className="p-2 bg-rose-500/10 rounded-xl">
-                        <Heart className="h-5 w-5 text-rose-500" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <span className="font-medium text-[var(--text-primary)] text-sm">Wishlist</span>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" />
-                </Link>
-            </div>
+                </div>
+            ) : null}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="card overflow-hidden">
-                    <div className="border-b border-[var(--border)] overflow-x-auto">
-                        <div className="flex min-w-max">
-                            {tabs.map((tab) => {
-                                const Icon = tab.icon;
-                                return (
-                                    <button
-                                        key={tab.key}
-                                        type="button"
-                                        onClick={() => setActiveTab(tab.key)}
-                                        className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === tab.key
-                                            ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
-                                            : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
-                                            }`}
-                                    >
-                                        <Icon className="h-4 w-4" />
-                                        {tab.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    <div className="p-5 sm:p-6">
-                        {activeTab === "personal" && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        Nama Lengkap *
-                                    </label>
-                                    <input
-                                        id="name"
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => handleInputChange("name", e.target.value)}
-                                        className="input"
-                                        required
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        Alamat Email
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            id="email"
-                                            type="email"
-                                            value={profile?.email || ""}
-                                            disabled
-                                            className="input bg-[var(--bg-tertiary)] text-[var(--text-muted)] pr-10"
+            <div className="grid gap-6 xl:grid-cols-[1.05fr_1.4fr]">
+                <DashboardSection
+                    title="Ringkasan akun"
+                    description="Foto profil, status akun, dan informasi penting yang muncul di area customer Gelaran."
+                    className="h-fit"
+                >
+                    <div className="space-y-6">
+                        <div className="flex flex-col items-start gap-5 sm:flex-row">
+                            <div className="relative">
+                                <div className="relative h-28 w-28 overflow-hidden rounded-4xl bg-(--accent-gradient) shadow-(--shadow-glow)">
+                                    {profile?.avatarUrl ? (
+                                        <Image
+                                            src={profile.avatarUrl}
+                                            alt={profile.name}
+                                            fill
+                                            className="object-cover"
                                         />
-                                        <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                                    </div>
-                                    <p className="mt-1 text-xs text-[var(--text-muted)]">Email tidak dapat diubah</p>
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-white">
+                                            {profile?.name.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
                                 </div>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    onChange={handleAvatarChange}
+                                    className="hidden"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAvatarClick}
+                                    disabled={isUploadingAvatar}
+                                    className="absolute -bottom-2 -right-2 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-(--border) bg-(--surface) text-(--text-secondary) shadow-(--shadow-sm) transition-colors hover:bg-(--surface-hover) disabled:opacity-50"
+                                >
+                                    {isUploadingAvatar ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Camera className="h-4 w-4" />
+                                    )}
+                                </button>
+                            </div>
 
+                            <div className="min-w-0 flex-1 space-y-3">
                                 <div>
-                                    <label htmlFor="phone" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        Nomor Telepon
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            id="phone"
-                                            type="tel"
-                                            value={formData.phone}
-                                            onChange={(e) => handleInputChange("phone", e.target.value)}
-                                            className="input pr-10"
-                                            placeholder="+62 812 3456 7890"
-                                        />
-                                        <Phone className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                                    </div>
+                                    <h2 className="text-2xl font-semibold text-foreground">
+                                        {profile?.name}
+                                    </h2>
+                                    <p className="text-(--text-secondary)">{profile?.email}</p>
                                 </div>
-
-                                <div>
-                                    <label htmlFor="birthDate" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        Tanggal Lahir
-                                    </label>
-                                    <input
-                                        id="birthDate"
-                                        type="date"
-                                        value={formData.birthDate}
-                                        onChange={(e) => handleInputChange("birthDate", e.target.value)}
-                                        className="input"
+                                <div className="flex flex-wrap gap-2">
+                                    <CustomerStatusBadge
+                                        label={profile?.role.toLowerCase().replace("_", " ") || "customer"}
+                                        tone="accent"
+                                        icon={User}
                                     />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="gender" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        Jenis Kelamin
-                                    </label>
-                                    <select
-                                        id="gender"
-                                        value={formData.gender}
-                                        onChange={(e) => handleInputChange("gender", e.target.value)}
-                                        className="input"
-                                    >
-                                        {GENDER_OPTIONS.map((opt) => (
-                                            <option key={opt.value} value={opt.value}>
-                                                {opt.label}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <CustomerStatusBadge
+                                        label={profile?.phone || "Nomor belum ditambahkan"}
+                                        tone="neutral"
+                                        icon={Phone}
+                                    />
                                 </div>
                             </div>
-                        )}
+                        </div>
 
-                        {activeTab === "address" && (
-                            <div className="space-y-4">
-                                <div>
-                                    <label htmlFor="address" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        Alamat Jalan
-                                    </label>
-                                    <textarea
-                                        id="address"
-                                        value={formData.address}
-                                        onChange={(e) => handleInputChange("address", e.target.value)}
-                                        rows={2}
-                                        className="input resize-none"
-                                        placeholder="Masukkan alamat jalan kamu"
-                                    />
-                                </div>
+                        <CustomerInfoList
+                            items={[
+                                {
+                                    icon: Calendar,
+                                    label: "Member sejak",
+                                    value: formatDate(profile?.createdAt || null),
+                                },
+                                {
+                                    icon: Clock,
+                                    label: "Login terakhir",
+                                    value: formatDate(profile?.lastLoginAt || null),
+                                },
+                                {
+                                    icon: Mail,
+                                    label: "Verifikasi email",
+                                    value: profile?.emailVerifiedAt
+                                        ? formatDate(profile.emailVerifiedAt)
+                                        : "Belum diverifikasi",
+                                },
+                            ]}
+                        />
+                    </div>
+                </DashboardSection>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <DashboardSection
+                        title="Detail profil"
+                        description="Edit data personal, alamat, dan preferensi yang mendukung pengalaman booking serta komunikasi event."
+                    >
+                        <div className="space-y-6">
+                            <div className="flex flex-wrap gap-3">
+                                {tabs.map((tab) => {
+                                    const Icon = tab.icon;
+                                    const isActive = activeTab === tab.key;
+                                    return (
+                                        <button
+                                            key={tab.key}
+                                            type="button"
+                                            onClick={() => setActiveTab(tab.key)}
+                                            className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${isActive
+                                                    ? "bg-(--accent-gradient) text-white"
+                                                    : "border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)"
+                                                }`}
+                                        >
+                                            <Icon className="h-4 w-4" />
+                                            {tab.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {activeTab === "personal" ? (
+                                <div className="grid gap-4 md:grid-cols-2">
                                     <div>
-                                        <label htmlFor="city" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                            Kota
+                                        <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            Nama lengkap *
                                         </label>
                                         <input
-                                            id="city"
+                                            id="name"
                                             type="text"
-                                            value={formData.city}
-                                            onChange={(e) => handleInputChange("city", e.target.value)}
+                                            value={formData.name}
+                                            onChange={(e) => handleInputChange("name", e.target.value)}
                                             className="input"
-                                            placeholder="Kota"
+                                            required
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="province" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                            Provinsi
+                                        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            Alamat email
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                id="email"
+                                                type="email"
+                                                value={profile?.email || ""}
+                                                disabled
+                                                className="input bg-(--bg-secondary) pr-10 text-(--text-muted)"
+                                            />
+                                            <Mail className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                                        </div>
+                                        <p className="mt-1 text-xs text-(--text-muted)">
+                                            Email tidak dapat diubah
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="phone" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            Nomor telepon
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                id="phone"
+                                                type="tel"
+                                                value={formData.phone}
+                                                onChange={(e) => handleInputChange("phone", e.target.value)}
+                                                className="input pr-10"
+                                                placeholder="+62 812 3456 7890"
+                                            />
+                                            <Phone className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="birthDate" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            Tanggal lahir
+                                        </label>
+                                        <input
+                                            id="birthDate"
+                                            type="date"
+                                            value={formData.birthDate}
+                                            onChange={(e) => handleInputChange("birthDate", e.target.value)}
+                                            className="input"
+                                        />
+                                    </div>
+
+                                    <div className="md:col-span-2">
+                                        <label htmlFor="gender" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            Jenis kelamin
                                         </label>
                                         <select
-                                            id="province"
-                                            value={formData.province}
-                                            onChange={(e) => handleInputChange("province", e.target.value)}
+                                            id="gender"
+                                            value={formData.gender}
+                                            onChange={(e) => handleInputChange("gender", e.target.value)}
                                             className="input"
                                         >
-                                            <option value="">Pilih Provinsi</option>
-                                            {PROVINCE_OPTIONS.map((p) => (
-                                                <option key={p} value={p}>
-                                                    {p}
+                                            {GENDER_OPTIONS.map((opt) => (
+                                                <option key={opt.value} value={opt.value}>
+                                                    {opt.label}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
+                                </div>
+                            ) : null}
 
+                            {activeTab === "address" ? (
+                                <div className="space-y-4">
                                     <div>
-                                        <label htmlFor="postalCode" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                            Kode Pos
+                                        <label htmlFor="address" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            Alamat jalan
                                         </label>
-                                        <input
-                                            id="postalCode"
-                                            type="text"
-                                            value={formData.postalCode}
-                                            onChange={(e) => handleInputChange("postalCode", e.target.value)}
-                                            className="input"
-                                            placeholder="12345"
+                                        <textarea
+                                            id="address"
+                                            value={formData.address}
+                                            onChange={(e) => handleInputChange("address", e.target.value)}
+                                            rows={3}
+                                            className="input resize-none"
+                                            placeholder="Masukkan alamat jalan kamu"
                                         />
                                     </div>
-                                </div>
-                            </div>
-                        )}
 
-                        {activeTab === "preferences" && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label htmlFor="locale" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        <Globe className="inline h-4 w-4 mr-1" />
-                                        Bahasa
-                                    </label>
-                                    <select
-                                        id="locale"
-                                        value={formData.locale}
-                                        onChange={(e) => handleInputChange("locale", e.target.value)}
-                                        className="input"
-                                    >
-                                        <option value="id">Bahasa Indonesia</option>
-                                        <option value="en">English</option>
-                                    </select>
-                                </div>
+                                    <div className="grid gap-4 md:grid-cols-3">
+                                        <div>
+                                            <label htmlFor="city" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                                Kota
+                                            </label>
+                                            <input
+                                                id="city"
+                                                type="text"
+                                                value={formData.city}
+                                                onChange={(e) => handleInputChange("city", e.target.value)}
+                                                className="input"
+                                                placeholder="Kota"
+                                            />
+                                        </div>
 
-                                <div>
-                                    <label htmlFor="timezone" className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
-                                        <Clock className="inline h-4 w-4 mr-1" />
-                                        Zona Waktu
-                                    </label>
-                                    <select
-                                        id="timezone"
-                                        value={formData.timezone}
-                                        onChange={(e) => handleInputChange("timezone", e.target.value)}
-                                        className="input"
-                                    >
-                                        <option value="Asia/Jakarta">WIB (Jakarta)</option>
-                                        <option value="Asia/Makassar">WITA (Makassar)</option>
-                                        <option value="Asia/Jayapura">WIT (Jayapura)</option>
-                                    </select>
+                                        <div>
+                                            <label htmlFor="province" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                                Provinsi
+                                            </label>
+                                            <select
+                                                id="province"
+                                                value={formData.province}
+                                                onChange={(e) => handleInputChange("province", e.target.value)}
+                                                className="input"
+                                            >
+                                                <option value="">Pilih Provinsi</option>
+                                                {PROVINCE_OPTIONS.map((p) => (
+                                                    <option key={p} value={p}>
+                                                        {p}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="postalCode" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                                Kode pos
+                                            </label>
+                                            <input
+                                                id="postalCode"
+                                                type="text"
+                                                value={formData.postalCode}
+                                                onChange={(e) => handleInputChange("postalCode", e.target.value)}
+                                                className="input"
+                                                placeholder="12345"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            ) : null}
+
+                            {activeTab === "preferences" ? (
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label htmlFor="locale" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            <Globe className="mr-1 inline h-4 w-4" />
+                                            Bahasa
+                                        </label>
+                                        <select
+                                            id="locale"
+                                            value={formData.locale}
+                                            onChange={(e) => handleInputChange("locale", e.target.value)}
+                                            className="input"
+                                        >
+                                            <option value="id">Bahasa Indonesia</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="timezone" className="mb-1.5 block text-sm font-medium text-(--text-secondary)">
+                                            <Clock className="mr-1 inline h-4 w-4" />
+                                            Zona waktu
+                                        </label>
+                                        <select
+                                            id="timezone"
+                                            value={formData.timezone}
+                                            onChange={(e) => handleInputChange("timezone", e.target.value)}
+                                            className="input"
+                                        >
+                                            <option value="Asia/Jakarta">WIB (Jakarta)</option>
+                                            <option value="Asia/Makassar">WITA (Makassar)</option>
+                                            <option value="Asia/Jayapura">WIT (Jayapura)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+                    </DashboardSection>
+
+                    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                        <Link
+                            href="/dashboard"
+                            className="inline-flex items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover)"
+                        >
+                            Batal
+                        </Link>
+                        <button
+                            type="submit"
+                            disabled={isSaving}
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) disabled:opacity-60"
+                        >
+                            {isSaving ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    Menyimpan...
+                                </>
+                            ) : (
+                                <>
+                                    <CheckCircle className="h-4 w-4" />
+                                    Simpan perubahan
+                                </>
+                            )}
+                        </button>
                     </div>
-                </div>
-
-                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
-                    <Link
-                        href="/dashboard"
-                        className="btn-secondary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center text-center"
-                    >
-                        Batal
-                    </Link>
-                    <button
-                        type="submit"
-                        disabled={isSaving}
-                        className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center flex items-center gap-2 shadow-glow"
-                    >
-                        {isSaving ? (
-                            <>
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                Menyimpan...
-                            </>
-                        ) : (
-                            <>
-                                <CheckCircle className="h-4 w-4" />
-                                Simpan Perubahan
-                            </>
-                        )}
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 }

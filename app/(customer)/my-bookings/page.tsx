@@ -19,6 +19,14 @@ import {
     Search,
     Sparkles,
 } from "lucide-react";
+import {
+    CustomerEmptyState,
+    CustomerHero,
+    CustomerMetricGrid,
+    CustomerStatusBadge,
+    DashboardSection,
+    StatsCard,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface BookedTicket {
     id: string;
@@ -52,7 +60,14 @@ interface BookingEvent {
 interface Booking {
     id: string;
     bookingCode: string;
-    status: "PENDING" | "AWAITING_PAYMENT" | "PAID" | "CONFIRMED" | "CANCELLED" | "REFUNDED" | "EXPIRED";
+    status:
+    | "PENDING"
+    | "AWAITING_PAYMENT"
+    | "PAID"
+    | "CONFIRMED"
+    | "CANCELLED"
+    | "REFUNDED"
+    | "EXPIRED";
     paymentStatus: string;
     totalTickets: number;
     totalAmount: string;
@@ -78,14 +93,29 @@ interface Pagination {
     totalPages: number;
 }
 
-const STATUS_CONFIG: Record<string, { color: string; bgColor: string; icon: typeof CheckCircle; label: string }> = {
-    PENDING: { color: "text-[var(--warning-text)]", bgColor: "bg-[var(--warning-bg)]", icon: Clock, label: "Menunggu" },
-    AWAITING_PAYMENT: { color: "text-[var(--warning-text)]", bgColor: "bg-[var(--warning-bg)]", icon: Clock, label: "Menunggu Pembayaran" }, // changed from amber
-    PAID: { color: "text-[var(--info-text)]", bgColor: "bg-[var(--info-bg)]", icon: CheckCircle, label: "Dibayar" },
-    CONFIRMED: { color: "text-[var(--success-text)]", bgColor: "bg-[var(--success-bg)]", icon: CheckCircle, label: "Dikonfirmasi" },
-    CANCELLED: { color: "text-[var(--error-text)]", bgColor: "bg-[var(--error-bg)]", icon: XCircle, label: "Dibatalkan" },
-    REFUNDED: { color: "text-[var(--text-muted)]", bgColor: "bg-[var(--bg-tertiary)]", icon: XCircle, label: "Dikembalikan" }, // changed from purple
-    EXPIRED: { color: "text-[var(--text-muted)]", bgColor: "bg-[var(--bg-tertiary)]", icon: XCircle, label: "Kadaluarsa" },
+const STATUS_CONFIG: Record<
+    string,
+    {
+        tone: "warning" | "accent" | "success" | "danger" | "neutral";
+        icon: typeof CheckCircle;
+        label: string;
+    }
+> = {
+    PENDING: { tone: "warning", icon: Clock, label: "Menunggu" },
+    AWAITING_PAYMENT: {
+        tone: "warning",
+        icon: Clock,
+        label: "Menunggu Pembayaran",
+    },
+    PAID: { tone: "accent", icon: CheckCircle, label: "Dibayar" },
+    CONFIRMED: {
+        tone: "success",
+        icon: CheckCircle,
+        label: "Dikonfirmasi",
+    },
+    CANCELLED: { tone: "danger", icon: XCircle, label: "Dibatalkan" },
+    REFUNDED: { tone: "neutral", icon: XCircle, label: "Dikembalikan" },
+    EXPIRED: { tone: "neutral", icon: XCircle, label: "Kadaluarsa" },
 };
 
 const FILTER_TABS = [
@@ -106,37 +136,41 @@ export default function MyBookingsPage() {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    const fetchBookings = useCallback(async (status: string, page: number) => {
-        try {
-            setIsLoading(true);
-            const params = new URLSearchParams();
-            if (status !== "all") params.set("status", status);
-            params.set("page", page.toString());
-            params.set("limit", "10");
+    const fetchBookings = useCallback(
+        async (status: string, page: number) => {
+            try {
+                setIsLoading(true);
+                const params = new URLSearchParams();
+                if (status !== "all") params.set("status", status);
+                params.set("page", page.toString());
+                params.set("limit", "10");
 
-            const res = await fetch(`/api/my-bookings?${params.toString()}`);
-            const data = await res.json();
+                const res = await fetch(`/api/my-bookings?${params.toString()}`);
+                const data = await res.json();
 
-            if (!res.ok) {
-                if (res.status === 401) {
-                    router.push("/login?returnUrl=/my-bookings");
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        router.push("/login?returnUrl=/my-bookings");
+                        return;
+                    }
+                    setError(data.error?.message || "Gagal memuat pesanan");
                     return;
                 }
-                setError(data.error?.message || "Gagal memuat pesanan");
-                return;
-            }
 
-            if (data.success) {
-                setBookings(data.data.bookings);
-                setStats(data.data.stats);
-                setPagination(data.data.pagination);
+                if (data.success) {
+                    setBookings(data.data.bookings);
+                    setStats(data.data.stats);
+                    setPagination(data.data.pagination);
+                    setError(null);
+                }
+            } catch {
+                setError("Gagal memuat pesanan");
+            } finally {
+                setIsLoading(false);
             }
-        } catch {
-            setError("Gagal memuat pesanan");
-        } finally {
-            setIsLoading(false);
-        }
-    }, [router]);
+        },
+        [router],
+    );
 
     useEffect(() => {
         fetchBookings(activeTab, currentPage);
@@ -185,8 +219,8 @@ export default function MyBookingsPage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat pesanan kamu...</p>
+                    <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-(--accent-primary)" />
+                    <p className="text-(--text-muted)">Memuat pesanan kamu...</p>
                 </div>
             </div>
         );
@@ -194,89 +228,99 @@ export default function MyBookingsPage() {
 
     if (error) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="text-center card p-8 max-w-md">
-                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
-                    </div>
-                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
-                    <Link href="/dashboard" className="text-[var(--accent-primary)] hover:underline">
-                        Kembali ke Dashboard
-                    </Link>
-                </div>
-            </div>
+            <CustomerEmptyState
+                title="Pesanan belum bisa dimuat"
+                description={`${error}. Coba beberapa saat lagi atau kembali ke dashboard untuk melanjutkan aktivitas customer.`}
+                href="/dashboard"
+                ctaLabel="Kembali ke dashboard"
+                icon={AlertCircle}
+            />
         );
     }
 
     return (
-        <div className="space-y-6">
-            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
-                        Pesanan Saya
-                    </h1>
-                    {stats && (
-                        <p className="text-[var(--text-muted)] text-sm mt-1">
-                            {stats.total} total pesanan
-                        </p>
-                    )}
-                </div>
-            </section>
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Order history"
+                title="Pesanan saya"
+                description="Kelola tiket aktif, pantau pembayaran yang belum selesai, dan buka detail booking dari tampilan yang lebih rapi serta mudah dipindai."
+                meta={
+                    stats ? (
+                        <>
+                            <CustomerStatusBadge
+                                label={`${stats.total} total pesanan`}
+                                tone="accent"
+                                icon={Ticket}
+                            />
+                            <CustomerStatusBadge
+                                label={`${stats.confirmed} dikonfirmasi`}
+                                tone="success"
+                                icon={CheckCircle}
+                            />
+                        </>
+                    ) : undefined
+                }
+                actions={
+                    <Link
+                        href="/events"
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) transition-transform duration-200 hover:-translate-y-0.5"
+                    >
+                        <Sparkles className="h-4 w-4" />
+                        Jelajahi Event
+                    </Link>
+                }
+            />
 
-            {stats && (
-                <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div className="card p-4 flex items-center gap-3">
-                        <div className="p-2.5 bg-indigo-500/10 text-indigo-500 rounded-xl">
-                            <Ticket className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</p>
-                            <p className="text-xs text-[var(--text-muted)]">Total</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3">
-                        <div className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-xl">
-                            <CheckCircle className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.confirmed}</p>
-                            <p className="text-xs text-[var(--text-muted)]">Dikonfirmasi</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3">
-                        <div className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl">
-                            <Clock className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.pending}</p>
-                            <p className="text-xs text-[var(--text-muted)]">Menunggu</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3">
-                        <div className="p-2.5 bg-rose-500/10 text-rose-500 rounded-xl">
-                            <XCircle className="h-5 w-5" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.cancelled}</p>
-                            <p className="text-xs text-[var(--text-muted)]">Dibatalkan</p>
-                        </div>
-                    </div>
-                </section>
-            )}
+            {stats ? (
+                <CustomerMetricGrid>
+                    <StatsCard
+                        label="Total pesanan"
+                        value={stats.total}
+                        icon={Ticket}
+                        tone="accent"
+                        trend="Seluruh transaksi yang pernah dibuat"
+                    />
+                    <StatsCard
+                        label="Pesanan aktif"
+                        value={stats.confirmed}
+                        icon={CheckCircle}
+                        tone="success"
+                        trend="Siap dibuka ke halaman tiket"
+                    />
+                    <StatsCard
+                        label="Menunggu aksi"
+                        value={stats.pending}
+                        icon={Clock}
+                        tone="warning"
+                        trend="Perlu diselesaikan atau dipantau"
+                    />
+                    <StatsCard
+                        label="Dibatalkan"
+                        value={stats.cancelled}
+                        icon={XCircle}
+                        tone="default"
+                        trend="Riwayat pesanan tidak aktif"
+                    />
+                </CustomerMetricGrid>
+            ) : null}
 
-            <section className="card overflow-hidden">
-                <div className="border-b border-[var(--border)] overflow-x-auto">
-                    <div className="flex min-w-max">
+            <DashboardSection
+                title="Filter dan pencarian"
+                description="Saring daftar pesanan berdasarkan status atau cari cepat menggunakan kode booking dan nama event."
+            >
+                <div className="space-y-4">
+                    <div className="flex flex-wrap gap-3">
                         {FILTER_TABS.map((tab) => {
                             const Icon = tab.icon;
+                            const isActive = activeTab === tab.value;
                             return (
                                 <button
                                     key={tab.value}
                                     type="button"
                                     onClick={() => handleTabChange(tab.value)}
-                                    className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${activeTab === tab.value
-                                        ? "border-[var(--accent-primary)] text-[var(--accent-primary)] bg-[var(--accent-primary)]/5"
-                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+                                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${isActive
+                                            ? "bg-(--accent-gradient) text-white"
+                                            : "border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)"
                                         }`}
                                 >
                                     <Icon className="h-4 w-4" />
@@ -285,244 +329,286 @@ export default function MyBookingsPage() {
                             );
                         })}
                     </div>
-                </div>
-
-                <div className="p-4">
-                    <div className="relative max-w-md">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
+                    <label className="relative block max-w-xl">
+                        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                         <input
                             type="text"
                             placeholder="Cari kode pesanan atau event..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="input pl-11"
+                            className="input rounded-full pl-12"
                         />
-                    </div>
+                    </label>
                 </div>
-            </section>
+            </DashboardSection>
 
-            {isLoading && bookings.length > 0 && (
-                <div className="flex justify-center py-4">
-                    <Loader2 className="h-6 w-6 text-[var(--accent-primary)] animate-spin" />
+            {isLoading && bookings.length > 0 ? (
+                <div className="flex justify-center py-2">
+                    <Loader2 className="h-6 w-6 animate-spin text-(--accent-primary)" />
                 </div>
-            )}
+            ) : null}
 
-            {filteredBookings.length === 0 ? (
-                <div className="card p-12 text-center">
-                    <div className="w-20 h-20 bg-[var(--accent-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Ticket className="h-10 w-10 text-[var(--accent-primary)]" />
-                    </div>
-                    <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Tidak ada pesanan ditemukan</h3>
-                    <p className="text-[var(--text-muted)] mb-6 max-w-sm mx-auto">
-                        {activeTab === "all"
-                            ? "Kamu belum memiliki pesanan."
-                            : `Tidak ada pesanan dengan status ini.`}
-                    </p>
-                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2 shadow-glow">
-                        <Sparkles className="h-4 w-4" />
-                        Jelajahi Event
-                        <ChevronRight className="h-4 w-4" />
-                    </Link>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    {filteredBookings.map((booking) => {
-                        const statusConfig = STATUS_CONFIG[booking.status] || STATUS_CONFIG.PENDING;
-                        const StatusIcon = statusConfig.icon;
+            <DashboardSection
+                title="Daftar booking"
+                description="Setiap kartu menampilkan ringkasan event, status pembayaran, komposisi tiket, dan jalur aksi yang paling relevan."
+            >
+                {filteredBookings.length === 0 ? (
+                    <CustomerEmptyState
+                        title="Tidak ada pesanan ditemukan"
+                        description={
+                            activeTab === "all"
+                                ? "Kamu belum memiliki pesanan. Mulai eksplorasi event untuk melihat booking pertama muncul di area ini."
+                                : "Tidak ada pesanan dengan filter yang sedang aktif. Coba status lain atau gunakan pencarian yang berbeda."
+                        }
+                        href="/events"
+                        ctaLabel="Jelajahi event"
+                        icon={Ticket}
+                        className="border-none bg-transparent p-0 shadow-none"
+                    />
+                ) : (
+                    <div className="space-y-4">
+                        {filteredBookings.map((booking) => {
+                            const statusConfig =
+                                STATUS_CONFIG[booking.status] || STATUS_CONFIG.PENDING;
 
-                        return (
-                            <div
-                                key={booking.id}
-                                className="card card-hover overflow-hidden"
-                            >
-                                <div className="flex flex-col md:flex-row">
-                                    <div className="md:w-48 h-36 md:h-auto relative shrink-0">
-                                        <Image
-                                            src={booking.event.posterImage || "/placeholder.jpg"}
-                                            alt={booking.event.title}
-                                            fill
-                                            className="object-cover"
-                                            sizes="(max-width: 768px) 100vw, 192px"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent md:hidden" />
-                                        <div className="absolute top-3 left-3">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${statusConfig.bgColor} ${statusConfig.color}`}>
-                                                <StatusIcon className="h-3.5 w-3.5" />
-                                                {statusConfig.label}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex-1 p-4 md:p-5">
-                                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1.5">
-                                                    <span className="text-sm text-[var(--text-muted)] font-mono bg-[var(--bg-tertiary)] px-2 py-0.5 rounded">
-                                                        {booking.bookingCode}
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2 line-clamp-1">
-                                                    <Link
-                                                        href={`/events/${booking.event.slug}`}
-                                                        className="hover:text-[var(--accent-primary)] transition-colors"
-                                                    >
-                                                        {booking.event.title}
-                                                    </Link>
-                                                </h3>
-
-                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--text-muted)]">
-                                                    {booking.eventSchedule && (
-                                                        <div className="flex items-center gap-1.5">
-                                                            <Calendar className="h-4 w-4 text-[var(--accent-primary)]" />
-                                                            <span>
-                                                                {formatDate(booking.eventSchedule.scheduleDate)}
-                                                                <span className="mx-1 text-[var(--border)]">•</span>
-                                                                {formatTime(booking.eventSchedule.startTime)}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                    {booking.event.venue && (
-                                                        <div className="flex items-center gap-1.5">
-                                                            <MapPin className="h-4 w-4" />
-                                                            <span>
-                                                                {booking.event.venue.name}, {booking.event.venue.city}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div className="mt-3 flex flex-wrap gap-1.5">
-                                                    {booking.bookedTickets.slice(0, 3).map((ticket) => (
-                                                        <span
-                                                            key={ticket.id}
-                                                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${ticket.isCheckedIn
-                                                                ? "bg-[var(--success-bg)] text-[var(--success-text)]"
-                                                                : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
-                                                                }`}
-                                                        >
-                                                            <Ticket className="h-3 w-3" />
-                                                            {ticket.ticketType.name}
-                                                            {ticket.isCheckedIn && " ✓"}
-                                                        </span>
-                                                    ))}
-                                                    {booking.bookedTickets.length > 3 && (
-                                                        <span className="inline-flex items-center px-2 py-1 bg-[var(--bg-tertiary)] text-[var(--text-muted)] rounded-lg text-xs">
-                                                            +{booking.bookedTickets.length - 3} lainnya
-                                                        </span>
-                                                    )}
-                                                </div>
+                            return (
+                                <article
+                                    key={booking.id}
+                                    className="overflow-hidden rounded-[1.75rem] border border-(--border) bg-(--surface)/96 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
+                                >
+                                    <div className="flex flex-col lg:flex-row">
+                                        <div className="relative aspect-16/10 w-full shrink-0 overflow-hidden bg-(--surface-brand-soft) lg:h-auto lg:w-64 lg:aspect-auto">
+                                            <Image
+                                                src={booking.event.posterImage || "/placeholder.jpg"}
+                                                alt={booking.event.title}
+                                                fill
+                                                className="object-cover"
+                                                sizes="(max-width: 1024px) 100vw, 256px"
+                                            />
+                                            <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent lg:bg-linear-to-r" />
+                                            <div className="absolute left-4 top-4">
+                                                <CustomerStatusBadge
+                                                    label={statusConfig.label}
+                                                    tone={statusConfig.tone}
+                                                    icon={statusConfig.icon}
+                                                    className="border-white/10 bg-black/35 text-white backdrop-blur"
+                                                />
                                             </div>
+                                            <div className="absolute bottom-4 left-4 right-4 lg:hidden">
+                                                <h2 className="line-clamp-2 text-lg font-semibold text-white">
+                                                    {booking.event.title}
+                                                </h2>
+                                            </div>
+                                        </div>
 
-                                            <div className="flex flex-row md:flex-col items-center md:items-end gap-4 pt-3 md:pt-0 border-t md:border-t-0 border-[var(--border)]">
-                                                <div className="md:text-right">
-                                                    <p className="text-xs text-[var(--text-muted)]">Total</p>
-                                                    <p className="text-lg font-bold text-[var(--text-primary)]">
+                                        <div className="flex-1 space-y-5 p-5 sm:p-6">
+                                            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                                                <div className="min-w-0 flex-1 space-y-3">
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <span className="rounded-full bg-(--bg-secondary) px-3 py-1 font-mono text-xs text-(--text-muted)">
+                                                            {booking.bookingCode}
+                                                        </span>
+                                                        <CustomerStatusBadge
+                                                            label={`${booking.totalTickets} tiket`}
+                                                            tone="accent"
+                                                            icon={Ticket}
+                                                        />
+                                                    </div>
+
+                                                    <div className="hidden lg:block">
+                                                        <h2 className="text-xl font-semibold text-foreground">
+                                                            <Link
+                                                                href={`/events/${booking.event.slug}`}
+                                                                className="transition-colors hover:text-(--accent-primary)"
+                                                            >
+                                                                {booking.event.title}
+                                                            </Link>
+                                                        </h2>
+                                                    </div>
+
+                                                    <div className="space-y-2 text-sm text-(--text-secondary)">
+                                                        {booking.eventSchedule ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <Calendar className="h-4 w-4 text-(--accent-primary)" />
+                                                                <span>
+                                                                    {formatDate(
+                                                                        booking.eventSchedule
+                                                                            .scheduleDate,
+                                                                    )}
+                                                                    <span className="mx-2 text-(--text-muted)">
+                                                                        •
+                                                                    </span>
+                                                                    {formatTime(
+                                                                        booking.eventSchedule
+                                                                            .startTime,
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                        ) : null}
+                                                        {booking.event.venue ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <MapPin className="h-4 w-4 text-(--text-muted)" />
+                                                                <span>
+                                                                    {booking.event.venue.name}, {booking.event.venue.city}
+                                                                </span>
+                                                            </div>
+                                                        ) : null}
+                                                    </div>
+
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {booking.bookedTickets.slice(0, 3).map((ticket) => (
+                                                            <CustomerStatusBadge
+                                                                key={ticket.id}
+                                                                label={`${ticket.ticketType.name}${ticket.isCheckedIn ? " • Check-in" : ""}`}
+                                                                tone={
+                                                                    ticket.isCheckedIn
+                                                                        ? "success"
+                                                                        : "neutral"
+                                                                }
+                                                                icon={Ticket}
+                                                            />
+                                                        ))}
+                                                        {booking.bookedTickets.length > 3 ? (
+                                                            <CustomerStatusBadge
+                                                                label={`+${booking.bookedTickets.length - 3} tiket lain`}
+                                                                tone="neutral"
+                                                            />
+                                                        ) : null}
+                                                    </div>
+                                                </div>
+
+                                                <aside className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 xl:w-64">
+                                                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">
+                                                        Ringkasan pembayaran
+                                                    </p>
+                                                    <p className="mt-2 text-2xl font-semibold text-foreground">
                                                         {formatCurrency(booking.totalAmount)}
                                                     </p>
-                                                    <p className="text-xs text-[var(--text-muted)]">
-                                                        {booking.totalTickets} tiket
+                                                    <p className="mt-1 text-sm text-(--text-secondary)">
+                                                        Dibuat {formatDate(booking.createdAt)}
                                                     </p>
-                                                </div>
 
-                                                <div className="flex gap-2">
-                                                    {booking.status === "CONFIRMED" && (
+                                                    <div className="mt-4 flex flex-col gap-3">
+                                                        {booking.status === "CONFIRMED" ? (
+                                                            <Link
+                                                                href={`/my-bookings/${booking.bookingCode}`}
+                                                                className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                                                            >
+                                                                <QrCode className="h-4 w-4" />
+                                                                Lihat tiket
+                                                            </Link>
+                                                        ) : null}
+
+                                                        {booking.status === "AWAITING_PAYMENT" ? (
+                                                            <Link
+                                                                href={`/checkout/payment/${booking.id}`}
+                                                                className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                                                            >
+                                                                <Clock className="h-4 w-4" />
+                                                                Lanjut bayar
+                                                            </Link>
+                                                        ) : null}
+
+                                                        {(booking.status === "CONFIRMED" ||
+                                                            booking.status === "PAID") && (
+                                                                <button
+                                                                    type="button"
+                                                                    className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface) px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
+                                                                >
+                                                                    <Download className="h-4 w-4" />
+                                                                    Unduh ringkasan
+                                                                </button>
+                                                            )}
+
                                                         <Link
                                                             href={`/my-bookings/${booking.bookingCode}`}
-                                                            className="btn-primary py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all"
+                                                            className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface) px-4 py-3 text-sm font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover)"
                                                         >
-                                                            <QrCode className="h-4 w-4" />
-                                                            <span className="hidden sm:inline">Lihat Tiket</span>
+                                                            Detail booking
+                                                            <ChevronRight className="h-4 w-4" />
                                                         </Link>
-                                                    )}
-                                                    {booking.status === "AWAITING_PAYMENT" && (
-                                                        <Link
-                                                            href={`/checkout/payment/${booking.id}`}
-                                                            className="btn-primary py-2.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all !from-orange-500 !to-amber-500"
-                                                        >
-                                                            Bayar
-                                                        </Link>
-                                                    )}
-                                                    {(booking.status === "CONFIRMED" || booking.status === "PAID") && (
-                                                        <button
-                                                            type="button"
-                                                            className="btn-secondary py-2.5 px-3 rounded-xl hover:bg-[var(--surface-hover)] transition-colors"
-                                                        >
-                                                            <Download className="h-4 w-4" />
-                                                        </button>
-                                                    )}
+                                                    </div>
+                                                </aside>
+                                            </div>
+
+                                            {booking.status === "AWAITING_PAYMENT" &&
+                                                booking.expiresAt ? (
+                                                <div className="rounded-2xl border border-[rgba(251,193,23,0.28)] bg-(--warning-bg) p-4 text-sm text-(--warning-text)">
+                                                    <div className="flex items-start gap-2">
+                                                        <Clock className="mt-0.5 h-4 w-4 shrink-0" />
+                                                        <p>
+                                                            Pembayaran berakhir pada {formatDate(booking.expiresAt)} pukul{" "}
+                                                            {new Date(
+                                                                booking.expiresAt,
+                                                            ).toLocaleTimeString("id-ID", {
+                                                                hour: "2-digit",
+                                                                minute: "2-digit",
+                                                            })}
+                                                            . Selesaikan pembayaran agar tiket tetap aktif.
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            ) : null}
                                         </div>
-
-                                        {booking.status === "AWAITING_PAYMENT" && booking.expiresAt && (
-                                            <div className="mt-4 p-3 bg-[var(--warning-bg)] border border-[var(--warning)]/20 rounded-xl">
-                                                <p className="text-sm text-[var(--warning-text)] flex items-center gap-2">
-                                                    <Clock className="h-4 w-4" />
-                                                    Pembayaran berakhir pada {formatDate(booking.expiresAt)} pukul{" "}
-                                                    {new Date(booking.expiresAt).toLocaleTimeString("id-ID", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                    })}
-                                                </p>
-                                            </div>
-                                        )}
                                     </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
+                                </article>
+                            );
+                        })}
+                    </div>
+                )}
+            </DashboardSection>
 
-            {pagination && pagination.totalPages > 1 && (
-                <div className="flex justify-center gap-2">
+            {pagination && pagination.totalPages > 1 ? (
+                <div className="flex flex-wrap items-center justify-center gap-2">
                     <button
                         type="button"
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className="btn-secondary py-2.5 px-4 rounded-xl disabled:opacity-50 hover:bg-[var(--surface-hover)] transition-colors"
+                        className="inline-flex items-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2.5 text-sm font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover) disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         Sebelumnya
                     </button>
-                    <div className="flex items-center gap-1">
-                        {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-                            .filter((page) => {
-                                if (pagination.totalPages <= 7) return true;
-                                if (page === 1 || page === pagination.totalPages) return true;
-                                if (Math.abs(page - currentPage) <= 1) return true;
-                                return false;
-                            })
-                            .map((page, index, arr) => {
-                                const showEllipsis = index > 0 && page - arr[index - 1] > 1;
-                                return (
-                                    <span key={page} className="flex items-center">
-                                        {showEllipsis && (
-                                            <span className="px-2 text-[var(--text-muted)]">...</span>
-                                        )}
-                                        <button
-                                            type="button"
-                                            onClick={() => setCurrentPage(page)}
-                                            className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${currentPage === page
-                                                ? "bg-[var(--accent-primary)] text-white"
-                                                : "hover:bg-[var(--surface-hover)] text-[var(--text-secondary)]"
-                                                }`}
-                                        >
-                                            {page}
-                                        </button>
-                                    </span>
-                                );
-                            })}
-                    </div>
+
+                    {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                        .filter((page) => {
+                            if (pagination.totalPages <= 7) return true;
+                            if (page === 1 || page === pagination.totalPages) return true;
+                            if (Math.abs(page - currentPage) <= 1) return true;
+                            return false;
+                        })
+                        .map((page, index, arr) => {
+                            const showEllipsis = index > 0 && page - arr[index - 1] > 1;
+                            return (
+                                <span key={page} className="flex items-center gap-2">
+                                    {showEllipsis ? (
+                                        <span className="px-1 text-sm text-(--text-muted)">...</span>
+                                    ) : null}
+                                    <button
+                                        type="button"
+                                        onClick={() => setCurrentPage(page)}
+                                        className={`inline-flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold transition-colors ${currentPage === page
+                                                ? "bg-(--accent-gradient) text-white"
+                                                : "border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)"
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                </span>
+                            );
+                        })}
+
                     <button
                         type="button"
-                        onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
+                        onClick={() =>
+                            setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))
+                        }
                         disabled={currentPage === pagination.totalPages}
-                        className="btn-secondary py-2.5 px-4 rounded-xl disabled:opacity-50 hover:bg-[var(--surface-hover)] transition-colors"
+                        className="inline-flex items-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2.5 text-sm font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover) disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                        Selanjutnya
+                        Berikutnya
                     </button>
                 </div>
-            )}
+            ) : null}
         </div>
     );
 }

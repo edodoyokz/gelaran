@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CustomerHeader } from "@/components/customer/CustomerHeader";
+import { CustomerSidebar } from "@/components/customer/CustomerSidebar";
 import { CustomerMobileNav } from "@/components/customer/CustomerMobileNav";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { DashboardContent } from "@/components/shared/phase-two-shells";
 import { createClient } from "@/lib/supabase/client";
 
 interface UserData {
@@ -16,10 +18,11 @@ interface UserData {
 
 function CustomerLayoutSkeleton() {
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)]">
-            <div className="h-16 glass-strong fixed top-0 left-0 right-0 z-40" />
-            <main className="pt-20 pb-24 lg:pb-8 px-4 sm:px-6 max-w-7xl mx-auto">
-                <div className="space-y-6">
+        <div className="min-h-screen bg-[#f0f9f9] dark:bg-[#001010]">
+            <div className="h-16 bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 fixed w-full top-0 z-50 flex items-center px-8" />
+            <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-[#e2fffe] dark:bg-[#002020] border-r border-teal-100/50 dark:border-teal-900/50 z-40 hidden lg:block" />
+            <main className="lg:ml-64 pt-16 min-h-screen lg:px-8 px-4 pb-24 lg:pb-8">
+                <div className="space-y-6 pt-8 max-w-7xl mx-auto">
                     <div className="h-8 w-48 skeleton rounded-lg" />
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         {[1, 2, 3, 4].map((i) => (
@@ -40,6 +43,12 @@ function CustomerLayoutContent({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [notificationCount, setNotificationCount] = useState(0);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        router.push("/");
+        router.refresh();
+    };
 
     useEffect(() => {
         const checkUser = async () => {
@@ -95,12 +104,16 @@ function CustomerLayoutContent({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] transition-colors duration-300">
+        <div className="min-h-screen bg-[#f0f9f9] dark:bg-[#001010] text-[#015959] dark:text-[#29B3B6] font-body transition-colors duration-300 flex flex-col">
             <CustomerHeader user={user} notificationCount={notificationCount} />
+            
+            <div className="flex flex-1">
+                <CustomerSidebar user={user} onLogout={handleLogout} />
 
-            <main className="pt-20 pb-24 lg:pb-8 px-4 sm:px-6 max-w-7xl mx-auto">
-                {children}
-            </main>
+                <main className="flex-1 lg:ml-64 pt-16 min-h-screen lg:px-8 px-4 pb-24 lg:pb-8 w-full">
+                    <DashboardContent>{children}</DashboardContent>
+                </main>
+            </div>
 
             <CustomerMobileNav />
         </div>

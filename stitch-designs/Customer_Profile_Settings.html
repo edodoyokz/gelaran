@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-highest": "#e1e3e3",
+                        "on-tertiary-fixed-variant": "#7f2b00",
+                        "surface-container-low": "#f2f4f4",
+                        "surface-container": "#eceeee",
+                        "surface-bright": "#f8fafa",
+                        "on-primary-container": "#89cdcd",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#672200",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "surface": "#f8fafa",
+                        "error": "#ba1a1a",
+                        "secondary": "#00696b",
+                        "primary": "#004040",
+                        "secondary-container": "#7bf5f8",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8dada",
+                        "primary-fixed": "#aaefee",
+                        "secondary-fixed": "#7bf5f8",
+                        "on-secondary-container": "#007072",
+                        "tertiary-container": "#8d3100",
+                        "surface-variant": "#e1e3e3",
+                        "primary-container": "#015959",
+                        "on-tertiary-container": "#ffae8e",
+                        "on-primary-fixed": "#002020",
+                        "surface-tint": "#1e6868",
+                        "primary-fixed-dim": "#8ed2d2",
+                        "inverse-primary": "#8ed2d2",
+                        "outline-variant": "#bec8c8",
+                        "inverse-surface": "#2e3131",
+                        "on-background": "#191c1d",
+                        "surface-container-high": "#e6e8e8",
+                        "outline": "#6f7978",
+                        "on-secondary-fixed": "#002021",
+                        "on-primary-fixed-variant": "#004f50",
+                        "background": "#f8fafa",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f1",
+                        "tertiary-fixed": "#ffdbce",
+                        "on-error": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#3f4948",
+                        "on-tertiary-fixed": "#370e00",
+                        "brand-orange": "#F95D00",
+                        "brand-yellow": "#FBC117",
+                        "brand-teal-light": "#29B3B6"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff;
+        }
+        .serif-text { font-family: 'Noto Serif', serif; }
+    </style>
+</head>
+<body class="text-on-background bg-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full bg-[#f8fafa] dark:bg-slate-900 flex justify-between items-center px-8 py-4">
+<div class="flex items-center gap-12">
+<span class="font-['Noto_Serif'] text-2xl font-black text-[#015959] dark:text-teal-500">Gelaran</span>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#015959] dark:hover:text-teal-300 transition-colors duration-200" href="#">Explore</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#015959] dark:hover:text-teal-300 transition-colors duration-200" href="#">Exhibitions</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-[#015959] dark:hover:text-teal-300 transition-colors duration-200" href="#">Membership</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/20">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 font-body" placeholder="Search events..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-500 hover:text-[#015959] transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-[#015959] transition-colors" data-icon="shopping_bag">shopping_bag</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Julian Barnes Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional man with a friendly expression in a modern art gallery setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_Xrj8ZlZuyXYj9sQ77lqwbm9fkFZKTR5SOJCj04DT10YcA3f-d-AhlF2217G1s-ZkFfTxd4dN0jFCEzPg_3hy-DmS4J0EthYnEQR_belXOeObbuIVGX-bU3WnbKik2noPAbZAThcj2KML4SbKqEHTl8mXvvdvy3PTnO-NkRorjiXNpQiCtHnJTNKbHykMxGu_XwuGJ-dLzU-37eWzwy5JNhlMHINV79d8sEOhGjUFaCP9qvDPgCWyq7InfcOoUDGa_-GakGd3R8Q"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex pt-20">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 pt-24 bg-[#f2f4f4] dark:bg-slate-800/50 flex flex-col gap-2 p-6">
+<div class="flex flex-col items-center mb-8 px-4">
+<div class="w-16 h-16 rounded-full overflow-hidden mb-3 border-2 border-primary-container">
+<img alt="User Profile Picture" class="w-full h-full object-cover" data-alt="close-up portrait of a professional man with a friendly expression in a modern art gallery setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB81Yi3vF_aS5oMDnOatIpAfXho2Ze30A4-Tg0FNDG26RPwXLgNKz5N0XtHryRk7ZHszufpe8E125jVtLx2kybKdvenyhsSAmJZnSyW6twIcG4X39m1xAuaBrOuY7Sa_esM_8qXo08Ltyb-U_6Ynu2UKdMYRMAXgR5jkbUOPqjv0X0fOR2Tzrymixu0YD1N0kDDDn4n-f91XNg07O9yQfJSAqqF6jFyl6eW4Sxj7zvN1yog0-wv00BW1CZRY1iXV2wCiAPY8LB2xk4"/>
+</div>
+<h3 class="font-headline font-bold text-[#015959] text-center">Julian Barnes</h3>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Premium Curator</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-white/50 dark:hover:bg-slate-700 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-tight">Overview</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-white/50 dark:hover:bg-slate-700 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-tight">My Tickets</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-white/50 dark:hover:bg-slate-700 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-tight">Wishlist</span>
+</a>
+<a class="flex items-center gap-3 bg-white dark:bg-slate-900 text-[#015959] dark:text-teal-400 rounded-lg px-4 py-3 shadow-sm scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-tight">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pb-8">
+<button class="w-full bg-primary-container text-white py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                    Upgrade Membership
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 w-full min-h-screen p-12 bg-white">
+<div class="max-w-4xl mx-auto">
+<!-- Profile Summary Section -->
+<section class="mb-16 flex items-center gap-10">
+<div class="relative">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="professional male profile photo in high resolution with artistic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD22SOfq711fft9Adbmf2-BiPcZKLdJTlOE14IyQGv_Py9ddhnOOXPSyGNDumBj7q_AkJANM4fBf6PkmcQp8L3n2sMI3R6SUDNhBZCszJ-yOpmGkd_IzvFLJSRtBoFxJlK1BaqgP_mciHNZit-EByoxR7qcw6MqYNmQnluYWHnpGGRYdiTw3jpAwJnfqYJEn5CoJgNF_w9KAb2XShP_7kqq0y6LbSlPkkWb7-qzw5HKa9eU4aLxnRTquqjBqS2qi3iNraSuYocnupI"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-brand-teal-light text-white p-2 rounded-full shadow-lg border-2 border-white hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-4 mb-2">
+<h1 class="font-headline text-4xl font-black text-primary">Julian Barnes</h1>
+<span class="bg-brand-yellow/20 text-on-tertiary-fixed-variant px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                Premium Member
+                            </span>
+</div>
+<div class="flex gap-8 mt-4">
+<div class="flex flex-col">
+<span class="text-2xl font-bold text-primary">12</span>
+<span class="text-xs text-slate-500 uppercase tracking-wider font-bold">Events Attended</span>
+</div>
+<div class="flex flex-col">
+<span class="text-2xl font-bold text-primary">24</span>
+<span class="text-xs text-slate-500 uppercase tracking-wider font-bold">Reviews Written</span>
+</div>
+<div class="flex flex-col">
+<span class="text-2xl font-bold text-primary">156</span>
+<span class="text-xs text-slate-500 uppercase tracking-wider font-bold">Art Points</span>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 gap-12">
+<!-- Personal Information Form -->
+<section>
+<h2 class="font-headline text-2xl text-primary mb-8 flex items-center gap-2">
+                            Personal Information
+                        </h2>
+<div class="grid grid-cols-2 gap-x-8 gap-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Full Name</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" type="text" value="Julian Barnes"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Email Address</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" type="email" value="julian.barnes@curator.com"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Phone Number</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" type="text" value="+44 7700 900077"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Location</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" type="text" value="London, United Kingdom"/>
+</div>
+</div>
+</section>
+<!-- Security -->
+<section class="pt-8">
+<h2 class="font-headline text-2xl text-primary mb-8">Security</h2>
+<div class="space-y-6">
+<div class="flex flex-col gap-2 max-w-md">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Current Password</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" type="password" value="********"/>
+</div>
+<div class="grid grid-cols-2 gap-8 max-w-4xl">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">New Password</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" placeholder="••••••••" type="password"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Confirm New Password</label>
+<input class="bg-surface-container-low border-b border-outline-variant/30 border-t-0 border-x-0 focus:ring-0 focus:bg-white focus:border-brand-teal-light transition-all p-3 text-on-surface font-medium" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-2 gap-12 pt-8">
+<!-- Notification Preferences -->
+<section>
+<h2 class="font-headline text-2xl text-primary mb-8">Notifications</h2>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div>
+<p class="font-bold text-primary">Email Notifications</p>
+<p class="text-sm text-slate-500">Weekly curations and event invites</p>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-teal-light"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div>
+<p class="font-bold text-primary">Push Notifications</p>
+<p class="text-sm text-slate-500">Real-time ticket updates and news</p>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-teal-light"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Linked Accounts -->
+<section>
+<h2 class="font-headline text-2xl text-primary mb-8">Linked Accounts</h2>
+<div class="space-y-6">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center bg-white rounded shadow-sm">
+<svg class="w-5 h-5" viewbox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path></svg>
+</div>
+<span class="font-bold text-primary">Google</span>
+</div>
+<button class="text-brand-teal-light font-bold text-sm hover:underline">Connected</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center bg-[#1877F2] rounded shadow-sm text-white">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+</div>
+<span class="font-bold text-primary">Facebook</span>
+</div>
+<button class="bg-primary text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-primary-container transition-colors">Connect</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Actions -->
+<div class="flex items-center justify-between border-t border-surface-container pt-12 mt-4">
+<button class="text-error font-bold text-sm flex items-center gap-2 hover:bg-error-container/20 px-4 py-2 rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="delete">delete</span>
+                            Deactivate Account
+                        </button>
+<div class="flex gap-4">
+<button class="px-8 py-3 rounded text-slate-500 font-bold text-sm hover:bg-surface-container transition-colors">Discard</button>
+<button class="bg-brand-orange text-white px-12 py-3 rounded-lg font-bold text-sm shadow-lg shadow-brand-orange/20 hover:scale-[1.02] active:scale-[0.98] transition-all">Save Changes</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

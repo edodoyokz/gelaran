@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TicketFlow Admin - Finance Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#a63b00",
+                        "secondary": "#00696b",
+                        "on-primary-container": "#fffbff",
+                        "on-surface": "#002020",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#aaefee",
+                        "secondary-container": "#7bf5f8",
+                        "secondary-fixed": "#7bf5f8",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "inverse-surface": "#003737",
+                        "on-secondary-fixed": "#002021",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#ffb598",
+                        "surface-container-highest": "#aaefee",
+                        "surface-container-high": "#aff5f4",
+                        "on-primary-fixed": "#370e00",
+                        "primary-container": "#cb4a00",
+                        "inverse-primary": "#ffb598",
+                        "primary": "#a23a00",
+                        "outline-variant": "#e3bfb1",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdf9a",
+                        "on-error-container": "#93000a",
+                        "surface": "#e2fffe",
+                        "surface-container": "#b5faf9",
+                        "surface-bright": "#e2fffe",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-tertiary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#c1fffe",
+                        "on-background": "#002020",
+                        "inverse-on-surface": "#b8fdfc",
+                        "tertiary-container": "#936f00",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#a1e6e5",
+                        "tertiary": "#755800",
+                        "on-secondary-container": "#007072",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "on-tertiary-fixed": "#251a00",
+                        "on-surface-variant": "#5b4137",
+                        "outline": "#8f7065",
+                        "primary-fixed": "#ffdbce",
+                        "background": "#e2fffe"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif", "serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .serif-heading { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); }
+        /* Custom scrollbar for editorial feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #aaefee; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-white text-on-surface min-h-screen">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-72 fixed left-0 top-0 overflow-y-auto bg-cyan-100 dark:bg-cyan-950 flex flex-col py-8 z-50">
+<div class="px-8 mb-10">
+<h1 class="text-2xl font-bold font-serif text-cyan-900 dark:text-cyan-50">Finance Admin</h1>
+<p class="text-xs font-body opacity-60 tracking-wider uppercase mt-1">Editorial Architect</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active State: Dashboard -->
+<a class="flex items-center gap-3 px-6 py-4 text-orange-700 dark:text-orange-300 font-bold bg-white/50 dark:bg-white/10 rounded-r-full transition-all scale-[0.98]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-cyan-800 dark:text-cyan-200 opacity-70 hover:bg-cyan-200 dark:hover:bg-cyan-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-label">Events</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-cyan-800 dark:text-cyan-200 opacity-70 hover:bg-cyan-200 dark:hover:bg-cyan-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label">Wallet</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-cyan-800 dark:text-cyan-200 opacity-70 hover:bg-cyan-200 dark:hover:bg-cyan-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label">Users</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-cyan-800 dark:text-cyan-200 opacity-70 hover:bg-cyan-200 dark:hover:bg-cyan-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-4 px-6 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                New Event
+            </button>
+<div class="mt-8 flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Admin User Profile" data-alt="professional portrait of a financial executive in a minimalist studio setting with soft side lighting and neutral tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5hHmDYcjdqr_7n6YCh574_0roTzNFuNCml3HdEeoYtj1okwfskpttl4FdoBC6LToajtj7BR1zHnKuUes3JqLMBgbsIq47z7_ncf7W_7XSlpALKhsdNejh25dzzqLE7pT-2O3jOnSzXJeh1Ic8icUgjPxszAcX0AR4ImuzABLe4JyU4kAyiJY6Juj0aPmzs_Ck2UeB84q9A-vINxIV_lNr7UcHXjDAFk4eAx26pzORI4oo5K21yulXYZ6TJHxf6txS0A1pkqWOGEY"/>
+</div>
+<div>
+<p class="text-sm font-bold text-cyan-900">Admin User</p>
+<p class="text-[10px] opacity-60">Architect Access</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 min-h-screen">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-18rem)] z-40 bg-white/90 backdrop-blur-md flex justify-between items-center h-20 px-10 shadow-[0_12px_32px_rgba(0,32,32,0.06)]">
+<div class="flex items-center gap-8">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-cyan-800 opacity-40">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-6 py-2 w-64 text-sm focus:ring-2 focus:ring-tertiary-fixed transition-all" placeholder="Search transactions..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-cyan-800 hover:text-orange-500 transition-all font-medium" href="#">Reports</a>
+<a class="text-cyan-800 hover:text-orange-500 transition-all font-medium" href="#">Logs</a>
+<a class="text-cyan-800 hover:text-orange-500 transition-all font-medium" href="#">Audit</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 mr-4">
+<button class="p-2 text-cyan-800 hover:bg-cyan-50 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-cyan-800 hover:bg-cyan-50 rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-cyan-100 mx-2"></div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-low text-cyan-900 text-sm font-bold hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">file_download</span>
+                        Export
+                    </button>
+</div>
+</div>
+</header>
+<!-- Page Content Canvas -->
+<div class="pt-28 px-10 pb-12 max-w-7xl mx-auto">
+<!-- Headline Editorial Section -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="serif-heading text-4xl font-bold text-on-surface mb-2 tracking-tight">Financial Overview</h2>
+<p class="text-cyan-800/60 font-medium">Monitoring Gelaran's capital movement and revenue velocity.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-cyan-900 border border-outline-variant/20 shadow-sm hover:shadow-md transition-all text-sm font-semibold">
+<span class="material-symbols-outlined">tune</span>
+                        Advanced Filters
+                    </button>
+</div>
+</div>
+<!-- Top Section: Revenue KPIs -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+<!-- KPI Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-[0_4px_20px_rgba(0,32,32,0.03)] hover:translate-y-[-4px] transition-transform duration-300">
+<p class="text-xs font-bold text-cyan-800/60 uppercase tracking-widest mb-4">Total Volume</p>
+<h3 class="serif-heading text-3xl font-bold text-on-surface mb-2">$1.24M</h3>
+<div class="flex items-center gap-2 text-xs font-bold text-emerald-600">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12.5% vs last month</span>
+</div>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-[0_4px_20px_rgba(0,32,32,0.03)] hover:translate-y-[-4px] transition-transform duration-300">
+<p class="text-xs font-bold text-cyan-800/60 uppercase tracking-widest mb-4">Net Revenue</p>
+<h3 class="serif-heading text-3xl font-bold text-on-surface mb-2">$84.2K</h3>
+<div class="flex items-center gap-2 text-xs font-bold text-emerald-600">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+8.2% vs last month</span>
+</div>
+</div>
+<!-- KPI Card 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-[0_4px_20px_rgba(0,32,32,0.03)] hover:translate-y-[-4px] transition-transform duration-300 border-l-4 border-l-tertiary">
+<p class="text-xs font-bold text-cyan-800/60 uppercase tracking-widest mb-4">Pending Settlements</p>
+<h3 class="serif-heading text-3xl font-bold text-on-surface mb-2">$12,405</h3>
+<div class="flex items-center gap-2 text-xs font-bold text-tertiary">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>7 active batches</span>
+</div>
+</div>
+<!-- KPI Card 4 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-[0_4px_20px_rgba(0,32,32,0.03)] hover:translate-y-[-4px] transition-transform duration-300">
+<p class="text-xs font-bold text-cyan-800/60 uppercase tracking-widest mb-4">Avg. Order Value</p>
+<h3 class="serif-heading text-3xl font-bold text-on-surface mb-2">$142.00</h3>
+<div class="flex items-center gap-2 text-xs font-bold text-cyan-600">
+<span class="material-symbols-outlined text-sm">equalizer</span>
+<span>Stable growth</span>
+</div>
+</div>
+</div>
+<!-- Middle Section: Revenue Trends & Settlement -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+<!-- Revenue Trends -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-[0_4px_20px_rgba(0,32,32,0.03)]">
+<div class="flex justify-between items-center mb-10">
+<h4 class="serif-heading text-xl font-bold">Revenue Trends</h4>
+<div class="flex bg-surface-container-low p-1 rounded-lg">
+<button class="px-4 py-1.5 text-xs font-bold bg-white rounded-md shadow-sm">Daily</button>
+<button class="px-4 py-1.5 text-xs font-bold text-cyan-800/60">Weekly</button>
+<button class="px-4 py-1.5 text-xs font-bold text-cyan-800/60">Monthly</button>
+</div>
+</div>
+<!-- Mock Chart Visualization -->
+<div class="h-64 w-full flex items-end justify-between gap-4 relative">
+<div class="absolute inset-0 flex flex-col justify-between opacity-10">
+<div class="border-b border-cyan-900 w-full h-[1px]"></div>
+<div class="border-b border-cyan-900 w-full h-[1px]"></div>
+<div class="border-b border-cyan-900 w-full h-[1px]"></div>
+<div class="border-b border-cyan-900 w-full h-[1px]"></div>
+</div>
+<!-- Simple Geometric SVG Line Chart -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0 80 Q 20 70, 40 40 T 60 20 T 80 50 T 100 10" fill="none" stroke="#cb4a00" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path d="M0 80 Q 20 70, 40 40 T 60 20 T 80 50 T 100 10 V 100 H 0 Z" fill="url(#grad1)" opacity="0.1"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#cb4a00;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#cb4a00;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="w-full h-full flex items-end justify-between px-2 pt-10">
+<span class="text-[10px] text-cyan-800/40 font-bold">MON</span>
+<span class="text-[10px] text-cyan-800/40 font-bold">TUE</span>
+<span class="text-[10px] text-cyan-800/40 font-bold">WED</span>
+<span class="text-[10px] text-cyan-800/40 font-bold">THU</span>
+<span class="text-[10px] text-cyan-800/40 font-bold">FRI</span>
+<span class="text-[10px] text-cyan-800/40 font-bold">SAT</span>
+<span class="text-[10px] text-cyan-800/40 font-bold">SUN</span>
+</div>
+</div>
+</div>
+<!-- Settlement Summary -->
+<div class="bg-cyan-950 text-white p-8 rounded-xl shadow-xl flex flex-col relative overflow-hidden">
+<!-- Subtle Background Texture -->
+<div class="absolute -top-20 -right-20 w-64 h-64 bg-orange-600/10 rounded-full blur-3xl"></div>
+<h4 class="serif-heading text-xl font-bold mb-8 relative z-10">Settlement Summary</h4>
+<div class="space-y-6 flex-1 relative z-10">
+<div>
+<p class="text-[10px] text-cyan-100/50 uppercase tracking-widest mb-1">Total Pending</p>
+<p class="text-3xl font-bold serif-heading">$12,405.00</p>
+</div>
+<div class="flex justify-between items-center py-4 border-y border-white/10">
+<div>
+<p class="text-[10px] text-cyan-100/50 uppercase mb-1">Next Payout</p>
+<p class="text-sm font-bold">Oct 24, 2023</p>
+</div>
+<span class="material-symbols-outlined text-orange-400">calendar_month</span>
+</div>
+<div>
+<p class="text-[10px] text-cyan-100/50 uppercase mb-2">Connected Bank</p>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+</div>
+<p class="text-sm font-medium">Chase Business •••• 9921</p>
+</div>
+</div>
+</div>
+<button class="mt-10 w-full py-4 bg-[#F95D00] text-white rounded-xl font-bold text-lg hover:bg-orange-600 transition-all shadow-[0_8px_24px_rgba(249,93,0,0.3)] relative z-10">
+                        Withdraw Funds
+                    </button>
+</div>
+</div>
+<!-- Bottom Section: Recent Transactions -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 shadow-[0_4px_20px_rgba(0,32,32,0.03)] overflow-hidden">
+<div class="p-8 border-b border-outline-variant/10 flex justify-between items-center">
+<h4 class="serif-heading text-xl font-bold">Recent Transactions</h4>
+<button class="text-sm font-bold text-primary flex items-center gap-1 hover:underline">
+                        View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-8 py-4 text-[10px] font-bold text-cyan-800/40 uppercase tracking-widest">ID</th>
+<th class="px-8 py-4 text-[10px] font-bold text-cyan-800/40 uppercase tracking-widest">Date</th>
+<th class="px-8 py-4 text-[10px] font-bold text-cyan-800/40 uppercase tracking-widest">Event Name</th>
+<th class="px-8 py-4 text-[10px] font-bold text-cyan-800/40 uppercase tracking-widest">Organizer</th>
+<th class="px-8 py-4 text-[10px] font-bold text-cyan-800/40 uppercase tracking-widest">Amount</th>
+<th class="px-8 py-4 text-[10px] font-bold text-cyan-800/40 uppercase tracking-widest">Status</th>
+<th class="px-8 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-6 font-mono text-xs font-bold text-cyan-800">#TRX-88219</td>
+<td class="px-8 py-6 text-sm text-cyan-800/60">Oct 21, 14:22</td>
+<td class="px-8 py-6 text-sm font-bold">Neon Nights Music Fest</td>
+<td class="px-8 py-6 text-sm">Vantage Events</td>
+<td class="px-8 py-6 text-sm font-bold">$1,250.00</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-wider">Paid</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-all">
+<span class="material-symbols-outlined text-cyan-800">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-6 font-mono text-xs font-bold text-cyan-800">#TRX-88215</td>
+<td class="px-8 py-6 text-sm text-cyan-800/60">Oct 21, 12:05</td>
+<td class="px-8 py-6 text-sm font-bold">Global Finance Summit</td>
+<td class="px-8 py-6 text-sm">FinEdge Media</td>
+<td class="px-8 py-6 text-sm font-bold">$4,500.00</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase tracking-wider">Pending</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-all">
+<span class="material-symbols-outlined text-cyan-800">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-6 font-mono text-xs font-bold text-cyan-800">#TRX-88210</td>
+<td class="px-8 py-6 text-sm text-cyan-800/60">Oct 20, 09:15</td>
+<td class="px-8 py-6 text-sm font-bold">Artisan Food Market</td>
+<td class="px-8 py-6 text-sm">Curated Crafts</td>
+<td class="px-8 py-6 text-sm font-bold">$840.00</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-wider">Paid</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-all">
+<span class="material-symbols-outlined text-cyan-800">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-6 font-mono text-xs font-bold text-cyan-800">#TRX-88208</td>
+<td class="px-8 py-6 text-sm text-cyan-800/60">Oct 20, 08:30</td>
+<td class="px-8 py-6 text-sm font-bold">Tech Innovators Workshop</td>
+<td class="px-8 py-6 text-sm">NextGen Hub</td>
+<td class="px-8 py-6 text-sm font-bold">$220.00</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-wider">Refunded</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-all">
+<span class="material-symbols-outlined text-cyan-800">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-6 bg-surface-container-low/20 flex justify-between items-center">
+<p class="text-xs text-cyan-800/40 font-bold uppercase tracking-widest">Showing 4 of 1,240 transactions</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-outline-variant/20 hover:bg-white transition-all">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-outline-variant/20 bg-white shadow-sm font-bold text-xs">1</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-outline-variant/20 hover:bg-white transition-all font-bold text-xs">2</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center border border-outline-variant/20 hover:bg-white transition-all">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

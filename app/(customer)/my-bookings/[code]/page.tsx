@@ -32,6 +32,12 @@ import {
     Video,
     Send,
 } from "lucide-react";
+import {
+    CustomerHero,
+    CustomerInfoList,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface TicketType {
     id: string;
@@ -150,21 +156,21 @@ interface BookingActions {
     isUpcoming: boolean;
 }
 
-const STATUS_CONFIG: Record<string, { color: string; bgColor: string; icon: typeof CheckCircle; label: string }> = {
-    PENDING: { color: "text-yellow-700", bgColor: "bg-yellow-100", icon: Clock, label: "Menunggu" },
-    AWAITING_PAYMENT: { color: "text-orange-700", bgColor: "bg-orange-100", icon: Clock, label: "Menunggu Pembayaran" },
-    PAID: { color: "text-blue-700", bgColor: "bg-blue-100", icon: CheckCircle, label: "Dibayar" },
-    CONFIRMED: { color: "text-green-700", bgColor: "bg-green-100", icon: CheckCircle, label: "Dikonfirmasi" },
-    CANCELLED: { color: "text-red-700", bgColor: "bg-red-100", icon: XCircle, label: "Dibatalkan" },
-    REFUNDED: { color: "text-purple-700", bgColor: "bg-purple-100", icon: XCircle, label: "Dikembalikan" },
-    EXPIRED: { color: "text-gray-700", bgColor: "bg-gray-100", icon: XCircle, label: "Kadaluarsa" },
+const STATUS_CONFIG: Record<string, { tone: "warning" | "accent" | "success" | "danger" | "neutral"; icon: typeof CheckCircle; label: string }> = {
+    PENDING: { tone: "warning", icon: Clock, label: "Menunggu" },
+    AWAITING_PAYMENT: { tone: "warning", icon: Clock, label: "Menunggu Pembayaran" },
+    PAID: { tone: "accent", icon: CheckCircle, label: "Dibayar" },
+    CONFIRMED: { tone: "success", icon: CheckCircle, label: "Dikonfirmasi" },
+    CANCELLED: { tone: "danger", icon: XCircle, label: "Dibatalkan" },
+    REFUNDED: { tone: "neutral", icon: RefreshCw, label: "Dikembalikan" },
+    EXPIRED: { tone: "neutral", icon: XCircle, label: "Kadaluarsa" },
 };
 
-const TICKET_STATUS_CONFIG: Record<string, { color: string; label: string }> = {
-    ACTIVE: { color: "text-green-700 bg-green-100", label: "Aktif" },
-    TRANSFERRED: { color: "text-blue-700 bg-blue-100", label: "Ditransfer" },
-    CANCELLED: { color: "text-red-700 bg-red-100", label: "Dibatalkan" },
-    REFUNDED: { color: "text-purple-700 bg-purple-100", label: "Dikembalikan" },
+const TICKET_STATUS_CONFIG: Record<string, { tone: "success" | "accent" | "danger" | "neutral"; label: string }> = {
+    ACTIVE: { tone: "success", label: "Aktif" },
+    TRANSFERRED: { tone: "accent", label: "Ditransfer" },
+    CANCELLED: { tone: "danger", label: "Dibatalkan" },
+    REFUNDED: { tone: "neutral", label: "Dikembalikan" },
 };
 
 export default function BookingDetailPage({
@@ -219,6 +225,7 @@ export default function BookingDetailPage({
             if (data.success) {
                 setBooking(data.data.booking);
                 setActions(data.data.actions);
+                setError(null);
             }
         } catch {
             setError("Gagal memuat pesanan");
@@ -333,13 +340,13 @@ export default function BookingDetailPage({
     const downloadAllTickets = async () => {
         if (!booking) return;
 
-        const activeTickets = booking.bookedTickets.filter(t => t.status === "ACTIVE" && !t.isCheckedIn);
+        const activeTickets = booking.bookedTickets.filter((t) => t.status === "ACTIVE" && !t.isCheckedIn);
         if (activeTickets.length === 0) return;
 
         setDownloadingAll(true);
         for (const ticket of activeTickets) {
             await downloadTicketPdf(ticket.id, ticket.uniqueCode);
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 500));
         }
         setDownloadingAll(false);
     };
@@ -394,10 +401,10 @@ export default function BookingDetailPage({
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-indigo-600 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Memuat detail pesanan...</p>
+                    <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-(--accent-primary)" />
+                    <p className="text-(--text-muted)">Memuat detail pesanan...</p>
                 </div>
             </div>
         );
@@ -405,732 +412,453 @@ export default function BookingDetailPage({
 
     if (error || !booking) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center max-w-md px-4">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">Pesanan Tidak Ditemukan</h2>
-                    <p className="text-gray-500 mb-6">{error || "Pesanan yang kamu cari tidak ada atau kamu tidak memiliki akses."}</p>
-                    <Link
-                        href="/my-bookings"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Kembali ke Pesanan Saya
-                    </Link>
+            <DashboardSection>
+                <div className="flex min-h-[45vh] items-center justify-center">
+                    <div className="max-w-md text-center">
+                        <AlertCircle className="mx-auto mb-4 h-12 w-12 text-(--error)" />
+                        <h2 className="mb-2 text-xl font-semibold text-foreground">Pesanan tidak ditemukan</h2>
+                        <p className="mb-6 text-(--text-secondary)">{error || "Pesanan yang kamu cari tidak tersedia atau aksesnya dibatasi."}</p>
+                        <Link href="/my-bookings" className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white">
+                            <ArrowLeft className="h-4 w-4" />
+                            Kembali ke pesanan saya
+                        </Link>
+                    </div>
                 </div>
-            </div>
+            </DashboardSection>
         );
     }
 
     const statusConfig = STATUS_CONFIG[booking.status] || STATUS_CONFIG.PENDING;
-    const StatusIcon = statusConfig.icon;
     const hasValidTickets = booking.bookedTickets.some((t) => t.status === "ACTIVE" && !t.isCheckedIn);
+    const organizerName = booking.event.organizer.organizerProfile?.organizationName || booking.event.organizer.name;
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-white border-b sticky top-0 z-20 print:hidden">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Link href="/my-bookings" className="text-gray-500 hover:text-gray-700">
-                                <ArrowLeft className="h-5 w-5" />
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Booking detail"
+                title={booking.event.title}
+                description={`Kode booking ${booking.bookingCode}. Kelola tiket, pantau pembayaran, dan tinjau informasi penting dari satu halaman detail.`}
+                meta={
+                    <>
+                        <CustomerStatusBadge label={statusConfig.label} tone={statusConfig.tone} icon={statusConfig.icon} />
+                        <CustomerStatusBadge label={`${booking.totalTickets} tiket`} tone="accent" icon={QrCode} />
+                    </>
+                }
+                actions={
+                    <>
+                        <Link href="/my-bookings" className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)">
+                            <ArrowLeft className="h-4 w-4" />
+                            Kembali
+                        </Link>
+                        <button type="button" onClick={() => copyToClipboard(booking.bookingCode, "booking")} className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)">
+                            <Copy className="h-4 w-4" />
+                            {copiedCode === "booking" ? "Tersalin" : "Salin kode"}
+                        </button>
+                    </>
+                }
+            />
+
+            <div className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
+                <div className="space-y-6">
+                    <DashboardSection title="Ringkasan event" description="Informasi utama tentang event, jadwal, lokasi, dan penyelenggara untuk pesanan ini.">
+                        <div className="overflow-hidden rounded-[1.75rem] border border-(--border-light) bg-(--surface-elevated)">
+                            <div className="relative h-56 overflow-hidden bg-(--surface-brand-soft)">
+                                {booking.event.bannerImage ? (
+                                    <Image src={booking.event.bannerImage} alt={booking.event.title} fill className="object-cover" />
+                                ) : null}
+                                <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+                                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                                    <div className="flex flex-wrap gap-2">
+                                        <CustomerStatusBadge label={booking.event.eventType} tone="neutral" className="border-white/10 bg-white/15 text-white backdrop-blur" />
+                                        {actions?.isUpcoming ? <CustomerStatusBadge label="Akan datang" tone="success" className="border-white/10 bg-white/15 text-white backdrop-blur" /> : null}
+                                    </div>
+                                    <h2 className="mt-3 text-2xl font-semibold text-white">{booking.event.title}</h2>
+                                </div>
+                            </div>
+
+                            <div className="p-5 sm:p-6">
+                                <CustomerInfoList
+                                    columns={2}
+                                    items={[
+                                        booking.eventSchedule ? {
+                                            icon: Calendar,
+                                            label: "Jadwal",
+                                            value: (
+                                                <>
+                                                    <p>{formatDate(booking.eventSchedule.scheduleDate)}</p>
+                                                    <p className="text-(--text-secondary)">{formatTime(booking.eventSchedule.startTime)} - {formatTime(booking.eventSchedule.endTime)}</p>
+                                                </>
+                                            ),
+                                        } : {
+                                            icon: Calendar,
+                                            label: "Jadwal",
+                                            value: "Akan diumumkan",
+                                        },
+                                        booking.event.eventType === "ONLINE"
+                                            ? {
+                                                icon: Video,
+                                                label: "Akses event",
+                                                value: (
+                                                    <div className="space-y-1">
+                                                        <p>Event online</p>
+                                                        {(booking.status === "CONFIRMED" || booking.status === "PAID") && booking.event.onlineMeetingUrl ? (
+                                                            <a href={booking.event.onlineMeetingUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-(--accent-primary)">
+                                                                Gabung meeting
+                                                                <ExternalLink className="h-3.5 w-3.5" />
+                                                            </a>
+                                                        ) : (
+                                                            <p className="text-(--text-secondary)">Tautan meeting muncul setelah booking aktif.</p>
+                                                        )}
+                                                    </div>
+                                                ),
+                                            }
+                                            : {
+                                                icon: MapPin,
+                                                label: "Lokasi",
+                                                value: booking.event.venue ? (
+                                                    <div className="space-y-1">
+                                                        <p>{booking.event.venue.name}</p>
+                                                        <p className="text-(--text-secondary)">{booking.event.venue.address}, {booking.event.venue.city}</p>
+                                                        {booking.event.venue.googlePlaceId ? (
+                                                            <a href={`https://www.google.com/maps/place/?q=place_id:${booking.event.venue.googlePlaceId}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-(--accent-primary)">
+                                                                Buka peta
+                                                                <ExternalLink className="h-3.5 w-3.5" />
+                                                            </a>
+                                                        ) : null}
+                                                    </div>
+                                                ) : "Lokasi akan diumumkan",
+                                            },
+                                    ]}
+                                />
+
+                                <div className="mt-4 rounded-2xl border border-(--border-light) bg-(--surface) p-4">
+                                    <div className="flex items-center gap-3">
+                                        {booking.event.organizer.organizerProfile?.organizationLogo ? (
+                                            <Image src={booking.event.organizer.organizerProfile.organizationLogo} alt={organizerName} width={44} height={44} className="h-11 w-11 rounded-full object-cover" />
+                                        ) : (
+                                            <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-(--surface-brand-soft) text-(--accent-primary)">
+                                                <Building2 className="h-5 w-5" />
+                                            </span>
+                                        )}
+                                        <div>
+                                            <p className="text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">Diselenggarakan oleh</p>
+                                            <p className="font-semibold text-foreground">{organizerName}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </DashboardSection>
+
+                    <DashboardSection title={`Tiket kamu (${booking.bookedTickets.length})`} description="Buka QR, unduh PDF, atau transfer tiket yang masih aktif ke penerima lain.">
+                        <div className="space-y-4">
+                            {hasValidTickets ? (
+                                <div className="flex justify-end">
+                                    <button type="button" onClick={downloadAllTickets} disabled={downloadingAll} className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover) disabled:opacity-60">
+                                        {downloadingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                                        Unduh semua
+                                    </button>
+                                </div>
+                            ) : null}
+
+                            {booking.bookedTickets.map((ticket, index) => {
+                                const ticketStatus = TICKET_STATUS_CONFIG[ticket.status] || TICKET_STATUS_CONFIG.ACTIVE;
+                                const isExpanded = expandedTicket === ticket.id;
+                                return (
+                                    <article key={ticket.id} className="rounded-3xl border border-(--border-light) bg-(--surface-elevated) p-4 sm:p-5">
+                                        <button type="button" onClick={() => setExpandedTicket(isExpanded ? null : ticket.id)} className="flex w-full items-center justify-between gap-4 text-left">
+                                            <div className="flex min-w-0 items-center gap-3">
+                                                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) font-semibold text-(--accent-primary)">{index + 1}</span>
+                                                <div className="min-w-0 space-y-1">
+                                                    <p className="font-semibold text-foreground">{ticket.ticketType.name}</p>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <CustomerStatusBadge label={ticketStatus.label} tone={ticketStatus.tone} />
+                                                        {ticket.isCheckedIn ? <CustomerStatusBadge label="Sudah check-in" tone="success" icon={CheckCircle} /> : null}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <p className="text-sm font-semibold text-foreground">{formatCurrency(ticket.finalPrice)}</p>
+                                                {isExpanded ? <ChevronUp className="h-5 w-5 text-(--text-muted)" /> : <ChevronDown className="h-5 w-5 text-(--text-muted)" />}
+                                            </div>
+                                        </button>
+
+                                        <div className={`${isExpanded ? "block" : "hidden"} pt-4`}>
+                                            <div className="grid gap-5 md:grid-cols-[0.95fr_1.05fr]">
+                                                <div className="rounded-3xl border border-(--border-light) bg-(--surface) p-4 text-center">
+                                                    <div className="mx-auto flex h-56 w-56 items-center justify-center rounded-2xl bg-white p-3 shadow-(--shadow-xs)">
+                                                        {ticket.status === "ACTIVE" ? (
+                                                            <QRCodeSVG value={ticket.uniqueCode} size={196} level="H" includeMargin={false} />
+                                                        ) : (
+                                                            <QrCode className="h-28 w-28 text-(--text-muted)" />
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-4 flex items-center justify-center gap-2">
+                                                        <code className="rounded-full bg-(--bg-secondary) px-3 py-1 text-sm text-(--text-secondary)">{ticket.uniqueCode}</code>
+                                                        <button type="button" onClick={() => copyToClipboard(ticket.uniqueCode, ticket.id)} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)">
+                                                            {copiedCode === ticket.id ? <CheckCircle className="h-4 w-4 text-(--success)" /> : <Copy className="h-4 w-4" />}
+                                                        </button>
+                                                    </div>
+                                                    {ticket.isCheckedIn && ticket.checkedInAt ? (
+                                                        <p className="mt-3 text-sm text-(--text-secondary)">Check-in pada {formatDateTime(ticket.checkedInAt)}</p>
+                                                    ) : null}
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <CustomerInfoList
+                                                        columns={2}
+                                                        items={[
+                                                            {
+                                                                icon: QrCode,
+                                                                label: "Tipe tiket",
+                                                                value: (
+                                                                    <>
+                                                                        <p>{ticket.ticketType.name}</p>
+                                                                        {ticket.ticketType.description ? <p className="text-(--text-secondary)">{ticket.ticketType.description}</p> : null}
+                                                                    </>
+                                                                ),
+                                                            },
+                                                            {
+                                                                icon: CreditCard,
+                                                                label: "Harga",
+                                                                value: (
+                                                                    <>
+                                                                        <p>{formatCurrency(ticket.unitPrice)}</p>
+                                                                        <p className="text-(--text-secondary)">Final {formatCurrency(ticket.finalPrice)}</p>
+                                                                    </>
+                                                                ),
+                                                            },
+                                                        ]}
+                                                    />
+
+                                                    {ticket.status === "ACTIVE" && !ticket.isCheckedIn ? (
+                                                        <div className="flex flex-col gap-3 sm:flex-row">
+                                                            <button type="button" onClick={() => downloadTicketPdf(ticket.id, ticket.uniqueCode)} disabled={downloadingTicket === ticket.id} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) disabled:opacity-60">
+                                                                {downloadingTicket === ticket.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                                                                Unduh PDF
+                                                            </button>
+                                                            <button type="button" onClick={() => openTransferModal(ticket)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)">
+                                                                <Send className="h-4 w-4" />
+                                                                Transfer tiket
+                                                            </button>
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                );
+                            })}
+                        </div>
+                    </DashboardSection>
+
+                    {(booking.event.termsAndConditions || booking.event.refundPolicy) ? (
+                        <DashboardSection title="Informasi penting" description="Syarat event dan kebijakan refund yang perlu dibaca sebelum hari acara.">
+                            <div className="space-y-3">
+                                {booking.event.termsAndConditions ? (
+                                    <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated)">
+                                        <button type="button" onClick={() => setShowTerms(!showTerms)} className="flex w-full items-center justify-between p-4 text-left font-semibold text-foreground">
+                                            Syarat & ketentuan
+                                            {showTerms ? <ChevronUp className="h-5 w-5 text-(--text-muted)" /> : <ChevronDown className="h-5 w-5 text-(--text-muted)" />}
+                                        </button>
+                                        {showTerms ? <div className="px-4 pb-4 text-sm leading-7 text-(--text-secondary) whitespace-pre-wrap">{booking.event.termsAndConditions}</div> : null}
+                                    </div>
+                                ) : null}
+                                {booking.event.refundPolicy ? (
+                                    <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated)">
+                                        <button type="button" onClick={() => setShowRefundPolicy(!showRefundPolicy)} className="flex w-full items-center justify-between p-4 text-left font-semibold text-foreground">
+                                            Kebijakan pengembalian
+                                            {showRefundPolicy ? <ChevronUp className="h-5 w-5 text-(--text-muted)" /> : <ChevronDown className="h-5 w-5 text-(--text-muted)" />}
+                                        </button>
+                                        {showRefundPolicy ? <div className="px-4 pb-4 text-sm leading-7 text-(--text-secondary) whitespace-pre-wrap">{booking.event.refundPolicy}</div> : null}
+                                    </div>
+                                ) : null}
+                            </div>
+                        </DashboardSection>
+                    ) : null}
+                </div>
+
+                <div className="space-y-6">
+                    <DashboardSection title="Ringkasan pesanan" description="Komponen biaya, total akhir, dan status pembayaran booking.">
+                        <div className="space-y-3 text-sm">
+                            <Row label={`Subtotal (${booking.totalTickets} tiket)`} value={formatCurrency(booking.subtotal)} />
+                            {Number(booking.discountAmount) > 0 ? <Row label="Diskon" value={`-${formatCurrency(booking.discountAmount)}`} valueClassName="text-(--success-text)" /> : null}
+                            {Number(booking.taxAmount) > 0 ? <Row label="Pajak" value={formatCurrency(booking.taxAmount)} /> : null}
+                            {Number(booking.platformFee) > 0 ? <Row label="Biaya layanan" value={formatCurrency(booking.platformFee)} /> : null}
+                            {Number(booking.paymentGatewayFee) > 0 ? <Row label="Biaya payment gateway" value={formatCurrency(booking.paymentGatewayFee)} /> : null}
+                            <div className="border-t border-(--border-light) pt-3">
+                                <Row label="Total" value={formatCurrency(booking.totalAmount)} valueClassName="text-lg font-semibold text-foreground" />
+                            </div>
+                        </div>
+                    </DashboardSection>
+
+                    {booking.transaction ? (
+                        <DashboardSection title="Info pembayaran" description="Detail transaksi yang terkait langsung dengan booking ini.">
+                            <div className="space-y-3 text-sm">
+                                <Row label="ID transaksi" value={booking.transaction.transactionCode} valueClassName="font-mono text-xs text-foreground" />
+                                <Row label="Metode pembayaran" value={booking.transaction.paymentMethod.replace(/_/g, " ")} />
+                                {booking.transaction.paymentChannel ? <Row label="Kanal" value={booking.transaction.paymentChannel} /> : null}
+                                <Row label="Status" value={booking.transaction.status} valueClassName="font-semibold text-foreground" />
+                                {booking.transaction.paidAt ? <Row label="Dibayar pada" value={formatDateTime(booking.transaction.paidAt)} /> : null}
+                            </div>
+                        </DashboardSection>
+                    ) : null}
+
+                    {booking.refunds.length > 0 ? (
+                        <DashboardSection title="Riwayat refund" description="Riwayat pengembalian dana yang pernah diajukan untuk booking ini.">
+                            <div className="space-y-3">
+                                {booking.refunds.map((refund) => (
+                                    <div key={refund.id} className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div>
+                                                <CustomerStatusBadge label={refund.status} tone={refund.status === "COMPLETED" ? "success" : refund.status === "REJECTED" ? "danger" : "warning"} />
+                                                <p className="mt-2 text-sm text-(--text-secondary)">Pengembalian {refund.refundType}</p>
+                                            </div>
+                                            <p className="font-semibold text-foreground">{formatCurrency(refund.refundAmount)}</p>
+                                        </div>
+                                        {refund.reason ? <p className="mt-3 text-sm text-(--text-secondary)">{refund.reason}</p> : null}
+                                        <p className="mt-3 text-xs text-(--text-muted)">Diminta {formatDateTime(refund.requestedAt)}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </DashboardSection>
+                    ) : null}
+
+                    <DashboardSection title="Butuh bantuan?" description="Akses cepat ke penyelenggara atau tim dukungan Gelaran.">
+                        <div className="space-y-3">
+                            <a href={`mailto:${booking.event.organizer.email}`} className="flex items-center gap-3 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 text-sm font-medium text-foreground transition-colors hover:bg-(--surface-hover)">
+                                <Mail className="h-4 w-4 text-(--text-muted)" />
+                                Hubungi penyelenggara
+                            </a>
+                            <Link href="/contact" className="flex items-center gap-3 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 text-sm font-medium text-foreground transition-colors hover:bg-(--surface-hover)">
+                                <Phone className="h-4 w-4 text-(--text-muted)" />
+                                Hubungi dukungan
                             </Link>
-                            <div>
-                                <h1 className="text-xl font-bold text-gray-900">Detail Pesanan</h1>
-                                <p className="text-sm text-gray-500 font-mono">{booking.bookingCode}</p>
-                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            {/* Controls hidden on print by header class */}
-                            <button
-                                type="button"
-                                onClick={() => copyToClipboard(booking.bookingCode, "booking")}
-                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Salin kode pesanan"
-                            >
-                                {copiedCode === "booking" ? <CheckCircle className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
+                    </DashboardSection>
+
+                    <div className="space-y-3">
+                        {booking.status === "AWAITING_PAYMENT" ? (
+                            <Link href={`/checkout/payment/${booking.id}`} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)">
+                                <Clock className="h-4 w-4" />
+                                Bayar sekarang
+                            </Link>
+                        ) : null}
+                        {actions?.canRefund ? (
+                            <Link href={`/my-bookings/${booking.bookingCode}/refund`} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)">
+                                <RefreshCw className="h-4 w-4" />
+                                Ajukan refund
+                            </Link>
+                        ) : null}
+                        {actions?.canCancel ? (
+                            <button type="button" onClick={() => setShowCancelModal(true)} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[rgba(198,40,40,0.16)] bg-(--error-bg) px-5 py-3 text-sm font-semibold text-(--error-text) transition-colors hover:opacity-90">
+                                <Ban className="h-4 w-4" />
+                                Batalkan pesanan
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => window.print()}
-                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Cetak"
-                            >
-                                <Printer className="h-5 w-5" />
-                            </button>
-                            <button
-                                type="button"
-                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Bagikan"
-                            >
-                                <Share2 className="h-5 w-5" />
-                            </button>
-                        </div>
+                        ) : null}
+                        <button type="button" onClick={() => window.print()} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)">
+                            <Printer className="h-4 w-4" />
+                            Cetak ringkasan
+                        </button>
+                        <button type="button" onClick={() => navigator.share?.({ title: booking.event.title, text: `Booking ${booking.bookingCode}`, url: window.location.href }).catch(() => { })} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)">
+                            <Share2 className="h-4 w-4" />
+                            Bagikan detail
+                        </button>
                     </div>
                 </div>
-            </header>
+            </div>
 
-            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className={`${statusConfig.bgColor} rounded-xl p-4 flex items-center gap-4`}>
-                            <div className={`p-3 rounded-full bg-white/50`}>
-                                <StatusIcon className={`h-6 w-6 ${statusConfig.color}`} />
-                            </div>
-                            <div className="flex-1">
-                                <p className={`font-bold text-lg ${statusConfig.color}`}>{statusConfig.label}</p>
-                                {booking.status === "AWAITING_PAYMENT" && booking.expiresAt && (
-                                    <p className="text-sm text-orange-600">
-                                        Pembayaran berakhir pada {formatDateTime(booking.expiresAt)}
-                                    </p>
-                                )}
-                                {booking.status === "CANCELLED" && booking.cancellationReason && (
-                                    <p className="text-sm text-red-600">
-                                        Alasan: {booking.cancellationReason}
-                                    </p>
-                                )}
-                                {booking.status === "CONFIRMED" && booking.confirmedAt && (
-                                    <p className="text-sm text-green-600">
-                                        Dikonfirmasi pada {formatDateTime(booking.confirmedAt)}
-                                    </p>
-                                )}
-                            </div>
-                            {booking.status === "AWAITING_PAYMENT" && (
-                                <Link
-                                    href={`/checkout/payment/${booking.id}`}
-                                    className="px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
-                                >
-                                    Bayar Sekarang
-                                </Link>
-                            )}
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="relative h-48 bg-gradient-to-br from-indigo-500 to-purple-600">
-                                {booking.event.bannerImage && (
-                                    <Image
-                                        src={booking.event.bannerImage}
-                                        alt={booking.event.title}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                <div className="absolute bottom-4 left-4 right-4">
-                                    <span className="inline-block px-2 py-1 bg-white/20 backdrop-blur-sm text-white text-xs rounded-full mb-2">
-                                        {booking.event.eventType}
-                                    </span>
-                                    <h2 className="text-2xl font-bold text-white">{booking.event.title}</h2>
-                                </div>
-                            </div>
-
-                            <div className="p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                    {booking.eventSchedule && (
-                                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                                            <Calendar className="h-5 w-5 text-indigo-600 mt-0.5" />
-                                            <div>
-                                                <p className="font-medium text-gray-900">
-                                                    {formatDate(booking.eventSchedule.scheduleDate)}
-                                                </p>
-                                                <p className="text-sm text-gray-500">
-                                                    {formatTime(booking.eventSchedule.startTime)} - {formatTime(booking.eventSchedule.endTime)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {booking.event.eventType === "ONLINE" ? (
-                                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                                            <Video className="h-5 w-5 text-indigo-600 mt-0.5" />
-                                            <div>
-                                                <p className="font-medium text-gray-900">Event Online</p>
-                                                {(booking.status === "CONFIRMED" || booking.status === "PAID") && booking.event.onlineMeetingUrl && (
-                                                    <a
-                                                        href={booking.event.onlineMeetingUrl}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
-                                                    >
-                                                        Gabung Meeting <ExternalLink className="h-3 w-3" />
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ) : booking.event.venue ? (
-                                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                                            <MapPin className="h-5 w-5 text-indigo-600 mt-0.5" />
-                                            <div>
-                                                <p className="font-medium text-gray-900">{booking.event.venue.name}</p>
-                                                <p className="text-sm text-gray-500">
-                                                    {booking.event.venue.address}, {booking.event.venue.city}
-                                                </p>
-                                                {booking.event.venue.googlePlaceId && (
-                                                    <a
-                                                        href={`https://www.google.com/maps/place/?q=place_id:${booking.event.venue.googlePlaceId}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 mt-1"
-                                                    >
-                                                        Lihat di Maps <ExternalLink className="h-3 w-3" />
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ) : null}
-                                </div>
-
-                                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                                    {booking.event.organizer.organizerProfile?.organizationLogo ? (
-                                        <Image
-                                            src={booking.event.organizer.organizerProfile.organizationLogo}
-                                            alt={booking.event.organizer.organizerProfile.organizationName}
-                                            width={40}
-                                            height={40}
-                                            className="rounded-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                            <Building2 className="h-5 w-5 text-indigo-600" />
-                                        </div>
-                                    )}
-                                    <div>
-                                        <p className="text-sm text-gray-500">Diselenggarakan oleh</p>
-                                        <p className="font-medium text-gray-900">
-                                            {booking.event.organizer.organizerProfile?.organizationName || booking.event.organizer.name}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="p-4 border-b flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                    <QrCode className="h-5 w-5 text-indigo-600" />
-                                    Tiket Kamu ({booking.bookedTickets.length})
-                                </h3>
-                                {hasValidTickets && (
-                                    <button
-                                        type="button"
-                                        onClick={downloadAllTickets}
-                                        disabled={downloadingAll}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                                    >
-                                        {downloadingAll ? (
-                                            <>
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                                Mengunduh...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Download className="h-4 w-4" />
-                                                Unduh Semua
-                                            </>
-                                        )}
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="divide-y">
-                                {booking.bookedTickets.map((ticket, index) => {
-                                    const ticketStatusConfig = TICKET_STATUS_CONFIG[ticket.status] || TICKET_STATUS_CONFIG.ACTIVE;
-                                    const isExpanded = expandedTicket === ticket.id;
-
-                                    return (
-                                        <div key={ticket.id} className="p-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => setExpandedTicket(isExpanded ? null : ticket.id)}
-                                                className="w-full text-left print:hidden"
-                                            >
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                                                            {index + 1}
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-medium text-gray-900">{ticket.ticketType.name}</p>
-                                                            <div className="flex items-center gap-2 mt-1">
-                                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${ticketStatusConfig.color}`}>
-                                                                    {ticketStatusConfig.label}
-                                                                </span>
-                                                                {ticket.isCheckedIn && (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                                                        <CheckCircle className="h-3 w-3" />
-                                                                        Sudah Check-In
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <p className="text-sm font-medium text-gray-900">{formatCurrency(ticket.finalPrice)}</p>
-                                                        {isExpanded ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
-                                                    </div>
-                                                </div>
-                                            </button>
-
-                                            <div className="print:block print:mb-8">
-                                                <div className={`mt-4 pt-4 border-t ${isExpanded ? 'block' : 'hidden print:block'}`}>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-2">
-                                                        <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg print:bg-transparent print:border">
-                                                            <div className="w-48 h-48 bg-white rounded-lg p-3 shadow-inner mb-3 flex items-center justify-center print:shadow-none">
-                                                                {ticket.status === "ACTIVE" ? (
-                                                                    <QRCodeSVG
-                                                                        value={ticket.uniqueCode}
-                                                                        size={168}
-                                                                        level="H"
-                                                                        includeMargin={false}
-                                                                    />
-                                                                ) : (
-                                                                    <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded flex items-center justify-center">
-                                                                        <QrCode className="h-24 w-24 text-gray-400" />
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div className="flex items-center gap-2">
-                                                                <code className="text-sm font-mono text-gray-700 bg-white px-3 py-1 rounded border">
-                                                                    {ticket.uniqueCode}
-                                                                </code>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => copyToClipboard(ticket.uniqueCode, ticket.id)}
-                                                                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors print:hidden"
-                                                                >
-                                                                    {copiedCode === ticket.id ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                                                                </button>
-                                                            </div>
-                                                            {ticket.isCheckedIn && ticket.checkedInAt && (
-                                                                <p className="text-sm text-gray-500 mt-3">
-                                                                    Check-in pada {formatDateTime(ticket.checkedInAt)}
-                                                                </p>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="space-y-4">
-                                                            <div>
-                                                                <p className="text-sm text-gray-500 mb-1">Tipe Tiket</p>
-                                                                <p className="font-medium text-gray-900">{ticket.ticketType.name}</p>
-                                                                {ticket.ticketType.description && (
-                                                                    <p className="text-sm text-gray-600 mt-1">{ticket.ticketType.description}</p>
-                                                                )}
-                                                            </div>
-                                                            <div className="grid grid-cols-2 gap-4">
-                                                                <div>
-                                                                    <p className="text-sm text-gray-500 mb-1">Harga Satuan</p>
-                                                                    <p className="font-medium text-gray-900">{formatCurrency(ticket.unitPrice)}</p>
-                                                                </div>
-                                                                <div>
-                                                                    <p className="text-sm text-gray-500 mb-1">Harga Akhir</p>
-                                                                    <p className="font-medium text-gray-900">{formatCurrency(ticket.finalPrice)}</p>
-                                                                </div>
-                                                            </div>
-                                                            {ticket.status === "ACTIVE" && !ticket.isCheckedIn && (
-                                                                <div className="flex gap-2 print:hidden">
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => downloadTicketPdf(ticket.id, ticket.uniqueCode)}
-                                                                        disabled={downloadingTicket === ticket.id}
-                                                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                                                                    >
-                                                                        {downloadingTicket === ticket.id ? (
-                                                                            <>
-                                                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                                                                Mengunduh...
-                                                                            </>
-                                                                        ) : (
-                                                                            <>
-                                                                                <Download className="h-4 w-4" />
-                                                                                Unduh
-                                                                            </>
-                                                                        )}
-                                                                    </button>
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => openTransferModal(ticket)}
-                                                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 border-2 border-indigo-600 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-50 transition-colors"
-                                                                    >
-                                                                        <Send className="h-4 w-4" />
-                                                                        Transfer
-                                                                    </button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {(booking.event.termsAndConditions || booking.event.refundPolicy) && (
-                            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                                <div className="p-4 border-b">
-                                    <h3 className="text-lg font-bold text-gray-900">Informasi Penting</h3>
-                                </div>
-                                <div className="divide-y">
-                                    {booking.event.termsAndConditions && (
-                                        <div>
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowTerms(!showTerms)}
-                                                className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
-                                            >
-                                                <span className="font-medium text-gray-900">Syarat & Ketentuan</span>
-                                                {showTerms ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
-                                            </button>
-                                            {showTerms && (
-                                                <div className="px-4 pb-4">
-                                                    <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-700 whitespace-pre-wrap">
-                                                        {booking.event.termsAndConditions}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                    {booking.event.refundPolicy && (
-                                        <div>
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowRefundPolicy(!showRefundPolicy)}
-                                                className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
-                                            >
-                                                <span className="font-medium text-gray-900">Kebijakan Pengembalian</span>
-                                                {showRefundPolicy ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
-                                            </button>
-                                            {showRefundPolicy && (
-                                                <div className="px-4 pb-4">
-                                                    <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-700 whitespace-pre-wrap">
-                                                        {booking.event.refundPolicy}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="p-4 border-b">
-                                <h3 className="text-lg font-bold text-gray-900">Ringkasan Pesanan</h3>
-                            </div>
-                            <div className="p-4 space-y-3">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Subtotal ({booking.totalTickets} tiket)</span>
-                                    <span className="font-medium">{formatCurrency(booking.subtotal)}</span>
-                                </div>
-                                {Number(booking.discountAmount) > 0 && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Diskon</span>
-                                        <span className="font-medium text-green-600">-{formatCurrency(booking.discountAmount)}</span>
-                                    </div>
-                                )}
-                                {Number(booking.taxAmount) > 0 && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Pajak</span>
-                                        <span className="font-medium">{formatCurrency(booking.taxAmount)}</span>
-                                    </div>
-                                )}
-                                {Number(booking.platformFee) > 0 && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Biaya Layanan</span>
-                                        <span className="font-medium">{formatCurrency(booking.platformFee)}</span>
-                                    </div>
-                                )}
-                                <div className="pt-3 border-t flex justify-between">
-                                    <span className="font-bold text-gray-900">Total</span>
-                                    <span className="font-bold text-lg text-indigo-600">{formatCurrency(booking.totalAmount)}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {booking.transaction && (
-                            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                                <div className="p-4 border-b">
-                                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <CreditCard className="h-5 w-5 text-indigo-600" />
-                                        Info Pembayaran
-                                    </h3>
-                                </div>
-                                <div className="p-4 space-y-3">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">ID Transaksi</span>
-                                        <span className="font-mono text-xs">{booking.transaction.transactionCode}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Metode Pembayaran</span>
-                                        <span className="font-medium capitalize">{booking.transaction.paymentMethod.replace(/_/g, " ")}</span>
-                                    </div>
-                                    {booking.transaction.paymentChannel && (
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Kanal</span>
-                                            <span className="font-medium">{booking.transaction.paymentChannel}</span>
-                                        </div>
-                                    )}
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Status</span>
-                                        <span className={`font-medium ${booking.transaction.status === "SUCCESS" ? "text-green-600" : "text-yellow-600"}`}>
-                                            {booking.transaction.status}
-                                        </span>
-                                    </div>
-                                    {booking.transaction.paidAt && (
-                                        <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Dibayar Pada</span>
-                                            <span className="font-medium">{formatDateTime(booking.transaction.paidAt)}</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-
-                        {booking.refunds.length > 0 && (
-                            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                                <div className="p-4 border-b">
-                                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                        <RefreshCw className="h-5 w-5 text-purple-600" />
-                                        Riwayat Pengembalian
-                                    </h3>
-                                </div>
-                                <div className="divide-y">
-                                    {booking.refunds.map((refund) => (
-                                        <div key={refund.id} className="p-4">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${refund.status === "COMPLETED" ? "bg-green-100 text-green-700" :
-                                                    refund.status === "REJECTED" ? "bg-red-100 text-red-700" :
-                                                        "bg-yellow-100 text-yellow-700"
-                                                    }`}>
-                                                    {refund.status}
-                                                </span>
-                                                <span className="font-bold text-gray-900">{formatCurrency(refund.refundAmount)}</span>
-                                            </div>
-                                            <p className="text-sm text-gray-500">Pengembalian {refund.refundType}</p>
-                                            {refund.reason && (
-                                                <p className="text-sm text-gray-600 mt-1">{refund.reason}</p>
-                                            )}
-                                            <p className="text-xs text-gray-400 mt-2">
-                                                Diminta {formatDateTime(refund.requestedAt)}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="p-4 border-b">
-                                <h3 className="text-lg font-bold text-gray-900">Butuh Bantuan?</h3>
-                            </div>
-                            <div className="p-4 space-y-3">
-                                <a
-                                    href={`mailto:${booking.event.organizer.email}`}
-                                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                                >
-                                    <Mail className="h-5 w-5 text-gray-400" />
-                                    <span className="text-sm text-gray-700">Hubungi Penyelenggara</span>
-                                </a>
-                                <Link
-                                    href="/contact"
-                                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                                >
-                                    <Phone className="h-5 w-5 text-gray-400" />
-                                    <span className="text-sm text-gray-700">Hubungi Dukungan</span>
-                                </Link>
-                            </div>
-                        </div>
-
-                        {actions?.canCancel && (
-                            <button
-                                type="button"
-                                onClick={() => setShowCancelModal(true)}
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
-                            >
-                                <Ban className="h-5 w-5" />
-                                Batalkan Pesanan
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </main>
-
-            {showCancelModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                                <AlertTriangle className="h-6 w-6 text-red-600" />
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900">Batalkan Pesanan?</h3>
-                                <p className="text-sm text-gray-500">Tindakan ini tidak dapat dibatalkan</p>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-600 mb-4">
-                            Apakah kamu yakin ingin membatalkan pesanan ini? Kamu perlu memesan lagi jika berubah pikiran.
-                        </p>
-
-                        <div className="mb-6">
-                            <label htmlFor="cancelReason" className="block text-sm font-medium text-gray-700 mb-2">
-                                Alasan pembatalan (opsional)
-                            </label>
-                            <textarea
-                                id="cancelReason"
-                                rows={3}
-                                value={cancelReason}
-                                onChange={(e) => setCancelReason(e.target.value)}
-                                placeholder="Beritahu kami mengapa kamu membatalkan..."
-                                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
-                            />
-                        </div>
-
-                        <div className="flex gap-3">
-                            <button
-                                type="button"
-                                onClick={() => setShowCancelModal(false)}
-                                disabled={isCancelling}
-                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
-                            >
-                                Pertahankan Pesanan
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleCancel}
-                                disabled={isCancelling}
-                                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                            >
-                                {isCancelling ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                        Membatalkan...
-                                    </>
-                                ) : (
-                                    "Ya, Batalkan"
-                                )}
-                            </button>
+            {showCancelModal ? (
+                <ModalCard>
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-(--error-bg) text-(--error-text)">
+                            <AlertTriangle className="h-6 w-6" />
+                        </span>
+                        <div>
+                            <h3 className="text-lg font-semibold text-foreground">Batalkan pesanan?</h3>
+                            <p className="text-sm text-(--text-muted)">Tindakan ini tidak dapat dibatalkan.</p>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {showTransferModal && transferringTicket && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-                        {transferSuccess ? (
-                            <>
-                                <div className="text-center">
-                                    <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                                        <CheckCircle className="h-8 w-8 text-green-600" />
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2">Transfer Dikirim!</h3>
-                                    <p className="text-gray-600 mb-6">
-                                        Undangan transfer telah dikirim ke <strong>{transferEmail}</strong>.
-                                        Mereka akan menerima email untuk menerima tiket dalam 48 jam.
-                                    </p>
-                                    <button
-                                        type="button"
-                                        onClick={closeTransferModal}
-                                        className="w-full px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                                    >
-                                        Tutup
-                                    </button>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                                        <Send className="h-6 w-6 text-indigo-600" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900">Transfer Tiket</h3>
-                                        <p className="text-sm text-gray-500">{transferringTicket.ticketType.name}</p>
-                                    </div>
-                                </div>
-
-                                <p className="text-gray-600 mb-4">
-                                    Kirim tiket ini ke orang lain. Mereka akan menerima email untuk menerima transfer.
-                                </p>
-
-                                {transferError && (
-                                    <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg mb-4">
-                                        <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                                        <span className="text-sm">{transferError}</span>
-                                    </div>
-                                )}
-
-                                <div className="space-y-4 mb-6">
-                                    <div>
-                                        <label htmlFor="transferEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Email Penerima <span className="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            id="transferEmail"
-                                            type="email"
-                                            value={transferEmail}
-                                            onChange={(e) => setTransferEmail(e.target.value)}
-                                            placeholder="email@contoh.com"
-                                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="transferName" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Nama Penerima (opsional)
-                                        </label>
-                                        <input
-                                            id="transferName"
-                                            type="text"
-                                            value={transferName}
-                                            onChange={(e) => setTransferName(e.target.value)}
-                                            placeholder="Nama lengkap penerima"
-                                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
-                                    <p className="text-sm text-amber-800">
-                                        <strong>Penting:</strong> Setelah penerima menerima transfer, tiket lama akan dinonaktifkan dan tiket baru akan diterbitkan atas nama mereka.
-                                    </p>
-                                </div>
-
-                                <div className="flex gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={closeTransferModal}
-                                        disabled={isTransferring}
-                                        className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
-                                    >
-                                        Batal
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleTransfer}
-                                        disabled={isTransferring || !transferEmail}
-                                        className="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                                    >
-                                        {isTransferring ? (
-                                            <>
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                                Mengirim...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Send className="h-4 w-4" />
-                                                Kirim Transfer
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            </>
-                        )}
+                    <p className="mb-4 text-sm leading-7 text-(--text-secondary)">Apakah kamu yakin ingin membatalkan pesanan ini? Jika berubah pikiran, kamu perlu membuat booking baru.</p>
+                    <label htmlFor="cancelReason" className="mb-2 block text-sm font-medium text-(--text-secondary)">Alasan pembatalan (opsional)</label>
+                    <textarea id="cancelReason" rows={3} value={cancelReason} onChange={(e) => setCancelReason(e.target.value)} placeholder="Beritahu kami alasan pembatalanmu..." className="input mb-6 resize-none" />
+                    <div className="flex gap-3">
+                        <button type="button" onClick={() => setShowCancelModal(false)} disabled={isCancelling} className="inline-flex flex-1 items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-foreground disabled:opacity-60">Pertahankan</button>
+                        <button type="button" onClick={handleCancel} disabled={isCancelling} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#c62828,#ef5350)] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60">
+                            {isCancelling ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                            {isCancelling ? "Membatalkan..." : "Ya, batalkan"}
+                        </button>
                     </div>
-                </div>
-            )}
+                </ModalCard>
+            ) : null}
+
+            {showTransferModal && transferringTicket ? (
+                <ModalCard>
+                    {transferSuccess ? (
+                        <div className="text-center">
+                            <span className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-(--success-bg) text-(--success-text)">
+                                <CheckCircle className="h-8 w-8" />
+                            </span>
+                            <h3 className="mb-2 text-xl font-semibold text-foreground">Transfer dikirim</h3>
+                            <p className="mb-6 text-sm leading-7 text-(--text-secondary)">Undangan transfer telah dikirim ke <strong>{transferEmail}</strong>. Mereka punya waktu 48 jam untuk menerima tiket.</p>
+                            <button type="button" onClick={closeTransferModal} className="inline-flex w-full items-center justify-center rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white">Tutup</button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-(--surface-brand-soft) text-(--accent-primary)">
+                                    <Send className="h-6 w-6" />
+                                </span>
+                                <div>
+                                    <h3 className="text-lg font-semibold text-foreground">Transfer tiket</h3>
+                                    <p className="text-sm text-(--text-muted)">{transferringTicket.ticketType.name}</p>
+                                </div>
+                            </div>
+                            {transferError ? <div className="mb-4 rounded-2xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-3 text-sm text-(--error-text)">{transferError}</div> : null}
+                            <div className="space-y-4 mb-6">
+                                <div>
+                                    <label htmlFor="transferEmail" className="mb-2 block text-sm font-medium text-(--text-secondary)">Email penerima *</label>
+                                    <input id="transferEmail" type="email" value={transferEmail} onChange={(e) => setTransferEmail(e.target.value)} placeholder="email@contoh.com" className="input" />
+                                </div>
+                                <div>
+                                    <label htmlFor="transferName" className="mb-2 block text-sm font-medium text-(--text-secondary)">Nama penerima (opsional)</label>
+                                    <input id="transferName" type="text" value={transferName} onChange={(e) => setTransferName(e.target.value)} placeholder="Nama lengkap penerima" className="input" />
+                                </div>
+                            </div>
+                            <div className="mb-6 rounded-2xl border border-[rgba(251,193,23,0.28)] bg-(--warning-bg) p-4 text-sm leading-7 text-(--warning-text)">
+                                Setelah penerima menerima transfer, tiket lama akan dinonaktifkan dan tiket baru diterbitkan atas nama mereka.
+                            </div>
+                            <div className="flex gap-3">
+                                <button type="button" onClick={closeTransferModal} disabled={isTransferring} className="inline-flex flex-1 items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-foreground disabled:opacity-60">Batal</button>
+                                <button type="button" onClick={handleTransfer} disabled={isTransferring || !transferEmail} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white disabled:opacity-60">
+                                    {isTransferring ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                                    {isTransferring ? "Mengirim..." : "Kirim transfer"}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </ModalCard>
+            ) : null}
         </div>
     );
 }
+
+function Row({ label, value, valueClassName }: { label: string; value: string; valueClassName?: string }) {
+    return (
+        <div className="flex items-center justify-between gap-4">
+            <span className="text-(--text-secondary)">{label}</span>
+            <span className={valueClassName || "font-medium text-foreground"}>{value}</span>
+        </div>
+    );
+}
+
+function ModalCard({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-md rounded-4xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow-xl)">
+                {children}
+            </div>
+        </div>
+    );
+}
+

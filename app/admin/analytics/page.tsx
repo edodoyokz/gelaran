@@ -1,20 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
-    TrendingUp,
-    DollarSign,
-    Users,
-    Calendar,
-    ArrowUp,
-    ArrowDown,
-    Loader2,
-    AlertCircle,
+    ArrowRight,
     BarChart3,
+    CalendarRange,
+    CreditCard,
+    Loader2,
+    TrendingUp,
+    Wallet,
 } from "lucide-react";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import {
+    AdminFilterBar,
+    AdminMetricCard,
+    AdminNotice,
+    AdminStatusBadge,
+    AdminSurface,
+    AdminWorkspacePage,
+} from "@/components/admin/admin-workspace";
 import { DateRangeFilter, type DateRangePreset } from "@/components/admin/DateRangeFilter";
 import { RevenueTrendChart } from "@/components/admin/RevenueTrendChart";
 import { formatCurrency } from "@/lib/utils";
@@ -68,20 +72,12 @@ interface AnalyticsData {
     }>;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-yellow-500/10 text-yellow-600",
-    CONFIRMED: "bg-blue-500/10 text-blue-500",
-    PAID: "bg-green-500/10 text-green-600",
-    CANCELLED: "bg-red-500/10 text-red-500",
-    REFUNDED: "bg-red-500/10 text-red-500",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-    PENDING: "Menunggu",
-    CONFIRMED: "Dikonfirmasi",
-    PAID: "Dibayar",
-    CANCELLED: "Dibatalkan",
-    REFUNDED: "Dikembalikan",
+const statusToneMap: Record<string, "default" | "success" | "warning" | "danger" | "accent"> = {
+    PAID: "success",
+    CONFIRMED: "accent",
+    PENDING: "warning",
+    CANCELLED: "danger",
+    REFUNDED: "default",
 };
 
 export default function AdminAnalyticsPage() {
@@ -95,26 +91,27 @@ export default function AdminAnalyticsPage() {
     }>({
         from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
         to: new Date(),
-        preset: '30d',
+        preset: "30d",
     });
 
     useEffect(() => {
         const loadData = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
                 const fromStr = dateRange.from.toISOString();
                 const toStr = dateRange.to.toISOString();
                 const res = await fetch(`/api/admin/finance?from=${fromStr}&to=${toStr}`);
                 const resData = await res.json();
 
-                if (!resData.success) {
-                    setError(resData.error?.message || "Gagal memuat data");
+                if (!res.ok || !resData.success) {
+                    setError(resData.error?.message || "Failed to load analytics data");
                     return;
                 }
 
                 setData(resData.data);
             } catch {
-                setError("Terjadi kesalahan saat memuat data");
+                setError("Failed to load analytics data");
             } finally {
                 setIsLoading(false);
             }
@@ -123,12 +120,20 @@ export default function AdminAnalyticsPage() {
         loadData();
     }, [dateRange]);
 
+    const growthCopy = useMemo(() => {
+        if (!data) return "No month-over-month comparison available.";
+        const growth = data.thisMonth.growthPercent;
+        if (growth > 0) return `${growth}% growth compared with the previous month.`;
+        if (growth < 0) return `${Math.abs(growth)}% lower than the previous month.`;
+        return "Revenue is stable compared with the previous month.";
+    }, [data]);
+
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat data analitik...</p>
+                    <Loader2 className="mx-auto h-10 w-10 animate-spin text-(--accent-primary)" />
+                    <p className="mt-4 text-sm text-(--text-secondary)">Loading analytics workspace…</p>
                 </div>
             </div>
         );
@@ -136,301 +141,123 @@ export default function AdminAnalyticsPage() {
 
     if (error || !data) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error || "Data tidak tersedia"}</p>
-                    <Link href="/admin" className="text-[var(--accent-primary)] hover:text-indigo-500">
-                        Kembali ke Dashboard
-                    </Link>
-                </div>
-            </div>
+            <AdminWorkspacePage
+                eyebrow="Admin analytics"
+                title="Revenue and activity intelligence"
+                description="Track commercial health, payout pressure, and booking behavior across the Gelaran platform."
+            >
+                <AdminNotice
+                    tone="warning"
+                    title="Analytics data is unavailable"
+                    description={error || "The analytics API did not return a valid payload."}
+                    actionHref="/admin"
+                    actionLabel="Back to dashboard"
+                />
+            </AdminWorkspacePage>
         );
     }
 
-    const growthPercent = data.thisMonth.growthPercent;
-    const isPositiveGrowth = growthPercent >= 0;
-
     return (
-        <>
-            <AdminHeader title="Analitik Dashboard" backHref="/admin" />
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-end">
-                <DateRangeFilter value={dateRange} onChange={setDateRange} />
-            </div>
-
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <StatCard
-                        title="Total Transaksi"
-                        value={formatCurrency(data.overview.totalTransactions)}
-                        icon={DollarSign}
-                        color="green"
-                    />
-                    <StatCard
-                        title="Pendapatan Platform"
-                        value={formatCurrency(data.overview.platformRevenue)}
-                        icon={TrendingUp}
-                        color="indigo"
-                    />
-                    <StatCard
-                        title="Total Booking"
-                        value={data.overview.totalBookings.toString()}
-                        icon={Users}
-                        color="purple"
-                    />
-                    <StatCard
-                        title="Bulan Ini"
-                        value={formatCurrency(data.thisMonth.revenue)}
-                        icon={Calendar}
-                        color="blue"
-                        change={{
-                            value: `${Math.abs(growthPercent)}%`,
-                            isPositive: isPositiveGrowth,
-                        }}
-                    />
+        <AdminWorkspacePage
+            eyebrow="Admin analytics"
+            title="Revenue and activity intelligence"
+            description="Track commercial health, payout pressure, and booking behavior across the Gelaran platform."
+            actions={<DateRangeFilter value={dateRange} onChange={setDateRange} />}
+        >
+            <AdminFilterBar>
+                <div className="text-sm text-(--text-secondary)">
+                    Selected window: <span className="font-semibold text-foreground">{dateRange.from.toLocaleDateString("id-ID")} – {dateRange.to.toLocaleDateString("id-ID")}</span>
                 </div>
+                <Link href="/admin/finance" className="inline-flex items-center gap-2 text-sm font-semibold text-(--accent-primary)">
+                    Open finance workspace
+                    <ArrowRight className="h-4 w-4" />
+                </Link>
+            </AdminFilterBar>
 
-                {data.revenueTrend && data.revenueTrend.length > 0 ? (
-                    <div className="mb-8">
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <AdminMetricCard label="Gross transactions" value={formatCurrency(data.overview.totalTransactions)} icon={Wallet} tone="accent" meta={growthCopy} />
+                <AdminMetricCard label="Platform revenue" value={formatCurrency(data.overview.platformRevenue)} icon={TrendingUp} tone="success" meta={`Organizer revenue ${formatCurrency(data.overview.organizerRevenue)}`} />
+                <AdminMetricCard label="Completed bookings" value={data.overview.totalBookings.toLocaleString("en-US")} icon={CreditCard} meta="Confirmed and paid orders in the selected range" />
+                <AdminMetricCard label="This month" value={formatCurrency(data.thisMonth.revenue)} icon={CalendarRange} meta={`${data.thisMonth.growthPercent}% month-over-month`} />
+            </section>
+
+            <AdminNotice
+                tone={data.payouts.pending.count > 0 ? "warning" : "success"}
+                title={data.payouts.pending.count > 0 ? "Payout queue needs review" : "Payout queue is clear"}
+                description={data.payouts.pending.count > 0 ? `${data.payouts.pending.count} pending payouts worth ${formatCurrency(data.payouts.pending.amount)} are waiting for action.` : "No payout backlog is currently blocking organizer settlement."}
+                actionHref="/admin/payouts"
+                actionLabel="Review payouts"
+            />
+
+            <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                <AdminSurface title="Revenue trend" description="Platform versus organizer revenue over time for the selected date window.">
+                    {data.revenueTrend.length > 0 ? (
                         <RevenueTrendChart data={data.revenueTrend} />
-                    </div>
-                ) : (
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-12 text-center mb-8">
-                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-[var(--text-muted)]" />
-                        <p className="text-[var(--text-muted)]">Tidak ada data trend untuk periode ini</p>
-                    </div>
-                )}
-
-                <div className="grid lg:grid-cols-2 gap-6 mb-8">
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Payouts</h2>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 bg-yellow-500/10 rounded-lg">
-                                <p className="text-sm text-[var(--text-muted)] mb-1">Pending</p>
-                                <p className="text-2xl font-bold text-yellow-700">
-                                    {formatCurrency(data.payouts.pending.amount)}
-                                </p>
-                                <p className="text-xs text-[var(--text-muted)] mt-1">{data.payouts.pending.count} payout</p>
-                            </div>
-                            <div className="p-4 bg-green-500/10 rounded-lg">
-                                <p className="text-sm text-[var(--text-muted)] mb-1">Selesai</p>
-                                <p className="text-2xl font-bold text-green-700">
-                                    {formatCurrency(data.payouts.completed.amount)}
-                                </p>
-                                <p className="text-xs text-[var(--text-muted)] mt-1">{data.payouts.completed.count} payout</p>
-                            </div>
+                    ) : (
+                        <div className="rounded-2xl border border-dashed border-(--border) bg-(--surface-elevated) p-8 text-center text-sm text-(--text-secondary)">
+                            No revenue trend data is available for this date range.
                         </div>
-                    </div>
+                    )}
+                </AdminSurface>
 
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Status Booking</h2>
-                        <div className="space-y-4">
-                            {data.bookingsByStatus.map((status) => {
-                                const total = data.bookingsByStatus.reduce((sum, s) => sum + s.count, 0);
-                                const percentage = total > 0 ? (status.count / total) * 100 : 0;
-                                
-                                const getProgressBarColor = (statusType: string): string => {
-                                    const colorMap: Record<string, string> = {
-                                        PAID: 'bg-green-500',
-                                        CONFIRMED: 'bg-blue-500',
-                                        PENDING: 'bg-yellow-500',
-                                        CANCELLED: 'bg-red-400',
-                                        REFUNDED: 'bg-red-500',
-                                    };
-                                    return colorMap[statusType] || 'bg-gray-400';
-                                };
-                                
-                                return (
-                                    <div key={status.status} className="space-y-2">
-                                        <div className="flex items-center justify-between text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <span
-                                                    className={`px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[status.status]}`}
-                                                >
-                                                    {STATUS_LABELS[status.status] || status.status}
-                                                </span>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="font-semibold text-[var(--text-primary)]">
-                                                    {status.count} ({percentage.toFixed(1)}%)
-                                                </span>
-                                                <span className="text-xs text-[var(--text-muted)] ml-2">
-                                                    {formatCurrency(status.amount)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="w-full bg-[var(--border)] rounded-full h-2.5 overflow-hidden">
-                                            <div 
-                                                className={`h-2.5 rounded-full transition-all duration-300 ${getProgressBarColor(status.status)}`}
-                                                style={{ width: `${percentage}%` }}
-                                            />
-                                        </div>
+                <AdminSurface title="Booking status mix" description="Status distribution within the same reporting window.">
+                    <div className="space-y-4">
+                        {data.bookingsByStatus.map((status) => {
+                            const total = data.bookingsByStatus.reduce((sum, item) => sum + item.count, 0);
+                            const percentage = total > 0 ? (status.count / total) * 100 : 0;
+                            return (
+                                <div key={status.status} className="space-y-2 rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <AdminStatusBadge label={status.status} tone={statusToneMap[status.status] || "default"} />
+                                        <span className="text-sm font-semibold text-foreground">{status.count} · {percentage.toFixed(1)}%</span>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid lg:grid-cols-2 gap-6">
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
-                        <div className="p-6 border-b flex items-center justify-between">
-                            <h2 className="text-lg font-semibold">Transaksi Terbaru</h2>
-                            <Link
-                                href="/admin/bookings"
-                                className="text-sm text-[var(--accent-primary)] hover:text-indigo-500"
-                            >
-                                Lihat Semua
-                            </Link>
-                        </div>
-                        <div className="divide-y max-h-[400px] overflow-y-auto">
-                            {data.recentTransactions.length === 0 ? (
-                                <div className="p-12 text-center text-[var(--text-muted)]">
-                                    <Loader2 className="h-8 w-8 mx-auto mb-4 opacity-50" />
-                                    <p>Belum ada transaksi</p>
-                                </div>
-                            ) : (
-                                data.recentTransactions.map((tx) => (
-                                    <Link 
-                                        href={`/admin/bookings/${tx.id}`}
-                                        key={tx.id} 
-                                        className="block p-4 hover:bg-[var(--surface-hover)] transition-colors border-b last:border-b-0"
-                                    >
-                                        <div className="flex items-start justify-between mb-2">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <p className="font-medium text-[var(--text-primary)] truncate">
-                                                        {tx.customerName}
-                                                    </p>
-                                                    <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/10 text-green-600 flex-shrink-0">
-                                                        PAID
-                                                    </span>
-                                                </div>
-                                                <p className="text-sm text-[var(--text-muted)] truncate">
-                                                    {tx.eventTitle}
-                                                </p>
-                                                <p className="text-xs text-[var(--text-muted)] mt-1">
-                                                    {tx.bookingCode}
-                                                </p>
-                                            </div>
-                                            <div className="text-right ml-4 flex-shrink-0">
-                                                <p className="font-semibold text-[var(--text-primary)]">
-                                                    {formatCurrency(tx.amount)}
-                                                </p>
-                                                <p className="text-xs text-[var(--accent-primary)] mt-0.5">
-                                                    Fee: {formatCurrency(tx.platformRevenue)}
-                                                </p>
-                                                <p className="text-xs text-[var(--text-muted)] mt-1">
-                                                    {new Date(tx.paidAt).toLocaleDateString("id-ID", {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
-                        <div className="p-6 border-b flex items-center justify-between">
-                            <h2 className="text-lg font-semibold">Event Terpopuler</h2>
-                            <Link
-                                href="/admin/events"
-                                className="text-sm text-[var(--accent-primary)] hover:text-indigo-500"
-                            >
-                                Lihat Semua
-                            </Link>
-                        </div>
-                        <div className="divide-y max-h-[400px] overflow-y-auto">
-                            {data.topEvents.length === 0 ? (
-                                <div className="p-12 text-center text-[var(--text-muted)]">
-                                    <BarChart3 className="h-8 w-8 mx-auto mb-4 opacity-50" />
-                                    <p>Belum ada data event</p>
-                                </div>
-                            ) : (
-                                data.topEvents.map((event) => (
-                                    <div key={event.id} className="p-4 hover:bg-[var(--surface-hover)]">
-                                        <div className="flex items-center gap-3">
-                                            {event.posterImage ? (
-                                                <Image
-                                                    src={event.posterImage}
-                                                    alt={event.title}
-                                                    width={48}
-                                                    height={48}
-                                                    className="rounded-lg object-cover"
-                                                />
-                                            ) : (
-                                                <div className="w-12 h-12 bg-[var(--border)] rounded-lg flex items-center justify-center">
-                                                    <Calendar className="h-6 w-6 text-[var(--text-muted)]" />
-                                                </div>
-                                            )}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-[var(--text-primary)] truncate">{event.title}</p>
-                                                <p className="text-sm text-[var(--text-muted)]">{event.bookingCount} booking</p>
-                                            </div>
-                                        </div>
+                                    <div className="h-2 rounded-full bg-(--surface)">
+                                        <div className="h-2 rounded-full bg-(--accent-gradient)" style={{ width: `${percentage}%` }} />
                                     </div>
-                                ))
-                            )}
-                        </div>
+                                    <p className="text-sm text-(--text-secondary)">{formatCurrency(status.amount)}</p>
+                                </div>
+                            );
+                        })}
                     </div>
-                </div>
-            </main>
-        </>
-    );
-}
+                </AdminSurface>
+            </section>
 
-interface StatCardProps {
-    title: string;
-    value: string;
-    icon: React.ElementType;
-    color: "green" | "indigo" | "purple" | "blue";
-    change?: {
-        value: string;
-        isPositive: boolean;
-    };
-}
-
-function StatCard({ title, value, icon: Icon, color, change }: StatCardProps) {
-    const colorMap: Record<string, { bg: string; icon: string }> = {
-        green: { bg: "bg-green-500/10", icon: "text-green-600" },
-        indigo: { bg: "bg-indigo-100", icon: "text-[var(--accent-primary)]" },
-        purple: { bg: "bg-purple-500/10", icon: "text-purple-600" },
-        blue: { bg: "bg-blue-500/10", icon: "text-blue-600" },
-    };
-
-    const colors = colorMap[color];
-
-    return (
-        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
-                    <Icon className={`h-6 w-6 ${colors.icon}`} />
-                </div>
-                {change && (
-                    <div
-                        className={`flex items-center gap-1 text-sm font-medium ${
-                            change.isPositive ? "text-green-600" : "text-red-600"
-                        }`}
-                    >
-                        {change.isPositive ? (
-                            <ArrowUp className="h-4 w-4" />
-                        ) : (
-                            <ArrowDown className="h-4 w-4" />
-                        )}
-                        {change.value}
+            <section className="grid gap-6 xl:grid-cols-2">
+                <AdminSurface title="Recent transactions" description="Latest paid orders visible in the reporting range.">
+                    <div className="space-y-3">
+                        {data.recentTransactions.map((transaction) => (
+                            <div key={transaction.id} className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                    <div>
+                                        <p className="text-sm font-semibold text-foreground">{transaction.eventTitle}</p>
+                                        <p className="text-sm text-(--text-secondary)">{transaction.customerName || "Guest customer"} · {transaction.bookingCode}</p>
+                                    </div>
+                                    <div className="text-left md:text-right">
+                                        <p className="text-sm font-semibold text-foreground">{formatCurrency(transaction.amount)}</p>
+                                        <p className="text-xs text-(--text-muted)">{new Date(transaction.paidAt).toLocaleString("id-ID")}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                )}
-            </div>
-            <p className="text-2xl font-bold text-[var(--text-primary)]">{value}</p>
-            <p className="text-sm text-[var(--text-muted)]">{title}</p>
-        </div>
+                </AdminSurface>
+
+                <AdminSurface title="Top events" description="Published events driving the highest booking activity.">
+                    <div className="space-y-3">
+                        {data.topEvents.map((event) => (
+                            <div key={event.id} className="rounded-2xl border border-(--border) bg-(--surface-elevated) p-4">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-semibold text-foreground">{event.title}</p>
+                                        <p className="text-sm text-(--text-secondary)">{event.bookingCount} bookings in range</p>
+                                    </div>
+                                    <BarChart3 className="h-5 w-5 text-(--accent-primary)" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </AdminSurface>
+            </section>
+        </AdminWorkspacePage>
     );
 }

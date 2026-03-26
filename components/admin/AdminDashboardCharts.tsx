@@ -239,7 +239,7 @@ export function AdminDashboardCharts() {
                                         key={activity.id}
                                         className="px-4 sm:px-6 py-3 flex items-start gap-3 hover:bg-[var(--surface-hover)] transition-colors"
                                     >
-                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${colorClass}`}>
                                             <Icon className="w-4 h-4" />
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -250,7 +250,7 @@ export function AdminDashboardCharts() {
                                                 {activity.description}
                                             </p>
                                         </div>
-                                        <span className="text-xs text-[var(--text-muted)] flex-shrink-0">
+                                        <span className="text-xs text-[var(--text-muted)] shrink-0">
                                             {formatTimeAgo(activity.timestamp)}
                                         </span>
                                     </div>

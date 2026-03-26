@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoloCurator Organizer Profile | Gelaran</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#aaefee",
+              "surface-variant": "#aaefee",
+              "on-surface-variant": "#3f4948",
+              "on-secondary-container": "#246d6d",
+              "on-primary-fixed": "#370e00",
+              "on-primary-fixed-variant": "#7f2b00",
+              "secondary-container": "#a7eceb",
+              "on-secondary-fixed-variant": "#004f50",
+              "on-error-container": "#93000a",
+              "surface-bright": "#e2fffe",
+              "secondary": "#1e6868",
+              "primary-container": "#8d3100",
+              "surface-dim": "#a1e6e5",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed": "#251a00",
+              "tertiary-fixed": "#ffdf9a",
+              "on-surface": "#002020",
+              "surface-container-highest": "#aaefee",
+              "on-background": "#002020",
+              "surface-container": "#b5faf9",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "outline": "#6f7978",
+              "tertiary-container": "#654b00",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed-dim": "#f7be11",
+              "primary-fixed": "#ffdbce",
+              "on-tertiary": "#ffffff",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-tint": "#a63b00",
+              "error-container": "#ffdad6",
+              "on-primary-container": "#ffae8e",
+              "surface-container-low": "#c1fffe",
+              "on-tertiary-container": "#f1b803",
+              "surface": "#e2fffe",
+              "on-error": "#ffffff",
+              "secondary-fixed-dim": "#8ed2d2",
+              "outline-variant": "#bec8c8",
+              "on-secondary-fixed": "#002020",
+              "inverse-surface": "#003737",
+              "primary-fixed-dim": "#ffb598",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#ffb598",
+              "background": "#e2fffe",
+              "tertiary": "#483500",
+              "surface-container-high": "#aff5f4",
+              "primary": "#672200",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif", "serif"],
+              "body": ["Plus Jakarta Sans", "sans-serif"],
+              "label": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .ticket-stub-mask {
+        mask-image: radial-gradient(circle at 0 50%, transparent 12px, black 12px), radial-gradient(circle at 100% 50%, transparent 12px, black 12px);
+        mask-composite: intersect;
+      }
+    </style>
+</head>
+<body class="bg-[#FFFFFF] font-body text-slate-700 antialiased">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+<nav class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-serif italic text-[#015959] dark:text-[#29B3B6]">SoloCurator</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#F95D00] transition-colors duration-300" href="#">Discover</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#F95D00] transition-colors duration-300" href="#">Festivals</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#F95D00] transition-colors duration-300" href="#">Venues</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#F95D00] transition-colors duration-300" href="#">Archive</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#015959] dark:text-[#29B3B6] scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<div class="h-8 w-px bg-slate-200"></div>
+<button class="text-[#015959] dark:text-[#29B3B6] flex items-center gap-2 scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="hidden lg:inline font-bold">Profile</span>
+</button>
+</div>
+</nav>
+<div class="h-[1px] w-full bg-[#c1fffe]/30 dark:bg-slate-800/50"></div>
+</header>
+<main class="pt-20">
+<!-- Organizer Hero Section -->
+<section class="relative w-full max-w-7xl mx-auto px-6 mt-8">
+<div class="h-80 md:h-[400px] w-full rounded-3xl overflow-hidden relative shadow-lg">
+<img alt="Cultural festival main stage" class="w-full h-full object-cover" data-alt="expansive view of a traditional Javanese cultural festival stage with ornate carvings and warm golden evening lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHDEX30D8sDg_vV56xHwZbiUp8DU8PfrwzKqI_aRw42MMEocyt4qxzl0HKIBPlq4hHKwDb2FO8OZZ3aHXCK31rmaXbl8ExWuG_T14_49CeFBRuqeVPNCwkdm4XUkS_GyC_3J1G3lwyD6zHjVW5jINyxLT5o6IkabcPyAODgFY8O-T2sIUUiJM8lPQjPaUrzXwg_i5nqPbmMuIVBAkWCKYS-44PTo4uzy88YpShmAqZUk7NMUNHc-hkgJhmjjD16jiEL0lrmzzJio4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<div class="relative -mt-20 md:-mt-24 px-8 flex flex-col md:flex-row items-end gap-6">
+<div class="relative group">
+<div class="w-40 h-40 md:w-48 md:h-48 rounded-full border-8 border-white overflow-hidden shadow-xl bg-white">
+<img alt="Organizer Portrait" class="w-full h-full object-cover" data-alt="professional portrait of a middle-aged male curator in a batik shirt, smiling warmly against a soft-focus museum background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4fTKS81JNgW7ttsGiWbiBqFD-befsCMpJ6_BMIEZOR871QInWxhOCUTtjIXbbD53DIgVy7rjZS2MrbAQ2Z1aBpfeYyW3QgTXTW9rsaDua2tgt0f6lgPZNpmWRtmniXfnsbWjFgs2Q0BwyHCDZJ8NWPu1d7VvEFFt2Gno7XsEuyypXPDrMImGeJhLOMRYo13UBK1E3JqcKdjomJIWxxgwxrO5AfAZb0WucPUllEsdeB5bvZVU38O-DTcMqPGF3scqBbFua5pZ4sjQ"/>
+</div>
+<div class="absolute bottom-4 right-4 bg-[#29B3B6] text-white p-1.5 rounded-full border-4 border-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-1 pb-4">
+<div class="flex flex-wrap items-center gap-3">
+<h1 class="font-headline text-4xl font-bold text-[#015959]">SoloCurator</h1>
+<span class="bg-[#e2fffe] text-[#015959] text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-[#015959]/10">Legacy Partner</span>
+</div>
+<p class="mt-2 text-slate-600 max-w-2xl leading-relaxed">
+                        Preserving and promoting the soul of Surakarta through world-class art exhibitions, traditional music festivals, and heritage workshops. Your gateway to the Alus of Solo.
+                    </p>
+</div>
+<div class="pb-6">
+<button class="bg-[#F95D00] text-white px-8 py-3 rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-[#F95D00]/20 hover:-translate-y-1 transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-xl">person_add</span>
+                        Follow Organizer
+                    </button>
+</div>
+</div>
+</section>
+<!-- Trust Metrics -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="bg-white border border-slate-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="text-[#015959] mb-2"><span class="material-symbols-outlined text-3xl">calendar_month</span></div>
+<div class="text-2xl font-headline font-bold text-[#015959]">128+</div>
+<div class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Events Hosted</div>
+</div>
+<div class="bg-white border border-slate-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="text-[#015959] mb-2"><span class="material-symbols-outlined text-3xl">confirmation_number</span></div>
+<div class="text-2xl font-headline font-bold text-[#015959]">45K</div>
+<div class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Tickets Sold</div>
+</div>
+<div class="bg-white border border-slate-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="text-[#015959] mb-2"><span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">star</span></div>
+<div class="text-2xl font-headline font-bold text-[#015959]">4.9/5</div>
+<div class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Avg Rating</div>
+</div>
+<div class="bg-white border border-slate-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="text-[#015959] mb-2"><span class="material-symbols-outlined text-3xl">history</span></div>
+<div class="text-2xl font-headline font-bold text-[#015959]">12</div>
+<div class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Years Active</div>
+</div>
+</div>
+</section>
+<!-- Tabs Section -->
+<section class="max-w-7xl mx-auto px-6">
+<div class="flex items-center gap-10 border-b border-slate-100 mb-8">
+<button class="pb-4 text-[#29B3B6] border-b-2 border-[#29B3B6] font-bold text-lg px-2">Upcoming Events</button>
+<button class="pb-4 text-slate-400 hover:text-slate-600 font-medium text-lg px-2 transition-colors">Past Events</button>
+<button class="pb-4 text-slate-400 hover:text-slate-600 font-medium text-lg px-2 transition-colors">Reviews</button>
+</div>
+<!-- Events Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
+<!-- Card 1 -->
+<div class="bg-white rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50 flex flex-col hover:-translate-y-2 transition-transform duration-300">
+<div class="h-56 overflow-hidden relative">
+<img alt="Gamelan performance" class="w-full h-full object-cover" data-alt="close up of golden traditional Indonesian gamelan instruments being played in a dimly lit hall with atmospheric lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7Z40l37jWDo5OUh1b8dUz1OhlyOIOoeUvoydDeAcwKwS5_P-R0OoPOere-hE4uKjCKTV5JxtmCVFYk20IZMRSG5cQ0oPp3_c2jwFbJQCXzym7OUl27H-vscm1b6DDDelj3w3bXoeiaEPGrcC3SXcpdaA2uF2yU5OWLgbYsttzdzK7gE_bXCE2qQsQDqBP5uNSIYFWbvLtk9Yj9I1Zywy8NjNCM9gOMYIkxREu43T2vQchUOWnfWzumQu8i7hJGVPocDuNkeX5enY"/>
+<div class="absolute top-4 left-4">
+<span class="bg-[#FBC117] text-[#251a00] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">Almost Sold Out</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[#29B3B6] text-xs font-bold uppercase tracking-widest">Music • Cultural</span>
+<div class="text-right">
+<span class="block text-[#015959] font-bold text-xl leading-none">24</span>
+<span class="text-[10px] uppercase font-bold text-slate-400">Oct</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-4 leading-tight">Mastering Gamelan: Evening of Alus Echoes</h3>
+<div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span>Keraton Surakarta Hadiningrat</span>
+</div>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
+<div>
+<span class="text-xs text-slate-400 block font-medium">Starting from</span>
+<span class="text-[#F95D00] font-bold text-xl">Rp 150.000</span>
+</div>
+<button class="bg-[#F95D00] text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-md hover:opacity-90 transition-opacity">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50 flex flex-col hover:-translate-y-2 transition-transform duration-300">
+<div class="h-56 overflow-hidden relative">
+<img alt="Wayang Kulit" class="w-full h-full object-cover" data-alt="traditional wayang kulit shadow puppet silhouette against a glowing orange and yellow screen with intricate details visible" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKxBwoURUNexYx6oWVQUXXmwt7nYbWDm8MOnnI0Q_nGCcGxkUV4aLDumudmM5KntnecWvyBOodZ15-JYQFgIzxnhCOBMrQm68CF0c3iuR-dJsmeEDbifRWKFGafl8YV8sftZ17xkOFCKuIvyEXyMlvUQWZRYERc9r8hOa2ub-ynQoc9iTuDGW7fxLA3feq3b32Mj5gbxtiMuqJgZGF96AWOAAZdXBkDGKTHCwX5iu03jJmDHmVohf7CXzPhuAcKebojGVZHw5465s"/>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[#29B3B6] text-xs font-bold uppercase tracking-widest">Theater • Folklore</span>
+<div class="text-right">
+<span class="block text-[#015959] font-bold text-xl leading-none">02</span>
+<span class="text-[10px] uppercase font-bold text-slate-400">Nov</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-4 leading-tight">Wayang Kulit: The Legend of Ramayana</h3>
+<div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span>Sriwedari Stadium, Solo</span>
+</div>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
+<div>
+<span class="text-xs text-slate-400 block font-medium">Starting from</span>
+<span class="text-[#F95D00] font-bold text-xl">Rp 75.000</span>
+</div>
+<button class="bg-[#F95D00] text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-md hover:opacity-90 transition-opacity">Book Now</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50 flex flex-col hover:-translate-y-2 transition-transform duration-300">
+<div class="h-56 overflow-hidden relative">
+<img alt="Batik Workshop" class="w-full h-full object-cover" data-alt="hands of a craftsman using a canting to apply wax to a detailed batik pattern on white cloth in soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS4RGvsfxLLhVlx1jY-tfien59VOTWV63aCSaBAYmAczyoMZ61fulr7Y-Z2q1pC4kSXEV5-66ebZ9KfUtEgzHziD3oFJ_r7y3zd-bb711lRCQJjv3DC5hIXP5EQM5xLzO3iwh9-Ua7g75pm2d-ffX0tI8-kKkJRt6Wul6ygNkSPFq-vCX2_XY3UtVIDBrBGU1l7B0M7PhxbBCaq45OzVVe2IqvhPOL8bEu3SNquMH2iOVrZ49FC9BsT0JyiuLR9nWzm02eMIGCAd4"/>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[#29B3B6] text-xs font-bold uppercase tracking-widest">Workshop • Craft</span>
+<div class="text-right">
+<span class="block text-[#015959] font-bold text-xl leading-none">15</span>
+<span class="text-[10px] uppercase font-bold text-slate-400">Nov</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-[#015959] mb-4 leading-tight">Batik Solo: Crafting Your Own Heritage</h3>
+<div class="flex items-center gap-2 text-slate-500 text-sm mb-6">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span>Danar Hadi Heritage Gallery</span>
+</div>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
+<div>
+<span class="text-xs text-slate-400 block font-medium">Starting from</span>
+<span class="text-[#F95D00] font-bold text-xl">Rp 250.000</span>
+</div>
+<button class="bg-[#F95D00] text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-md hover:opacity-90 transition-opacity">Book Now</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Reviews Section -->
+<section class="bg-[#e2fffe]/30 py-20">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h2 class="font-headline text-3xl font-bold text-[#015959]">Community Voices</h2>
+<p class="text-slate-500 mt-2">What attendees say about SoloCurator experiences.</p>
+</div>
+<button class="text-[#29B3B6] font-bold flex items-center gap-2 hover:underline">
+                        Write a Review
+                        <span class="material-symbols-outlined text-lg">rate_review</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Review 1 -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Reviewer" data-alt="portrait of a smiling woman in her 30s with a natural look and bright background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANzSnZAgaAeAtmiC2G6uem0arIyNptHa01YgCtnlQwJzTs41O6ArXQf2VQWSELG_fImHlYRzslYy6r-A90d5HCxCPNIpNhEiazKTLumq6QrTDhjGMuOq4JgvdUlTw51zQyWMXtt2D7eSiCQIvKGxhY4QlFb5xK24EfAYBEhkyceYB5Da4oYRt-CpY6dLa_8IdPhyCwiWNC9kv3UuimF7LKs7nRS4Qq7g7ja64UmsZBDihoR2o-A59P7mW5YUDCu5lYtwihIkQUxbo"/>
+</div>
+<div>
+<h4 class="font-bold text-[#015959]">Ayu Larasati</h4>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Attended: Evening of Alus Echoes</p>
+</div>
+</div>
+<div class="flex gap-0.5 text-[#FBC117]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="italic text-slate-600 leading-relaxed">
+                            "The attention to detail in every SoloCurator event is unmatched. From the ambiance of the Keraton to the selection of master musicians, it truly feels like stepping back into the golden age of Solo."
+                        </p>
+</div>
+<!-- Review 2 -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Reviewer" data-alt="close up headshot of a young man with glasses and a friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJZGGd0aS4R224B_kBF7BRUFu1StFz2-7LU2l_byUO35wPfKkqb9hrNdZaMruep9n2GfJTwVoMVGlXSqH0HbQpTYrfqHtqPVRISUq90rdgyAApXOr-x5p_gkZwPfaStiIHiRs2AT3Ubg-GWl2QJjZ7qToMNNnaYetZkuUs87G15L2jX2pIbeTCQKVXVFotdgqZ2J0w8fJeI-QXTYyYKrw7ExPcNLsXS1DbFSUvzCr_e3DlmCO9SN2k96taPNxqPZNwjGAbtIUOz_A"/>
+</div>
+<div>
+<h4 class="font-bold text-[#015959]">Bagus Prasetyo</h4>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Attended: Batik Solo Workshop</p>
+</div>
+</div>
+<div class="flex gap-0.5 text-[#FBC117]">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+</div>
+<p class="italic text-slate-600 leading-relaxed">
+                            "An incredibly educational experience. They don't just show you how, they explain the philosophy behind every pattern. A must-visit for anyone who wants to understand Javanese culture deeply."
+                        </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#015959] text-white w-full mt-auto">
+<div class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-6 max-w-7xl mx-auto">
+<div class="flex flex-col items-center md:items-start">
+<div class="font-serif text-2xl text-[#29B3B6] italic mb-2">SoloCurator</div>
+<p class="font-plus-jakarta text-sm opacity-70">© 2024 Surakarta Cultural Archive. Preserving the Spirit of Solo.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-plus-jakarta text-sm text-slate-300 hover:text-white hover:underline decoration-[#FBC117] transition-all" href="#">About</a>
+<a class="font-plus-jakarta text-sm text-slate-300 hover:text-white hover:underline decoration-[#FBC117] transition-all" href="#">Terms of Service</a>
+<a class="font-plus-jakarta text-sm text-slate-300 hover:text-white hover:underline decoration-[#FBC117] transition-all" href="#">Privacy Policy</a>
+<a class="font-plus-jakarta text-sm text-slate-300 hover:text-white hover:underline decoration-[#FBC117] transition-all" href="#">Contact Support</a>
+</div>
+</div>
+</footer>
+<!-- BottomNavBar (Visible only on mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center pt-2 pb-6 px-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-[0_-4px_20px_0_rgba(0,32,32,0.05)] border-t border-slate-100 z-50">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:opacity-80 transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="font-plus-jakarta text-[10px] font-bold uppercase tracking-wider mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:opacity-80 transition-all">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-plus-jakarta text-[10px] font-bold uppercase tracking-wider mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:opacity-80 transition-all">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-plus-jakarta text-[10px] font-bold uppercase tracking-wider mt-1">Tickets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#F95D00] dark:text-[#FBC117] translate-y-[-2px] transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-plus-jakarta text-[10px] font-bold uppercase tracking-wider mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

@@ -1,4 +1,5 @@
 import { type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface FeatureCardProps {
     icon: LucideIcon;
@@ -12,16 +13,22 @@ export function FeatureCard({
     icon: Icon,
     title,
     description,
-    iconBgColor = "bg-blue-100",
-    iconColor = "text-blue-600",
+    iconBgColor = "bg-(--surface-brand-soft)",
+    iconColor = "text-(--accent-primary)",
 }: FeatureCardProps) {
     return (
-        <div className="p-6 border border-slate-200 rounded-xl hover:shadow-md transition-shadow bg-white">
-            <div className={`w-10 h-10 ${iconBgColor} ${iconColor} rounded-lg flex items-center justify-center mb-4`}>
-                <Icon size={20} />
+        <article className="rounded-3xl border border-(--border) bg-(--surface-elevated) p-5 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)">
+            <div
+                className={cn(
+                    "inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-(--border) shadow-(--shadow-xs)",
+                    iconBgColor,
+                    iconColor,
+                )}
+            >
+                <Icon className="h-5 w-5" />
             </div>
-            <h3 className="font-bold text-slate-900 mb-2">{title}</h3>
-            <p className="text-slate-600 text-sm">{description}</p>
-        </div>
+            <h3 className="mt-4 text-base font-semibold text-foreground">{title}</h3>
+            <p className="mt-2 text-sm leading-7 text-(--text-secondary)">{description}</p>
+        </article>
     );
 }

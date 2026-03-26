@@ -69,7 +69,7 @@ export default function OrganizerGatePage() {
                 </p>
             </div>
 
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg p-6 text-white overflow-hidden relative">
+            <div className="bg-linear-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg p-6 text-white overflow-hidden relative">
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div>
                         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
@@ -133,10 +133,10 @@ export default function OrganizerGatePage() {
                                         <img
                                             src={event.posterImage}
                                             alt={event.title}
-                                            className="w-16 h-16 rounded-lg object-cover flex-shrink-0 shadow-sm border border-[var(--border)]"
+                                            className="w-16 h-16 rounded-lg object-cover shrink-0 shadow-sm border border-[var(--border)]"
                                         />
                                     ) : (
-                                        <div className="w-16 h-16 rounded-lg bg-[var(--surface-hover)] flex items-center justify-center flex-shrink-0 border border-[var(--border)]">
+                                        <div className="w-16 h-16 rounded-lg bg-[var(--surface-hover)] flex items-center justify-center shrink-0 border border-[var(--border)]">
                                             <Calendar className="h-6 w-6 text-[var(--text-muted)]" />
                                         </div>
                                     )}
@@ -156,7 +156,7 @@ export default function OrganizerGatePage() {
                                         </p>
                                     </div>
                                     
-                                    <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-hover)] group-hover:bg-[var(--accent-primary)]/10 transition-colors">
+                                    <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-[var(--surface-hover)] group-hover:bg-[var(--accent-primary)]/10 transition-colors">
                                         <ChevronRight className="h-5 w-5 text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors" />
                                     </div>
                                 </button>

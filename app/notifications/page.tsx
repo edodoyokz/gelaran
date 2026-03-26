@@ -15,10 +15,22 @@ import {
     XCircle,
     Sparkles,
 } from "lucide-react";
+import {
+    CustomerEmptyState,
+    CustomerHero,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface Notification {
     id: string;
-    type: "BOOKING_CONFIRMED" | "BOOKING_CANCELLED" | "EVENT_REMINDER" | "EVENT_UPDATE" | "PAYOUT" | "SYSTEM";
+    type:
+    | "BOOKING_CONFIRMED"
+    | "BOOKING_CANCELLED"
+    | "EVENT_REMINDER"
+    | "EVENT_UPDATE"
+    | "PAYOUT"
+    | "SYSTEM";
     title: string;
     message: string;
     isRead: boolean;
@@ -30,13 +42,16 @@ interface Notification {
     };
 }
 
-const NOTIFICATION_ICONS: Record<string, { icon: React.ElementType; bgColor: string; iconColor: string }> = {
-    BOOKING_CONFIRMED: { icon: CheckCircle, bgColor: "bg-[var(--success-bg)]", iconColor: "text-[var(--success)]" },
-    BOOKING_CANCELLED: { icon: XCircle, bgColor: "bg-[var(--error-bg)]", iconColor: "text-[var(--error)]" },
-    EVENT_REMINDER: { icon: Calendar, bgColor: "bg-[var(--info-bg)]", iconColor: "text-[var(--info)]" },
-    EVENT_UPDATE: { icon: Ticket, bgColor: "bg-purple-100 dark:bg-purple-900/30", iconColor: "text-purple-600 dark:text-purple-400" },
-    PAYOUT: { icon: Users, bgColor: "bg-[var(--accent-primary)]/10", iconColor: "text-[var(--accent-primary)]" },
-    SYSTEM: { icon: Bell, bgColor: "bg-[var(--bg-tertiary)]", iconColor: "text-[var(--text-muted)]" },
+const NOTIFICATION_ICONS: Record<
+    string,
+    { icon: React.ElementType; tone: "success" | "danger" | "accent" | "warning" | "neutral" }
+> = {
+    BOOKING_CONFIRMED: { icon: CheckCircle, tone: "success" },
+    BOOKING_CANCELLED: { icon: XCircle, tone: "danger" },
+    EVENT_REMINDER: { icon: Calendar, tone: "accent" },
+    EVENT_UPDATE: { icon: Ticket, tone: "warning" },
+    PAYOUT: { icon: Users, tone: "accent" },
+    SYSTEM: { icon: Bell, tone: "neutral" },
 };
 
 const NOTIFICATION_LABELS: Record<string, string> = {
@@ -67,6 +82,7 @@ export default function NotificationsPage() {
                 }
 
                 setNotifications(data.data || []);
+                setError(null);
             } catch {
                 setError("Terjadi kesalahan saat memuat notifikasi");
             } finally {
@@ -85,10 +101,10 @@ export default function NotificationsPage() {
                 body: JSON.stringify({ isRead: true }),
             });
 
-            setNotifications(
-                notifications.map((n) =>
-                    n.id === notificationId ? { ...n, isRead: true } : n
-                )
+            setNotifications((prev) =>
+                prev.map((n) =>
+                    n.id === notificationId ? { ...n, isRead: true } : n,
+                ),
             );
         } catch {
             console.error("Failed to mark notification as read");
@@ -101,7 +117,7 @@ export default function NotificationsPage() {
                 method: "PUT",
             });
 
-            setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+            setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
         } catch {
             console.error("Failed to mark all notifications as read");
         }
@@ -113,15 +129,16 @@ export default function NotificationsPage() {
                 method: "DELETE",
             });
 
-            setNotifications(notifications.filter((n) => n.id !== notificationId));
+            setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
         } catch {
             console.error("Failed to delete notification");
         }
     };
 
-    const filteredNotifications = filter === "unread"
-        ? notifications.filter((n) => !n.isRead)
-        : notifications;
+    const filteredNotifications =
+        filter === "unread"
+            ? notifications.filter((n) => !n.isRead)
+            : notifications;
 
     const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -140,7 +157,11 @@ export default function NotificationsPage() {
             } else if (date.toDateString() === yesterday.toDateString()) {
                 label = "Kemarin";
             } else {
-                label = date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+                label = date.toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                });
             }
 
             if (!groups[label]) {
@@ -156,173 +177,216 @@ export default function NotificationsPage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat notifikasi...</p>
+                    <Loader2 className="h-12 w-12 text-(--accent-primary) animate-spin mx-auto mb-4" />
+                    <p className="text-(--text-muted)">Memuat notifikasi...</p>
                 </div>
             </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <CustomerEmptyState
+                title="Notifikasi belum tersedia"
+                description={`${error}. Kembali beberapa saat lagi atau lanjutkan aktivitasmu dari dashboard customer.`}
+                href="/dashboard"
+                ctaLabel="Kembali ke dashboard"
+                icon={AlertCircle}
+            />
         );
     }
 
     const groupedNotifications = groupNotificationsByDate(filteredNotifications);
 
     return (
-        <div className="space-y-6">
-            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <Bell className="h-7 w-7 text-[var(--accent-primary)]" />
-                        {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 h-5 w-5 bg-[var(--error)] rounded-full text-white text-xs font-bold flex items-center justify-center">
-                                {unreadCount > 9 ? "9+" : unreadCount}
-                            </span>
-                        )}
-                    </div>
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">Notifikasi</h1>
-                        <p className="text-[var(--text-muted)] text-sm">{unreadCount} belum dibaca</p>
-                    </div>
-                </div>
-                {unreadCount > 0 && (
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Inbox"
+                title="Notifikasi"
+                description="Lihat update booking, pengingat event, dan pemberitahuan sistem dalam daftar yang lebih rapi dan mudah dipindai."
+                meta={
+                    <>
+                        <CustomerStatusBadge
+                            label={`${notifications.length} total notifikasi`}
+                            tone="accent"
+                            icon={Bell}
+                        />
+                        <CustomerStatusBadge
+                            label={`${unreadCount} belum dibaca`}
+                            tone={unreadCount > 0 ? "warning" : "neutral"}
+                            icon={Check}
+                        />
+                    </>
+                }
+                actions={
+                    unreadCount > 0 ? (
+                        <button
+                            type="button"
+                            onClick={handleMarkAllAsRead}
+                            className="inline-flex items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
+                        >
+                            <Check className="h-4 w-4" />
+                            Tandai semua dibaca
+                        </button>
+                    ) : undefined
+                }
+            />
+
+            <DashboardSection
+                title="Filter notifikasi"
+                description="Fokuskan tampilan ke semua notifikasi atau hanya item yang belum dibaca."
+            >
+                <div className="flex flex-wrap gap-3">
                     <button
                         type="button"
-                        onClick={handleMarkAllAsRead}
-                        className="btn-secondary self-start sm:self-auto rounded-xl py-2.5 px-4"
+                        onClick={() => setFilter("all")}
+                        className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${filter === "all"
+                                ? "bg-(--accent-gradient) text-white"
+                                : "border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)"
+                            }`}
                     >
-                        <Check className="h-4 w-4" />
-                        Tandai Semua Dibaca
+                        Semua ({notifications.length})
                     </button>
-                )}
-            </section>
-
-            <section className="flex gap-2">
-                <button
-                    type="button"
-                    onClick={() => setFilter("all")}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                        filter === "all"
-                            ? "bg-[var(--accent-primary)] text-white"
-                            : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
-                    }`}
-                >
-                    Semua ({notifications.length})
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setFilter("unread")}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                        filter === "unread"
-                            ? "bg-[var(--accent-primary)] text-white"
-                            : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
-                    }`}
-                >
-                    Belum Dibaca ({unreadCount})
-                </button>
-            </section>
-
-            {error && (
-                <div className="bg-[var(--error-bg)] border border-[var(--error)]/20 rounded-xl p-4">
-                    <div className="flex items-center gap-2 text-[var(--error-text)]">
-                        <AlertCircle className="h-5 w-5" />
-                        <span>{error}</span>
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setFilter("unread")}
+                        className={`inline-flex items-center rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${filter === "unread"
+                                ? "bg-(--accent-gradient) text-white"
+                                : "border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)"
+                            }`}
+                    >
+                        Belum dibaca ({unreadCount})
+                    </button>
                 </div>
-            )}
+            </DashboardSection>
 
-            {filteredNotifications.length === 0 ? (
-                <div className="card p-12 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Bell className="h-10 w-10 text-[var(--accent-primary)]" />
-                    </div>
-                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                        {filter === "unread" ? "Tidak ada notifikasi belum dibaca" : "Tidak ada notifikasi"}
-                    </h3>
-                    <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
-                        {filter === "unread"
-                            ? "Semua notifikasi Anda sudah dibaca."
-                            : "Anda belum memiliki notifikasi."}
-                    </p>
-                    <Link href="/" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        Kembali ke Beranda
-                    </Link>
-                </div>
-            ) : (
-                <div className="space-y-6">
-                    {Object.entries(groupedNotifications).map(([date, notifs]) => (
-                        <div key={date}>
-                            <h3 className="text-sm font-semibold text-[var(--text-muted)] mb-3 px-1">{date}</h3>
-                            <div className="card overflow-hidden divide-y divide-[var(--border)]">
-                                {notifs.map((notification) => {
-                                    const iconConfig = NOTIFICATION_ICONS[notification.type] || NOTIFICATION_ICONS.SYSTEM;
-                                    const Icon = iconConfig.icon;
+            <DashboardSection
+                title="Daftar notifikasi"
+                description="Setiap item menampilkan konteks singkat, status baca, dan tautan cepat bila terkait event tertentu."
+            >
+                {filteredNotifications.length === 0 ? (
+                    <CustomerEmptyState
+                        title={
+                            filter === "unread"
+                                ? "Tidak ada notifikasi belum dibaca"
+                                : "Belum ada notifikasi"
+                        }
+                        description={
+                            filter === "unread"
+                                ? "Semua notifikasi sudah dibaca. Notifikasi baru akan muncul di sini saat ada update booking atau event."
+                                : "Kamu belum memiliki notifikasi. Aktivitas seperti booking, pengingat event, dan pembaruan sistem akan muncul di sini."
+                        }
+                        href="/events"
+                        ctaLabel="Jelajahi event"
+                        icon={Sparkles}
+                        className="border-none bg-transparent p-0 shadow-none"
+                    />
+                ) : (
+                    <div className="space-y-6">
+                        {Object.entries(groupedNotifications).map(([date, notifs]) => (
+                            <section key={date} className="space-y-3">
+                                <h2 className="px-1 text-xs font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
+                                    {date}
+                                </h2>
+                                <div className="space-y-3">
+                                    {notifs.map((notification) => {
+                                        const iconConfig =
+                                            NOTIFICATION_ICONS[notification.type] ||
+                                            NOTIFICATION_ICONS.SYSTEM;
+                                        const Icon = iconConfig.icon;
 
-                                    return (
-                                        <button
-                                            key={notification.id}
-                                            type="button"
-                                            className={`w-full text-left p-4 sm:p-5 hover:bg-[var(--surface-hover)] transition-colors ${
-                                                !notification.isRead ? "bg-[var(--accent-primary)]/5" : ""
-                                            }`}
-                                            onClick={() => !notification.isRead && handleMarkAsRead(notification.id)}
-                                        >
-                                            <div className="flex items-start gap-4">
-                                                <div className={`w-11 h-11 ${iconConfig.bgColor} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                                                    <Icon className={`h-5 w-5 ${iconConfig.iconColor}`} />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-start justify-between gap-2 mb-1">
-                                                        <div>
-                                                            <div className="flex items-center gap-2 mb-0.5">
-                                                                <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                                    {NOTIFICATION_LABELS[notification.type] || notification.type}
-                                                                </span>
-                                                                {!notification.isRead && (
-                                                                    <span className="h-2 w-2 bg-[var(--accent-primary)] rounded-full" />
-                                                                )}
+                                        return (
+                                            <article
+                                                key={notification.id}
+                                                className={`rounded-3xl border p-4 shadow-(--shadow-sm) transition-colors sm:p-5 ${notification.isRead
+                                                        ? "border-(--border) bg-(--surface-elevated)"
+                                                        : "border-[rgba(41,179,182,0.22)] bg-(--surface-brand-soft)"
+                                                    }`}
+                                            >
+                                                <div className="flex items-start gap-4">
+                                                    <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-(--surface) text-(--accent-primary) shadow-(--shadow-xs)">
+                                                        <Icon className="h-5 w-5" />
+                                                    </span>
+
+                                                    <div className="min-w-0 flex-1 space-y-3">
+                                                        <div className="flex flex-wrap items-start justify-between gap-3">
+                                                            <div className="space-y-1">
+                                                                <div className="flex flex-wrap items-center gap-2">
+                                                                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
+                                                                        {NOTIFICATION_LABELS[notification.type] || notification.type}
+                                                                    </p>
+                                                                    {!notification.isRead ? (
+                                                                        <CustomerStatusBadge
+                                                                            label="Baru"
+                                                                            tone="accent"
+                                                                        />
+                                                                    ) : null}
+                                                                </div>
+                                                                <h3 className="text-base font-semibold text-foreground">
+                                                                    {notification.title}
+                                                                </h3>
                                                             </div>
-                                                            <h4 className="font-semibold text-[var(--text-primary)]">
-                                                                {notification.title}
-                                                            </h4>
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleDelete(notification.id);
-                                                            }}
-                                                            className="p-2 text-[var(--text-muted)] hover:text-[var(--error)] hover:bg-[var(--error-bg)] rounded-lg transition-colors"
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </button>
-                                                    </div>
-                                                    <p className="text-[var(--text-secondary)] text-sm mb-2 line-clamp-2">{notification.message}</p>
-                                                    <div className="flex items-center gap-4 text-xs">
-                                                        <span className="text-[var(--text-muted)]">
-                                                            {new Date(notification.createdAt).toLocaleTimeString("id-ID", {
-                                                                hour: "2-digit",
-                                                                minute: "2-digit",
-                                                            })}
-                                                        </span>
-                                                        {notification.metadata.eventId && (
-                                                            <Link
-                                                                href={`/events/${notification.metadata.eventId}`}
-                                                                onClick={(e) => e.stopPropagation()}
-                                                                className="text-[var(--accent-primary)] hover:underline"
+
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleDelete(notification.id)}
+                                                                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-(--border) bg-(--surface) text-(--text-muted) transition-colors hover:bg-(--error-bg) hover:text-(--error-text)"
+                                                                aria-label="Hapus notifikasi"
                                                             >
-                                                                Lihat Event
-                                                            </Link>
-                                                        )}
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </button>
+                                                        </div>
+
+                                                        <p className="text-sm leading-7 text-(--text-secondary)">
+                                                            {notification.message}
+                                                        </p>
+
+                                                        <div className="flex flex-wrap items-center gap-3 text-sm text-(--text-muted)">
+                                                            <span>
+                                                                {new Date(notification.createdAt).toLocaleTimeString("id-ID", {
+                                                                    hour: "2-digit",
+                                                                    minute: "2-digit",
+                                                                })}
+                                                            </span>
+                                                            {notification.metadata.bookingCode ? (
+                                                                <CustomerStatusBadge
+                                                                    label={notification.metadata.bookingCode}
+                                                                    tone="neutral"
+                                                                />
+                                                            ) : null}
+                                                        </div>
+
+                                                        <div className="flex flex-wrap gap-3">
+                                                            {!notification.isRead ? (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleMarkAsRead(notification.id)}
+                                                                    className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
+                                                                >
+                                                                    <Check className="h-4 w-4" />
+                                                                    Tandai dibaca
+                                                                </button>
+                                                            ) : null}
+                                                            {notification.metadata.eventId ? (
+                                                                <Link
+                                                                    href={`/events/${notification.metadata.eventId}`}
+                                                                    className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-2.5 text-sm font-semibold text-white shadow-(--shadow-glow)"
+                                                                >
+                                                                    Lihat event
+                                                                </Link>
+                                                            ) : null}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                                            </article>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        ))}
+                    </div>
+                )}
+            </DashboardSection>
         </div>
     );
 }

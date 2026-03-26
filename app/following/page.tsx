@@ -15,6 +15,12 @@ import {
     CheckCircle,
     Sparkles,
 } from "lucide-react";
+import {
+    CustomerEmptyState,
+    CustomerHero,
+    CustomerStatusBadge,
+    DashboardSection,
+} from "@/components/customer/customer-dashboard-primitives";
 
 interface Organizer {
     id: string;
@@ -51,6 +57,7 @@ export default function FollowingPage() {
                 }
 
                 setFollowing(data.data || []);
+                setError(null);
             } catch {
                 setError("Terjadi kesalahan saat memuat data");
             } finally {
@@ -66,9 +73,12 @@ export default function FollowingPage() {
 
         try {
             setActionLoading(id);
-            const res = await fetch(`/api/organizer/followers?organizerSlug=${organizerSlug}`, {
-                method: "DELETE",
-            });
+            const res = await fetch(
+                `/api/organizer/followers?organizerSlug=${organizerSlug}`,
+                {
+                    method: "DELETE",
+                },
+            );
             const data = await res.json();
 
             if (!data.success) {
@@ -76,7 +86,7 @@ export default function FollowingPage() {
                 return;
             }
 
-            setFollowing(following.filter((f) => f.id !== id));
+            setFollowing((prev) => prev.filter((f) => f.id !== id));
         } catch {
             alert("Terjadi kesalahan saat berhenti mengikuti");
         } finally {
@@ -84,25 +94,37 @@ export default function FollowingPage() {
         }
     };
 
-    const handleToggleNotifications = async (organizerSlug: string, id: string, currentNotify: boolean) => {
+    const handleToggleNotifications = async (
+        organizerSlug: string,
+        id: string,
+        currentNotify: boolean,
+    ) => {
         try {
             setActionLoading(id);
             const res = await fetch("/api/organizer/followers", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ organizerSlug, notifyNewEvents: !currentNotify }),
+                body: JSON.stringify({
+                    organizerSlug,
+                    notifyNewEvents: !currentNotify,
+                }),
             });
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Gagal mengupdate pengaturan notifikasi");
+                alert(
+                    data.error?.message ||
+                    "Gagal mengupdate pengaturan notifikasi",
+                );
                 return;
             }
 
-            setFollowing(
-                following.map((f) =>
-                    f.id === id ? { ...f, notifyNewEvents: !currentNotify } : f
-                )
+            setFollowing((prev) =>
+                prev.map((f) =>
+                    f.id === id
+                        ? { ...f, notifyNewEvents: !currentNotify }
+                        : f,
+                ),
             );
         } catch {
             alert("Terjadi kesalahan saat mengupdate notifikasi");
@@ -115,7 +137,9 @@ export default function FollowingPage() {
         if (!search) return true;
         const searchLower = search.toLowerCase();
         return (
-            item.organizer.organizationName.toLowerCase().includes(searchLower) ||
+            item.organizer.organizationName
+                .toLowerCase()
+                .includes(searchLower) ||
             item.organizer.organizationSlug.toLowerCase().includes(searchLower)
         );
     });
@@ -124,8 +148,10 @@ export default function FollowingPage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat daftar mengikuti...</p>
+                    <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-(--accent-primary)" />
+                    <p className="text-(--text-muted)">
+                        Memuat daftar mengikuti...
+                    </p>
                 </div>
             </div>
         );
@@ -133,163 +159,212 @@ export default function FollowingPage() {
 
     if (error) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="text-center card p-8 max-w-md">
-                    <div className="w-16 h-16 bg-[var(--error-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="h-8 w-8 text-[var(--error)]" />
-                    </div>
-                    <p className="text-[var(--text-primary)] font-bold text-lg mb-2">{error}</p>
-                    <Link href="/" className="text-[var(--accent-primary)] hover:underline">
-                        Kembali ke Beranda
-                    </Link>
-                </div>
-            </div>
+            <CustomerEmptyState
+                title="Daftar following belum bisa dimuat"
+                description={`${error}. Coba lagi beberapa saat atau kembali ke katalog event untuk melanjutkan eksplorasi.`}
+                href="/events"
+                ctaLabel="Jelajahi event"
+                icon={AlertCircle}
+            />
         );
     }
 
     return (
-        <div className="space-y-6">
-            <section className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] flex items-center gap-3">
-                        <Users className="h-7 w-7 text-[var(--accent-primary)]" />
-                        Mengikuti
-                    </h1>
-                    <p className="text-[var(--text-muted)] text-sm mt-1">
-                        {following.length} organizer yang Anda ikuti
-                    </p>
-                </div>
-            </section>
+        <div className="space-y-6 lg:space-y-8">
+            <CustomerHero
+                eyebrow="Organizer network"
+                title="Mengikuti"
+                description="Kelola organizer favoritmu, nyalakan notifikasi event baru, dan rapikan daftar akun yang ingin terus kamu pantau."
+                meta={
+                    <>
+                        <CustomerStatusBadge
+                            label={`${following.length} organizer diikuti`}
+                            tone="accent"
+                            icon={Users}
+                        />
+                        <CustomerStatusBadge
+                            label={`${following.filter((item) => item.notifyNewEvents).length} notifikasi aktif`}
+                            tone="success"
+                            icon={Bell}
+                        />
+                    </>
+                }
+                actions={
+                    <Link
+                        href="/events"
+                        className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow) transition-transform duration-200 hover:-translate-y-0.5"
+                    >
+                        <Sparkles className="h-4 w-4" />
+                        Temukan organizer baru
+                    </Link>
+                }
+            />
 
-            {following.length > 0 && (
-                <section className="card p-4">
-                    <div className="relative max-w-md">
-                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
+            {following.length > 0 ? (
+                <DashboardSection
+                    title="Cari organizer"
+                    description="Temukan organizer tertentu di daftar following untuk mengatur notifikasi atau berhenti mengikuti lebih cepat."
+                >
+                    <label className="relative block max-w-xl">
+                        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                         <input
                             type="text"
-                            placeholder="Cari organizer..."
+                            placeholder="Cari nama organizer atau slug..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="input pl-11"
+                            className="input rounded-full pl-12"
                         />
-                    </div>
-                </section>
-            )}
+                    </label>
+                </DashboardSection>
+            ) : null}
 
-            {following.length === 0 ? (
-                <div className="card p-12 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <HeartCrack className="h-10 w-10 text-[var(--accent-primary)]" />
-                    </div>
-                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">Belum mengikuti organizer</h3>
-                    <p className="text-[var(--text-muted)] mb-8 max-w-sm mx-auto">
-                        Ikuti organizer favorit Anda untuk mendapatkan update terbaru tentang event mereka.
-                    </p>
-                    <Link href="/events" className="btn-primary w-full sm:w-auto rounded-full py-3 sm:py-2.5 justify-center inline-flex gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        Jelajahi Event
-                    </Link>
-                </div>
-            ) : filteredFollowing.length === 0 ? (
-                <div className="card p-12 text-center">
-                    <div className="w-16 h-16 bg-[var(--bg-tertiary)] rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Search className="h-8 w-8 text-[var(--text-muted)]" />
-                    </div>
-                    <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Tidak ada hasil</h3>
-                    <p className="text-[var(--text-muted)]">Coba kata kunci pencarian lain.</p>
-                </div>
-            ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredFollowing.map((item, index) => (
-                        <div
-                            key={item.id}
-                            className="card card-hover p-5 animate-fade-in-up"
-                            style={{ animationDelay: `${index * 50}ms` }}
-                        >
-                            <div className="flex items-start gap-4 mb-4">
-                                {item.organizer.organizationLogo ? (
-                                    <Image
-                                        src={item.organizer.organizationLogo}
-                                        alt={item.organizer.organizationName}
-                                        width={56}
-                                        height={56}
-                                        className="w-14 h-14 rounded-xl object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                                        {item.organizer.organizationName.charAt(0).toUpperCase()}
+            <DashboardSection
+                title="Organizer yang diikuti"
+                description="Setiap kartu menampilkan identitas organizer, waktu mulai mengikuti, dan kontrol cepat untuk preferensi notifikasi."
+            >
+                {following.length === 0 ? (
+                    <CustomerEmptyState
+                        title="Belum mengikuti organizer"
+                        description="Ikuti organizer favorit agar update event terbaru langsung muncul di dashboard customer dan halaman notifikasi."
+                        href="/events"
+                        ctaLabel="Mulai jelajahi event"
+                        icon={HeartCrack}
+                        className="border-none bg-transparent p-0 shadow-none"
+                    />
+                ) : filteredFollowing.length === 0 ? (
+                    <CustomerEmptyState
+                        title="Organizer tidak ditemukan"
+                        description="Tidak ada hasil yang cocok dengan kata kunci pencarianmu. Coba nama lain atau slug yang berbeda."
+                        icon={Search}
+                        className="border-none bg-transparent p-0 shadow-none"
+                    />
+                ) : (
+                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                        {filteredFollowing.map((item) => (
+                            <article
+                                key={item.id}
+                                className="rounded-[1.75rem] border border-(--border) bg-(--surface)/96 p-5 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
+                            >
+                                <div className="flex items-start gap-4">
+                                    {item.organizer.organizationLogo ? (
+                                        <Image
+                                            src={item.organizer.organizationLogo}
+                                            alt={item.organizer.organizationName}
+                                            width={60}
+                                            height={60}
+                                            className="h-15 w-15 rounded-2xl object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-15 w-15 items-center justify-center rounded-2xl bg-(--accent-gradient) text-lg font-semibold text-white shadow-(--shadow-glow)">
+                                            {item.organizer.organizationName
+                                                .charAt(0)
+                                                .toUpperCase()}
+                                        </div>
+                                    )}
+
+                                    <div className="min-w-0 flex-1 space-y-2">
+                                        <div className="flex items-center gap-2">
+                                            <h2 className="truncate text-lg font-semibold text-foreground">
+                                                {item.organizer.organizationName}
+                                            </h2>
+                                            {item.organizer.isVerified ? (
+                                                <CheckCircle className="h-4 w-4 shrink-0 text-(--info)" />
+                                            ) : null}
+                                        </div>
+                                        <p className="text-sm text-(--text-muted)">
+                                            @{item.organizer.organizationSlug}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            <CustomerStatusBadge
+                                                label={`Mengikuti sejak ${new Date(
+                                                    item.followedAt,
+                                                ).toLocaleDateString("id-ID", {
+                                                    month: "long",
+                                                    year: "numeric",
+                                                })}`}
+                                                tone="neutral"
+                                                icon={Heart}
+                                            />
+                                            <CustomerStatusBadge
+                                                label={
+                                                    item.notifyNewEvents
+                                                        ? "Notifikasi aktif"
+                                                        : "Notifikasi nonaktif"
+                                                }
+                                                tone={
+                                                    item.notifyNewEvents
+                                                        ? "success"
+                                                        : "warning"
+                                                }
+                                                icon={
+                                                    item.notifyNewEvents
+                                                        ? Bell
+                                                        : BellOff
+                                                }
+                                            />
+                                        </div>
                                     </div>
-                                )}
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="font-bold text-[var(--text-primary)] truncate">
-                                            {item.organizer.organizationName}
-                                        </h3>
-                                        {item.organizer.isVerified && (
-                                            <CheckCircle className="h-4 w-4 text-[var(--info)] flex-shrink-0" />
-                                        )}
-                                    </div>
-                                    <p className="text-sm text-[var(--text-muted)]">
-                                        @{item.organizer.organizationSlug}
-                                    </p>
                                 </div>
-                            </div>
 
-                            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] mb-4 pb-4 border-b border-[var(--border)]">
-                                <Heart className="h-3.5 w-3.5 text-rose-400" />
-                                <span>
-                                    Mengikuti sejak{" "}
-                                    {new Date(item.followedAt).toLocaleDateString("id-ID", {
-                                        month: "long",
-                                        year: "numeric",
-                                    })}
-                                </span>
-                            </div>
+                                <div className="mt-5 flex flex-col gap-3">
+                                    <Link
+                                        href={`/organizers/${item.organizer.organizationSlug}`}
+                                        className="inline-flex items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
+                                    >
+                                        Lihat profil organizer
+                                    </Link>
 
-                            <div className="flex items-center justify-between">
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleToggleNotifications(
-                                            item.organizer.organizationSlug,
-                                            item.id,
-                                            item.notifyNewEvents
-                                        )
-                                    }
-                                    disabled={actionLoading === item.id}
-                                    className={`inline-flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
-                                        item.notifyNewEvents
-                                            ? "bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
-                                            : "bg-[var(--bg-tertiary)] text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                                    }`}
-                                >
-                                    {item.notifyNewEvents ? (
-                                        <Bell className="h-4 w-4" />
-                                    ) : (
-                                        <BellOff className="h-4 w-4" />
-                                    )}
-                                    {item.notifyNewEvents ? "Notif Aktif" : "Notif Off"}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleUnfollow(item.organizer.organizationSlug, item.id)
-                                    }
-                                    disabled={actionLoading === item.id}
-                                    className="inline-flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-[var(--error)] hover:bg-[var(--error-bg)] transition-all disabled:opacity-50"
-                                >
-                                    {actionLoading === item.id ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <HeartCrack className="h-4 w-4" />
-                                    )}
-                                    Berhenti Ikuti
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleToggleNotifications(
+                                                    item.organizer.organizationSlug,
+                                                    item.id,
+                                                    item.notifyNewEvents,
+                                                )
+                                            }
+                                            disabled={actionLoading === item.id}
+                                            className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${item.notifyNewEvents
+                                                    ? "bg-(--surface-brand-soft) text-(--accent-primary)"
+                                                    : "border border-(--border) bg-(--surface-elevated) text-(--text-secondary) hover:bg-(--surface-hover)"
+                                                }`}
+                                        >
+                                            {actionLoading === item.id ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            ) : item.notifyNewEvents ? (
+                                                <Bell className="h-4 w-4" />
+                                            ) : (
+                                                <BellOff className="h-4 w-4" />
+                                            )}
+                                            {item.notifyNewEvents ? "Notif aktif" : "Aktifkan notif"}
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleUnfollow(
+                                                    item.organizer.organizationSlug,
+                                                    item.id,
+                                                )
+                                            }
+                                            disabled={actionLoading === item.id}
+                                            className="inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(198,40,40,0.16)] bg-(--error-bg) px-4 py-3 text-sm font-semibold text-(--error-text) transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                                        >
+                                            {actionLoading === item.id ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <HeartCrack className="h-4 w-4" />
+                                            )}
+                                            Berhenti ikuti
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                )}
+            </DashboardSection>
         </div>
     );
 }

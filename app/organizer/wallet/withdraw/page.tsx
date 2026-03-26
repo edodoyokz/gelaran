@@ -167,7 +167,7 @@ export default function WithdrawPage() {
 
             <main className="p-6">
                 <div className="max-w-xl mx-auto space-y-6">
-                    <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white">
+                    <div className="bg-linear-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white">
                         <div className="flex items-center gap-3 mb-2">
                             <Wallet className="h-6 w-6" />
                             <span className="opacity-90">Saldo Tersedia</span>
@@ -192,7 +192,7 @@ export default function WithdrawPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {error && (
                                 <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-200 rounded-xl">
-                                    <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                    <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
                                     <p className="text-red-700">{error}</p>
                                 </div>
                             )}

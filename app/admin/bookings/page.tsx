@@ -1,23 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { CalendarDays, Eye, Loader2, Search, Ticket, Wallet } from "lucide-react";
 import {
-    Search,
-    Ticket,
-    Calendar,
-    Loader2,
-    AlertCircle,
-    Filter,
-    Eye,
-    TrendingUp,
-    DollarSign,
-    Users,
-} from "lucide-react";
+    AdminDataTable,
+    AdminFilterBar,
+    AdminMetricCard,
+    AdminNotice,
+    AdminStatusBadge,
+    AdminWorkspacePage,
+} from "@/components/admin/admin-workspace";
 import { formatCurrency } from "@/lib/utils";
-import { AdminHeader } from "@/components/admin/AdminHeader";
 
 interface BookingUser {
     id: string;
@@ -38,13 +33,6 @@ interface BookingEvent {
     };
 }
 
-interface BookedTicket {
-    id: string;
-    ticketType: {
-        name: string;
-    };
-}
-
 interface Booking {
     id: string;
     bookingCode: string;
@@ -58,7 +46,6 @@ interface Booking {
     guestEmail: string | null;
     guestName: string | null;
     event: BookingEvent;
-    bookedTickets: BookedTicket[];
 }
 
 interface BookingStats {
@@ -74,32 +61,33 @@ interface BookingStats {
     };
 }
 
-const STATUS_COLORS: Record<string, string> = {
-    PENDING: "bg-[var(--bg-secondary)] text-[var(--text-primary)]",
-    AWAITING_PAYMENT: "bg-yellow-500/10 text-yellow-600",
-    PAID: "bg-blue-500/10 text-blue-500",
-    CONFIRMED: "bg-green-500/10 text-green-600",
-    CANCELLED: "bg-red-500/10 text-red-500",
-    REFUNDED: "bg-purple-500/10 text-purple-500",
-    EXPIRED: "bg-[var(--bg-secondary)] text-[var(--text-muted)]",
+const statusTone: Record<string, "default" | "success" | "warning" | "danger" | "accent"> = {
+    PENDING: "warning",
+    AWAITING_PAYMENT: "warning",
+    PAID: "accent",
+    CONFIRMED: "success",
+    CANCELLED: "danger",
+    REFUNDED: "default",
+    EXPIRED: "default",
 };
 
 function AdminBookingsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const eventIdParam = searchParams.get("eventId");
-    
+
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [stats, setStats] = useState<BookingStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [statusFilter, setStatusFilter] = useState<string>("");
+    const [statusFilter, setStatusFilter] = useState("");
     const [search, setSearch] = useState("");
-    const [eventIdFilter, setEventIdFilter] = useState<string>(eventIdParam || "");
+    const [eventIdFilter] = useState<string>(eventIdParam || "");
 
     const fetchBookings = useCallback(async () => {
         try {
             setIsLoading(true);
+            setError(null);
             const res = await fetch("/api/admin/bookings");
             const data = await res.json();
 
@@ -131,28 +119,28 @@ function AdminBookingsContent() {
         fetchBookings();
     }, [fetchBookings]);
 
-    const filteredBookings = bookings.filter((booking) => {
+    const filteredBookings = useMemo(() => bookings.filter((booking) => {
         const matchesStatus = !statusFilter || booking.status === statusFilter;
         const matchesEventId = !eventIdFilter || booking.event.id === eventIdFilter;
         const searchLower = search.toLowerCase();
-        const matchesSearch =
-            !search ||
-            booking.bookingCode.toLowerCase().includes(searchLower) ||
-            booking.event.title.toLowerCase().includes(searchLower) ||
-            booking.user?.name.toLowerCase().includes(searchLower) ||
-            booking.user?.email.toLowerCase().includes(searchLower) ||
-            booking.guestName?.toLowerCase().includes(searchLower) ||
-            booking.guestEmail?.toLowerCase().includes(searchLower);
+        const matchesSearch = !search || [
+            booking.bookingCode,
+            booking.event.title,
+            booking.user?.name,
+            booking.user?.email,
+            booking.guestName,
+            booking.guestEmail,
+        ].some((value) => value?.toLowerCase().includes(searchLower));
 
-        return matchesStatus && matchesSearch && matchesEventId;
-    });
+        return matchesStatus && matchesEventId && matchesSearch;
+    }), [bookings, eventIdFilter, search, statusFilter]);
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Loading bookings...</p>
+                    <Loader2 className="mx-auto h-10 w-10 animate-spin text-(--accent-primary)" />
+                    <p className="mt-4 text-sm text-(--text-secondary)">Loading bookings workspace…</p>
                 </div>
             </div>
         );
@@ -160,251 +148,122 @@ function AdminBookingsContent() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
-                    <Link href="/admin" className="text-[var(--accent-primary)] hover:opacity-80">
-                        Back to Dashboard
-                    </Link>
-                </div>
-            </div>
+            <AdminWorkspacePage
+                eyebrow="Admin bookings"
+                title="Bookings operations"
+                description="Audit transaction flow, payment state, and customer booking activity."
+            >
+                <AdminNotice
+                    tone="warning"
+                    title="Bookings data is unavailable"
+                    description={error}
+                    actionHref="/admin"
+                    actionLabel="Back to dashboard"
+                />
+            </AdminWorkspacePage>
         );
     }
 
     return (
-        <>
-            <AdminHeader 
-                title="All Bookings" 
-                backHref="/admin"
-            />
+        <AdminWorkspacePage
+            eyebrow="Admin bookings"
+            title="Bookings operations"
+            description="Audit transaction flow, payment state, and customer booking activity."
+            actions={
+                <Link href="/admin/analytics" className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-2 text-sm font-semibold text-foreground hover:text-(--accent-primary)">
+                    View analytics
+                </Link>
+            }
+        >
+            {eventIdFilter ? (
+                <AdminNotice
+                    title="Event filter active"
+                    description={`Showing ${filteredBookings.length} booking records for the selected event.`}
+                    actionHref="/admin/bookings"
+                    actionLabel="Clear filter"
+                />
+            ) : null}
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {eventIdFilter && (
-                    <div className="mb-6 bg-[var(--accent-primary)]/10 border border-[var(--border)] border-indigo-200 rounded-xl p-4 flex items-center justify-between">
-                        <div>
-                            <p className="font-medium text-indigo-800">
-                                Filtering by event: {bookings.find(b => b.event.id === eventIdFilter)?.event.title || eventIdFilter}
-                            </p>
-                            <p className="text-sm text-[var(--accent-primary)]">
-                                Showing {filteredBookings.length} booking(s) for this event
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setEventIdFilter("");
-                                router.replace("/admin/bookings");
-                            }}
-                            className="px-4 py-2 text-sm font-medium text-[var(--accent-primary)] hover:text-indigo-800 hover:bg-indigo-100 rounded-lg"
-                        >
-                            Clear Filter
-                        </button>
-                    </div>
-                )}
-                
-                {stats && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                    <Ticket className="h-5 w-5 text-[var(--accent-primary)]" />
-                                </div>
-                            </div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">{bookings.length}</p>
-                            <p className="text-sm text-[var(--text-muted)]">Total Bookings</p>
-                        </div>
-                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
-                                    <TrendingUp className="h-5 w-5 text-green-600" />
-                                </div>
-                            </div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">
-                                {formatCurrency(stats.totalRevenue.total)}
-                            </p>
-                            <p className="text-sm text-[var(--text-muted)]">Total Revenue</p>
-                        </div>
-                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                                    <DollarSign className="h-5 w-5 text-purple-600" />
-                                </div>
-                            </div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">
-                                {formatCurrency(stats.totalRevenue.platform)}
-                            </p>
-                            <p className="text-sm text-[var(--text-muted)]">Platform Revenue</p>
-                        </div>
-                        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                                    <Users className="h-5 w-5 text-blue-600" />
-                                </div>
-                            </div>
-                            <p className="text-2xl font-bold text-[var(--text-primary)]">
-                                {bookings.filter((b) => b.status === "CONFIRMED" || b.status === "PAID").length}
-                            </p>
-                            <p className="text-sm text-[var(--text-muted)]">Confirmed</p>
-                        </div>
-                    </div>
-                )}
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <AdminMetricCard label="Visible bookings" value={filteredBookings.length.toLocaleString("en-US")} icon={Ticket} meta={`${bookings.length.toLocaleString("en-US")} loaded from the admin API`} />
+                <AdminMetricCard label="Gross revenue" value={formatCurrency(stats?.totalRevenue.total || 0)} icon={Wallet} tone="accent" meta={`Platform share ${formatCurrency(stats?.totalRevenue.platform || 0)}`} />
+                <AdminMetricCard label="Organizer revenue" value={formatCurrency(stats?.totalRevenue.organizer || 0)} icon={CalendarDays} meta="Settlement-facing revenue across confirmed bookings" />
+                <AdminMetricCard label="Confirmed or paid" value={bookings.filter((booking) => ["CONFIRMED", "PAID"].includes(booking.status)).length.toLocaleString("en-US")} icon={Eye} tone="success" meta="Orders currently contributing to operational volume" />
+            </section>
 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 mb-6 flex flex-wrap gap-4">
-                    <div className="flex-1 min-w-[200px] relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
-                        <input
-                            type="text"
-                            placeholder="Search by booking code, event, or customer..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg"
-                        />
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Filter className="h-5 w-5 text-[var(--text-muted)]" />
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-[var(--border)] rounded-lg"
-                        >
-                            <option value="">All Status</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="AWAITING_PAYMENT">Awaiting Payment</option>
-                            <option value="PAID">Paid</option>
-                            <option value="CONFIRMED">Confirmed</option>
-                            <option value="CANCELLED">Cancelled</option>
-                            <option value="REFUNDED">Refunded</option>
-                        </select>
-                    </div>
-                </div>
+            <AdminFilterBar>
+                <label className="relative block min-w-[16rem] flex-1">
+                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                    <input
+                        type="search"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Search booking code, event, or customer"
+                        className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) py-3 pl-11 pr-4 text-sm text-foreground outline-none transition-colors focus:border-[rgba(41,179,182,0.32)]"
+                    />
+                </label>
+                <select
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value)}
+                    className="rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm text-foreground outline-none"
+                >
+                    <option value="">All statuses</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="AWAITING_PAYMENT">Awaiting payment</option>
+                    <option value="PAID">Paid</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                    <option value="REFUNDED">Refunded</option>
+                    <option value="EXPIRED">Expired</option>
+                </select>
+            </AdminFilterBar>
 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-sm overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Booking
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Event
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Customer
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Amount
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Date
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {filteredBookings.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)]">
-                                        No bookings found
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredBookings.map((booking) => (
-                                    <tr key={booking.id} className="hover:bg-[var(--surface-hover)]">
-                                        <td className="px-6 py-4">
-                                            <p className="font-medium text-[var(--text-primary)] font-mono">
-                                                {booking.bookingCode}
-                                            </p>
-                                            <p className="text-xs text-[var(--text-muted)]">
-                                                {booking.totalTickets} ticket(s)
-                                            </p>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <Image
-                                                    src={booking.event.posterImage || "/placeholder.jpg"}
-                                                    alt=""
-                                                    width={40}
-                                                    height={40}
-                                                    className="object-cover rounded-lg"
-                                                />
-                                                <div>
-                                                    <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1">
-                                                        {booking.event.title}
-                                                    </p>
-                                                    <p className="text-xs text-[var(--text-muted)]">
-                                                        {booking.event.organizer.organizerProfile?.organizationName ||
-                                                            booking.event.organizer.name}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <p className="text-sm text-[var(--text-primary)]">
-                                                {booking.user?.name || booking.guestName || "Guest"}
-                                            </p>
-                                            <p className="text-xs text-[var(--text-muted)]">
-                                                {booking.user?.email || booking.guestEmail}
-                                            </p>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <p className="font-medium text-[var(--text-primary)]">
-                                                {formatCurrency(Number(booking.totalAmount))}
-                                            </p>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span
-                                                className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[booking.status]}`}
-                                            >
-                                                {booking.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm">
-                                                <div className="flex items-center gap-1 text-[var(--text-muted)]">
-                                                    <Calendar className="h-3 w-3" />
-                                                    {new Date(booking.createdAt).toLocaleDateString("id-ID")}
-                                                </div>
-                                                <p className="text-xs text-[var(--text-muted)]">
-                                                    {new Date(booking.createdAt).toLocaleTimeString("id-ID", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <Link
-                                                href={`/admin/bookings/${booking.id}`}
-                                                className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] rounded-lg hover:bg-[var(--bg-secondary)] inline-flex"
-                                                title="View Details"
-                                            >
-                                                <Eye className="h-4 w-4" />
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </main>
-        </>
+            <AdminDataTable
+                columns={["Booking", "Event", "Customer", "Amount", "Status", "Created", "Action"]}
+                hasRows={filteredBookings.length > 0}
+                emptyTitle="No bookings match the current filters"
+                emptyDescription="Try clearing the status or search filters to reveal more booking activity."
+            >
+                {filteredBookings.map((booking) => (
+                    <tr key={booking.id} className="bg-(--surface) transition-colors hover:bg-(--surface-elevated)">
+                        <td className="px-5 py-4 align-top">
+                            <p className="font-mono text-sm font-semibold text-foreground">{booking.bookingCode}</p>
+                            <p className="mt-1 text-xs text-(--text-muted)">{booking.totalTickets} ticket(s)</p>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <p className="text-sm font-semibold text-foreground">{booking.event.title}</p>
+                            <p className="mt-1 text-xs text-(--text-secondary)">{booking.event.organizer.organizerProfile?.organizationName || booking.event.organizer.name}</p>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <p className="text-sm font-medium text-foreground">{booking.user?.name || booking.guestName || "Guest"}</p>
+                            <p className="mt-1 text-xs text-(--text-secondary)">{booking.user?.email || booking.guestEmail || "No email"}</p>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <p className="text-sm font-semibold text-foreground">{formatCurrency(Number(booking.totalAmount))}</p>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <AdminStatusBadge label={booking.status} tone={statusTone[booking.status] || "default"} />
+                        </td>
+                        <td className="px-5 py-4 align-top text-sm text-(--text-secondary)">
+                            {new Date(booking.createdAt).toLocaleString("id-ID")}
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                            <Link href={`/admin/bookings/${booking.id}`} className="inline-flex items-center gap-2 rounded-full border border-(--border) px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:border-[rgba(41,179,182,0.28)] hover:text-(--accent-primary)">
+                                <Eye className="h-4 w-4" />
+                                View
+                            </Link>
+                        </td>
+                    </tr>
+                ))}
+            </AdminDataTable>
+        </AdminWorkspacePage>
     );
 }
 
 function AdminBookingsLoading() {
     return (
-        <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-            <div className="text-center">
-                <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                <p className="text-[var(--text-muted)]">Loading bookings...</p>
-            </div>
+        <div className="flex min-h-[60vh] items-center justify-center">
+            <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
         </div>
     );
 }

@@ -111,7 +111,7 @@ function AcceptTransferContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto" />
           <p className="mt-4 text-gray-600">Memuat informasi transfer...</p>
@@ -122,9 +122,9 @@ function AcceptTransferContent() {
 
   if (success && acceptedTicket) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-8 text-center">
+          <div className="bg-linear-to-r from-emerald-500 to-teal-500 p-8 text-center">
             <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-12 h-12 text-white" />
             </div>
@@ -155,7 +155,7 @@ function AcceptTransferContent() {
 
             <Link
               href="/my-bookings"
-              className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all"
+              className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all"
             >
               Lihat Tiket Saya
               <ArrowRight className="w-5 h-5" />
@@ -168,9 +168,9 @@ function AcceptTransferContent() {
 
   if (error && !transferInfo) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-red-500 to-rose-500 p-8 text-center">
+          <div className="bg-linear-to-r from-red-500 to-rose-500 p-8 text-center">
             <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <XCircle className="w-12 h-12 text-white" />
             </div>
@@ -198,9 +198,9 @@ function AcceptTransferContent() {
 
   if (isExpired || isAlreadyProcessed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-8 text-center">
+          <div className="bg-linear-to-r from-amber-500 to-orange-500 p-8 text-center">
             <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-12 h-12 text-white" />
             </div>
@@ -242,9 +242,9 @@ function AcceptTransferContent() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-center">
+        <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-8 text-center">
           <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <Ticket className="w-12 h-12 text-white" />
           </div>
@@ -285,7 +285,7 @@ function AcceptTransferContent() {
           </div>
 
           <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg mb-6">
-            <Clock className="w-5 h-5 flex-shrink-0" />
+            <Clock className="w-5 h-5 shrink-0" />
             <span className="text-sm">
               Link ini akan kadaluarsa dalam {expiresIn} jam
             </span>
@@ -293,7 +293,7 @@ function AcceptTransferContent() {
 
           {error && (
             <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg mb-6">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -301,7 +301,7 @@ function AcceptTransferContent() {
           <button
             onClick={handleAccept}
             disabled={accepting}
-            className="flex items-center justify-center gap-2 w-full py-4 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 w-full py-4 px-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {accepting ? (
               <>
@@ -327,7 +327,7 @@ function AcceptTransferContent() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center">
       <div className="text-center">
         <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto" />
         <p className="mt-4 text-gray-600">Memuat...</p>

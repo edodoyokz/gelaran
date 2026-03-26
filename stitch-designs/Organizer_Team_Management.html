@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran | Team Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#755800",
+              "tertiary-container": "#936f00",
+              "primary": "#a23a00",
+              "surface": "#f9faf5",
+              "primary-container": "#cb4a00",
+              "on-primary-container": "#fffbff",
+              "inverse-surface": "#2f312e",
+              "inverse-primary": "#ffb598",
+              "secondary-container": "#a7eceb",
+              "surface-container-high": "#e8e9e4",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-surface": "#1a1c19",
+              "surface-container-highest": "#e2e3de",
+              "secondary-fixed-dim": "#8ed2d2",
+              "error-container": "#ffdad6",
+              "surface-dim": "#d9dad6",
+              "surface-tint": "#a63b00",
+              "surface-container": "#edeee9",
+              "on-surface-variant": "#5b4137",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-primary-fixed": "#370e00",
+              "on-background": "#1a1c19",
+              "tertiary-fixed": "#ffdf9a",
+              "surface-container-low": "#f3f4ef",
+              "background": "#f9faf5",
+              "primary-fixed": "#ffdbce",
+              "secondary-fixed": "#aaefee",
+              "error": "#ba1a1a",
+              "on-tertiary-container": "#fffbff",
+              "on-secondary-container": "#246d6d",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#7f2b00",
+              "outline-variant": "#e3bfb1",
+              "on-error": "#ffffff",
+              "on-secondary-fixed-variant": "#004f50",
+              "surface-bright": "#f9faf5",
+              "surface-variant": "#e2e3de",
+              "on-tertiary-fixed": "#251a00",
+              "primary-fixed-dim": "#ffb598",
+              "tertiary-fixed-dim": "#f7be11",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed": "#002020",
+              "outline": "#8f7065",
+              "secondary": "#1e6868",
+              "surface-container-lowest": "#ffffff",
+              "inverse-on-surface": "#f0f1ec"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #1a1c19; }
+        h1, h2, h3, .serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .gradient-primary { background: linear-gradient(135deg, #a23a00 0%, #cb4a00 100%); }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 flex flex-col p-4 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-xl font-serif text-orange-900 dark:text-orange-100">Organizer Portal</h1>
+<p class="text-xs text-stone-500 font-medium">Cultural Curation</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-stone-500 dark:text-stone-400 px-4 py-3 hover:bg-stone-200/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<!-- Active State: Team Members -->
+<a class="flex items-center gap-3 bg-white dark:bg-stone-900 text-orange-800 dark:text-orange-400 font-semibold rounded-lg px-4 py-3" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Team Members</span>
+</a>
+<a class="flex items-center gap-3 text-stone-500 dark:text-stone-400 px-4 py-3 hover:bg-stone-200/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="text-sm font-medium">Permissions</span>
+</a>
+<a class="flex items-center gap-3 text-stone-500 dark:text-stone-400 px-4 py-3 hover:bg-stone-200/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-sm font-medium">Activity Log</span>
+</a>
+<a class="flex items-center gap-3 text-stone-500 dark:text-stone-400 px-4 py-3 hover:bg-stone-200/50 transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">folder_shared</span>
+<span class="text-sm font-medium">Resources</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-stone-200">
+<a class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-200/50 transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm font-medium">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-stone-500 px-4 py-3 hover:bg-stone-200/50 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar (Authority: JSON) -->
+<header class="fixed top-0 right-0 left-64 h-16 glass-nav flex justify-between items-center px-8 z-40">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-serif font-bold text-orange-900">Gelaran</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-stone-600 font-medium hover:text-orange-700 transition-colors" href="#">Dashboard</a>
+<a class="text-orange-800 font-bold border-b-2 border-orange-800" href="#">Events</a>
+<a class="text-stone-600 font-medium hover:text-orange-700 transition-colors" href="#">Teams</a>
+<a class="text-stone-600 font-medium hover:text-orange-700 transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-stone-600 hover:bg-stone-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-stone-600 hover:bg-stone-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-stone-200">
+<img alt="Organizer Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional man with a friendly expression in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe1Sh1Vx_d3NkTj4gEMJ3bNzsQuoB86gxVOOHx-FyOla4NEtbzlZgNbxYSceRqc-E1kDEkwCvDDgdkOrHDebPvzFYBYwkibzexS9tyus41IpOUzW5AE9XEpAVns4gikyfFO2m0trvZRfPxxQrND4Bb0CsJIN2DdGrdTnWijejsZ4amDf8H7KVVAF8pgexvXKRWZSxo2LvECvX85IJRXY-oEKqwwB5-ZxbRWKuwFCYLDucumZWXjMOAJeJiVy_E3mKz2CMJo2RVpuM"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-white">
+<div class="max-w-7xl mx-auto p-10 space-y-10">
+<!-- Hero Header Section -->
+<div class="flex justify-between items-end mb-4">
+<div class="space-y-2">
+<h2 class="text-4xl font-serif font-bold text-on-surface">Curator Collective</h2>
+<p class="text-on-surface-variant text-lg max-w-2xl">Manage your ensemble of cultural experts and event visionaries. Define roles that resonate with your mission.</p>
+</div>
+<button class="gradient-primary text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-primary/20 flex items-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">person_add</span>
+                    Invite Member
+                </button>
+</div>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Team Members Section (Large Block) -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<div class="bg-surface-container-low rounded-xl p-8 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xl font-serif font-bold text-on-surface">Active Team Members</h3>
+<span class="text-xs font-bold px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-full">12 Members Total</span>
+</div>
+<div class="space-y-1">
+<!-- Team Row 1 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-highest transition-colors rounded-lg group">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-xl object-cover" data-alt="professional woman portrait with warm smile and natural lighting in an airy studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvbHcYJfINGnnSnnpPO_dIaykkQv64I1VuMYpJegqvft-u332SrOivF_p1Yp13DZ7PV_uzRS0es_kFKW0qTD3BCJorJ_8T41qXLZioJGSe4ewy9oZ1O7rQDz_mL9UBJyCWiQhcREqX4-6zJzaMfGQ4hSHcO62vT2elcuN9kieFKxXSBlyhlfAHqEBiSsebmcmtGIWM0M17WEF_S98_25Epi14bxBDro3q5L3b1lLH7sQTiVb8LnK7qMl8mRuVL4K3kWFeF7c1Fa0I"/>
+<div>
+<p class="font-bold text-on-surface">Ayu Laksmi</p>
+<p class="text-xs text-on-surface-variant">ayu.l@gelaran.org</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="text-sm font-medium text-secondary py-1 px-3 bg-secondary-container rounded-full">Lead Curator</span>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Team Row 2 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-highest transition-colors rounded-lg group">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-xl object-cover" data-alt="young man with glasses looking thoughtfully at a laptop in a bright creative workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_mEtunw_xvcUOwQpINens7SeIuVxM46PODFfDFeg9nsoSDspZxcmQop1wCnll0KOWZeV5zMfkN33t1OTQKjSgtkoPlqCJNIK1dxLnyuETRg6r3Jvx-6raAO2kgJDwVskvaIbsmMDL5jgRCq98jsrArYfEkYjgEz66f3GN7X9GAeG9c8D6wbOBdrk2Nx2MkTePMuH06gDBP-aHVU9O9RMTbk-CSxpOhE15-bJeBEiAt1CTj-pL0nHtbD8xCP1PSI4gyHeLpEAKiiw"/>
+<div>
+<p class="font-bold text-on-surface">Budi Hartono</p>
+<p class="text-xs text-on-surface-variant">budi.h@gelaran.org</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="text-sm font-medium text-stone-600 py-1 px-3 bg-stone-200 rounded-full">Event Coordinator</span>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Team Row 3 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-highest transition-colors rounded-lg group">
+<div class="flex items-center gap-4">
+<img class="w-12 h-12 rounded-xl object-cover" data-alt="woman in professional business attire standing in a high-rise office building with soft sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6dxNDEspDqxvT_gnZAUM_kur47_4QyFlI5MfdM_JxDgULs3f5_cr9wVp1BGOt8K9RegeFxbrR_8DtAEPHV873GLXfjEVgwPyvUCsxvdIGAMopqD9fT8_ySAPfOToiEtFarx99OBBQkhIl-dna4OYkVGgKkUkIGIkjGj2A6GJhxrkUG5Z8OlbJYWM2StlGZQ7DX3gByItY_3mDrzSgRI10XlcxoGptqTPTRIGcqUGv-JouRxsa5BmoWFPXPg-xaVX0h9oa4PXmC-I"/>
+<div>
+<p class="font-bold text-on-surface">Siti Aminah</p>
+<p class="text-xs text-on-surface-variant">siti.a@gelaran.org</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="text-sm font-medium text-stone-600 py-1 px-3 bg-stone-200 rounded-full">Finance Manager</span>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Team Row 4 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-highest transition-colors rounded-lg group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">DM</div>
+<div>
+<p class="font-bold text-on-surface">Dewa Made</p>
+<p class="text-xs text-on-surface-variant">dewa.m@gelaran.org</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="text-sm font-medium text-stone-600 py-1 px-3 bg-stone-200 rounded-full">Technician</span>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-primary">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Permissions & Roles Overview -->
+<div class="bg-surface-container-highest rounded-xl p-8">
+<h3 class="text-xl font-serif font-bold text-on-surface mb-6">Permissions Architecture</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white p-6 rounded-lg shadow-sm space-y-4">
+<div class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="text-sm uppercase tracking-wider">Admin</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Full orchestration control. Can edit financial records, invite members, and delete events.</p>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-sm space-y-4">
+<div class="flex items-center gap-2 text-secondary font-bold">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="text-sm uppercase tracking-wider">Curator</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Content authority. Can update event descriptions, schedules, and guest lists.</p>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-sm space-y-4">
+<div class="flex items-center gap-2 text-tertiary font-bold">
+<span class="material-symbols-outlined">visibility</span>
+<span class="text-sm uppercase tracking-wider">Viewer</span>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">Read-only access. Ideal for external partners or seasonal volunteers.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Feed Section (Sidebar) -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<div class="bg-stone-50 rounded-xl p-8 border-l border-stone-100">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h3 class="text-xl font-serif font-bold text-on-surface">Team Pulse</h3>
+</div>
+<div class="space-y-8 relative">
+<!-- Activity Item 1 -->
+<div class="relative pl-6 border-l-2 border-stone-200">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-primary rounded-full border-4 border-white"></div>
+<p class="text-sm font-bold text-on-surface">Ayu L. <span class="font-normal text-on-surface-variant">updated permissions for the</span> Gamelan Festival</p>
+<p class="text-xs text-stone-400 mt-1">2 hours ago</p>
+</div>
+<!-- Activity Item 2 -->
+<div class="relative pl-6 border-l-2 border-stone-200">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-stone-300 rounded-full border-4 border-white"></div>
+<p class="text-sm font-bold text-on-surface">Budi Hartono <span class="font-normal text-on-surface-variant">added a new resource:</span> Stage Specs.pdf</p>
+<p class="text-xs text-stone-400 mt-1">5 hours ago</p>
+</div>
+<!-- Activity Item 3 -->
+<div class="relative pl-6 border-l-2 border-stone-200">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-stone-300 rounded-full border-4 border-white"></div>
+<p class="text-sm font-bold text-on-surface">System <span class="font-normal text-on-surface-variant">scheduled automated report for</span> Quarter 3</p>
+<p class="text-xs text-stone-400 mt-1">Yesterday</p>
+</div>
+<!-- Activity Item 4 -->
+<div class="relative pl-6 border-l-2 border-stone-200">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-stone-300 rounded-full border-4 border-white"></div>
+<p class="text-sm font-bold text-on-surface">Siti Aminah <span class="font-normal text-on-surface-variant">approved expense claim:</span> Artist Catering</p>
+<p class="text-xs text-stone-400 mt-1">Yesterday</p>
+</div>
+</div>
+<button class="w-full mt-10 py-3 text-sm font-bold text-primary border-2 border-primary/20 rounded-xl hover:bg-primary/5 transition-colors">
+                            View Full History
+                        </button>
+</div>
+<!-- Cultural Insight Card -->
+<div class="bg-secondary p-8 rounded-xl text-white relative overflow-hidden group">
+<div class="relative z-10 space-y-4">
+<span class="material-symbols-outlined text-secondary-container text-4xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h4 class="text-lg font-serif">Collaboration Tip</h4>
+<p class="text-sm text-secondary-container leading-relaxed">The best events are curated with diverse perspectives. Use the 'Discussion' tab in event modules to share inspirations before finalizing plans.</p>
+</div>
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary-container opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran Admin Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#a63b00",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#aaefee",
+                        "inverse-surface": "#003737",
+                        "on-tertiary-fixed-variant": "#004f51",
+                        "primary-fixed-dim": "#8ed2d2",
+                        "on-surface": "#002020",
+                        "background": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#ffb598",
+                        "secondary-container": "#fd6005",
+                        "on-secondary-container": "#521900",
+                        "on-tertiary-fixed": "#002021",
+                        "on-secondary-fixed": "#370e00",
+                        "tertiary-fixed-dim": "#5cd8db",
+                        "on-tertiary-container": "#56d4d6",
+                        "on-primary-fixed": "#002020",
+                        "surface-container-high": "#aff5f4",
+                        "on-primary-container": "#89cdcd",
+                        "tertiary-container": "#00595b",
+                        "on-surface-variant": "#3f4948",
+                        "surface-variant": "#aaefee",
+                        "surface-tint": "#1e6868",
+                        "primary-fixed": "#aaefee",
+                        "inverse-on-surface": "#b8fdfc",
+                        "on-error": "#ffffff",
+                        "on-background": "#002020",
+                        "outline-variant": "#bec8c8",
+                        "primary-container": "#015959",
+                        "inverse-primary": "#8ed2d2",
+                        "on-error-container": "#93000a",
+                        "surface": "#ffffff",
+                        "surface-container": "#b5faf9",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#7f2b00",
+                        "tertiary": "#004041",
+                        "surface-dim": "#a1e6e5",
+                        "on-primary-fixed-variant": "#004f50",
+                        "surface-bright": "#ffffff",
+                        "secondary-fixed": "#ffdbce",
+                        "tertiary-fixed": "#7bf5f8",
+                        "primary": "#004040",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "outline": "#6f7978",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#c1fffe"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .font-noto-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-white">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-cyan-50 dark:bg-slate-900 flex flex-col py-8 px-4 z-50">
+<div class="mb-12 px-2">
+<h1 class="text-2xl font-black text-teal-900 dark:text-teal-500 tracking-tight font-noto-serif">Gelaran</h1>
+<p class="text-xs uppercase tracking-widest text-teal-700/60 font-bold mt-1">Event Management</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard is Active -->
+<a class="flex items-center gap-3 px-4 py-3 text-teal-900 dark:text-teal-300 font-bold border-r-4 border-orange-500 bg-white/50 dark:bg-slate-800/50 translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-sans">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 dark:text-slate-400 hover:bg-cyan-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-sm font-sans">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 dark:text-slate-400 hover:bg-cyan-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="text-sm font-sans">Events</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700/70 dark:text-slate-400 hover:bg-cyan-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-sans">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 pt-8 border-t border-cyan-100/50">
+<div class="flex items-center gap-3">
+<img alt="Gelaran Admin Logo" class="w-8 h-8 rounded-full bg-primary-container" data-alt="minimalist professional circular avatar for an admin user with a dark teal and teal gradient background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWwJGJcMFw03hwLp64hoKskqnvYA4NuSsGExxiu2kKl_foRZtYIVhlM_fLrmbNg0tqYFJUY9bve7q9K6VG-C9VzVtJ0W34-Xwk4fvrmFyXaSToxAZxl8bjRg-WPjQmrKVEMABNYtAYTqQjrhr0dd6Ya2OYO3dHdG1Z3S5M5BDPdUWbGSnn6WTg8HCA-e18ucBISG89JMLddjRRqa-3rwNNlvdKHJ6dAAXTP8b-H1NyzxA09AgFAF_WDGJcHdBwRGzk8_QO8Oam4KQ"/>
+<div>
+<p class="text-xs font-bold text-teal-900">Admin User</p>
+<p class="text-[10px] text-teal-700/60">System Controller</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-white/80 backdrop-blur-md flex justify-between items-center px-8 w-full z-40 border-b border-cyan-100/50">
+<div class="flex items-center flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-teal-800/50 text-xl">search</span>
+<input class="w-full pl-11 pr-4 py-2 bg-surface-container-low/30 border-none rounded-lg text-sm focus:ring-2 focus:ring-teal-500/20 outline-none transition-all" placeholder="Search analytics, events, or organizers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-teal-800 hover:text-orange-500 transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full border-2 border-white"></span>
+</button>
+<button class="text-teal-800 hover:text-orange-500 transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="h-8 w-px bg-cyan-100/50 mx-2"></div>
+<img alt="Admin Avatar" class="w-8 h-8 rounded-lg bg-teal-50" data-alt="clean professional profile picture of a business executive in soft studio lighting high resolution" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBlpHh-XuqRlmc4Awz20c3oDWnM-xMuG8ZhUUNl0inrKhKDyps0wz4yk3kt1k-C_G3Q8VSkkWQtqAHBsypIccP9c-eFWsAqyyUWz-2tXHP22Mn50SolJ4gS1xX8PvE6afSqEoY-b7IJgsc2xutHfTLkgNmympjMSyAvPzBTrECjYi6CLnSLq3HVQgYFncvZQUOzBtXaGirw9ZPaw1_5MONh9AMD162lL_DYMVrH1C43ZjJnsyfNd4CHDwBAqgQdXXfYCvi3iXSUAk"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-10 min-h-screen bg-white">
+<!-- Header Section -->
+<div class="mb-10 flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-black font-noto-serif text-on-surface tracking-tight">Executive Summary</h2>
+<p class="text-on-surface-variant font-medium mt-1">Real-time performance analytics for Gelaran cultural ecosystem.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 text-sm font-semibold text-tertiary bg-surface-container-low hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+                    Last 30 Days
+                </button>
+<button class="px-5 py-2.5 text-sm font-semibold text-white bg-primary-container hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined text-lg">download</span>
+                    Export Report
+                </button>
+</div>
+</div>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<!-- Revenue Card -->
+<div class="p-6 bg-white border border-outline-variant/20 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary-fixed rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="payments">payments</span>
+</div>
+<span class="flex items-center text-xs font-bold text-tertiary-fixed-dim bg-tertiary/5 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> +12.5%
+                    </span>
+</div>
+<p class="text-sm font-semibold text-on-surface-variant mb-1 uppercase tracking-wider">Total Revenue</p>
+<p class="text-3xl font-bold font-noto-serif text-on-surface">$428,940</p>
+</div>
+<!-- Tickets Sold -->
+<div class="p-6 bg-white border border-outline-variant/20 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary-fixed rounded-lg">
+<span class="material-symbols-outlined text-primary-container" data-icon="confirmation_number">confirmation_number</span>
+</div>
+<span class="flex items-center text-xs font-bold text-tertiary-fixed-dim bg-tertiary/5 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> +8.2%
+                    </span>
+</div>
+<p class="text-sm font-semibold text-on-surface-variant mb-1 uppercase tracking-wider">Tickets Sold</p>
+<p class="text-3xl font-bold font-noto-serif text-on-surface">12,450</p>
+</div>
+<!-- Active Events -->
+<div class="p-6 bg-white border border-outline-variant/20 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-surface-container-high rounded-lg">
+<span class="material-symbols-outlined text-tertiary" data-icon="theater_comedy">theater_comedy</span>
+</div>
+<span class="flex items-center text-xs font-bold text-secondary bg-secondary/5 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-xs mr-1">trending_down</span> -2.4%
+                    </span>
+</div>
+<p class="text-sm font-semibold text-on-surface-variant mb-1 uppercase tracking-wider">Active Events</p>
+<p class="text-3xl font-bold font-noto-serif text-on-surface">84</p>
+</div>
+<!-- Avg Order Value -->
+<div class="p-6 bg-white border border-outline-variant/20 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary-fixed-dim rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<span class="flex items-center text-xs font-bold text-tertiary-fixed-dim bg-tertiary/5 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span> +5.1%
+                    </span>
+</div>
+<p class="text-sm font-semibold text-on-surface-variant mb-1 uppercase tracking-wider">Avg. Order Value</p>
+<p class="text-3xl font-bold font-noto-serif text-on-surface">$34.45</p>
+</div>
+</div>
+<!-- Bento Grid Main Content -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Revenue Trends Line Chart Placeholder -->
+<div class="col-span-12 lg:col-span-8 bg-white border border-outline-variant/20 rounded-xl p-8 shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="text-xl font-bold font-noto-serif text-on-surface">Revenue Growth</h3>
+<p class="text-sm text-on-surface-variant">Monthly revenue overview across all cultural categories</p>
+</div>
+<div class="flex gap-2">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-low rounded-full text-xs font-bold text-primary-container">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span> Revenue
+                        </div>
+</div>
+</div>
+<div class="h-72 w-full flex items-end justify-between px-2">
+<!-- Stylized SVG Chart Placeholder -->
+<div class="w-full h-full relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 200">
+<path d="M0,150 Q100,120 200,140 T400,80 T600,100 T800,40" fill="none" stroke="#fd6005" stroke-linecap="round" stroke-width="4"></path>
+<path d="M0,150 Q100,120 200,140 T400,80 T600,100 T800,40 V200 H0 Z" fill="url(#grad1)" opacity="0.1"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#fd6005;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] text-on-surface-variant font-bold px-4 py-2 border-t border-outline-variant/10">
+<span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span><span>JUL</span><span>AUG</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Conversion Funnel Section -->
+<div class="col-span-12 lg:col-span-4 bg-primary-container rounded-xl p-8 text-white shadow-xl relative overflow-hidden">
+<h3 class="text-xl font-bold font-noto-serif mb-2">Conversion Funnel</h3>
+<p class="text-primary-fixed/60 text-sm mb-10">Viewer engagement to purchase journey</p>
+<div class="space-y-6 relative z-10">
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest opacity-80">
+<span>Page Views</span>
+<span>245.8k</span>
+</div>
+<div class="h-3 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-white w-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest opacity-80">
+<span>Event Details</span>
+<span>89.2k</span>
+</div>
+<div class="h-3 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[70%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest opacity-80">
+<span>Add to Cart</span>
+<span>15.4k</span>
+</div>
+<div class="h-3 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim w-[30%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold mb-2 uppercase tracking-widest opacity-80">
+<span>Successful Booking</span>
+<span>12.4k</span>
+</div>
+<div class="h-3 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-surface-container-high w-[22%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-10 pt-6 border-t border-white/10">
+<div class="flex items-center gap-4">
+<div class="text-3xl font-bold font-noto-serif">5.06%</div>
+<div class="text-xs font-medium text-primary-fixed/80">Overall conversion rate from initial view to purchase</div>
+</div>
+</div>
+<!-- Abstract decorative element -->
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-secondary opacity-20 rounded-full blur-3xl"></div>
+</div>
+<!-- Ticket Sales by Category -->
+<div class="col-span-12 lg:col-span-6 bg-white border border-outline-variant/20 rounded-xl p-8 shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-xl font-bold font-noto-serif text-on-surface">Sales by Category</h3>
+<span class="text-xs font-bold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">info</span> Units Sold
+                    </span>
+</div>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<span class="w-24 text-sm font-bold text-on-surface-variant">Wayang</span>
+<div class="flex-1 h-8 bg-surface-container-low rounded-sm overflow-hidden flex items-center">
+<div class="h-full bg-primary-container" style="width: 85%"></div>
+<span class="ml-3 text-xs font-bold text-primary-container">4,200</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-sm font-bold text-on-surface-variant">Gamelan</span>
+<div class="flex-1 h-8 bg-surface-container-low rounded-sm overflow-hidden flex items-center">
+<div class="h-full bg-secondary-container" style="width: 65%"></div>
+<span class="ml-3 text-xs font-bold text-secondary-container">3,120</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-sm font-bold text-on-surface-variant">Music</span>
+<div class="flex-1 h-8 bg-surface-container-low rounded-sm overflow-hidden flex items-center">
+<div class="h-full bg-tertiary-container" style="width: 55%"></div>
+<span class="ml-3 text-xs font-bold text-tertiary-container">2,800</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="w-24 text-sm font-bold text-on-surface-variant">Batik Workshop</span>
+<div class="flex-1 h-8 bg-surface-container-low rounded-sm overflow-hidden flex items-center">
+<div class="h-full bg-primary-fixed-dim" style="width: 40%"></div>
+<span class="ml-3 text-xs font-bold text-teal-800">1,900</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Audience Segments Donut Chart Placeholder -->
+<div class="col-span-12 lg:col-span-6 bg-white border border-outline-variant/20 rounded-xl p-8 shadow-sm">
+<h3 class="text-xl font-bold font-noto-serif text-on-surface mb-8">Audience Segments</h3>
+<div class="flex items-center justify-center h-52">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<!-- CSS Donut chart representation -->
+<div class="w-full h-full rounded-full border-[18px] border-primary-container" style="clip-path: polygon(50% 50%, -50% -50%, 150% -50%, 150% 150%, 50% 150%)"></div>
+<div class="absolute w-full h-full rounded-full border-[18px] border-secondary-container rotate-[120deg]" style="clip-path: polygon(50% 50%, 150% -50%, 150% 50%, 50% 50%)"></div>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-on-surface">78%</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">General</span>
+</div>
+</div>
+<div class="ml-12 space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+<div>
+<p class="text-xs font-bold text-on-surface">General Admission</p>
+<p class="text-[10px] text-on-surface-variant">78% (9,711 tickets)</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<div>
+<p class="text-xs font-bold text-on-surface">VIP Experience</p>
+<p class="text-[10px] text-on-surface-variant">15% (1,867 tickets)</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-surface-container-high"></div>
+<div>
+<p class="text-xs font-bold text-on-surface">Early Bird</p>
+<p class="text-[10px] text-on-surface-variant">7% (872 tickets)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Organizer Performance Table -->
+<div class="col-span-12 bg-white border border-outline-variant/20 rounded-xl shadow-sm overflow-hidden">
+<div class="p-8 border-b border-outline-variant/10 flex justify-between items-center">
+<div>
+<h3 class="text-xl font-bold font-noto-serif text-on-surface">Top Performing Organizers</h3>
+<p class="text-sm text-on-surface-variant">Ranking by gross revenue and ticket volume</p>
+</div>
+<button class="text-tertiary font-bold text-sm hover:underline">View Full Leaderboard</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/30">
+<tr>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">Organizer</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest text-center">Active Events</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest text-right">Tickets Sold</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest text-right">Revenue</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest text-center">Rating</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-teal-800">JK</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Jogja Keraton Events</p>
+<p class="text-[10px] text-on-surface-variant">Cultural Heritage Partner</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-center text-sm font-medium">12</td>
+<td class="px-8 py-5 text-right text-sm font-medium">3,450</td>
+<td class="px-8 py-5 text-right text-sm font-bold text-primary-container">$112,400</td>
+<td class="px-8 py-5 text-center">
+<div class="flex justify-center text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-secondary">ST</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Surakarta Traditions</p>
+<p class="text-[10px] text-on-surface-variant">Verified Organizer</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-center text-sm font-medium">8</td>
+<td class="px-8 py-5 text-right text-sm font-medium">2,100</td>
+<td class="px-8 py-5 text-right text-sm font-bold text-primary-container">$78,200</td>
+<td class="px-8 py-5 text-center">
+<div class="flex justify-center text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center font-bold text-teal-600">NM</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Nusantara Modern</p>
+<p class="text-[10px] text-on-surface-variant">Contemporary Arts</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-center text-sm font-medium">15</td>
+<td class="px-8 py-5 text-right text-sm font-medium">1,890</td>
+<td class="px-8 py-5 text-right text-sm font-bold text-primary-container">$56,150</td>
+<td class="px-8 py-5 text-center">
+<div class="flex justify-center text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</body></html>

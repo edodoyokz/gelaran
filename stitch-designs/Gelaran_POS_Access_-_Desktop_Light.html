@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran POS Access Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a23a00",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdf9a",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#e3bfb1",
+                        "surface-container-highest": "#e2e2e2",
+                        "primary-fixed-dim": "#ffb598",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#8ed2d2",
+                        "inverse-primary": "#ffb598",
+                        "primary-container": "#cb4a00",
+                        "on-primary-fixed": "#370e00",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-container": "#a7eceb",
+                        "surface-variant": "#e2e2e2",
+                        "on-secondary-fixed": "#002020",
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "inverse-surface": "#2f3131",
+                        "secondary-fixed": "#aaefee",
+                        "on-secondary-fixed-variant": "#004f50",
+                        "on-surface": "#1a1c1c",
+                        "on-primary-container": "#fffbff",
+                        "secondary": "#1e6868",
+                        "surface-tint": "#a63b00",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#5b4137",
+                        "on-tertiary-fixed": "#251a00",
+                        "on-tertiary-fixed-variant": "#5a4300",
+                        "primary-fixed": "#ffdbce",
+                        "background": "#f9f9f9",
+                        "outline": "#8f7065",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#246d6d",
+                        "tertiary": "#755800",
+                        "surface-dim": "#dadada",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-container-low": "#f3f3f3",
+                        "on-background": "#1a1c1c",
+                        "tertiary-container": "#936f00",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container": "#eeeeee",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "brand-dark-teal": "#015959",
+                        "brand-orange": "#F95D00",
+                        "brand-yellow": "#FBC117",
+                        "brand-light-teal": "#29B3B6"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .cultural-pattern {
+            background-image: radial-gradient(#ffffff22 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-white font-body text-on-surface min-h-screen flex flex-col">
+<!-- Top Navigation Anchor -->
+<header class="bg-white flex justify-between items-center px-10 py-6 w-full border-b border-slate-100">
+<div class="flex items-center gap-4">
+<span class="font-headline text-3xl font-bold text-brand-dark-teal tracking-tight">Gelaran</span>
+<div class="h-6 w-[1px] bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-2 px-3 py-1 bg-secondary-container/30 rounded-full">
+<span class="material-symbols-outlined text-brand-light-teal text-sm" style="font-variation-settings: 'FILL' 1;">fiber_manual_record</span>
+<span class="text-xs font-bold uppercase tracking-widest text-on-secondary-container">Terminal #082 - Online</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-slate-500 hover:text-brand-dark-teal transition-colors">terminal</button>
+<button class="material-symbols-outlined text-slate-500 hover:text-brand-dark-teal transition-colors">account_circle</button>
+</div>
+</header>
+<main class="flex-grow grid grid-cols-12 gap-0">
+<!-- Sidebar Navigation -->
+<aside class="col-span-2 bg-surface-container-low flex flex-col p-6 z-40 border-r border-slate-100">
+<div class="mb-10">
+<div class="flex items-center gap-3 mb-1">
+<span class="font-headline text-lg font-bold text-brand-dark-teal">Terminal #082</span>
+</div>
+<p class="text-xs font-medium text-slate-500">Staff: Active</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<div class="flex items-center gap-3 bg-white text-brand-dark-teal rounded-lg px-4 py-3 shadow-sm font-semibold">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">devices</span>
+<span class="text-sm">Terminal Selection</span>
+</div>
+<div class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-200 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">history</span>
+<span class="text-sm">Sales History</span>
+</div>
+<div class="flex items-center gap-3 text-slate-600 px-4 py-3 hover:bg-slate-200 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-sm">System Check</span>
+</div>
+</nav>
+<button class="mt-auto flex items-center justify-center gap-2 bg-slate-200 text-slate-700 py-3 rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-slate-300 transition-all">
+<span class="material-symbols-outlined text-sm">lock</span>
+                Lock Terminal
+            </button>
+</aside>
+<!-- Main Operational Canvas -->
+<section class="col-span-10 p-10 flex flex-col gap-10">
+<!-- Bento Layout Header -->
+<div class="grid grid-cols-3 gap-8">
+<!-- Outlet Card -->
+<div class="col-span-2 bg-brand-dark-teal rounded-xl p-8 text-white relative overflow-hidden flex flex-col justify-between min-h-[220px] shadow-lg shadow-brand-dark-teal/10 cultural-pattern">
+<div class="relative z-10">
+<span class="text-brand-yellow font-bold text-xs uppercase tracking-[0.2em] mb-4 block">Current Location</span>
+<h2 class="font-headline text-4xl font-bold mb-2">Solo Heritage Hub</h2>
+<div class="flex items-center gap-2 text-white/80">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<p class="text-sm font-light">Jl. Slamet Riyadi No. 12, Surakarta, Central Java</p>
+</div>
+</div>
+<div class="relative z-10 flex items-center gap-4 mt-6">
+<div class="px-4 py-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 flex items-center gap-3">
+<span class="material-symbols-outlined text-brand-yellow">check_circle</span>
+<span class="text-sm font-semibold">Store Status: Operational</span>
+</div>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'wght' 100;">temple_hindu</span>
+</div>
+</div>
+<!-- Shift Details Section -->
+<div class="bg-surface-container rounded-xl p-8 flex flex-col justify-between shadow-sm border border-slate-100">
+<div>
+<span class="text-slate-400 font-bold text-xs uppercase tracking-[0.2em] mb-4 block">Shift Overview</span>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline text-2xl font-bold text-brand-dark-teal">Morning Shift</h3>
+<span class="material-symbols-outlined text-brand-light-teal">light_mode</span>
+</div>
+<p class="text-sm text-slate-600 mb-6 font-medium">Started at 08:00 AM • 4h 12m elapsed</p>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-inner">
+<p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Floating Balance</p>
+<p class="font-headline text-3xl font-bold text-brand-dark-teal">Rp 2.500.000</p>
+</div>
+</div>
+</div>
+<!-- Operational Workspace -->
+<div class="grid grid-cols-12 gap-10">
+<!-- Terminal Selector & Cashier Info -->
+<div class="col-span-7 flex flex-col gap-8">
+<div>
+<h4 class="font-headline text-xl font-bold text-brand-dark-teal mb-6">Select Operational Terminal</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-6 rounded-xl bg-white border-2 border-brand-orange shadow-md relative group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-brand-orange/10 p-3 rounded-lg text-brand-orange">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">point_of_sale</span>
+</div>
+<span class="text-[10px] font-bold bg-brand-orange text-white px-2 py-0.5 rounded uppercase">Selected</span>
+</div>
+<p class="font-bold text-brand-dark-teal">Terminal #082</p>
+<p class="text-xs text-slate-500">Main Counter Front</p>
+</div>
+<div class="p-6 rounded-xl bg-white border border-slate-100 hover:border-brand-light-teal shadow-sm transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-slate-100 p-3 rounded-lg text-slate-400 group-hover:bg-brand-light-teal/10 group-hover:text-brand-light-teal transition-colors">
+<span class="material-symbols-outlined">point_of_sale</span>
+</div>
+<span class="text-[10px] font-bold bg-brand-light-teal text-white px-2 py-0.5 rounded uppercase">Standby</span>
+</div>
+<p class="font-bold text-slate-700">Terminal #085</p>
+<p class="text-xs text-slate-500">Back Garden Kiosk</p>
+</div>
+<div class="p-6 rounded-xl bg-white border border-slate-100 hover:border-brand-light-teal shadow-sm transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-slate-100 p-3 rounded-lg text-slate-400 group-hover:bg-brand-light-teal/10 group-hover:text-brand-light-teal transition-colors">
+<span class="material-symbols-outlined">tablet_android</span>
+</div>
+<span class="text-[10px] font-bold bg-brand-light-teal text-white px-2 py-0.5 rounded uppercase">Standby</span>
+</div>
+<p class="font-bold text-slate-700">Mobile Unit A</p>
+<p class="text-xs text-slate-500">Table Service Handheld</p>
+</div>
+<div class="p-6 rounded-xl bg-white border border-slate-100 opacity-50 cursor-not-allowed">
+<div class="flex justify-between items-start mb-4">
+<div class="bg-slate-100 p-3 rounded-lg text-slate-400">
+<span class="material-symbols-outlined">construction</span>
+</div>
+<span class="text-[10px] font-bold bg-slate-400 text-white px-2 py-0.5 rounded uppercase">Offline</span>
+</div>
+<p class="font-bold text-slate-700">Terminal #081</p>
+<p class="text-xs text-slate-500">Maintenance Mode</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Profile and CTA Column -->
+<div class="col-span-5 flex flex-col gap-6">
+<!-- Profile Card -->
+<div class="bg-white rounded-xl shadow-lg shadow-slate-200/50 overflow-hidden border border-slate-100">
+<div class="bg-brand-dark-teal p-6 flex items-center gap-4 cultural-pattern">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-brand-yellow/50">
+<img alt="Cashier Portrait" class="w-full h-full object-cover" data-alt="Professional portrait of a male cashier wearing a neat uniform with a friendly expression in a modern retail setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6j6rBpWBk9aTzbG6gsX1dF0AIGUxtXdivh2yKk8pxk-OUCU-NV3ew7EWZmUQUAJTgvuVjMG-8OjTBGin-05Y1jz3CwAmt_DsGQdxgGOYOPpaiHCn7EwcjMGtuWoYS7emgr2JNKAQ_-0OZUC3jiU_umdsUEU-KT1lobZpUuGBox8796PynTmqf8yWdAEbZhaksmgMSDHN7NX5Bn5aBijoX3rtkgpdT1p1Kpj8qOiY9HxC1kRH4wSId3MH5uUv6YMiCWajn9s97CpY"/>
+</div>
+<div>
+<h5 class="text-white font-headline text-xl font-bold">Budi Santoso</h5>
+<p class="text-brand-light-teal text-xs font-bold uppercase tracking-wider">Senior Associate Cashier</p>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-slate-50">
+<span class="text-sm text-slate-500 font-medium">Employee ID</span>
+<span class="text-sm text-brand-dark-teal font-bold tracking-tight">GLR-8829-2023</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-slate-50">
+<span class="text-sm text-slate-500 font-medium">Permission Level</span>
+<span class="px-2 py-1 bg-brand-yellow/10 text-brand-yellow text-[10px] font-bold rounded">LEVEL 3 ADMIN</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-sm text-slate-500 font-medium">Session IP</span>
+<span class="text-sm text-slate-400 font-mono">192.168.1.82</span>
+</div>
+</div>
+</div>
+<!-- Primary Action -->
+<div class="mt-4">
+<button class="w-full bg-brand-orange hover:bg-primary-container text-white py-6 rounded-lg font-bold text-xl flex items-center justify-center gap-3 shadow-xl shadow-brand-orange/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl">rocket_launch</span>
+                            Start Selling
+                        </button>
+<p class="text-center text-slate-400 text-xs mt-4">By starting, you agree to the terminal usage policy and end-of-shift reporting requirements.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer / Status Ribbon -->
+<footer class="bg-gradient-to-r from-brand-dark-teal to-brand-light-teal h-2 w-full fixed bottom-0"></footer>
+</body></html>

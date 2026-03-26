@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organizer Wallet | Heritage Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#001717",
+              "secondary": "#5cd8db",
+              "outline": "#899392",
+              "on-secondary": "#003738",
+              "tertiary-fixed": "#ffdf9a",
+              "on-surface": "#aaefee",
+              "on-primary": "#591c00",
+              "primary-fixed-dim": "#ffb598",
+              "error-container": "#93000a",
+              "tertiary-fixed-dim": "#f7be11",
+              "on-surface-variant": "#bec8c8",
+              "on-error": "#690005",
+              "surface-container-lowest": "#001111",
+              "on-background": "#aaefee",
+              "secondary-fixed-dim": "#5cd8db",
+              "primary-fixed": "#ffdbce",
+              "surface-variant": "#003c3c",
+              "surface": "#001717",
+              "error": "#ffb4ab",
+              "surface-container-high": "#003030",
+              "inverse-primary": "#a63b00",
+              "surface-tint": "#ffb598",
+              "secondary-container": "#00a4a7",
+              "primary-container": "#8d3100",
+              "primary": "#ffb598",
+              "on-error-container": "#ffdad6",
+              "surface-container-highest": "#003c3c",
+              "secondary-fixed": "#7bf5f8",
+              "outline-variant": "#3f4948",
+              "tertiary-container": "#654b00",
+              "surface-container-low": "#002020",
+              "on-tertiary-container": "#f1b803",
+              "on-secondary-fixed": "#002021",
+              "on-secondary-fixed-variant": "#004f51",
+              "on-primary-container": "#ffae8e",
+              "inverse-surface": "#aaefee",
+              "on-tertiary": "#3f2e00",
+              "on-primary-fixed-variant": "#7f2b00",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "tertiary": "#f7be11",
+              "surface-bright": "#004141",
+              "background": "#001717",
+              "on-primary-fixed": "#370e00",
+              "inverse-on-surface": "#003737",
+              "surface-container": "#002424",
+              "on-tertiary-fixed": "#251a00",
+              "on-secondary-container": "#003233"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #001717;
+            color: #aaefee;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .editorial-shadow {
+            box-shadow: 0 32px 32px rgba(170, 239, 238, 0.08);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-x-hidden">
+<!-- SideNavBar Integration -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-6 space-y-4 bg-[#002020] dark:bg-[#002020] h-screen w-64 rounded-r-3xl z-40">
+<div class="mb-8 px-2">
+<h1 class="font-['Noto_Serif'] text-lg text-[#f7be11]">Surakarta Ops</h1>
+<p class="text-[#aaefee]/60 text-xs font-['Plus_Jakarta_Sans']">Cultural Curator Portal</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Navigation Links -->
+<a class="flex items-center space-x-3 px-4 py-3 text-[#aaefee]/60 hover:bg-[#002424] rounded-xl ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium">Staff Management</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-[#aaefee]/60 hover:bg-[#002424] rounded-xl ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium">Venue Map</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-[#aaefee]/60 hover:bg-[#002424] rounded-xl ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium">Ticket Scanning</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 bg-[#003030] text-[#5cd8db] rounded-xl ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium">Revenue Reports</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-[#aaefee]/60 hover:bg-[#002424] rounded-xl ease-in-out duration-200" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium">Cultural Archive</span>
+</a>
+</nav>
+<div class="pt-6 border-t border-[#3f4948]/20 space-y-2">
+<button class="w-full bg-[#ffb598] text-[#591c00] py-3 rounded-xl font-bold text-sm mb-4">
+                Create New Event
+            </button>
+<a class="flex items-center space-x-3 px-4 py-2 text-[#aaefee]/60 hover:bg-[#002424] rounded-xl" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm">Help Center</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-2 text-[#aaefee]/60 hover:bg-[#002424] rounded-xl" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar Integration -->
+<header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 bg-[#001717] dark:bg-[#001717] z-30 shadow-[0_32px_32px_rgba(170,239,238,0.08)]">
+<div class="flex items-center space-x-12">
+<span class="font-['Noto_Serif'] text-xl font-bold text-[#ffb598]">Heritage Portal</span>
+<nav class="hidden md:flex space-x-8">
+<a class="text-[#aaefee]/70 font-['Plus_Jakarta_Sans'] hover:text-[#5cd8db] transition-colors duration-300" href="#">Dashboard</a>
+<a class="text-[#aaefee]/70 font-['Plus_Jakarta_Sans'] hover:text-[#5cd8db] transition-colors duration-300" href="#">Events</a>
+<a class="text-[#ffb598] border-b-2 border-[#ffb598] pb-1 font-['Plus_Jakarta_Sans']" href="#">Wallet</a>
+<a class="text-[#aaefee]/70 font-['Plus_Jakarta_Sans'] hover:text-[#5cd8db] transition-colors duration-300" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative">
+<span class="material-symbols-outlined text-[#aaefee]/70 hover:text-[#5cd8db] cursor-pointer">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#f7be11] rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-[#aaefee]/70 hover:text-[#5cd8db] cursor-pointer">settings</span>
+<div class="w-10 h-10 rounded-full bg-[#003c3c] overflow-hidden">
+<img alt="Organizer profile avatar" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional cultural event organizer in a dark studio setting with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClvnBA9yQkpwdnDL-cGuJyLvVLOHJ2WBLPGjx9w9UaPktqVtnMroe0SGxZ2e2U0Lh_SIUFW-CsTOQCzhGh9vQSS74ge4zUN5Sizytun_tETMXfJMJLDEtOlHNgKz4zY7hGvGeSpCf-YaQvuPBcdYRcTwu-rjcaHfndjWV9wCBTYEr4e8ieL5xWwDD56jkbB6cQt-9m3EK7QykGkwYki41H9YyN_v0g72_cOj0dmcreJfnqSLgWJpSPhPuT57uIoDoo0KiTe95sqiI"/>
+</div>
+</div>
+</header>
+<!-- Canvas Content -->
+<div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+<!-- Page Heading & Actions -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline text-4xl font-bold text-on-surface tracking-tight">Financial Overview</h2>
+<p class="font-body text-on-surface-variant mt-2">Manage your cultural revenue and event settlements.</p>
+</div>
+<div class="flex space-x-4">
+<button class="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold bg-surface-container-high text-secondary hover:bg-surface-bright transition-all">
+<span class="material-symbols-outlined">download</span>
+<span>Export CSV</span>
+</button>
+<button class="flex items-center space-x-2 px-8 py-3 rounded-xl font-bold bg-primary text-on-primary editorial-shadow scale-95 active:scale-90 transition-all">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span>Withdraw Funds</span>
+</button>
+</div>
+</div>
+<!-- Bento Balance Grid -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Main Balance Card -->
+<div class="col-span-8 bg-surface-container-low rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between min-h-[280px]">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div>
+<span class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Available Balance</span>
+<div class="mt-4 flex items-baseline space-x-4">
+<span class="font-headline text-6xl font-bold text-primary">Rp 48.250.000</span>
+<span class="font-body text-secondary flex items-center bg-secondary/10 px-3 py-1 rounded-full text-sm">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span> +12.5%
+                            </span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-8 pt-8 border-t border-outline-variant/15">
+<div>
+<p class="text-xs text-on-surface-variant mb-1">Last Settlement</p>
+<p class="font-semibold text-on-surface">Oct 14, 2023</p>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant mb-1">Total Revenue (MTD)</p>
+<p class="font-semibold text-on-surface">Rp 152.400.000</p>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant mb-1">Account Standing</p>
+<p class="font-semibold text-tertiary">Premium Tier</p>
+</div>
+</div>
+</div>
+<!-- Pending Payouts Card -->
+<div class="col-span-4 bg-surface-container rounded-3xl p-8 flex flex-col justify-between border-b-4 border-tertiary">
+<div>
+<div class="flex justify-between items-start">
+<span class="font-label text-sm uppercase tracking-widest text-on-surface-variant">Pending Payouts</span>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">hourglass_empty</span>
+</div>
+<h3 class="font-headline text-3xl font-bold text-on-surface mt-6">Rp 12.840.000</h3>
+<p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Funds currently held in escrow from ongoing ticket sales for "Batik Night 2023".</p>
+</div>
+<div class="mt-6 p-4 rounded-xl bg-surface-container-high/50 flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full bg-tertiary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-xl">info</span>
+</div>
+<p class="text-xs text-on-surface-variant">Next release scheduled for Oct 24th after event audit.</p>
+</div>
+</div>
+</div>
+<!-- Settlement & Bank Info Section -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Settlement Timeline -->
+<div class="col-span-7 bg-surface-container-low rounded-3xl p-8">
+<h3 class="font-headline text-xl font-bold mb-8">Settlement Timeline</h3>
+<div class="space-y-8 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant/20">
+<div class="relative flex items-center pl-10">
+<div class="absolute left-0 w-6 h-6 rounded-full bg-secondary border-4 border-surface-container-low z-10"></div>
+<div class="flex-1 flex justify-between items-center bg-surface-container p-4 rounded-2xl border-l-4 border-secondary">
+<div>
+<p class="text-sm font-bold text-on-surface">Upcoming Payout</p>
+<p class="text-xs text-on-surface-variant">Wayang Kulit Global Tour</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-secondary">Oct 24, 2023</p>
+<p class="text-xs text-on-surface-variant">Rp 5.200.000</p>
+</div>
+</div>
+</div>
+<div class="relative flex items-center pl-10">
+<div class="absolute left-0 w-6 h-6 rounded-full bg-outline-variant border-4 border-surface-container-low z-10"></div>
+<div class="flex-1 flex justify-between items-center bg-surface-container/40 p-4 rounded-2xl">
+<div>
+<p class="text-sm font-bold text-on-surface-variant">Future Settlement</p>
+<p class="text-xs text-on-surface-variant/60">Keraton Culinary Festival</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface-variant">Oct 31, 2023</p>
+<p class="text-xs text-on-surface-variant/60">Rp 7.640.000</p>
+</div>
+</div>
+</div>
+<div class="relative flex items-center pl-10">
+<div class="absolute left-0 w-6 h-6 rounded-full bg-outline-variant border-4 border-surface-container-low z-10"></div>
+<div class="flex-1 flex justify-between items-center bg-surface-container/40 p-4 rounded-2xl">
+<div>
+<p class="text-sm font-bold text-on-surface-variant">Future Settlement</p>
+<p class="text-xs text-on-surface-variant/60">Gamelan Workshop Series</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface-variant">Nov 07, 2023</p>
+<p class="text-xs text-on-surface-variant/60">TBD</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bank Account Block -->
+<div class="col-span-5 bg-surface-container-highest rounded-3xl p-8 flex flex-col">
+<h3 class="font-headline text-xl font-bold mb-6">Linked Account</h3>
+<div class="flex-1 flex flex-col justify-center">
+<div class="bg-gradient-to-br from-[#004f51] to-[#002021] p-8 rounded-2xl editorial-shadow border border-outline-variant/10">
+<div class="flex justify-between items-start mb-12">
+<img alt="BCA Logo" class="h-8 grayscale brightness-200 contrast-200" data-alt="Abstract blue and white banking logo on a clean flat background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdMZgf7a9Su-0Es3bb7OEUyYkIhicvk0-l9kxL8lHk74lrbBqg496icpWBox-pVp4SSUX7dEkS4_QTXrH2x7b9qtswKC8la_Ms5r-6mJdx8nKRKpBpYU9fAtzC82qS5MbUasPNKIXHqweBY4KwBVYt5uak-ffJkwx6Ultkmk1zzKOcTA2HaYpsJMtJPU6FbrLmCofCH1KGl6mT5zHHWLG_5vFQVJ3z2WdkdvTMSMc1nY5jN2nJYh4UQut2ydcJBlJcLlZL0Qw4woM"/>
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+</div>
+<div class="space-y-1">
+<p class="text-xs text-secondary uppercase tracking-[0.2em] opacity-70">Account Number</p>
+<p class="text-2xl font-body font-light tracking-widest text-on-surface">•••• •••• 7821</p>
+</div>
+<div class="mt-8 flex justify-between items-end">
+<div>
+<p class="text-[10px] uppercase text-on-surface-variant">Account Holder</p>
+<p class="text-sm font-bold uppercase">Heritage Surakarta Foundation</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase text-on-surface-variant">Currency</p>
+<p class="text-sm font-bold">IDR</p>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-6 text-sm text-secondary hover:text-on-surface transition-colors flex items-center justify-center space-x-2 py-2">
+<span class="material-symbols-outlined text-lg">edit</span>
+<span>Update Settlement Account</span>
+</button>
+</div>
+</div>
+<!-- Transaction History -->
+<div class="bg-surface-container-low rounded-3xl overflow-hidden">
+<div class="px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center">
+<h3 class="font-headline text-xl font-bold">Transaction History</h3>
+<div class="flex space-x-3">
+<div class="relative">
+<input class="bg-surface-container border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-secondary w-64" placeholder="Search transactions..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-lg">search</span>
+</div>
+<button class="bg-surface-container p-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-xs text-on-surface-variant uppercase tracking-widest border-b border-outline-variant/10">
+<th class="px-8 py-4 font-medium">Event Name</th>
+<th class="px-8 py-4 font-medium">Date</th>
+<th class="px-8 py-4 font-medium">Type</th>
+<th class="px-8 py-4 font-medium">Amount</th>
+<th class="px-8 py-4 font-medium">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-container transition-colors cursor-pointer group">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Event" class="w-full h-full object-cover" data-alt="Traditional Indonesian shadow puppet Wayang Kulit performance with dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9h4ad5zyMNxJGh5UriuPzhk1AD2C9lkE6ZjNMQAYLhwS4cLPemaPPkfpt8YJNCsTv3Ccw0MeXpwvWtiFqY171xWJ-QJLr94dyBEnWZyB4o0V3cPjeVWcLj8ykfsY9qf6a0V4IXnNtfRBUAIybVQhVI91yksCeay5-YcKOsVizoh_-KKUUHYUuwvXOaWOiFA-YHQBZfPAzr5Vdmqo7jEl5kQM6-KcwATMSrcpZFKUc6nGDrVm861irUqP6kqIGbbIFVpqzOuFPbP8"/>
+</div>
+<span class="font-medium">Wayang Kulit: Midnight Saga</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">Oct 18, 2023</td>
+<td class="px-8 py-5 text-sm">Ticket Sale</td>
+<td class="px-8 py-5 font-bold text-on-surface">+ Rp 1.450.000</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary">Success</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors cursor-pointer group">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Event" class="w-full h-full object-cover" data-alt="Traditional Javanese gamelan instruments made of bronze in a cultural hall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvAbDiMY44gqWLLMwSPfoDqxnqFjSGTJzAVk3eELDaHHAzd52S3aHtpPDE6EzL1drS3Occ2ZUv7d8fp94c1sKip_RauRP3AsTC4urMDYcFCM_tRahZONVCh7baLSuUfLrcPqw6z9J04oMuS3oxKMdUY5-qv8bwxZHcjNkWuQDXhb-fGkL4hR-g_MuaiPprjMnOblWfXHL8Ar57uGa_jy3pbj45W4bhcc433okmeWeNe7kb71X9erLtPaYZFxr-MS0tsDBjG0GLTVc"/>
+</div>
+<span class="font-medium">Gamelan Workshop Series</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">Oct 17, 2023</td>
+<td class="px-8 py-5 text-sm">Refund</td>
+<td class="px-8 py-5 font-bold text-error">- Rp 250.000</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">Refunded</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors cursor-pointer group">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">account_balance</span>
+</div>
+<span class="font-medium">BCA Settlement #821</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">Oct 14, 2023</td>
+<td class="px-8 py-5 text-sm">Payout</td>
+<td class="px-8 py-5 font-bold text-on-surface">- Rp 12.000.000</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary">Success</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors cursor-pointer group">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Event" class="w-full h-full object-cover" data-alt="Detailed close-up of intricate batik patterns with wax and dye textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQVhcR957vQtmWJFPNMVh3nzem_JXXCmbkjKj2rXhZdqJTj6fBhoIEJRdF-itko9wakVTrDse-v9imSBaiCzeWpEIwyqdwpXurN1g024uHeyQRCUiNMb711OapB_mcg-IqtIPGrKg_A2OtrNkn2RZBgE0mzrMLYl_82cVfCa6WdH_c5uGFIQ3vGC3rnMnwW7YcdY8le4hA0MvyoepbOXIqpxxbBJppQ-0De--jNE0S7PRyDinNCcPXhEPt8D2LAnpjYRQUgOT5ZPY"/>
+</div>
+<span class="font-medium">Batik Night 2023</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">Oct 12, 2023</td>
+<td class="px-8 py-5 text-sm">Ticket Sale</td>
+<td class="px-8 py-5 font-bold text-on-surface">+ Rp 4.200.000</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary">Success</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-4 border-t border-outline-variant/10 flex justify-center">
+<button class="text-sm font-semibold text-secondary hover:text-on-surface transition-colors">View All Transactions</button>
+</div>
+</div>
+</div>
+<!-- Footer / Bottom padding -->
+<footer class="mt-auto p-8 text-center text-on-surface-variant text-xs opacity-50">
+            © 2023 Gelaran Heritage Portal. Managed by Surakarta Cultural Council.
+        </footer>
+</main>
+</body></html>

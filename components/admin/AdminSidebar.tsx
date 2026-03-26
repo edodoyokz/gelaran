@@ -1,78 +1,88 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-    LayoutDashboard,
-    Calendar,
-    Users,
-    Settings,
-    LogOut,
-    ChevronLeft,
-    ChevronRight,
-    ChevronDown,
-    Shield,
-    CreditCard,
-    Home,
-    MapPin,
-    Tags,
-    BarChart3,
-    LayoutTemplate,
-    Star,
-    Wallet,
-    RotateCcw,
-    BookOpen,
-    Gift,
-    type LucideIcon,
-} from "lucide-react";
-import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
 interface MenuItem {
     href: string;
     label: string;
-    icon: LucideIcon;
+    icon?: string;
+    caption?: string;
     children?: MenuItem[];
 }
 
 const menuItems: MenuItem[] = [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-    { href: "/admin/users", label: "Users", icon: Users },
-    { href: "/admin/events", label: "Events", icon: Calendar },
-    { href: "/admin/bookings", label: "Bookings", icon: CreditCard },
-    { href: "/admin/complimentary-requests", label: "Complimentary", icon: Gift },
+    {
+        href: "/admin",
+        label: "Dashboard",
+        icon: "dashboard",
+    },
+    {
+        href: "/admin/analytics",
+        label: "Analytics",
+        icon: "analytics",
+    },
+    {
+        href: "/admin/users",
+        label: "Users",
+        icon: "group",
+    },
+    {
+        href: "/admin/events",
+        label: "Events",
+        icon: "event",
+    },
+    {
+        href: "/admin/bookings",
+        label: "Bookings",
+        icon: "receipt_long",
+    },
+    {
+        href: "/admin/complimentary-requests",
+        label: "Complimentary",
+        icon: "redeem",
+    },
     {
         href: "/admin/finance",
         label: "Finance",
-        icon: Wallet,
+        icon: "account_balance",
         children: [
-            { href: "/admin/finance", label: "Overview", icon: Wallet },
-            { href: "/admin/payouts", label: "Payouts", icon: CreditCard },
-            { href: "/admin/refunds", label: "Refunds", icon: RotateCcw },
-        ]
+            { href: "/admin/finance", label: "Overview", icon: "account_balance" },
+            { href: "/admin/payouts", label: "Payouts", icon: "payments" },
+            { href: "/admin/refunds", label: "Refunds", icon: "currency_exchange" },
+        ],
     },
     {
         href: "/admin/master",
-        label: "Master Data",
-        icon: Tags,
+        label: "Master data",
+        icon: "sell",
         children: [
-            { href: "/admin/categories", label: "Categories", icon: Tags },
-            { href: "/admin/venues", label: "Venues", icon: MapPin },
-        ]
+            { href: "/admin/categories", label: "Categories", icon: "category" },
+            { href: "/admin/venues", label: "Venues", icon: "location_on" },
+        ],
     },
     {
         href: "/admin/content",
         label: "Content",
-        icon: LayoutTemplate,
+        icon: "view_quilt",
         children: [
-            { href: "/admin/landing-page", label: "Landing Page", icon: LayoutTemplate },
-            { href: "/admin/reviews", label: "Reviews", icon: Star },
-        ]
+            { href: "/admin/landing-page", label: "Landing page", icon: "web" },
+            { href: "/admin/reviews", label: "Reviews", icon: "star" },
+        ],
     },
-    { href: "/admin/settings", label: "Settings", icon: Settings },
-    { href: "/docs/admin", label: "Documentation", icon: BookOpen },
+    {
+        href: "/admin/settings",
+        label: "Settings",
+        icon: "settings",
+    },
+    {
+        href: "/docs/admin",
+        label: "Documentation",
+        icon: "menu_book",
+    },
 ];
 
 interface AdminSidebarProps {
@@ -80,15 +90,26 @@ interface AdminSidebarProps {
     onToggleCollapse?: () => void;
 }
 
-export function AdminSidebar({ isCollapsed, onToggleCollapse }: AdminSidebarProps) {
+export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const [internalCollapsed, setInternalCollapsed] = useState(false);
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-    const collapsed = isCollapsed ?? internalCollapsed;
-    const toggleCollapse = onToggleCollapse ?? (() => setInternalCollapsed(!internalCollapsed));
+    const collapsed = isCollapsed ?? false;
+
+    const routeExpandedItems = useMemo(
+        () =>
+            menuItems
+                .filter((item) => item.children?.some((child) => pathname.startsWith(child.href)) || pathname === item.href)
+                .map((item) => item.href),
+        [pathname],
+    );
+
+    const expandedSet = useMemo(
+        () => new Set([...expandedItems, ...routeExpandedItems]),
+        [expandedItems, routeExpandedItems],
+    );
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
@@ -98,18 +119,6 @@ export function AdminSidebar({ isCollapsed, onToggleCollapse }: AdminSidebarProp
         router.refresh();
     };
 
-    useEffect(() => {
-        menuItems.forEach((item) => {
-            if (item.children) {
-                const isChildActive = item.children.some(child => pathname.startsWith(child.href));
-                const isParentActive = pathname === item.href;
-                if ((isChildActive || isParentActive) && !expandedItems.includes(item.href)) {
-                    setExpandedItems(prev => [...prev, item.href]);
-                }
-            }
-        });
-    }, [pathname, expandedItems]);
-
     const isActive = (href: string) => {
         if (href === "/admin") {
             return pathname === "/admin";
@@ -118,157 +127,152 @@ export function AdminSidebar({ isCollapsed, onToggleCollapse }: AdminSidebarProp
     };
 
     const isParentActive = (item: MenuItem) => {
-        if (!item.children) return false;
-        return pathname === item.href || item.children.some(child => pathname.startsWith(child.href));
+        if (!item.children) {
+            return false;
+        }
+
+        return pathname === item.href || item.children.some((child) => pathname.startsWith(child.href));
     };
 
     const toggleExpanded = (href: string) => {
-        setExpandedItems(prev =>
-            prev.includes(href)
-                ? prev.filter(h => h !== href)
-                : [...prev, href]
+        setExpandedItems((current) =>
+            current.includes(href)
+                ? current.filter((item) => item !== href)
+                : [...current, href],
         );
     };
 
-    const renderMenuItem = (item: MenuItem, isChild = false) => {
+    const renderLeafItem = (item: MenuItem, isChild = false) => {
         const active = isActive(item.href);
-        const hasChildren = item.children && item.children.length > 0;
-        const isExpanded = expandedItems.includes(item.href);
-        const parentActive = isParentActive(item);
-
-        if (hasChildren) {
-            return (
-                <div key={item.href}>
-                    <div className="flex items-center">
-                        <button
-                            type="button"
-                            className={cn(
-                                "flex-1 flex items-center gap-3 px-3 py-2.5 rounded-l-lg transition-all duration-200 cursor-pointer text-left w-full border-0 focus:outline-none",
-                                parentActive
-                                    ? "bg-[var(--surface-active)] text-[var(--text-primary)]"
-                                    : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
-                                collapsed && "rounded-lg"
-                            )}
-                            onClick={() => toggleExpanded(item.href)}
-                        >
-                            <item.icon className={cn("h-5 w-5 flex-shrink-0", parentActive && "text-[var(--accent-primary)]")} />
-                            {!collapsed && (
-                                <span className="text-sm font-medium">{item.label}</span>
-                            )}
-                        </button>
-                        {!collapsed && (
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleExpanded(item.href);
-                                }}
-                                className={cn(
-                                    "px-2 py-2.5 rounded-r-lg transition-all duration-200",
-                                    parentActive
-                                        ? "bg-[var(--surface-active)] text-[var(--text-primary)]"
-                                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]"
-                                )}
-                            >
-                                {isExpanded ? (
-                                    <ChevronDown className="h-4 w-4" />
-                                ) : (
-                                    <ChevronRight className="h-4 w-4" />
-                                )}
-                            </button>
-                        )}
-                    </div>
-                    {!collapsed && isExpanded && item.children && (
-                        <div className="mt-1 ml-4 pl-3 space-y-1 border-l border-[var(--border)]">
-                            {item.children.map((child) => renderMenuItem(child, true))}
-                        </div>
-                    )}
-                </div>
-            );
-        }
 
         return (
             <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                    "flex items-center gap-3 px-4 py-3 rounded-lg font-sans text-sm font-medium tracking-wide transition-all duration-200",
                     active
-                        ? "bg-[var(--accent-primary)] text-white shadow-[var(--shadow-md)]"
-                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
-                    isChild && "py-2 text-sm"
+                        ? "bg-[#F95D00] text-white shadow-lg shadow-orange-900/20"
+                        : "text-teal-100/70 hover:text-white hover:bg-white/10",
+                    isChild && "py-2 pl-10 text-xs" // Indent children
                 )}
             >
-                <item.icon className={cn(
-                    "flex-shrink-0",
-                    isChild ? "h-4 w-4" : "h-5 w-5"
-                )} />
-                {!collapsed && (
-                    <span className={cn("font-medium", isChild ? "text-sm" : "text-sm")}>{item.label}</span>
+                {item.icon && !isChild && (
+                    <span className="material-symbols-outlined text-xl" style={active ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                        {item.icon}
+                    </span>
                 )}
+                {!collapsed ? (
+                    <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                ) : null}
             </Link>
+        );
+    };
+
+    const renderItem = (item: MenuItem) => {
+        const hasChildren = Boolean(item.children?.length);
+        const expanded = expandedSet.has(item.href);
+        const parentActive = isParentActive(item);
+
+        if (!hasChildren) {
+            return renderLeafItem(item);
+        }
+
+        return (
+            <div key={item.href} className="flex flex-col gap-1">
+                <button
+                    type="button"
+                    onClick={() => toggleExpanded(item.href)}
+                    className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg font-sans text-sm font-medium tracking-wide transition-all duration-200",
+                        parentActive
+                            ? "bg-white/10 text-white"
+                            : "text-teal-100/70 hover:text-white hover:bg-white/10",
+                    )}
+                    aria-expanded={expanded}
+                >
+                    <div className="flex items-center gap-3">
+                        {item.icon && (
+                            <span className="material-symbols-outlined text-xl" style={parentActive ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                                {item.icon}
+                            </span>
+                        )}
+                        {!collapsed ? <span>{item.label}</span> : null}
+                    </div>
+                    {!collapsed && (
+                        <span className="material-symbols-outlined text-lg">
+                            {expanded ? "expand_less" : "expand_more"}
+                        </span>
+                    )}
+                </button>
+
+                {!collapsed && expanded && item.children ? (
+                    <div className="flex flex-col gap-1 mt-1">
+                        {item.children.map((child) => renderLeafItem(child, true))}
+                    </div>
+                ) : null}
+            </div>
         );
     };
 
     return (
         <aside
             className={cn(
-                "fixed left-0 top-0 h-full transition-all duration-300 z-40 flex flex-col bg-[var(--surface)] border-r border-[var(--border)]",
-                collapsed ? "w-20" : "w-64"
+                "fixed left-0 top-0 z-60 bg-[#015959] dark:bg-slate-950 flex flex-col p-4 gap-y-2 shadow-2xl h-screen transition-all duration-300",
+                collapsed ? "w-20 items-center px-2" : "w-64"
             )}
         >
-            <div className="p-4 border-b border-[var(--border)]">
+            <div className={cn("mb-8 py-2", collapsed ? "px-0 flex justify-center" : "px-4")}>
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--accent-primary)] shadow-[var(--shadow-glow)]">
-                        <Shield className="h-6 w-6 text-white" />
+                    <div className="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>
+                            dataset
+                        </span>
                     </div>
                     {!collapsed && (
-                        <div className="flex-1 min-w-0">
-                            <h2 className="font-bold truncate text-base text-[var(--text-primary)]">
-                                Gelaran Admin
-                            </h2>
-                            <p className="text-xs text-[var(--text-muted)]">
-                                Platform Management
-                            </p>
+                        <div>
+                            <h1 className="font-headline text-xl font-bold text-white leading-tight">Gelaran</h1>
+                            <p className="font-body text-[10px] font-medium tracking-widest text-teal-100/50 uppercase">Admin Console</p>
                         </div>
                     )}
                 </div>
             </div>
 
-            <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--border)] scrollbar-track-transparent">
-                {menuItems.map((item) => renderMenuItem(item))}
+            <nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden pb-4">
+                {menuItems.map((item) => renderItem(item))}
             </nav>
 
-            <div className="p-3 space-y-1 border-t border-[var(--border)]">
+            <div className="mt-auto pt-6 border-t border-white/10 space-y-1">
+                {!collapsed && (
+                    <button className="w-full flex items-center justify-center gap-2 mb-4 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-body text-xs font-bold uppercase tracking-widest transition-all">
+                        New Report
+                    </button>
+                )}
+                
                 <Link
                     href="/"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+                    className={cn(
+                        "flex items-center gap-3 px-4 py-2 text-teal-100/70 hover:text-white transition-colors",
+                        collapsed && "justify-center px-0"
+                    )}
                 >
-                    <Home className="h-5 w-5 flex-shrink-0" />
-                    {!collapsed && <span className="text-sm font-medium">Back to Home</span>}
+                    <span className="material-symbols-outlined text-xl">home</span>
+                    {!collapsed && <span className="text-sm">Back to site</span>}
                 </Link>
+
                 <button
                     type="button"
                     onClick={handleLogout}
                     disabled={isLoggingOut}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--error)] hover:bg-[var(--error-bg)] transition-colors disabled:opacity-50"
+                    className={cn(
+                        "w-full flex items-center gap-3 px-4 py-2 text-teal-100/70 hover:text-white transition-colors disabled:opacity-50",
+                        collapsed && "justify-center px-0"
+                    )}
                 >
-                    <LogOut className="h-5 w-5 flex-shrink-0" />
-                    {!collapsed && <span className="text-sm font-medium">{isLoggingOut ? "Logging out..." : "Logout"}</span>}
+                    <span className="material-symbols-outlined text-xl">logout</span>
+                    {!collapsed && <span className="text-sm">{isLoggingOut ? "Signing out..." : "Logout"}</span>}
                 </button>
             </div>
-
-            <button
-                type="button"
-                onClick={toggleCollapse}
-                className="absolute -right-3 top-20 w-6 h-6 rounded-full flex items-center justify-center shadow-lg z-50 bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-                {collapsed ? (
-                    <ChevronRight className="h-3 w-3" />
-                ) : (
-                    <ChevronLeft className="h-3 w-3" />
-                )}
-            </button>
         </aside>
     );
 }

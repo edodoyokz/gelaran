@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EventAdmin - Management Suite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-primary": "#ffb598",
+              "surface-tint": "#a63b00",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "on-primary": "#ffffff",
+              "background": "#ffffff",
+              "surface-container-low": "#c1fffe",
+              "primary-container": "#cb4a00",
+              "on-background": "#002020",
+              "error": "#ba1a1a",
+              "tertiary-fixed-dim": "#f7be11",
+              "surface-container-high": "#aff5f4",
+              "tertiary": "#755800",
+              "on-surface-variant": "#5b4137",
+              "surface": "#ffffff",
+              "on-tertiary-fixed": "#251a00",
+              "on-surface": "#002020",
+              "on-secondary": "#ffffff",
+              "outline": "#8f7065",
+              "primary": "#a23a00",
+              "surface-container-highest": "#aaefee",
+              "surface-bright": "#ffffff",
+              "on-tertiary-container": "#fffbff",
+              "on-primary-fixed": "#370e00",
+              "secondary": "#00696b",
+              "tertiary-fixed": "#ffdf9a",
+              "surface-variant": "#aaefee",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "inverse-on-surface": "#b8fdfc",
+              "primary-fixed": "#ffdbce",
+              "outline-variant": "#e3bfb1",
+              "surface-container": "#b5faf9",
+              "secondary-container": "#7bf5f8",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "primary-fixed-dim": "#ffb598",
+              "on-secondary-fixed-variant": "#004f51",
+              "on-secondary-fixed": "#002021",
+              "surface-dim": "#a1e6e5",
+              "on-secondary-container": "#007072",
+              "secondary-fixed-dim": "#5cd8db",
+              "on-primary-fixed-variant": "#7f2b00",
+              "secondary-fixed": "#7bf5f8",
+              "tertiary-container": "#936f00",
+              "inverse-surface": "#003737"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-nav-bg { background-color: #b5faf9; color: #002021; }
+        .brand-orange { color: #F95D00; }
+        .teal-bg { background-color: #015959; }
+        .accent-teal { color: #29B3B6; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Authority: JSON & Conflict Resolution) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#015959] dark:bg-slate-900 flex flex-col py-8 shadow-[0px_12px_32px_rgba(0,32,32,0.06)] z-50">
+<div class="px-8 mb-10">
+<h1 class="font-['Noto_Serif'] text-2xl font-bold text-white leading-tight">EventAdmin</h1>
+<p class="font-['Plus_Jakarta_Sans'] text-xs text-white/60 tracking-widest uppercase mt-1">Management Suite</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard (Inactive) -->
+<a class="flex items-center text-white/80 hover:text-white px-8 py-3 transition-colors hover:bg-white/10 group" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<!-- Events (Active) -->
+<a class="bg-[#b5faf9] text-[#002021] rounded-l-full ml-4 pl-4 py-3 font-bold flex items-center shadow-sm" href="#">
+<span class="material-symbols-outlined mr-3 text-lg text-[#F95D00]" data-icon="event" style="font-variation-settings: 'FILL' 1;">event</span>
+<span class="font-medium text-sm">Events</span>
+</a>
+<!-- Users (Inactive) -->
+<a class="flex items-center text-white/80 hover:text-white px-8 py-3 transition-colors hover:bg-white/10 group" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="group">group</span>
+<span class="font-medium text-sm">Users</span>
+</a>
+<!-- Settings (Inactive) -->
+<a class="flex items-center text-white/80 hover:text-white px-8 py-3 transition-colors hover:bg-white/10 group" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="settings">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+</nav>
+<div class="px-8 mt-auto pt-8 border-t border-white/10">
+<div class="flex items-center gap-3">
+<img alt="Admin User Profile" class="w-10 h-10 rounded-full border-2 border-white/20" data-alt="professional portrait of a middle-aged male administrator in a sharp navy suit with soft office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDctznlIWFlhr2oyLjzhgxfoxAeB3t2JT4lwKdboTxgWogDw_B9B7z-ARTh2QMG7VZqhZF-jC5_8BVMYgx08J9h3DoIeC8iBiPOScBUOmgDUCUxEja4FYvb3MRFOJ0PSGK4gm0jQqj1nzgDC9-gtho-gNaVSIuZeVAmq68PgPr-pfwKWasZWgabgiLB4G6AwAaNHxM101y89jaTfIR-OUX2kWBi44ZnjvwcDxmGBG9YxgNRY89g4FXXjX7ASinV-AFrsqp8Y3Xfowo"/>
+<div>
+<p class="text-white text-sm font-bold">Admin User</p>
+<p class="text-white/50 text-xs">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar (Authority: JSON) -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-white/80 backdrop-blur-md flex justify-between items-center px-8 z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-96 group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#015959]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-[#ffdf9a] transition-all" placeholder="Search events, organizers, or IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-600 hover:text-[#015959] transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#F95D00] rounded-full"></span>
+</button>
+<button class="text-slate-600 hover:text-[#015959] transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-px bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="font-['Noto_Serif'] font-bold text-[#015959]">Event Management</span>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="pt-24 px-10 pb-12">
+<!-- Summary Header -->
+<div class="mb-10">
+<h2 class="font-['Noto_Serif'] text-4xl font-bold text-[#002020] tracking-tight">Executive Overview</h2>
+<p class="text-slate-500 mt-2 font-body">Real-time performance metrics for the Gelaran ecosystem.</p>
+</div>
+<!-- Bento Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Total Active Events -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(0,32,32,0.04)] flex flex-col justify-between border-l-4 border-[#015959]">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold uppercase tracking-widest text-[#29B3B6]">Active Events</span>
+<span class="material-symbols-outlined text-[#015959]" data-icon="confirmation_number">confirmation_number</span>
+</div>
+<div class="mt-4">
+<span class="font-['Noto_Serif'] text-3xl font-bold">1,284</span>
+<div class="flex items-center text-emerald-600 text-xs mt-1">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+<span>12% from last month</span>
+</div>
+</div>
+</div>
+<!-- Pending Approvals -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(0,32,32,0.04)] flex flex-col justify-between border-l-4 border-[#FBC117]">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold uppercase tracking-widest text-[#29B3B6]">Pending</span>
+<span class="material-symbols-outlined text-[#FBC117]" data-icon="hourglass_empty">hourglass_empty</span>
+</div>
+<div class="mt-4">
+<span class="font-['Noto_Serif'] text-3xl font-bold text-on-surface">42</span>
+<p class="text-slate-400 text-xs mt-1">Requires immediate review</p>
+</div>
+</div>
+<!-- Total Tickets Sold -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(0,32,32,0.04)] flex flex-col justify-between border-l-4 border-[#29B3B6]">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold uppercase tracking-widest text-[#29B3B6]">Tickets Sold</span>
+<span class="material-symbols-outlined text-[#29B3B6]" data-icon="payments">payments</span>
+</div>
+<div class="mt-4">
+<span class="font-['Noto_Serif'] text-3xl font-bold">84.2k</span>
+<div class="flex items-center text-emerald-600 text-xs mt-1">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+<span>5.4% increase</span>
+</div>
+</div>
+</div>
+<!-- Revenue Growth -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(0,32,32,0.04)] flex flex-col justify-between border-l-4 border-[#F95D00]">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold uppercase tracking-widest text-[#29B3B6]">Growth</span>
+<span class="material-symbols-outlined text-[#F95D00]" data-icon="insights">insights</span>
+</div>
+<div class="mt-4">
+<span class="font-['Noto_Serif'] text-3xl font-bold">$2.4M</span>
+<div class="flex items-center text-[#F95D00] text-xs mt-1 font-bold italic">
+<span>High Performance Tier</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_24px_48px_rgba(0,32,32,0.08)] overflow-hidden">
+<!-- Table Filter Bar -->
+<div class="px-8 py-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-50">
+<div class="flex gap-2">
+<button class="px-5 py-2 rounded-full text-xs font-bold transition-all bg-[#015959] text-white">All Events</button>
+<button class="px-5 py-2 rounded-full text-xs font-bold transition-all bg-surface-container-low text-[#015959] hover:bg-surface-container">Pending</button>
+<button class="px-5 py-2 rounded-full text-xs font-bold transition-all bg-surface-container-low text-[#015959] hover:bg-surface-container">Live</button>
+<button class="px-5 py-2 rounded-full text-xs font-bold transition-all bg-surface-container-low text-[#015959] hover:bg-surface-container">Closed</button>
+</div>
+<button class="bg-gradient-to-tr from-[#a23a00] to-[#cb4a00] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                        Create New Event
+                    </button>
+</div>
+<!-- Main Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/30">
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-wider text-[#29B3B6]">Event Details</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-wider text-[#29B3B6]">Organizer</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-wider text-[#29B3B6]">Date</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-wider text-[#29B3B6]">Status</th>
+<th class="px-8 py-4 text-xs font-bold uppercase tracking-wider text-[#29B3B6] text-right">Moderation</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Music Festival" class="w-full h-full object-cover" data-alt="vibrant neon lit outdoor music festival at night with large crowd and stage lights reflecting on faces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC3WPvMB_YM1ga71Jw5KMX0FZbtN_8e92XNtBQwn2vMB74wWxR8dVWnrJ5q9IQzDGRWB8T7KgA6McmzIhOVpUPkYZpJCrwoQpevRfCEr5u5bXLBLe2a2_ttcgTYTzDOiBPWOqZzlqlxhRVhZOFoRABZ3A4tRV0CBCqlbpD1m3PU9zyDH3xLep5CCleo8UjhQNx6EERbTJakeF6B3QP1JBGZ4XTith2nTkEvCvd6exr3uirtwp05twVR5WgXb_VlhmTV9WtChohOjs"/>
+</div>
+<div>
+<p class="font-bold text-[#015959]">Summertime Jazz Gala</p>
+<p class="text-xs text-slate-400">ID: EVT-99281</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<div>
+<p class="font-medium">Harmony Productions</p>
+<p class="text-xs text-slate-400">Agency</p>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm font-medium">Aug 24, 2024</p>
+<p class="text-xs text-slate-400">07:00 PM</p>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-secondary-container text-[#015959]">Approved</span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors" title="View Details">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors" title="Edit">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Tech Conference" class="w-full h-full object-cover" data-alt="high-tech conference hall with large LED screens and blue corporate lighting showing abstract data visualizations" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH1Id0Cip-qWauIjyLUSFZvO7ir26iNXn6Mss6zehg9Yft3fuaOUmZhbRJQ_oxQbPCDkGMl0qMfm7jrDKBBzkZ1fsMFq4cU3AciXgSxIb91BoJwFx1xzuk42iJzQZsEk3gNJdPvkmpKf-Nm-iKbBQff1iO1UlERJcAQdjh07UOecb7a24UuRAL2MMF8zdCcaZaL-w0vSAXy0Q96wZzj3KPkLvV0AJcKaQ60DrIEw2Pp9PqPyHqfeJFo-gaSdpT5ifVm3Stk87b5gs"/>
+</div>
+<div>
+<p class="font-bold text-[#015959]">NextGen Tech Summit</p>
+<p class="text-xs text-slate-400">ID: EVT-99285</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<div>
+<p class="font-medium">Sarah Jenkins</p>
+<p class="text-xs text-slate-400">Individual</p>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm font-medium">Sep 12, 2024</p>
+<p class="text-xs text-slate-400">09:00 AM</p>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-tertiary-fixed text-[#936f00]">Pending</span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-3">
+<button class="bg-[#015959] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-[#004f51] transition-all">Approve</button>
+<button class="border border-error text-error px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-error/5 transition-all">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Food Expo" class="w-full h-full object-cover" data-alt="close-up of colorful gourmet appetizers on white porcelain trays with elegant restaurant interior in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrbguvB3z--BaWxeu8wCz_wOSVMYQ0-ENR0242R7gUPPvIgYBbLW1CzmpFi6lAfMW9m0zQTnG16xYdWzKy356LlOxCq-7g6VBvJerk7aBNwVVi_KqR9MU8j5HKhhe_XxoG3klnx_T1iQrI9uYL1Jxe1ZdYBMNw18c8Y6ySnaQVYk_1CNSd7V9OVJkEUCw1WxepUGhmXZbDtgVpzafGMM92mVwHSt0OH2IqHGcRtLz5TUQSUkAVeStpV2YDAQsYkBhFWsQLaKNqvnM"/>
+</div>
+<div>
+<p class="font-bold text-[#015959]">Global Taste Expo</p>
+<p class="text-xs text-slate-400">ID: EVT-99301</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<div>
+<p class="font-medium">Culinary Guild</p>
+<p class="text-xs text-slate-400">Organization</p>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm font-medium">Oct 05, 2024</p>
+<p class="text-xs text-slate-400">11:00 AM</p>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-error-container text-error">Rejected</span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors" title="View Details">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-[#F95D00] hover:text-[#a23a00] transition-colors" title="Re-evaluate">
+<span class="material-symbols-outlined text-xl" data-icon="refresh">refresh</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+<img alt="Business Meetup" class="w-full h-full object-cover" data-alt="candid shot of diverse group of professionals chatting in a modern sun-filled workspace with large windows and plants" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzwDc-i0VWYDGUQKdtyQjhDIfTOZCtWXAADLn2qgw68HE8uVehxaZPdgYu1qXBJHdC3wO8B5UE-LUdOC1P5JudqHyc9l1lgdcTbq4NTydad-PYYCTI70mamhxlakRehHoKcoK_FM5e2r7YDmzs9sfL66IkOv4FktZe31S17UClXNv0lfIUzPfBK3c5P4MT7iAAHoDMTqi8VcKQ8ZSJjJhT3iriWZvL8AM7ASKDNjgkVcRFwCqKlmrrQ0kbAqIJh3N2DU7UQrhASpk"/>
+</div>
+<div>
+<p class="font-bold text-[#015959]">Entrepreneur Mixer</p>
+<p class="text-xs text-slate-400">ID: EVT-99312</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<div>
+<p class="font-medium">Venture Capitalist Hub</p>
+<p class="text-xs text-slate-400">Agency</p>
+</div>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm font-medium">Aug 30, 2024</p>
+<p class="text-xs text-slate-400">06:00 PM</p>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-secondary-container text-[#015959]">Approved</span>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors" title="View Details">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-[#015959] transition-colors" title="Edit">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Placeholder -->
+<div class="px-8 py-6 border-t border-slate-50 flex items-center justify-between">
+<p class="text-sm text-slate-400">Showing 1 to 4 of 1,284 entries</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:border-[#015959] hover:text-[#015959] transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#015959] text-white font-bold text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:border-[#015959] font-bold text-xs transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:border-[#015959] font-bold text-xs transition-all">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:border-[#015959] hover:text-[#015959] transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

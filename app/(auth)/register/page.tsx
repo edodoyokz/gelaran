@@ -2,11 +2,32 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, Mail, Lock, User, Loader2, CheckCircle } from "lucide-react";
+import {
+    Eye,
+    EyeOff,
+    Mail,
+    Lock,
+    User,
+    Loader2,
+    CheckCircle,
+    ShieldCheck,
+} from "lucide-react";
+import {
+    AuthField,
+    AuthFinePrint,
+    AuthFormShell,
+    AuthIconButton,
+    AuthInputShell,
+    AuthMessage,
+    AuthMetaList,
+    AuthPageIntro,
+    AuthPrimaryButton,
+    AuthSectionCard,
+    AuthTextLink,
+} from "@/components/shared/auth-ui";
 import { createClient } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
-
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,7 +49,6 @@ export default function RegisterPage() {
         setIsLoading(true);
         setError(null);
 
-        // Validations
         const passwordError = validatePassword(password);
         if (passwordError) {
             setError(passwordError);
@@ -74,195 +94,167 @@ export default function RegisterPage() {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-                <div className="max-w-md w-full text-center space-y-6">
-                    <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                        <CheckCircle className="h-10 w-10 text-green-500" />
+            <div className="space-y-8">
+                <AuthPageIntro
+                    eyebrow="Registration complete"
+                    title="Cek email kamu"
+                    description={
+                        <p>
+                            Kami sudah mengirim link verifikasi ke <strong className="font-semibold text-foreground">{email}</strong>.
+                            Buka email tersebut untuk mengaktifkan akun dan lanjut masuk ke Gelaran.
+                        </p>
+                    }
+                    align="center"
+                />
+
+                <AuthSectionCard tone="success" className="space-y-6 text-center">
+                    <div className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-full bg-white text-(--success) shadow-(--shadow-sm)">
+                        <CheckCircle className="h-9 w-9" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900">Cek Email Kamu!</h2>
-                    <p className="text-gray-600">
-                        Kami sudah mengirim link verifikasi ke <strong>{email}</strong>.
-                        Klik link tersebut untuk mengaktifkan akun kamu.
-                    </p>
-                    <Link
-                        href="/login"
-                        className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
-                    >
-                        Ke Halaman Login
-                    </Link>
-                </div>
+                    <div className="space-y-3">
+                        <p className="text-sm leading-7 text-(--success-text)">
+                            Jika email belum muncul dalam beberapa menit, periksa folder spam atau promotions,
+                            lalu ulangi proses pendaftaran bila diperlukan.
+                        </p>
+                    </div>
+                    <div className="flex justify-center">
+                        <Link
+                            href="/login"
+                            className="inline-flex min-h-12 items-center justify-center rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white shadow-(--shadow-md) transition-all duration-200 hover:-translate-y-0.5 hover:bg-(--accent-secondary-hover)"
+                        >
+                            Ke halaman login
+                        </Link>
+                    </div>
+                </AuthSectionCard>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                {/* Header */}
-                <div className="text-center">
-                    <Link href="/" className="text-3xl font-bold text-indigo-600">
-                        BSC<span className="text-gray-800">Tickets</span>
-                    </Link>
-                    <h2 className="mt-6 text-2xl font-bold text-gray-900">
-                        Buat akun baru
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Sudah punya akun?{" "}
-                        <Link
-                            href="/login"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                            Masuk di sini
-                        </Link>
-                    </p>
-                </div>
+        <div className="flex flex-col h-full">
+            <AuthPageIntro
+                title="Create Account"
+                description="Start with one account to save tickets, follow favorite organizers, and unlock access to a more personalized event experience."
+            />
 
-                {/* Form */}
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-                            {error}
-                        </div>
-                    )}
-
-                    <div className="space-y-4">
-                        {/* Name */}
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                Nama Lengkap
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <User className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    autoComplete="name"
-                                    required
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="John Doe"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Email */}
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                Email
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="nama@email.com"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Password */}
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type={showPassword ? "text" : "password"}
-                                    autoComplete="new-password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Min. 8 karakter"
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? (
-                                        <EyeOff className="h-5 w-5 text-gray-400" />
-                                    ) : (
-                                        <Eye className="h-5 w-5 text-gray-400" />
-                                    )}
-                                </button>
-                            </div>
-                            <p className="mt-1 text-xs text-gray-500">
-                                Min. 8 karakter, huruf besar, dan angka
-                            </p>
-                        </div>
-
-                        {/* Confirm Password */}
-                        <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                                Konfirmasi Password
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    type={showPassword ? "text" : "password"}
-                                    autoComplete="new-password"
-                                    required
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Ulangi password"
-                                />
-                            </div>
+            <AuthFormShell>
+                <AuthSectionCard className="space-y-4">
+                    <div className="flex items-start gap-4">
+                        <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-(--accent-primary) shadow-(--shadow-xs)">
+                            <ShieldCheck className="h-5 w-5" />
+                        </span>
+                        <div className="space-y-3">
+                            <p className="text-sm font-semibold text-foreground">Standar akun Gelaran</p>
+                            <AuthMetaList
+                                items={[
+                                    "Password minimal 8 karakter dengan kombinasi huruf besar dan angka.",
+                                    "Email verifikasi akan dikirim sebelum akun aktif sepenuhnya.",
+                                    "Satu akun bisa dipakai untuk pembelian tiket dan akses workspace terkait peran.",
+                                ]}
+                            />
                         </div>
                     </div>
+                </AuthSectionCard>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                {error ? (
+                    <AuthMessage tone="danger" title="Pendaftaran belum berhasil" description={error} />
+                ) : null}
+
+                <form className="space-y-5" onSubmit={handleSubmit}>
+                    <AuthField label="Nama lengkap" helper="Nama ini akan tampil di profil akun">
+                        <AuthInputShell
+                            id="name"
+                            name="name"
+                            type="text"
+                            autoComplete="name"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Nama lengkap kamu"
+                        />
+                    </AuthField>
+
+                    <AuthField label="Email" helper="Gunakan email yang aktif untuk verifikasi">
+                        <AuthInputShell
+                            id="email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="nama@email.com"
+                        />
+                    </AuthField>
+
+                    <AuthField label="Password" helper="Minimal 8 karakter, huruf besar, dan angka">
+                        <AuthInputShell
+                            id="password"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            autoComplete="new-password"
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Buat password"
+                            inputClassName="pr-12"
+                        />
+                        <div className="-mt-[3.35rem] flex justify-end pr-3">
+                            <AuthIconButton
+                                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                            </AuthIconButton>
+                        </div>
+                    </AuthField>
+
+                    <AuthField
+                        label="Konfirmasi password"
+                        error={confirmPassword && password !== confirmPassword ? "Password tidak cocok" : undefined}
                     >
+                        <AuthInputShell
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type={showPassword ? "text" : "password"}
+                            autoComplete="new-password"
+                            required
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Ulangi password"
+                            className={confirmPassword
+                                ? password === confirmPassword
+                                    ? "border-[rgba(19,135,108,0.32)]"
+                                    : "border-[rgba(217,79,61,0.32)]"
+                                : undefined}
+                        />
+                    </AuthField>
+
+                    <AuthPrimaryButton type="submit" disabled={isLoading}>
                         {isLoading ? (
                             <>
-                                <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                                <Loader2 className="h-5 w-5 animate-spin" />
                                 Mendaftar...
                             </>
                         ) : (
-                            "Daftar Sekarang"
+                            "Daftar sekarang"
                         )}
-                    </button>
+                    </AuthPrimaryButton>
                 </form>
+            </AuthFormShell>
 
-                {/* Footer */}
-                <p className="text-center text-xs text-gray-500 mt-8">
-                    Dengan mendaftar, kamu menyetujui{" "}
-                    <Link href="/terms" className="text-indigo-600 hover:underline">
-                        Syarat & Ketentuan
-                    </Link>{" "}
-                    dan{" "}
-                    <Link href="/privacy" className="text-indigo-600 hover:underline">
-                        Kebijakan Privasi
-                    </Link>{" "}
-                    kami.
+            <AuthFinePrint className="mt-8">
+                Dengan mendaftar, kamu menyetujui <Link href="/terms" className="font-semibold text-[#015959] hover:underline">Syarat & Ketentuan</Link> dan <Link href="/privacy" className="font-semibold text-[#015959] hover:underline">Kebijakan Privasi</Link> kami.
+            </AuthFinePrint>
+
+            <footer className="mt-12 text-center">
+                <p className="text-[#3f4948] text-sm">
+                    Sudah punya akun? {" "}
+                    <AuthTextLink href="/login">
+                        Masuk di sini
+                    </AuthTextLink>
                 </p>
-            </div>
+            </footer>
         </div>
     );
 }

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Category Management | Gelaran Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#a1e6e5",
+                        "on-primary-fixed": "#002020",
+                        "on-secondary-fixed-variant": "#7f2b00",
+                        "on-background": "#002020",
+                        "secondary-fixed-dim": "#ffb598",
+                        "on-tertiary-container": "#56d4d6",
+                        "secondary": "#a63b00",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#aaefee",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#b5faf9",
+                        "outline": "#6f7978",
+                        "inverse-surface": "#003737",
+                        "surface-container-highest": "#aaefee",
+                        "tertiary-container": "#00595b",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#8ed2d2",
+                        "surface-variant": "#aaefee",
+                        "on-secondary-fixed": "#370e00",
+                        "background": "#e2fffe",
+                        "surface-container-high": "#aff5f4",
+                        "error-container": "#ffdad6",
+                        "surface": "#e2fffe",
+                        "surface-container-low": "#c1fffe",
+                        "tertiary-fixed": "#7bf5f8",
+                        "on-tertiary-fixed": "#002021",
+                        "secondary-fixed": "#ffdbce",
+                        "on-surface-variant": "#3f4948",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#b8fdfc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#002020",
+                        "on-primary-container": "#89cdcd",
+                        "surface-tint": "#1e6868",
+                        "secondary-container": "#fd6005",
+                        "outline-variant": "#bec8c8",
+                        "on-tertiary-fixed-variant": "#004f51",
+                        "primary": "#004040",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#8ed2d2",
+                        "primary-container": "#015959",
+                        "on-primary-fixed-variant": "#004f50",
+                        "on-secondary-container": "#521900",
+                        "tertiary-fixed-dim": "#5cd8db",
+                        "tertiary": "#004041",
+                        "surface-bright": "#e2fffe"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .sidebar-active { border-right: 4px solid #015959; color: #015959; font-weight: 700; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="text-on-surface bg-white selection:bg-surface-container-high">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-100 dark:bg-slate-900 flex flex-col py-8 px-6 z-40">
+<div class="mb-12 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="dashboard">dashboard</span>
+</div>
+<div>
+<h1 class="text-2xl font-bold text-teal-900 dark:text-teal-50 font-noto-serif tracking-tight">Gelaran</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Enterprise Admin</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-500 dark:text-slate-400 font-medium hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-noto-serif">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-500 dark:text-slate-400 font-medium hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-noto-serif">Events</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-teal-900 dark:text-teal-50 font-bold border-r-4 border-teal-900 dark:border-teal-500 transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-noto-serif">Categories</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-500 dark:text-slate-400 font-medium hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-noto-serif">Organizers</span>
+</a>
+</nav>
+<div class="pt-8 mt-8 border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-500 dark:text-slate-400 font-medium hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-noto-serif">Settings</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-30 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 flex justify-between items-center h-20 px-12">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-lg w-96">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-body w-full ml-2" placeholder="Search categories, events, or archives..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-500 hover:opacity-80 active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<button class="text-slate-500 hover:opacity-80 active:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-10 w-[1px] bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Administrator</p>
+<p class="text-[10px] text-outline">Super Admin</p>
+</div>
+<img alt="Admin User Profile" class="w-10 h-10 rounded-lg object-cover" data-alt="portrait of a professional executive man in a tailored dark suit with clean lighting against a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwbxUsGDsFFeqbhdfk7jYLuRCa2e_t9fcYpY6uJjbpcXZmNu1UYDq7YsQjdSi6ab0kqHQ5hHu2K0D9My_PHbXWmscvmCudfkJpE4kUw2euhMKkUWWCJcoXaaz9RG78TO6dAlTzE2RyUm8tfMS4UOSyZDPszu_S7gnL9chTU0MwE2inL3Qf7gyoAY1YZ9kXXjYc-d94N3jaDGOznAprbNtU3Q4Wd-ocvBus-tjNFuoFtOpw3tD-_qadkkMsMWLHhH7nEdOikkrUvNk"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-12 min-h-screen relative bg-white">
+<!-- Header Section -->
+<div class="mb-12 flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-headline font-bold text-primary tracking-tight">Category Management</h2>
+<p class="text-on-surface-variant font-body mt-2">Organize and curate cultural heritage classifications for the Gelaran ecosystem.</p>
+</div>
+<button class="bg-primary-container text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-primary transition-all duration-300 shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                Create New Category
+            </button>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-12 gap-6 mb-12">
+<div class="col-span-4 bg-surface-container-low p-8 rounded-xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-on-surface-variant font-label font-semibold tracking-wider text-xs uppercase mb-4">Total Categories</p>
+<h3 class="text-5xl font-headline font-bold text-primary">42</h3>
+<div class="mt-4 flex items-center gap-2 text-tertiary-fixed-dim font-bold text-sm">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>+12% this month</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 scale-150 group-hover:rotate-12 transition-transform duration-500">
+<span class="material-symbols-outlined text-9xl" data-icon="category">category</span>
+</div>
+</div>
+<div class="col-span-4 bg-primary-container p-8 rounded-xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-primary-fixed font-label font-semibold tracking-wider text-xs uppercase mb-4">Active Events</p>
+<h3 class="text-5xl font-headline font-bold text-white">1,284</h3>
+<div class="mt-4 flex items-center gap-2 text-primary-fixed-dim font-bold text-sm">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span>Across all sectors</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 scale-150 group-hover:-rotate-12 transition-transform duration-500">
+<span class="material-symbols-outlined text-9xl text-white" data-icon="event">event</span>
+</div>
+</div>
+<div class="col-span-4 bg-secondary-fixed p-8 rounded-xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-on-secondary-fixed-variant font-label font-semibold tracking-wider text-xs uppercase mb-4">Featured Categories</p>
+<h3 class="text-5xl font-headline font-bold text-secondary">08</h3>
+<div class="mt-4 flex items-center gap-2 text-secondary font-bold text-sm">
+<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
+<span>High Priority focus</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 scale-150 group-hover:rotate-6 transition-transform duration-500">
+<span class="material-symbols-outlined text-9xl" data-icon="stars">stars</span>
+</div>
+</div>
+</div>
+<!-- Filters & Tools -->
+<div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border-none rounded-lg px-6 py-3 pr-10 font-body font-semibold text-sm focus:ring-2 focus:ring-primary">
+<option>All Statuses</option>
+<option>Active</option>
+<option>Inactive</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border-none rounded-lg px-6 py-3 pr-10 font-body font-semibold text-sm focus:ring-2 focus:ring-primary">
+<option>Featured Priority</option>
+<option>Featured Only</option>
+<option>Non-Featured</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-outline-variant hover:text-primary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined" data-icon="sort">sort</span>
+<span class="text-sm font-bold uppercase tracking-widest">Sort by Density</span>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-white rounded-xl overflow-hidden mb-20">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-8 py-6 text-on-surface-variant font-label font-bold text-xs uppercase tracking-widest">Category Identity</th>
+<th class="px-8 py-6 text-on-surface-variant font-label font-bold text-xs uppercase tracking-widest">Event Density</th>
+<th class="px-8 py-6 text-on-surface-variant font-label font-bold text-xs uppercase tracking-widest text-center">Featured</th>
+<th class="px-8 py-6 text-on-surface-variant font-label font-bold text-xs uppercase tracking-widest">Status</th>
+<th class="px-8 py-6 text-on-surface-variant font-label font-bold text-xs uppercase tracking-widest text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="masks">masks</span>
+</div>
+<div>
+<p class="font-headline font-bold text-lg text-primary">Wayang Kulit</p>
+<p class="text-xs text-on-surface-variant">Traditional Shadow Puppet Performance</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="font-body font-bold text-on-surface">342</span>
+<div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[70%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="material-symbols-outlined text-secondary" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-primary-container text-white text-[10px] font-bold uppercase tracking-widest rounded">Active</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="music_note">music_note</span>
+</div>
+<div>
+<p class="font-headline font-bold text-lg text-primary">Gamelan Ensemble</p>
+<p class="text-xs text-on-surface-variant">Classical Javanese &amp; Balinese Percussion</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="font-body font-bold text-on-surface">512</span>
+<div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[90%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="material-symbols-outlined text-secondary" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-primary-container text-white text-[10px] font-bold uppercase tracking-widest rounded">Active</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="palette">palette</span>
+</div>
+<div>
+<p class="font-headline font-bold text-lg text-primary">Batik Artisanship</p>
+<p class="text-xs text-on-surface-variant">Traditional Wax-Resist Dyeing Art</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="font-body font-bold text-on-surface">128</span>
+<div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[40%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="material-symbols-outlined text-slate-200" data-icon="star">star</span>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-primary-container text-white text-[10px] font-bold uppercase tracking-widest rounded">Active</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-slate-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<p class="font-headline font-bold text-lg text-slate-400">Archipelago Culinary</p>
+<p class="text-xs text-slate-400">Local Gastronomy &amp; Street Food Markets</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-slate-400">
+<div class="flex items-center gap-3">
+<span class="font-body font-bold">0</span>
+<div class="w-24 h-1.5 bg-slate-50 rounded-full overflow-hidden">
+<div class="h-full bg-slate-200 w-[0%]"></div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="material-symbols-outlined text-slate-100" data-icon="star">star</span>
+</td>
+<td class="px-8 py-6">
+<span class="px-3 py-1 bg-slate-200 text-slate-500 text-[10px] font-bold uppercase tracking-widest rounded">Inactive</span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Add Category Drawer (Simulated) -->
+<div class="fixed top-0 right-0 h-full w-[450px] bg-white shadow-2xl border-l border-slate-100 z-50 transform translate-x-0 transition-transform duration-500 flex flex-col">
+<div class="p-10 border-b border-slate-50 flex justify-between items-center">
+<div>
+<h3 class="text-2xl font-headline font-bold text-primary">Add Category</h3>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-widest mt-1">Classification Details</p>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="p-10 flex-1 overflow-y-auto hide-scrollbar space-y-8">
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Category Name</label>
+<input class="w-full border-none border-b border-outline-variant/40 focus:ring-0 focus:border-primary px-0 py-3 font-body text-lg" placeholder="e.g. Traditional Dance" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Description</label>
+<textarea class="w-full border-none border-b border-outline-variant/40 focus:ring-0 focus:border-primary px-0 py-3 font-body resize-none" placeholder="Provide context about this category..." rows="4"></textarea>
+</div>
+<div class="space-y-4">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Iconography</label>
+<div class="grid grid-cols-4 gap-3">
+<div class="aspect-square bg-surface-container-low rounded flex items-center justify-center cursor-pointer border-2 border-primary">
+<span class="material-symbols-outlined text-primary" data-icon="theaters">theaters</span>
+</div>
+<div class="aspect-square bg-slate-50 rounded flex items-center justify-center cursor-pointer hover:bg-slate-100">
+<span class="material-symbols-outlined text-slate-400" data-icon="eco">eco</span>
+</div>
+<div class="aspect-square bg-slate-50 rounded flex items-center justify-center cursor-pointer hover:bg-slate-100">
+<span class="material-symbols-outlined text-slate-400" data-icon="history_edu">history_edu</span>
+</div>
+<div class="aspect-square bg-slate-50 rounded flex items-center justify-center cursor-pointer hover:bg-slate-100">
+<span class="material-symbols-outlined text-slate-400" data-icon="temple_hindu">temple_hindu</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between py-6 border-t border-slate-50">
+<div>
+<p class="font-bold text-on-surface">Set as Featured</p>
+<p class="text-xs text-on-surface-variant">Promote on homepage dashboard</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<div class="p-10 bg-slate-50 flex gap-4">
+<button class="flex-1 bg-white text-on-surface font-bold py-4 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">Save as Draft</button>
+<button class="flex-1 bg-secondary-container text-white font-bold py-4 rounded-lg shadow-lg shadow-secondary-container/20 hover:opacity-90 transition-opacity">Publish Category</button>
+</div>
+</div>
+</main>
+</body></html>

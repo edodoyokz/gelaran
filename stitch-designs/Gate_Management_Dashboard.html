@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelaran | Gate Manager Operational Suite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed-variant": "#7f2b00",
+                        "outline-variant": "#bec8c8",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#f1b803",
+                        "on-secondary-container": "#007072",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#002021",
+                        "outline": "#6f7978",
+                        "secondary": "#00696b",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#b8fdfc",
+                        "on-secondary-fixed-variant": "#004f51",
+                        "surface-bright": "#e2fffe",
+                        "surface-variant": "#aaefee",
+                        "on-tertiary-fixed": "#251a00",
+                        "primary-fixed-dim": "#ffb598",
+                        "tertiary-fixed-dim": "#f7be11",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#ffb598",
+                        "secondary-container": "#7bf5f8",
+                        "surface-container-high": "#aff5f4",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#002020",
+                        "surface-container-highest": "#aaefee",
+                        "secondary-fixed-dim": "#5cd8db",
+                        "tertiary": "#483500",
+                        "tertiary-container": "#654b00",
+                        "primary": "#672200",
+                        "surface": "#e2fffe",
+                        "primary-container": "#8d3100",
+                        "on-primary-container": "#ffae8e",
+                        "inverse-surface": "#003737",
+                        "on-primary-fixed": "#370e00",
+                        "on-background": "#002020",
+                        "tertiary-fixed": "#ffdf9a",
+                        "surface-container-low": "#c1fffe",
+                        "background": "#e2fffe",
+                        "primary-fixed": "#ffdbce",
+                        "secondary-fixed": "#7bf5f8",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#a1e6e5",
+                        "surface-tint": "#a63b00",
+                        "surface-container": "#b5faf9",
+                        "on-surface-variant": "#3f4948",
+                        "on-tertiary-fixed-variant": "#5a4300"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #002020; }
+        .serif-text { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface-container-lowest overflow-hidden">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#b5faf9] flex flex-col py-8 shadow-[12px_0_32px_rgba(0,32,32,0.04)] z-50">
+<div class="px-8 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="gate">gate</span>
+</div>
+<div>
+<h1 class="serif-text text-lg font-black text-[#015959]">Gate Manager</h1>
+<p class="text-[10px] uppercase tracking-widest font-bold opacity-60">Operational Suite</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col">
+<!-- Active Navigation -->
+<a class="bg-white text-[#015959] font-bold rounded-l-full ml-4 pl-4 py-3 flex items-center gap-4 transition-all translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-xs uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="text-[#3f4948] py-3 px-8 flex items-center gap-4 hover:bg-white/40 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="gate">gate</span>
+<span class="text-xs uppercase tracking-wider">Gate Control</span>
+</a>
+<a class="text-[#3f4948] py-3 px-8 flex items-center gap-4 hover:bg-white/40 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="text-xs uppercase tracking-wider">Staff Registry</span>
+</a>
+<a class="text-[#3f4948] py-3 px-8 flex items-center gap-4 hover:bg-white/40 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="barcode_scanner">barcode_scanner</span>
+<span class="text-xs uppercase tracking-wider">Device Fleet</span>
+</a>
+<a class="text-[#3f4948] py-3 px-8 flex items-center gap-4 hover:bg-white/40 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-xs uppercase tracking-wider">System Logs</span>
+</a>
+</nav>
+<div class="px-6 mt-auto space-y-2">
+<button class="w-full bg-[#F95D00] text-white py-3 rounded-md text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-500/20 active:scale-95 transition-transform">
+                Emergency Stop
+            </button>
+<div class="pt-6 border-t border-[#015959]/10">
+<a class="text-[#3f4948] py-2 px-2 flex items-center gap-3 text-xs uppercase tracking-wider hover:text-[#015959]" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span> Help Center
+                </a>
+<a class="text-[#3f4948] py-2 px-2 flex items-center gap-3 text-xs uppercase tracking-wider hover:text-error" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span> Sign Out
+                </a>
+</div>
+</div>
+</aside>
+<main class="ml-64 min-h-screen bg-white">
+<!-- TopAppBar Component -->
+<header class="flex justify-between items-center w-full px-8 py-4 bg-white sticky top-0 z-40">
+<div class="flex items-center gap-12">
+<div class="serif-text text-2xl font-bold text-[#015959]">Gelaran</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-[#F95D00] font-bold border-b-2 border-[#F95D00] pb-1 text-sm tracking-wide" href="#">Gate Overview</a>
+<a class="text-[#3f4948] hover:text-[#015959] transition-colors text-sm tracking-wide" href="#">Staffing</a>
+<a class="text-[#3f4948] hover:text-[#015959] transition-colors text-sm tracking-wide" href="#">Devices</a>
+<a class="text-[#3f4948] hover:text-[#015959] transition-colors text-sm tracking-wide" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined text-[#3f4948] p-2 hover:bg-[#b5faf9]/50 rounded-full cursor-pointer transition-all" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-[#F95D00] rounded-full ring-2 ring-white"></span>
+</div>
+<span class="material-symbols-outlined text-[#3f4948] p-2 hover:bg-[#b5faf9]/50 rounded-full cursor-pointer transition-all" data-icon="settings">settings</span>
+<button class="bg-primary text-white px-6 py-2 rounded-md text-sm font-semibold tracking-wide hover:opacity-90 active:scale-95 transition-all">
+                    Check-In
+                </button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container border-2 border-surface-container">
+<img class="w-full h-full object-cover" data-alt="professional headshot of a male operations manager with a confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMXPAQg2Wj9H1qLH68_dB4CnLf2deNDBg46KPV_GImCCjgdapjMeLuSLUw2eI3dncxheW3P982pN4TnfFNGYGIEdbXjxameTR3kSmeCV9AjCWdWYvF6r8MZd_QNt98eJA2Fkgov5342kCn7tTHEe2D-y7x5z96Vs66IM_IdXP9P55pIUSe4ScUMce6y9w7qdWj8IVyPlmjRarpsMQRvd3GgqJFWsXGd3ia6BqHBcpXKGKPsVRJ5-Rh0DCla1iNBl2Rh4axXtmqXMM"/>
+</div>
+</div>
+</header>
+<!-- Divider -->
+<div class="bg-[#c1fffe] h-[1px] w-full"></div>
+<!-- Main Content Area -->
+<div class="p-8 space-y-8 max-w-[1600px] mx-auto">
+<!-- Bento Grid Section -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Gate Overview Grid (Left Col) -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-1 block">Operational Status</span>
+<h2 class="serif-text text-2xl font-bold text-on-surface mb-2">Gate Overview Grid</h2>
+<div class="h-0.5 w-6 bg-primary"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Gate 01 -->
+<div class="bg-surface-container-low p-6 rounded-lg group hover:bg-surface-bright transition-colors">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="serif-text text-xl font-bold">Gate 01</h3>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Main Entrance North</p>
+</div>
+<span class="bg-[#29B3B6] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Active</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Throughput</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-primary">42</span>
+<span class="text-[10px] font-bold opacity-60">scans/min</span>
+</div>
+</div>
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Capacity</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-[#FBC117]">84</span>
+<span class="text-[10px] font-bold opacity-60">%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Gate 02 -->
+<div class="bg-surface-container-low p-6 rounded-lg group hover:bg-surface-bright transition-colors">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="serif-text text-xl font-bold">Gate 02</h3>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Main Entrance South</p>
+</div>
+<span class="bg-[#29B3B6] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Active</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Throughput</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-primary">38</span>
+<span class="text-[10px] font-bold opacity-60">scans/min</span>
+</div>
+</div>
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Capacity</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-[#FBC117]">71</span>
+<span class="text-[10px] font-bold opacity-60">%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Gate 03 -->
+<div class="bg-surface-container-low p-6 rounded-lg group hover:bg-surface-bright transition-colors">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="serif-text text-xl font-bold">Gate 03</h3>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">VIP Terminal A</p>
+</div>
+<span class="bg-[#FBC117] text-[#002020] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Peak</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Throughput</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-primary">12</span>
+<span class="text-[10px] font-bold opacity-60">scans/min</span>
+</div>
+</div>
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Capacity</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-[#F95D00]">92</span>
+<span class="text-[10px] font-bold opacity-60">%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Gate 04 -->
+<div class="bg-surface-container p-6 rounded-lg group hover:bg-surface-bright transition-colors border-l-4 border-error/20">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="serif-text text-xl font-bold">Gate 04</h3>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Crew &amp; Staff Access</p>
+</div>
+<span class="bg-error text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Standby</span>
+</div>
+<div class="grid grid-cols-2 gap-4 opacity-50">
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Throughput</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-primary">0</span>
+<span class="text-[10px] font-bold opacity-60">scans/min</span>
+</div>
+</div>
+<div class="bg-white/50 p-4 rounded">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Capacity</p>
+<div class="flex items-baseline gap-1">
+<span class="serif-text text-2xl font-black text-on-surface">5</span>
+<span class="text-[10px] font-bold opacity-60">%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Center & Queue (Right Col) -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Action Center -->
+<div class="bg-surface-container-highest p-8 rounded-lg">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-1 block">Quick Controls</span>
+<h2 class="serif-text text-xl font-bold text-on-surface mb-6">Action Center</h2>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-between p-4 bg-white rounded-md group hover:bg-primary transition-all">
+<span class="font-bold text-xs uppercase tracking-widest group-hover:text-white">Open All Gates</span>
+<span class="material-symbols-outlined text-[#015959] group-hover:text-white" data-icon="lock_open">lock_open</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-white rounded-md group hover:bg-error transition-all">
+<span class="font-bold text-xs uppercase tracking-widest group-hover:text-white">Close All Gates</span>
+<span class="material-symbols-outlined text-[#015959] group-hover:text-white" data-icon="lock">lock</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-white rounded-md border-2 border-primary/20 hover:border-primary transition-all">
+<span class="font-bold text-xs uppercase tracking-widest text-primary">Broadcast Alert</span>
+<span class="material-symbols-outlined text-primary" data-icon="campaign">campaign</span>
+</button>
+</div>
+</div>
+<!-- Queue Management -->
+<div class="bg-white p-6 border-l-4 border-[#FBC117]">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-1 block">Live Flow Metrics</span>
+<h2 class="serif-text text-xl font-bold text-on-surface mb-6">Queue Management</h2>
+<div class="space-y-6">
+<div class="flex items-end justify-between">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">Avg Wait Time</p>
+<div class="serif-text text-4xl font-black text-[#F95D00]">04:12</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">Flow Rate</p>
+<div class="serif-text text-xl font-bold">2.4k <span class="text-xs">/hr</span></div>
+</div>
+</div>
+<!-- Simple visual chart -->
+<div class="h-8 flex gap-1 items-end">
+<div class="flex-1 bg-surface-container-high h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container-high h-6 rounded-t-sm"></div>
+<div class="flex-1 bg-secondary h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-[#FBC117] h-5 rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container-high h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container-high h-3 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Lower Grid Sections -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Staff Assignment -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-low p-6 rounded-lg">
+<div class="flex justify-between items-center mb-6">
+<h2 class="serif-text text-xl font-bold">Staff Assignment</h2>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 bg-white/40 rounded">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="close-up portrait of a professional female staff member with a friendly smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyawW_5e9oSv5sr64pPpCozUaVtxjwYMbdUk30lzTe9LzYhz0O48498CzwZSN0RUeOurSg-oevBW_0cIbn3MYZIQQnIbiPIvhnzGpOQtvzDV-vOtbpKY2qfB5UcwEgzu30J_D-gHSV6h9rvi_9we4hvjZl12fBWIs3w0X_HnB0hEWLb8r0FrtweIKDgDPjrNUlmsrPJ0sNR7voSLklr-U2JNs-8sJWNN0PrDkbrf8o6YqKNFaoMEgpdP4_zQPU-URG9ENIL8sQX0I"/>
+<div class="flex-1">
+<p class="text-xs font-bold">Amara Okafor</p>
+<p class="text-[10px] uppercase font-bold text-[#29B3B6]">Gate 01 Lead</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant">IN: 07:45</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 bg-white/40 rounded">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="professional portrait of a male worker wearing a high-visibility operational vest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDseRhb3Db69mytMjC-yT3KB-iYAotRUs2wwei9rCX-pZNV_fIqq9QTYtOagA2BkmeXC86oL4uqBAcrLksrMsN75h9OTEurLENhR2OKk8CHp3wZ0x2ujutVnkSYBNBeGpnFNl2d9Uchmh9DBSPxHNIhEF5TmQlj0GW8-RQnWqDR0m3OxYKifPiQmRXkdaBxL-p9hCIlWgMYfePd-0YG_xBdKwTk3Hmzh1CU5jfoaTgIUv4r7ErFpNMfbXMXsKYNjJ1Knt7PeEskhzM"/>
+<div class="flex-1">
+<p class="text-xs font-bold">Chen Wei</p>
+<p class="text-[10px] uppercase font-bold text-[#29B3B6]">Gate 02 Security</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant">IN: 08:12</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 bg-white/40 rounded">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="portrait of an administrative assistant with sharp focus and a neutral expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDd5kz8wvvMjCSH2OA1LxCrMIzc0o6NBVMeBVB5zSzngYbB_9BZGPNdfvMxj-uEjMCiihWCvqGrB18cwhXSsNlVeDOMhS-EAiig30rp_J55iYrWKI-Xwp0vZEYuVfQJ878GbtbS5VSjWz4G3scGHJvVC3bSKzdrHf6wRjv9mul7-_mVejdut0AlHHZTwV2bBXXfE0XkWX-zOSQ49jMnQfShRxVfjAHfXsv8C_9aFfc3UyPs6yP0DR2FNBwiwUMuTxO5oQHjdRM5TY"/>
+<div class="flex-1">
+<p class="text-xs font-bold">Elena Rossi</p>
+<p class="text-[10px] uppercase font-bold text-[#29B3B6]">VIP Check-in</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant">IN: 08:00</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Device Fleet Management -->
+<div class="col-span-12 md:col-span-4 bg-white p-6 border-2 border-surface-container-low rounded-lg">
+<h2 class="serif-text text-xl font-bold mb-6">Device Fleet</h2>
+<div class="grid grid-cols-1 gap-3">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded border border-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#015959]" data-icon="phone_android">phone_android</span>
+<div>
+<p class="text-xs font-bold">Handheld H-092</p>
+<div class="flex items-center gap-2">
+<div class="h-1 w-12 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-[#29B3B6] w-[88%]"></div>
+</div>
+<span class="text-[9px] font-black uppercase text-[#29B3B6]">88%</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-[#29B3B6] text-sm" data-icon="wifi">wifi</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded border border-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#015959]" data-icon="terminal">terminal</span>
+<div>
+<p class="text-xs font-bold">Fixed Terminal T-04</p>
+<div class="flex items-center gap-2">
+<div class="h-1 w-12 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error w-[14%]"></div>
+</div>
+<span class="text-[9px] font-black uppercase text-error">14%</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-error text-sm" data-icon="wifi_off">wifi_off</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded border border-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#015959]" data-icon="phone_android">phone_android</span>
+<div>
+<p class="text-xs font-bold">Handheld H-095</p>
+<div class="flex items-center gap-2">
+<div class="h-1 w-12 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-[#FBC117] w-[45%]"></div>
+</div>
+<span class="text-[9px] font-black uppercase text-[#FBC117]">45%</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-[#29B3B6] text-sm" data-icon="wifi">wifi</span>
+</div>
+</div>
+</div>
+<!-- Recent Log Feed -->
+<div class="col-span-12 md:col-span-4 bg-[#002020] p-6 rounded-lg text-white">
+<div class="flex justify-between items-center mb-6">
+<h2 class="serif-text text-xl font-bold">Recent Log</h2>
+<span class="text-[9px] font-bold uppercase tracking-widest text-[#29B3B6] animate-pulse">Live Feed</span>
+</div>
+<div class="space-y-4 max-h-[160px] overflow-y-auto no-scrollbar">
+<div class="flex gap-4 text-[10px] items-start border-l-2 border-[#29B3B6] pl-3">
+<span class="opacity-40 tabular-nums">14:22:10</span>
+<div>
+<p class="font-bold">Gate 01: Scan Success</p>
+<p class="opacity-60">ID: #GEL-88921 (General Admin)</p>
+</div>
+</div>
+<div class="flex gap-4 text-[10px] items-start border-l-2 border-error pl-3">
+<span class="opacity-40 tabular-nums">14:21:45</span>
+<div>
+<p class="font-bold text-error">Gate 02: Access Denied</p>
+<p class="opacity-60">Invalid QR Code - #UNK-0012</p>
+</div>
+</div>
+<div class="flex gap-4 text-[10px] items-start border-l-2 border-[#FBC117] pl-3">
+<span class="opacity-40 tabular-nums">14:21:02</span>
+<div>
+<p class="font-bold text-[#FBC117]">Gate 03: VIP Arrival</p>
+<p class="opacity-60">ID: #GEL-VIP-002 (Directorate)</p>
+</div>
+</div>
+<div class="flex gap-4 text-[10px] items-start border-l-2 border-[#29B3B6] pl-3">
+<span class="opacity-40 tabular-nums">14:20:18</span>
+<div>
+<p class="font-bold">Gate 01: Scan Success</p>
+<p class="opacity-60">ID: #GEL-99102 (Media Pass)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB Suppression: FAB only on specific screens -->
+<button class="fixed bottom-8 right-8 bg-[#F95D00] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</body></html>

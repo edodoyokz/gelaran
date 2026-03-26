@@ -235,7 +235,7 @@ export default function GateManagementPage() {
 
             <main className="max-w-5xl mx-auto px-4 py-8 md:px-8 space-y-8">
                 <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)] p-6 flex items-start gap-6">
-                    <div className="w-24 h-32 bg-[var(--bg-secondary)] rounded-lg flex-shrink-0 overflow-hidden">
+                    <div className="w-24 h-32 bg-[var(--bg-secondary)] rounded-lg shrink-0 overflow-hidden">
                         {event.posterImage ? (
                             <img src={event.posterImage} alt={event.title} className="w-full h-full object-cover" />
                         ) : (
@@ -495,7 +495,7 @@ export default function GateManagementPage() {
             {showStaffModal && generatedPin && eventSlug && generatedSessionType && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-[var(--surface)] rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-                        <div className={`p-6 text-white ${generatedSessionType === "GATE" ? "bg-gradient-to-br from-indigo-600 to-purple-600" : "bg-gradient-to-br from-emerald-600 to-teal-600"}`}>
+                        <div className={`p-6 text-white ${generatedSessionType === "GATE" ? "bg-linear-to-br from-indigo-600 to-purple-600" : "bg-linear-to-br from-emerald-600 to-teal-600"}`}>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 bg-[var(--surface)]/20 rounded-xl flex items-center justify-center">
@@ -548,7 +548,7 @@ export default function GateManagementPage() {
                                 <label className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">URL Akses</label>
                                 <div className="flex items-center gap-2">
                                     <div className={`flex-1 border rounded-lg px-4 py-3 text-sm truncate flex items-center gap-2 ${generatedSessionType === "GATE" ? "bg-[var(--accent-primary)]/10 border-indigo-200 text-[var(--accent-primary)]" : "bg-emerald-50 border-emerald-200 text-emerald-700"}`}>
-                                        {generatedSessionType === "GATE" ? <Camera className="w-4 h-4 flex-shrink-0" /> : <ShoppingCart className="w-4 h-4 flex-shrink-0" />}
+                                        {generatedSessionType === "GATE" ? <Camera className="w-4 h-4 shrink-0" /> : <ShoppingCart className="w-4 h-4 shrink-0" />}
                                         {typeof window !== 'undefined' ? `${window.location.origin}/${generatedSessionType === "GATE" ? "gate" : "pos"}/access` : ''}
                                     </div>
                                     <a 

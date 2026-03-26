@@ -54,7 +54,7 @@ export default function CustomerSupportDocsPage() {
             </div>
 
             {/* Contact Info */}
-            <div className="p-6 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl mb-12">
+            <div className="p-6 bg-linear-to-br from-slate-50 to-slate-100 rounded-xl mb-12">
                 <h3 className="font-bold text-slate-900 mb-4">Informasi Kontak Lengkap</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>

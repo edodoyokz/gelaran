@@ -147,7 +147,7 @@ export function AdminHeader({ title, subtitle, backHref, actions }: AdminHeaderP
                                             className="w-8 h-8 rounded-full object-cover"
                                         />
                                     ) : (
-                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold bg-gradient-to-br from-indigo-500 to-purple-600">
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold bg-linear-to-br from-indigo-500 to-purple-600">
                                             {getInitials(profile.name)}
                                         </div>
                                     )}

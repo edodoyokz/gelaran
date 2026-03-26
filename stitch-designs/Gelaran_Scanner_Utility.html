@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GateControl Pro - Scanner Utility</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Plus_Jakarta_Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#a1e6e5",
+              "on-tertiary": "#ffffff",
+              "on-secondary-container": "#007072",
+              "surface-container-high": "#aff5f4",
+              "primary-fixed-dim": "#ffb598",
+              "inverse-surface": "#003737",
+              "on-tertiary-fixed": "#251a00",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-secondary-fixed": "#002021",
+              "surface-container": "#b5faf9",
+              "secondary": "#00696b",
+              "error": "#ba1a1a",
+              "on-primary-container": "#ffae8e",
+              "background": "#e2fffe",
+              "surface": "#e2fffe",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#c1fffe",
+              "tertiary": "#483500",
+              "on-background": "#002020",
+              "on-error": "#ffffff",
+              "inverse-primary": "#ffb598",
+              "tertiary-container": "#654b00",
+              "secondary-fixed-dim": "#5cd8db",
+              "secondary-fixed": "#7bf5f8",
+              "outline-variant": "#bec8c8",
+              "on-surface": "#002020",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#7f2b00",
+              "surface-variant": "#aaefee",
+              "surface-bright": "#e2fffe",
+              "on-surface-variant": "#3f4948",
+              "on-secondary-fixed-variant": "#004f51",
+              "surface-container-highest": "#aaefee",
+              "outline": "#6f7978",
+              "on-tertiary-container": "#f1b803",
+              "on-primary": "#ffffff",
+              "surface-tint": "#a63b00",
+              "tertiary-fixed": "#ffdf9a",
+              "primary-container": "#8d3100",
+              "primary": "#672200",
+              "tertiary-fixed-dim": "#f7be11",
+              "secondary-container": "#7bf5f8",
+              "on-primary-fixed": "#370e00",
+              "primary-fixed": "#ffdbce",
+              "inverse-on-surface": "#b8fdfc"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanning-line {
+            height: 2px;
+            background: #F95D00;
+            box-shadow: 0 0 15px #F95D00;
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-lowest font-body text-on-surface antialiased overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<aside class="flex flex-col h-full fixed left-0 top-0 border-r-0 bg-[#b5faf9] dark:bg-[#002020] h-screen w-64 shadow-[12px_0_32px_rgba(0,32,32,0.06)] z-50">
+<div class="px-6 py-8">
+<h2 class="font-headline text-2xl font-bold text-[#015959] dark:text-[#7bf5f8] mb-1">Gate 4 Terminal</h2>
+<p class="font-label text-xs font-medium text-[#3f4948] dark:text-[#bec8c8] uppercase tracking-wider">High-End Editorial Gate Access</p>
+</div>
+<nav class="flex-grow">
+<!-- Active Tab: Auto Scan -->
+<a class="flex items-center bg-white dark:bg-[#004040] text-[#015959] dark:text-[#7bf5f8] rounded-l-full ml-4 shadow-sm font-bold px-6 py-4 transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-label">Auto Scan</span>
+</a>
+<a class="flex items-center text-[#3f4948] dark:text-[#bec8c8] px-6 py-4 hover:text-[#015959] dark:hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="keyboard">keyboard</span>
+<span class="font-label">Manual Entry</span>
+</a>
+<a class="flex items-center text-[#3f4948] dark:text-[#bec8c8] px-6 py-4 hover:text-[#015959] dark:hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="font-label">System Settings</span>
+</a>
+</nav>
+<div class="p-6 border-t border-[#c1fffe] dark:border-[#003030]">
+<button class="w-full bg-[#672200] text-white py-3 rounded-md title-sm font-semibold hover:opacity-90 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined mr-2 text-sm" data-icon="add">add</span>
+                New Session
+            </button>
+</div>
+<div class="px-6 py-4 mt-auto">
+<a class="flex items-center text-[#3f4948] dark:text-[#bec8c8] py-2 hover:text-[#015959] transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help_outline">help_outline</span>
+<span class="font-label">Support</span>
+</a>
+<a class="flex items-center text-[#3f4948] dark:text-[#bec8c8] py-2 hover:text-[#015959] transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="history_edu">history_edu</span>
+<span class="font-label">Logs</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex flex-col h-screen">
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-8 py-4 bg-white dark:bg-[#002020] relative z-40">
+<div class="flex items-center gap-4">
+<span class="font-headline text-xl font-bold text-[#015959] dark:text-[#b5faf9]">GateControl Pro</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center space-x-6">
+<button class="material-symbols-outlined text-[#3f4948] dark:text-[#bec8c8] hover:bg-[#b5faf9] p-2 transition-colors rounded-full" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-[#3f4948] dark:text-[#bec8c8] hover:bg-[#b5faf9] p-2 transition-colors rounded-full" data-icon="settings_input_component">settings_input_component</button>
+<button class="material-symbols-outlined text-[#3f4948] dark:text-[#bec8c8] hover:bg-[#b5faf9] p-2 transition-colors rounded-full" data-icon="account_circle">account_circle</button>
+</div>
+</div>
+<!-- Bottom Border logic from separation_logic -->
+<div class="absolute bottom-0 left-0 bg-[#c1fffe] dark:bg-[#003030] h-[1px] w-full"></div>
+</header>
+<!-- Main Layout Split -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Center Section: Viewfinder -->
+<section class="flex-1 flex flex-col items-center justify-center p-12 bg-surface-container-lowest">
+<div class="w-full max-w-2xl relative group">
+<!-- Scanning Header -->
+<div class="mb-8 text-center">
+<span class="font-label text-xs font-bold text-[#F95D00] uppercase tracking-[0.2em]">Ready to scan</span>
+<h1 class="font-headline text-4xl text-on-surface mt-2">Active Viewfinder</h1>
+</div>
+<!-- Viewfinder Container -->
+<div class="aspect-video bg-[#002020] rounded-xl overflow-hidden relative shadow-2xl border-4 border-[#015959]">
+<img alt="QR Scanner Interface View" class="w-full h-full object-cover opacity-60 mix-blend-screen" data-alt="Modern high-tech scanning interface with digital overlays and grid patterns in a professional dark teal aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS84OE87CvOHYNQ810_5btFf_orLjXrNP4h3FXOZ55hZ9GMWfpy72_zYCJgpqqfwa3SjFQ3Re57c0_R1BDj74GA-rcwt6M5isZs4hIG_CXVw1ta0fEmVdbnrlkmQ0cI4C3QVjScnBbme0ucWO0yXADeuU8sZhaW8Sebd06diQnl7K_nmvbsjyE3yNiasB6x42z9LgKIh4DfuHc4DvbdQG1opIGnZ4haUvoB5ncIFqYzkP2Z4CzE6MI2ed7GUwHmOcoS19AcJIwUn4"/>
+<!-- HUD Overlays -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-64 h-64 border-2 border-dashed border-[#F95D00] opacity-40 rounded-lg"></div>
+</div>
+<div class="scanning-line"></div>
+<!-- Flashlight Toggle -->
+<button class="absolute bottom-6 right-6 bg-[#015959] p-3 rounded-full text-white hover:bg-[#004f51] transition-all shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="flashlight_on">flashlight_on</span>
+</button>
+</div>
+<!-- Manual Input Area -->
+<div class="mt-12 w-full flex flex-col items-center">
+<div class="w-full max-w-md flex flex-col gap-2">
+<label class="font-label text-sm font-medium text-on-surface-variant uppercase tracking-wider">Manual Code Entry</label>
+<div class="flex gap-4">
+<input class="flex-1 bg-surface-container-low border-none rounded-md px-4 py-4 focus:ring-2 focus:ring-[#F95D00] transition-all text-on-surface placeholder-[#bec8c8]" placeholder="Enter ticket ID or plate number..." type="text"/>
+<button class="bg-[#F95D00] text-white px-8 py-4 rounded-md font-bold hover:opacity-90 active:scale-95 transition-all shadow-md">
+                                    Check-in
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Results & History -->
+<section class="w-96 bg-surface-container border-l border-none flex flex-col">
+<!-- Scan Result Panel -->
+<div class="p-8">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_rgba(0,32,32,0.06)] border-t-4 border-[#F95D00]">
+<div class="flex items-center justify-between mb-6">
+<span class="font-label text-xs font-bold text-[#F95D00] uppercase tracking-widest">Scan Result</span>
+<span class="bg-tertiary-fixed-dim text-[#483500] px-3 py-1 rounded-full text-[10px] font-bold uppercase">Pending Upload</span>
+</div>
+<!-- Success State Example -->
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="font-label text-xs text-[#29B3B6] font-bold uppercase tracking-widest mb-1">Authenticated</p>
+<h2 class="font-headline text-2xl text-[#015959] mb-4">Jonathan Pemberton</h2>
+<div class="w-full h-px bg-[#c1fffe] mb-6"></div>
+<div class="grid grid-cols-2 gap-4 w-full">
+<div class="text-left">
+<p class="font-label text-[10px] text-on-surface-variant uppercase mb-1">Ticket Type</p>
+<p class="font-body font-bold text-[#F95D00]">VIP Pass</p>
+</div>
+<div class="text-left">
+<p class="font-label text-[10px] text-on-surface-variant uppercase mb-1">Seat Assignment</p>
+<p class="font-body font-bold text-[#015959]">Section A / 12B</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Scans -->
+<div class="flex-1 flex flex-col p-8 pt-0 overflow-hidden">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline text-lg text-[#015959]">Recent Scans</h3>
+<a class="font-label text-[10px] text-[#29B3B6] font-bold uppercase hover:underline" href="#">View All</a>
+</div>
+<div class="flex-1 overflow-y-auto pr-2 space-y-4">
+<!-- History Item 1 -->
+<div class="flex items-center p-4 bg-surface-container-low rounded-lg transition-all hover:bg-surface-bright">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-[#015959] text-sm" data-icon="person">person</span>
+</div>
+<div class="flex-1">
+<p class="font-body font-semibold text-sm text-[#015959]">Sarah Dransfield</p>
+<p class="text-[10px] text-on-surface-variant">General Admission • 14:22:05</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="done_all">done_all</span>
+</div>
+<!-- History Item 2 -->
+<div class="flex items-center p-4 bg-surface-container-low rounded-lg transition-all hover:bg-surface-bright">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-[#015959] text-sm" data-icon="directions_car">directions_car</span>
+</div>
+<div class="flex-1">
+<p class="font-body font-semibold text-sm text-[#015959]">G-7742-XP (Vehicle)</p>
+<p class="text-[10px] text-on-surface-variant">Logistics Access • 14:18:30</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="done_all">done_all</span>
+</div>
+<!-- History Item 3 - Flagged -->
+<div class="flex items-center p-4 bg-error-container text-on-error-container rounded-lg transition-all">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-error text-sm" data-icon="warning">warning</span>
+</div>
+<div class="flex-1">
+<p class="font-body font-semibold text-sm">Expired Ticket #8812</p>
+<p class="text-[10px] opacity-70">Denied Access • 14:15:12</p>
+</div>
+<span class="material-symbols-outlined text-error text-sm" data-icon="close">close</span>
+</div>
+<!-- History Item 4 -->
+<div class="flex items-center p-4 bg-surface-container-low rounded-lg transition-all hover:bg-surface-bright">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-[#015959] text-sm" data-icon="person">person</span>
+</div>
+<div class="flex-1">
+<p class="font-body font-semibold text-sm text-[#015959]">Mark Thorne</p>
+<p class="text-[10px] text-on-surface-variant">VIP Guest • 14:12:44</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="done_all">done_all</span>
+</div>
+<!-- History Item 5 -->
+<div class="flex items-center p-4 bg-surface-container-low rounded-lg transition-all hover:bg-surface-bright">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mr-4">
+<span class="material-symbols-outlined text-[#015959] text-sm" data-icon="person">person</span>
+</div>
+<div class="flex-1">
+<p class="font-body font-semibold text-sm text-[#015959]">Elena Rodriguez</p>
+<p class="text-[10px] text-on-surface-variant">General Admission • 14:09:10</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="done_all">done_all</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- System Stats Footer (Asymmetric Rail) -->
+<footer class="h-12 bg-[#015959] flex items-center px-8 justify-between text-white text-[10px] font-label font-bold uppercase tracking-[0.1em]">
+<div class="flex gap-8">
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary-fixed"></span> Scanner: Online</span>
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary-fixed"></span> Local Database: Synced</span>
+</div>
+<div class="flex gap-8">
+<span>Total Scans Session: 142</span>
+<span>Uptime: 04:22:18</span>
+</div>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoloEvent POS - Seat Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-container": "#654b00",
+              "secondary-fixed": "#aaefee",
+              "on-secondary-fixed-variant": "#004f50",
+              "inverse-primary": "#ffb598",
+              "on-secondary-fixed": "#002020",
+              "error-container": "#ffdad6",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed": "#ffdf9a",
+              "on-tertiary-container": "#f1b803",
+              "surface-container-low": "#c1fffe",
+              "background": "#e2fffe",
+              "on-primary-fixed": "#370e00",
+              "outline": "#6f7978",
+              "on-background": "#002020",
+              "surface-tint": "#a63b00",
+              "inverse-surface": "#003737",
+              "error": "#ba1a1a",
+              "surface-container-high": "#aff5f4",
+              "on-primary-container": "#ffae8e",
+              "on-error": "#ffffff",
+              "secondary-fixed-dim": "#8ed2d2",
+              "outline-variant": "#bec8c8",
+              "primary-fixed": "#ffdbce",
+              "on-surface": "#002020",
+              "surface-container-highest": "#aaefee",
+              "on-primary-fixed-variant": "#7f2b00",
+              "surface-container-lowest": "#ffffff",
+              "primary": "#672200",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#b8fdfc",
+              "surface-dim": "#a1e6e5",
+              "tertiary-fixed-dim": "#f7be11",
+              "surface-bright": "#e2fffe",
+              "on-tertiary-fixed-variant": "#5a4300",
+              "on-secondary-container": "#246d6d",
+              "surface-container": "#b5faf9",
+              "surface": "#e2fffe",
+              "primary-container": "#8d3100",
+              "secondary": "#1e6868",
+              "surface-variant": "#aaefee",
+              "on-surface-variant": "#3f4948",
+              "tertiary": "#483500",
+              "secondary-container": "#a7eceb",
+              "primary-fixed-dim": "#ffb598",
+              "on-tertiary-fixed": "#251a00",
+              "on-error-container": "#93000a",
+              "on-tertiary": "#ffffff",
+              "brand-primary": "#F95D00",
+              "brand-warning": "#FBC117",
+              "brand-anchor": "#015959",
+              "brand-info": "#29B3B6"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .seat-grid {
+        display: grid;
+        grid-template-columns: repeat(20, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #bec8c8;
+        border-radius: 10px;
+      }
+    </style>
+</head>
+<body class="bg-white font-body text-on-surface overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar (Shared Component: TopNavBar) -->
+<header class="bg-surface dark:bg-slate-900 shadow-sm docked full-width top-0 z-50 flex justify-between items-center w-full px-6 py-3">
+<div class="flex items-center gap-8">
+<h1 class="text-xl font-black text-on-surface dark:text-white tracking-tight">SoloEvent POS</h1>
+<nav class="hidden md:flex gap-6">
+<a class="font-noto-serif font-bold text-lg text-on-surface-variant dark:text-slate-400 hover:bg-secondary-container/50 dark:hover:bg-slate-700 transition-colors active:scale-95 duration-150" href="#">Dashboard</a>
+<a class="font-noto-serif font-bold text-lg text-primary dark:text-orange-400 border-b-2 border-primary pb-1 active:scale-95 duration-150" href="#">Schedules</a>
+<a class="font-noto-serif font-bold text-lg text-on-surface-variant dark:text-slate-400 hover:bg-secondary-container/50 dark:hover:bg-slate-700 transition-colors active:scale-95 duration-150" href="#">Bookings</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-4 py-1.5 bg-brand-warning/10 rounded-full border border-brand-warning/20">
+<span class="material-symbols-outlined text-brand-warning text-sm">timer</span>
+<span class="text-sm font-bold text-brand-warning uppercase tracking-wider">Hold: 09:42</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-secondary-container/50 p-2 rounded-full transition-colors">sync</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-secondary-container/50 p-2 rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-secondary-container/50 p-2 rounded-full transition-colors">settings</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+<div class="text-right">
+<p class="text-sm font-bold leading-tight">Terminal 04</p>
+<p class="text-xs text-on-surface-variant">K. Wiryono</p>
+</div>
+<img alt="Staff Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-brand-anchor" data-alt="professional headshot of a middle-aged male staff member in a clean uniform with friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPHTi9eBXpYsSF2tJaQevT-02FYWwbKNGQTE3bQkeUbNwnszJ0eUmLYPnNh0clbqq7ZSkCJKjFLHpBqzEk7uOAddPEhb4ZzdaB6yYA5E_Lnff-o24SlrrU69R9chHZ6sJ9tdSMLWi0dKman7uOV6qTgClNJmdkuKw4lbWMDyq4kst-kimYmfDbiJUTok1vOAJxZMi1g7A4MqS-tABoYO5NOvOrz_cFPbqtWFyoxk3t-oBzJsGpYUX4U_JkqQEL_eLSWH1-6uGI01k"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Panel: SideNavBar Logic & Legend -->
+<aside class="w-72 bg-surface-container-highest dark:bg-slate-900 flex flex-col p-6 border-r border-outline-variant/15">
+<div class="mb-8">
+<h2 class="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-4">Seat Categories</h2>
+<div class="space-y-3">
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm">
+<div class="w-5 h-5 rounded bg-brand-anchor"></div>
+<div class="flex-1">
+<p class="text-sm font-bold">VIP Boxes</p>
+<p class="text-xs text-on-surface-variant">IDR 1.250.000</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm">
+<div class="w-5 h-5 rounded bg-brand-primary"></div>
+<div class="flex-1">
+<p class="text-sm font-bold">Gold Section</p>
+<p class="text-xs text-on-surface-variant">IDR 750.000</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm">
+<div class="w-5 h-5 rounded bg-brand-info"></div>
+<div class="flex-1">
+<p class="text-sm font-bold">Standard</p>
+<p class="text-xs text-on-surface-variant">IDR 350.000</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm opacity-50">
+<div class="w-5 h-5 rounded bg-outline-variant"></div>
+<div class="flex-1">
+<p class="text-sm font-bold">Reserved / Sold</p>
+<p class="text-xs text-on-surface-variant">Unavailable</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-8">
+<h2 class="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-4">Quick Search</h2>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border-none rounded-xl shadow-sm focus:ring-2 focus:ring-secondary text-sm" placeholder="Seat Number (e.g. C12)" type="text"/>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/20">
+<div class="flex flex-col gap-2">
+<button class="flex items-center gap-3 p-3 text-on-surface-variant hover:translate-x-1 transition-transform font-medium text-sm">
+<span class="material-symbols-outlined">help</span> Help Center
+                    </button>
+<button class="flex items-center gap-3 p-3 text-on-surface-variant hover:translate-x-1 transition-transform font-medium text-sm">
+<span class="material-symbols-outlined">logout</span> Exit Terminal
+                    </button>
+</div>
+</div>
+</aside>
+<!-- Center Area: Seat Map -->
+<section class="flex-1 bg-white p-8 overflow-auto flex flex-col">
+<div class="mb-8 flex justify-between items-end">
+<div>
+<h2 class="font-headline font-black text-3xl text-brand-anchor tracking-tight">Gelaran: Solo Heritage Night</h2>
+<p class="text-on-surface-variant font-medium">Main Auditorium - Floor Map Selection</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-brand-info"></span>
+<span class="text-xs font-bold text-on-surface-variant">Available</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-xs font-bold text-on-surface-variant">Selected</span>
+</div>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low/30 rounded-3xl p-12 flex flex-col items-center justify-start border border-dashed border-outline-variant/30">
+<!-- Stage -->
+<div class="w-2/3 h-12 bg-brand-anchor rounded-b-3xl mb-24 flex items-center justify-center shadow-lg">
+<span class="text-white font-black uppercase tracking-[0.5em] text-sm">STAGE / PERFORMANCE AREA</span>
+</div>
+<!-- Seat Map Grid -->
+<div class="w-full max-w-4xl space-y-4">
+<!-- Row VIP -->
+<div class="flex items-center gap-6">
+<span class="w-8 font-black text-brand-anchor text-lg">A</span>
+<div class="flex-1 flex justify-center gap-3">
+<!-- Render 10 VIP Seats -->
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+<button class="w-8 h-10 bg-outline-variant rounded-t-lg shadow-sm cursor-not-allowed opacity-40"></button>
+<button class="w-8 h-10 bg-outline-variant rounded-t-lg shadow-sm cursor-not-allowed opacity-40"></button>
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+<button class="w-8 h-10 bg-outline-variant rounded-t-lg shadow-sm cursor-not-allowed opacity-40"></button>
+<button class="w-8 h-10 bg-brand-anchor rounded-t-lg shadow-sm hover:scale-110 transition-transform active:scale-90"></button>
+</div>
+<span class="w-8 font-black text-brand-anchor text-lg text-right">A</span>
+</div>
+<!-- Row Gold -->
+<div class="flex items-center gap-6">
+<span class="w-8 font-black text-brand-primary text-lg">B</span>
+<div class="flex-1 flex justify-center gap-2">
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-secondary rounded shadow-lg scale-110 ring-2 ring-white ring-offset-2"></button>
+<button class="w-8 h-8 bg-secondary rounded shadow-lg scale-110 ring-2 ring-white ring-offset-2"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-outline-variant rounded opacity-30"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-8 h-8 bg-brand-primary rounded shadow-sm hover:scale-110 transition-transform"></button>
+</div>
+<span class="w-8 font-black text-brand-primary text-lg text-right">B</span>
+</div>
+<!-- Row Standard -->
+<div class="flex items-center gap-6">
+<span class="w-8 font-black text-brand-info text-lg">C</span>
+<div class="flex-1 flex justify-center gap-2">
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+</div>
+<span class="w-8 font-black text-brand-info text-lg text-right">C</span>
+</div>
+<!-- Row D -->
+<div class="flex items-center gap-6">
+<span class="w-8 font-black text-brand-info text-lg">D</span>
+<div class="flex-1 flex justify-center gap-2">
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-outline-variant rounded-sm opacity-30"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+<button class="w-7 h-7 bg-brand-info rounded-sm shadow-sm hover:scale-110 transition-transform"></button>
+</div>
+<span class="w-8 font-black text-brand-info text-lg text-right">D</span>
+</div>
+</div>
+<div class="mt-24 w-full border-t border-outline-variant/30 pt-8 flex justify-between px-12">
+<div class="flex gap-12">
+<div class="text-center">
+<p class="text-[10px] uppercase font-black text-on-surface-variant mb-1">Total Available</p>
+<p class="text-2xl font-bold">142</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] uppercase font-black text-on-surface-variant mb-1">VIP Left</p>
+<p class="text-2xl font-bold">8</p>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2 bg-white border border-outline-variant rounded-full text-sm font-bold hover:bg-surface-container transition-colors">Reset Selection</button>
+<button class="px-6 py-2 bg-brand-anchor text-white rounded-full text-sm font-bold flex items-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-sm">fullscreen</span> Zoom In
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar: Order Summary -->
+<aside class="w-96 bg-surface-container flex flex-col p-6 shadow-[-10px_0_30px_rgba(0,32,32,0.05)] z-10">
+<h2 class="text-xl font-headline font-black text-brand-anchor mb-6">Order Summary</h2>
+<div class="flex-1 custom-scrollbar overflow-y-auto pr-2 space-y-4">
+<!-- Selected Seat Cards -->
+<div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-brand-primary relative overflow-hidden">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="text-xs font-black text-brand-primary uppercase tracking-tighter">Gold Section</p>
+<p class="text-lg font-bold">Row B, Seat 03</p>
+</div>
+<button class="material-symbols-outlined text-error/40 hover:text-error transition-colors">cancel</button>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Ticket ID: SE-04-B03</span>
+<span class="font-bold">IDR 750.000</span>
+</div>
+</div>
+<div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-brand-primary relative overflow-hidden">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="text-xs font-black text-brand-primary uppercase tracking-tighter">Gold Section</p>
+<p class="text-lg font-bold">Row B, Seat 04</p>
+</div>
+<button class="material-symbols-outlined text-error/40 hover:text-error transition-colors">cancel</button>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-on-surface-variant">Ticket ID: SE-04-B04</span>
+<span class="font-bold">IDR 750.000</span>
+</div>
+</div>
+<!-- Empty State Prompt -->
+<div class="py-4 text-center border-2 border-dashed border-outline-variant/30 rounded-2xl">
+<p class="text-xs text-on-surface-variant italic">Add more seats to group purchase</p>
+</div>
+</div>
+<div class="mt-6 space-y-3 pt-6 border-t border-outline-variant/30">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Subtotal (2 Tickets)</span>
+<span class="font-bold">IDR 1.500.000</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Service Fee</span>
+<span class="font-bold">IDR 15.000</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Taxes (11%)</span>
+<span class="font-bold">IDR 165.000</span>
+</div>
+<div class="pt-3 flex justify-between items-end border-t border-brand-anchor/10">
+<span class="font-headline font-bold text-brand-anchor">Total Amount</span>
+<span class="text-2xl font-black text-brand-anchor">IDR 1.680.000</span>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-6">
+<button class="py-4 bg-brand-info/10 text-brand-info rounded-xl font-bold hover:bg-brand-info/20 transition-all active:scale-95">Add Discount</button>
+<button class="py-4 bg-brand-info/10 text-brand-info rounded-xl font-bold hover:bg-brand-info/20 transition-all active:scale-95">Hold Order</button>
+</div>
+<button class="w-full py-5 bg-brand-primary text-white rounded-2xl font-black text-lg shadow-xl shadow-brand-primary/20 hover:bg-primary-container hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
+                    Complete Transaction
+                    <span class="material-symbols-outlined">payments</span>
+</button>
+</div>
+</aside>
+</main>
+</body></html>

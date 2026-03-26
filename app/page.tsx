@@ -1,14 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { TrendingUp, Music, Briefcase, Coffee, Monitor, ChevronRight, Loader2, Sparkles, Zap, Calendar, Flame, Star } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/layouts/Navbar";
-import { Footer } from "@/components/layouts/Footer";
-import { Hero } from "@/components/features/home/Hero";
+import {
+    ArrowRight,
+    Calendar,
+    Flame,
+    Loader2,
+    Monitor,
+    Music,
+    Briefcase,
+    Coffee,
+    Sparkles,
+    Star,
+    TrendingUp,
+    Zap,
+} from "lucide-react";
 import { CategoryPill } from "@/components/features/home/CategoryPill";
 import { EventCard } from "@/components/features/events/EventCard";
-
+import {
+    EditorialPanel,
+    MarketingHero,
+    PublicPageShell,
+    PublicSection,
+} from "@/components/shared/public-marketing";
+import { EmptyState } from "@/components/shared/phase-two-shells";
 
 interface Category {
     id: string;
@@ -89,32 +105,37 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 function formatEventDate(schedule: EventSchedule | null): string {
     if (!schedule) return "Segera";
 
-    const date = new Date(schedule.scheduleDate);
-    const options: Intl.DateTimeFormatOptions = {
+    return new Date(schedule.scheduleDate).toLocaleDateString("id-ID", {
         weekday: "short",
         day: "numeric",
         month: "short",
         year: "numeric",
-    };
-
-    return date.toLocaleDateString("id-ID", options);
+    });
 }
 
 function formatEventTime(schedule: EventSchedule | null): string {
     if (!schedule) return "";
 
-    const time = new Date(schedule.startTime);
-    return time.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) + " WIB";
+    return `${new Date(schedule.startTime).toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+    })} WIB`;
 }
 
 function formatLocation(event: PublicEvent): string {
-    if (event.eventType === "ONLINE") {
-        return "Online (Virtual)";
-    }
-    if (event.venue) {
-        return `${event.venue.name}, ${event.venue.city}`;
-    }
+    if (event.eventType === "ONLINE") return "Online (Virtual)";
+    if (event.venue) return `${event.venue.name}, ${event.venue.city}`;
     return "Lokasi akan diumumkan";
+}
+
+function formatPrice(price: number | null): string {
+    if (!price || price <= 0) return "Gratis";
+
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+    }).format(price);
 }
 
 export default function HomePage() {
@@ -147,22 +168,12 @@ export default function HomePage() {
                     reviewHighlightsRes.json(),
                 ]);
 
-                if (categoriesData.success) {
-                    setCategories(categoriesData.data);
-                }
-                if (eventsData.success) {
-                    setEvents(eventsData.data);
-                }
-                if (onlineData.success) {
-                    setOnlineEvents(onlineData.data);
-                }
-                if (topEventsData.success) {
-                    setTopEvents(topEventsData.data);
-                }
-                if (reviewHighlightsData.success) {
-                    setReviewHighlights(reviewHighlightsData.data);
-                }
-            } catch (_error) {
+                if (categoriesData.success) setCategories(categoriesData.data);
+                if (eventsData.success) setEvents(eventsData.data);
+                if (onlineData.success) setOnlineEvents(onlineData.data);
+                if (topEventsData.success) setTopEvents(topEventsData.data);
+                if (reviewHighlightsData.success) setReviewHighlights(reviewHighlightsData.data);
+            } catch {
                 console.error("Data load failed");
             } finally {
                 setIsLoading(false);
@@ -172,235 +183,318 @@ export default function HomePage() {
         loadData();
     }, []);
 
-    const filteredEvents =
-        selectedCategory === "all"
-            ? events
-            : events.filter((e) => e.category?.slug === selectedCategory);
+    const featuredEvents = useMemo(() => events.filter((event) => event.isFeatured).slice(0, 3), [events]);
 
-    const displayCategories = [
-        { id: "all", name: "Semua", slug: "all", icon: null, colorHex: null, eventCount: events.length },
-        ...categories,
-    ];
+    const filteredEvents = useMemo(
+        () => selectedCategory === "all"
+            ? events
+            : events.filter((event) => event.category?.slug === selectedCategory),
+        [events, selectedCategory],
+    );
+
+    const displayCategories = useMemo(
+        () => [{ id: "all", name: "Semua", slug: "all", icon: null, colorHex: null, eventCount: events.length }, ...categories],
+        [categories, events.length],
+    );
 
     return (
-        <div className="font-sans text-[var(--text-primary)] bg-[var(--bg-primary)] min-h-screen selection:bg-[var(--accent-primary)]/20 selection:text-[var(--accent-primary)] transition-colors duration-300">
-            <Navbar />
-            <Hero />
-
-            <main className="container mx-auto px-4 md:px-6 py-8 md:py-12">
-                {events.filter((event) => event.isFeatured).length > 0 && (
-                    <section className="mb-8 md:mb-10">
-                        <div className="overflow-x-auto no-scrollbar">
-                            <div className="flex gap-4">
-                                {events.filter((event) => event.isFeatured).slice(0, 3).map((event) => (
-                                    <Link
-                                        key={`featured-${event.id}`}
-                                        href={`/events/${event.slug}`}
-                                        className="min-w-[320px] md:min-w-[420px] lg:min-w-[520px] relative rounded-2xl overflow-hidden group border border-[var(--border)]"
-                                    >
-                                        <img
-                                            src={event.posterImage || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"}
-                                            alt={event.title}
-                                            className="w-full h-44 md:h-52 object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20" />
-                                        <div className="absolute inset-0 p-5 flex flex-col justify-end">
-                                            <span className="inline-flex w-fit items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-semibold mb-2 backdrop-blur-sm">
-                                                <Flame size={12} /> Featured Event
-                                            </span>
-                                            <h3 className="text-white text-lg md:text-xl font-bold line-clamp-2 drop-shadow-md">{event.title}</h3>
-                                            <p className="text-white/85 text-sm line-clamp-1 drop-shadow-sm">{formatLocation(event)}</p>
-                                        </div>
-                                    </Link>
-                                ))}
+        <PublicPageShell
+            hero={
+                <MarketingHero
+                    eyebrow="Gelaran editorial selection"
+                    title={<>Temukan event yang terasa <em className="text-(--accent-secondary) not-italic">terkurasi</em>, bukan sekadar terdaftar.</>}
+                    description={
+                        <p>
+                            Gelaran menghadirkan pengalaman penemuan event yang lebih terang, terarah, dan kaya konteks—
+                            dari pertunjukan budaya hingga kelas kreatif, semua dirangkum dalam bahasa visual editorial yang konsisten.
+                        </p>
+                    }
+                    primaryCta={{ href: "/events", label: "Jelajahi event" }}
+                    secondaryCta={{ href: "/become-organizer", label: "Jadi organizer" }}
+                    stats={[
+                        { label: "Kategori aktif", value: `${categories.length || 0}+`, tone: "accent" },
+                        { label: "Event tayang", value: `${events.length || 0}`, tone: "default" },
+                        { label: "Review unggulan", value: `${reviewHighlights.length || 0}`, tone: "warning" },
+                    ]}
+                    aside={
+                        <EditorialPanel className="max-w-xl space-y-5">
+                            <div className="space-y-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-(--text-muted)">
+                                    Pilihan pekan ini
+                                </p>
+                                {featuredEvents.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {featuredEvents.slice(0, 2).map((event, index) => (
+                                            <Link
+                                                key={event.id}
+                                                href={`/events/${event.slug}`}
+                                                className="group flex items-center gap-4 rounded-2xl border border-(--border) bg-(--surface) px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5"
+                                            >
+                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-sm font-semibold text-(--accent-primary)">
+                                                    0{index + 1}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="truncate text-sm font-semibold text-foreground">
+                                                        {event.title}
+                                                    </p>
+                                                    <p className="truncate text-sm text-(--text-secondary)">
+                                                        {formatLocation(event)}
+                                                    </p>
+                                                </div>
+                                                <ArrowRight className="h-4 w-4 text-(--accent-secondary) transition-transform duration-200 group-hover:translate-x-1" />
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="rounded-2xl border border-dashed border-(--border) bg-(--surface) px-5 py-8 text-center text-sm text-(--text-secondary)">
+                                        Highlight event akan muncul setelah data publik dimuat.
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    </section>
-                )}
-
-                <div className="bg-[var(--surface-elevated)]/80 backdrop-blur-xl rounded-2xl md:rounded-3xl shadow-lg shadow-[var(--shadow-lg)] p-3 md:p-4 mb-8 md:mb-12 border border-[var(--border)]">
-                    <div className="flex overflow-x-auto pb-1 gap-2 md:gap-3 no-scrollbar">
-                        {displayCategories.map((cat) => (
+                            <div className="rounded-2xl bg-(--surface-brand-soft) px-5 py-4 text-sm leading-7 text-(--text-secondary)">
+                                Gunakan filter kategori di bawah untuk berpindah dari event populer, agenda online, hingga rekomendasi komunitas tanpa kehilangan konteks brand Gelaran.
+                            </div>
+                        </EditorialPanel>
+                    }
+                />
+            }
+        >
+            <PublicSection
+                eyebrow="Browse by interest"
+                title="Pilih ritme event yang ingin kamu ikuti"
+                description="Kategori utama dirancang seperti rak editorial—mudah dipindai, ringan di mobile, dan langsung mengarahkan ke kumpulan event yang relevan."
+                className="pt-0"
+            >
+                <EditorialPanel className="p-4 sm:p-5">
+                    <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+                        {displayCategories.map((category) => (
                             <CategoryPill
-                                key={cat.id}
-                                icon={CATEGORY_ICONS[cat.slug] || <TrendingUp size={18} />}
-                                name={cat.name}
-                                isActive={selectedCategory === cat.slug}
-                                onClick={() => setSelectedCategory(cat.slug)}
+                                key={category.id}
+                                icon={CATEGORY_ICONS[category.slug] || <TrendingUp size={18} />}
+                                name={category.name}
+                                isActive={selectedCategory === category.slug}
+                                onClick={() => setSelectedCategory(category.slug)}
                             />
                         ))}
                     </div>
-                </div>
+                </EditorialPanel>
+            </PublicSection>
 
-                <section className="mb-12 md:mb-16">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Event Populer</h2>
-                            <p className="text-[var(--text-muted)] text-sm">Jangan lewatkan event yang sedang trending.</p>
-                        </div>
-                        <Link href="/events" className="group text-[var(--accent-primary)] text-sm font-bold flex items-center hover:text-[var(--accent-primary-hover)] transition-colors bg-[var(--accent-primary)]/5 px-4 py-2 rounded-full hover:bg-[var(--accent-primary)]/10 self-start sm:self-auto">
-                            Lihat Semua
-                            <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
-                        </Link>
+            <PublicSection
+                eyebrow="Popular now"
+                title="Event populer pilihan Gelaran"
+                description="Koleksi utama ini memadukan event yang banyak dicari dengan presentasi kartu yang lebih konsisten, lapang, dan nyaman di berbagai ukuran layar."
+                action={
+                    <Link
+                        href="/events"
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface) px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-(--border-strong) hover:bg-(--surface-hover)"
+                    >
+                        Lihat semua event
+                        <ArrowRight className="h-4 w-4" />
+                    </Link>
+                }
+                className="pt-0"
+            >
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-24">
+                        <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
                     </div>
-
-                    {isLoading ? (
-                        <div className="flex items-center justify-center py-24">
-                            <Loader2 className="h-10 w-10 text-[var(--accent-primary)] animate-spin" />
-                        </div>
-                    ) : filteredEvents.length === 0 ? (
-                        <div className="text-center py-24 bg-[var(--surface)] rounded-3xl border border-dashed border-[var(--border)]">
-                            <div className="w-16 h-16 bg-[var(--bg-tertiary)] rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Calendar className="text-[var(--text-muted)]" size={32} />
-                            </div>
-                            <p className="text-[var(--text-secondary)] font-medium text-lg">Belum ada event tersedia untuk kategori ini.</p>
+                ) : filteredEvents.length === 0 ? (
+                    <EmptyState
+                        icon={Calendar}
+                        title="Belum ada event untuk kategori ini"
+                        description="Coba kembali ke semua kategori untuk melihat kurasi event publik Gelaran yang sedang tayang."
+                        action={
                             <button
+                                type="button"
                                 onClick={() => setSelectedCategory("all")}
-                                className="mt-4 text-[var(--accent-primary)] font-bold hover:underline"
+                                className="inline-flex min-h-11 items-center justify-center rounded-full bg-(--accent-primary) px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-primary-hover)"
                             >
                                 Lihat semua event
                             </button>
-                        </div>
-                    ) : (
-                        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 md:grid md:grid-cols-2 md:gap-5 md:pb-0 md:mx-0 md:px-0 lg:grid-cols-4 no-scrollbar">
-                            {filteredEvents.map((event) => (
-                                <div key={event.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto">
-                                    <EventCard
-                                        id={event.id}
-                                        slug={event.slug}
-                                        title={event.title}
-                                        date={formatEventDate(event.schedule)}
-                                        time={formatEventTime(event.schedule)}
-                                        location={formatLocation(event)}
-                                        price={event.startingPrice ?? 0}
-                                        image={event.posterImage || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
-                                        category={event.category?.slug || "General"}
-                                        organizer={event.organizer.name}
-                                        rating={4.8}
-                                        reviewCount={124}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-
-                {topEvents.length > 0 && (
-                    <>
-                        <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-12" />
-                        <section className="mb-12 md:mb-16">
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
-                                <div>
-                                    <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Top Events</h2>
-                                    <p className="text-[var(--text-muted)] text-sm">Paling sering dikunjungi dan lagi hype minggu ini.</p>
-                                </div>
-                                <Link href="/events?sort=viewCount-desc" className="group text-[var(--accent-primary)] text-sm font-bold flex items-center hover:text-[var(--accent-primary-hover)] transition-colors bg-[var(--accent-primary)]/5 px-4 py-2 rounded-full hover:bg-[var(--accent-primary)]/10 self-start sm:self-auto">
-                                    Lihat Ranking
-                                    <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
-                                </Link>
-                            </div>
-
-                            <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 md:grid md:grid-cols-2 md:gap-5 md:pb-0 md:mx-0 md:px-0 lg:grid-cols-3 no-scrollbar">
-                                {topEvents.map((event, index) => (
-                                    <div key={`top-${event.id}`} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto relative">
-                                        <span className="absolute -top-2 -left-2 z-10 w-8 h-8 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow">
-                                            #{index + 1}
-                                        </span>
-                                        <EventCard
-                                            id={event.id}
-                                            slug={event.slug}
-                                            title={event.title}
-                                            date={formatEventDate(event.schedule)}
-                                            time={formatEventTime(event.schedule)}
-                                            location={formatLocation(event)}
-                                            price={event.startingPrice ?? 0}
-                                            image={event.posterImage || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
-                                            category={event.category?.slug || "General"}
-                                            organizer={event.organizer.name}
-                                            rating={4.9}
-                                            reviewCount={event.viewCount}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    </>
+                        }
+                    />
+                ) : (
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                        {filteredEvents.map((event) => (
+                            <EventCard
+                                key={event.id}
+                                id={event.id}
+                                slug={event.slug}
+                                title={event.title}
+                                date={formatEventDate(event.schedule)}
+                                time={formatEventTime(event.schedule)}
+                                location={formatLocation(event)}
+                                price={event.startingPrice ?? 0}
+                                image={event.posterImage || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
+                                category={event.category?.slug || "General"}
+                                organizer={event.organizer.name}
+                                rating={4.8}
+                                reviewCount={124}
+                            />
+                        ))}
+                    </div>
                 )}
+            </PublicSection>
 
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-12" />
-
-                {onlineEvents.length > 0 && (
-                    <section className="mb-12">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-6 md:mb-8">
-                            <div>
-                                <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Online Event</h2>
-                                <p className="text-[var(--text-muted)] text-sm">Ikuti event seru dari mana saja.</p>
-                            </div>
+            {featuredEvents.length > 0 ? (
+                <PublicSection
+                    eyebrow="Featured stories"
+                    title="Sorotan editorial untuk pengalaman yang lebih immersif"
+                    description="Banner utama diubah menjadi modul editorial bergaya majalah untuk memberi penekanan lebih kuat pada event unggulan tanpa memecah ritme halaman."
+                    className="pt-0"
+                >
+                    <div className="grid gap-5 lg:grid-cols-3">
+                        {featuredEvents.map((event) => (
                             <Link
-                                href="/events?eventType=ONLINE"
-                                className="group text-[var(--accent-primary)] text-sm font-bold flex items-center hover:text-[var(--accent-primary-hover)] transition-colors bg-[var(--accent-primary)]/5 px-4 py-2 rounded-full hover:bg-[var(--accent-primary)]/10 self-start sm:self-auto"
+                                key={`featured-${event.id}`}
+                                href={`/events/${event.slug}`}
+                                className="group relative overflow-hidden rounded-[calc(var(--radius-3xl)+0.25rem)] border border-(--border) bg-(--surface) shadow-(--shadow-sm)"
                             >
-                                Lihat Semua
-                                <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
+                                <img
+                                    src={event.posterImage || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"}
+                                    alt={event.title}
+                                    className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-linear-to-t from-[rgba(6,18,18,0.86)] via-[rgba(6,18,18,0.24)] to-transparent" />
+                                <div className="absolute inset-x-0 bottom-0 space-y-3 p-6 text-white">
+                                    <span className="inline-flex items-center gap-2 rounded-full bg-white/16 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.24em] backdrop-blur-md">
+                                        <Flame className="h-3.5 w-3.5" />
+                                        Featured event
+                                    </span>
+                                    <div className="space-y-1">
+                                        <h3 className="font-(--font-editorial) text-2xl leading-tight tracking-(--tracking-heading)">
+                                            {event.title}
+                                        </h3>
+                                        <p className="text-sm text-white/82">{formatLocation(event)}</p>
+                                        <p className="text-sm text-white/72">
+                                            {formatEventDate(event.schedule)} · {formatPrice(event.startingPrice)}
+                                        </p>
+                                    </div>
+                                </div>
                             </Link>
-                        </div>
+                        ))}
+                    </div>
+                </PublicSection>
+            ) : null}
 
-                        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 md:grid md:grid-cols-2 md:gap-5 md:pb-0 md:mx-0 md:px-0 lg:grid-cols-4 no-scrollbar">
-                            {onlineEvents.map((event) => (
-                                <div key={event.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto">
-                                    <EventCard
-                                        id={event.id}
-                                        slug={event.slug}
-                                        title={event.title}
-                                        date={formatEventDate(event.schedule)}
-                                        time={formatEventTime(event.schedule)}
-                                        location={formatLocation(event)}
-                                        price={event.startingPrice ?? 0}
-                                        image={event.posterImage || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
-                                        category={event.category?.slug || "Online"}
-                                        organizer={event.organizer.name}
-                                        rating={4.9}
-                                        reviewCount={86}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {reviewHighlights.length > 0 && (
-                    <section className="mb-4">
-                        <div className="flex items-end justify-between gap-3 mb-6">
-                            <div>
-                                <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight mb-1">Review Terbaik Pengguna</h2>
-                                <p className="text-[var(--text-muted)] text-sm">Ulasan positif dari pengguna untuk meningkatkan kepercayaan.</p>
+            {topEvents.length > 0 ? (
+                <PublicSection
+                    eyebrow="Most visited"
+                    title="Top events dengan momentum tertinggi"
+                    description="Ranking mingguan diberi treatment lebih rapi agar mudah dibandingkan, terutama pada tablet dan desktop."
+                    action={
+                        <Link
+                            href="/events?sort=viewCount-desc"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface) px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-(--border-strong) hover:bg-(--surface-hover)"
+                        >
+                            Lihat ranking
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    }
+                    className="pt-0"
+                >
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                        {topEvents.map((event, index) => (
+                            <div key={`top-${event.id}`} className="relative">
+                                <span className="absolute left-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-(--accent-primary) text-sm font-semibold text-white shadow-(--shadow-sm)">
+                                    #{index + 1}
+                                </span>
+                                <EventCard
+                                    id={event.id}
+                                    slug={event.slug}
+                                    title={event.title}
+                                    date={formatEventDate(event.schedule)}
+                                    time={formatEventTime(event.schedule)}
+                                    location={formatLocation(event)}
+                                    price={event.startingPrice ?? 0}
+                                    image={event.posterImage || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
+                                    category={event.category?.slug || "General"}
+                                    organizer={event.organizer.name}
+                                    rating={4.9}
+                                    reviewCount={event.viewCount}
+                                />
                             </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {reviewHighlights.slice(0, 6).map((review) => (
-                                <div key={review.id} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-                                    <div className="flex items-center gap-1 text-[var(--warning-text)] mb-3">
-                                        {Array.from({ length: 5 }).map((_, i) => (
-                                            <Star key={`${review.id}-${i}`} size={14} fill={i < review.rating ? "currentColor" : "none"} />
-                                        ))}
-                                    </div>
-                                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed line-clamp-4">
-                                        “{review.reviewText}”
-                                    </p>
-                                    <div className="mt-4 pt-4 border-t border-[var(--border)]">
-                                        <p className="text-sm font-semibold text-[var(--text-primary)]">{review.user.name}</p>
-                                        <Link href={`/events/${review.event.slug}`} className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-primary-hover)]">
-                                            {review.event.title}
-                                        </Link>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-                )}
-            </main>
+                        ))}
+                    </div>
+                </PublicSection>
+            ) : null}
 
-            <Footer />
-        </div>
+            {onlineEvents.length > 0 ? (
+                <PublicSection
+                    eyebrow="Remote-friendly"
+                    title="Agenda online untuk audiens yang lebih luas"
+                    description="Section online event tetap dipertahankan, namun sekarang mengikuti grid dan CTA yang sama dengan section publik lainnya."
+                    action={
+                        <Link
+                            href="/events?eventType=ONLINE"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface) px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-(--border-strong) hover:bg-(--surface-hover)"
+                        >
+                            Lihat event online
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    }
+                    className="pt-0"
+                >
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                        {onlineEvents.map((event) => (
+                            <EventCard
+                                key={`online-${event.id}`}
+                                id={event.id}
+                                slug={event.slug}
+                                title={event.title}
+                                date={formatEventDate(event.schedule)}
+                                time={formatEventTime(event.schedule)}
+                                location={formatLocation(event)}
+                                price={event.startingPrice ?? 0}
+                                image={event.posterImage || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
+                                category={event.category?.slug || "Online"}
+                                organizer={event.organizer.name}
+                                rating={4.9}
+                                reviewCount={86}
+                            />
+                        ))}
+                    </div>
+                </PublicSection>
+            ) : null}
+
+            {reviewHighlights.length > 0 ? (
+                <PublicSection
+                    eyebrow="Social proof"
+                    title="Ulasan yang memperkuat kepercayaan pengunjung"
+                    description="Testimoni publik ditampilkan dalam kartu ringan yang menjaga tone editorial sekaligus tetap mudah dipindai."
+                    className="pt-0"
+                >
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                        {reviewHighlights.slice(0, 6).map((review) => (
+                            <EditorialPanel key={review.id} className="h-full space-y-4 p-6">
+                                <div className="flex items-center gap-1 text-(--warning)">
+                                    {Array.from({ length: 5 }).map((_, index) => (
+                                        <Star
+                                            key={`${review.id}-${index}`}
+                                            size={14}
+                                            fill={index < review.rating ? "currentColor" : "none"}
+                                        />
+                                    ))}
+                                </div>
+                                <p className="text-sm leading-7 text-(--text-secondary) sm:text-base">
+                                    “{review.reviewText || "Pengalaman event yang berkesan dan tertata rapi dari awal hingga hari-H."}”
+                                </p>
+                                <div className="border-t border-(--border) pt-4">
+                                    <p className="text-sm font-semibold text-foreground">{review.user.name}</p>
+                                    <Link
+                                        href={`/events/${review.event.slug}`}
+                                        className="inline-flex items-center gap-2 text-sm text-(--accent-primary) transition-colors duration-200 hover:text-(--accent-primary-hover)"
+                                    >
+                                        {review.event.title}
+                                        <ArrowRight className="h-4 w-4" />
+                                    </Link>
+                                </div>
+                            </EditorialPanel>
+                        ))}
+                    </div>
+                </PublicSection>
+            ) : null}
+        </PublicPageShell>
     );
 }

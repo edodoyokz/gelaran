@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Review Curator | Gelaran Admin</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#6f7978",
+              "surface-variant": "#aaefee",
+              "on-primary": "#ffffff",
+              "secondary-container": "#fd6005",
+              "error-container": "#ffdad6",
+              "on-secondary-container": "#521900",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-container": "#00595b",
+              "inverse-on-surface": "#b8fdfc",
+              "primary-fixed": "#aaefee",
+              "primary": "#004040",
+              "on-secondary-fixed-variant": "#7f2b00",
+              "on-secondary-fixed": "#370e00",
+              "background": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-background": "#002020",
+              "secondary-fixed-dim": "#ffb598",
+              "primary-container": "#015959",
+              "outline-variant": "#bec8c8",
+              "tertiary": "#004041",
+              "surface-container-low": "#c1fffe",
+              "surface-bright": "#e2fffe",
+              "primary-fixed-dim": "#8ed2d2",
+              "surface": "#e2fffe",
+              "on-tertiary-fixed-variant": "#004f51",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#004f50",
+              "tertiary-fixed-dim": "#5cd8db",
+              "surface-tint": "#1e6868",
+              "on-primary-fixed": "#002020",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "inverse-surface": "#003737",
+              "surface-container-high": "#aff5f4",
+              "surface-dim": "#a1e6e5",
+              "surface-container-highest": "#aaefee",
+              "error": "#ba1a1a",
+              "secondary": "#a63b00",
+              "on-tertiary-container": "#56d4d6",
+              "on-primary-container": "#89cdcd",
+              "tertiary-fixed": "#7bf5f8",
+              "surface-container": "#b5faf9",
+              "inverse-primary": "#8ed2d2",
+              "on-surface-variant": "#3f4948",
+              "on-tertiary-fixed": "#002021",
+              "secondary-fixed": "#ffdbce",
+              "on-surface": "#002020"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #ffffff;
+      }
+      h1, h2, h3 {
+        font-family: 'Noto Serif', serif;
+      }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-teal-50 dark:bg-teal-950/40 flex flex-col py-8">
+<div class="px-8 mb-10">
+<h1 class="font-serif italic text-lg text-teal-950 dark:text-teal-50">Editorial Admin</h1>
+<p class="text-[10px] uppercase tracking-widest text-teal-800/50">System Controller</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center text-teal-800/70 dark:text-teal-200/50 pl-10 py-3 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="dashboard">dashboard</span>
+<span class="font-sans text-sm font-medium tracking-wide">Dashboard</span>
+</a>
+<a class="flex items-center bg-white dark:bg-teal-900 text-teal-900 dark:text-teal-50 rounded-l-full ml-4 pl-6 py-3 shadow-sm transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="rate_review">rate_review</span>
+<span class="font-sans text-sm font-medium tracking-wide">Pending Reviews</span>
+</a>
+<a class="flex items-center text-teal-800/70 dark:text-teal-200/50 pl-10 py-3 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="report">report</span>
+<span class="font-sans text-sm font-medium tracking-wide">Flagged Content</span>
+</a>
+<a class="flex items-center text-teal-800/70 dark:text-teal-200/50 pl-10 py-3 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="group">group</span>
+<span class="font-sans text-sm font-medium tracking-wide">User Database</span>
+</a>
+<a class="flex items-center text-teal-800/70 dark:text-teal-200/50 pl-10 py-3 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="analytics">analytics</span>
+<span class="font-sans text-sm font-medium tracking-wide">Analytics</span>
+</a>
+</nav>
+<div class="px-4 mt-auto border-t border-teal-500/10 pt-6 space-y-1">
+<a class="flex items-center text-teal-800/70 pl-10 py-2 hover:text-teal-900" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="help_outline">help_outline</span>
+<span class="text-sm">Support</span>
+</a>
+<a class="flex items-center text-teal-800/70 pl-10 py-2 hover:text-error" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="logout">logout</span>
+<span class="text-sm">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 w-full z-40 bg-white/80 backdrop-blur-xl border-b border-teal-500/10 flex items-center justify-between px-8 h-16 ml-64" style="width: calc(100% - 16rem);">
+<div class="flex items-center flex-1">
+<div class="relative w-96">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-teal-700/40 text-sm" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary-container" placeholder="Search moderation queue..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<button class="text-teal-700/60 hover:text-teal-900 transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<button class="text-teal-700/60 hover:text-teal-900 transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="flex items-center pl-4 border-l border-teal-500/10">
+<div class="text-right mr-3">
+<p class="text-xs font-bold text-teal-900">Admin Curator</p>
+<p class="text-[10px] text-teal-700/60 uppercase tracking-tighter">Level 4 Moderator</p>
+</div>
+<img class="w-8 h-8 rounded-full border border-teal-500/20" data-alt="Professional portrait of a curator in a minimalist office setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwJBNyxM1vn8sWWWsvACEjhl-iTPrKcNZffV9yN60suxoZekrkbUSfzIIXt4F9uKzS5lPJ1eIGNLaiZA9tZ1xIbWNThdQUzfs-316HMpqYKJx3M6uXBmMWviViR0v9WKl3vkagtQ8YI01zbDWBa-wYjs9Uo7wFKWrmXLW_DUFVYKgzarCEWyL7LJTW01WD5wRrrMRDUfUUNcAYUdTJgvGe40SHKp8LbBQSije4osthFLqCG_Jl1FEtRJfpkP18em10Pfv8jPgdg1M"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-16 min-h-screen bg-white">
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Summary Analytics Header -->
+<div class="grid grid-cols-4 gap-8 mb-12">
+<div class="col-span-1 p-6 bg-surface-container-low rounded-xl flex flex-col justify-between">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Average Rating</span>
+<div class="flex items-baseline mt-2">
+<span class="text-4xl font-headline text-primary">4.8</span>
+<span class="ml-2 text-tertiary-fixed-dim material-symbols-outlined" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<div class="col-span-1 p-6 bg-surface-container-low rounded-xl flex flex-col justify-between">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Pending Reviews</span>
+<div class="flex items-baseline mt-2">
+<span class="text-4xl font-headline text-primary">124</span>
+<span class="ml-2 text-secondary text-xs font-bold">+12 today</span>
+</div>
+</div>
+<div class="col-span-1 p-6 bg-surface-container-low rounded-xl flex flex-col justify-between border-l-4 border-secondary">
+<span class="text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Flagged Concern</span>
+<div class="flex items-baseline mt-2">
+<span class="text-4xl font-headline text-secondary">08</span>
+<span class="ml-2 material-symbols-outlined text-secondary" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+</div>
+<div class="col-span-1 p-6 bg-primary-container text-white rounded-xl shadow-lg shadow-primary/10">
+<span class="text-xs uppercase tracking-widest text-white/70 font-semibold">Efficiency Goal</span>
+<div class="mt-2 h-2 w-full bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed w-[85%]"></div>
+</div>
+<p class="mt-2 text-sm font-medium">85% Processed <span class="text-xs text-white/50">(24h window)</span></p>
+</div>
+</div>
+<div class="flex gap-8">
+<!-- Filters Column -->
+<aside class="w-64 flex-shrink-0 space-y-8">
+<div>
+<h3 class="text-sm font-bold uppercase tracking-widest text-teal-900 mb-4 flex items-center">
+<span class="material-symbols-outlined text-sm mr-2" data-icon="filter_list">filter_list</span>
+                            Refine Queue
+                        </h3>
+<div class="space-y-6">
+<div>
+<label class="text-[10px] uppercase font-bold text-teal-700/50 mb-2 block">Rating Status</label>
+<div class="space-y-2">
+<label class="flex items-center text-sm cursor-pointer group">
+<input class="rounded-sm border-teal-200 text-primary focus:ring-primary mr-3" type="checkbox"/>
+<span class="group-hover:text-primary transition-colors">5 Stars (High)</span>
+</label>
+<label class="flex items-center text-sm cursor-pointer group">
+<input class="rounded-sm border-teal-200 text-primary focus:ring-primary mr-3" type="checkbox"/>
+<span class="group-hover:text-primary transition-colors">Critically Low (1-2)</span>
+</label>
+</div>
+</div>
+<div>
+<label class="text-[10px] uppercase font-bold text-teal-700/50 mb-2 block">Moderation State</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 text-xs bg-primary-container text-white rounded-full">All Items</button>
+<button class="px-3 py-1 text-xs bg-surface-container-high text-teal-900 rounded-full hover:bg-teal-200">Pending</button>
+<button class="px-3 py-1 text-xs bg-surface-container-high text-teal-900 rounded-full hover:bg-teal-200">Flagged</button>
+</div>
+</div>
+<div>
+<label class="text-[10px] uppercase font-bold text-teal-700/50 mb-2 block">Event Category</label>
+<select class="w-full bg-transparent border-b border-teal-200 py-2 text-sm focus:border-primary transition-colors focus:ring-0">
+<option>Music &amp; Concerts</option>
+<option>Traditional Dance</option>
+<option>Visual Arts</option>
+<option>Culinary Festival</option>
+</select>
+</div>
+<div class="pt-4">
+<button class="w-full py-2 bg-teal-50 text-teal-900 text-xs font-bold uppercase tracking-widest rounded hover:bg-teal-100 transition-all">Clear All Filters</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- Moderation Queue -->
+<section class="flex-1">
+<div class="flex items-baseline justify-between mb-6">
+<h2 class="text-2xl font-headline text-teal-950">Review Moderation Queue</h2>
+<p class="text-xs text-teal-700/60 font-medium">Showing 48 of 124 pending</p>
+</div>
+<div class="space-y-6">
+<!-- Review Card 1 -->
+<article class="p-8 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow border border-teal-500/5">
+<div class="flex items-start gap-6">
+<div class="flex-shrink-0 text-center">
+<img class="w-12 h-12 rounded-full mb-2" data-alt="Portrait of a young male arts enthusiast in a modern minimalist style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiac__aYAKK9aVe5vpqxZzeymhpUaLmScZyxuIPlk1_AgJsvqb_oNH8tT_mQV8GPdRJffOmcUXlVCIecETZKHvOm7uB4g08oHJx4RKsTsWEFH6uR0Fi-XCxJ9ytRQ8Pi8ywPJSHagDywTth8yqF0X3iyO6QXEQRfKWgVnTQVmec_dnYQwqRuqSBfAD2dxQYGVVTmVKn29I62uap6oousjIzeeb7BLI1JYSgo8dReik3jAArgebApkTy28gU3omlK307wchSHCWlZY"/>
+<span class="block text-[10px] px-2 py-0.5 bg-tertiary-fixed text-teal-950 font-bold rounded-full uppercase">Gold Member</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-teal-900">Aris Setiawan</h4>
+<p class="text-xs text-teal-700/60">Order #GEL-89021 • Oct 24, 2023</p>
+</div>
+<div class="text-right">
+<div class="flex text-[#FBC117] mb-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+</div>
+<p class="text-[10px] font-bold text-tertiary uppercase">4.0 / 5.0</p>
+</div>
+</div>
+<div class="mb-4">
+<a class="text-xs font-bold text-primary underline decoration-teal-500/30 hover:decoration-primary transition-all" href="#">Jakarta Jazz Festival 2023</a>
+<span class="mx-2 text-teal-200">/</span>
+<span class="text-xs font-medium text-teal-700/60">Organized by J-Pro Productions</span>
+</div>
+<div class="bg-teal-50/50 p-4 rounded-lg mb-4">
+<h5 class="font-bold text-sm mb-2">Great atmosphere but the entry pricing was steep</h5>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                                            The performance was world-class, but the <span class="bg-[#FBC117]/30 px-1 rounded font-medium border-b border-[#FBC117]">pricing</span> for student tickets felt a bit unfair. Also, the <span class="bg-[#FBC117]/30 px-1 rounded font-medium border-b border-[#FBC117]">wait time</span> at the beverage stall was nearly 30 minutes. Overall great show though.
+                                        </p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="flex items-center text-[10px] font-bold text-secondary uppercase bg-secondary-fixed px-2 py-1 rounded">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="flag">flag</span>
+                                                Keywords Flagged
+                                            </span>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2 border border-teal-500/20 text-teal-900 text-xs font-bold uppercase hover:bg-teal-50 transition-colors rounded">Escalate</button>
+<button class="px-6 py-2 border border-error/20 text-error text-xs font-bold uppercase hover:bg-error/5 transition-colors rounded">Hide</button>
+<button class="px-8 py-2 bg-primary-container text-white text-xs font-bold uppercase tracking-widest hover:bg-primary transition-all rounded shadow-md shadow-primary/10">Approve</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Review Card 2 (Critically Flagged) -->
+<article class="p-8 bg-surface-container-lowest rounded-xl shadow-sm border-l-4 border-error relative overflow-hidden">
+<div class="absolute top-0 right-0 p-3">
+<span class="material-symbols-outlined text-error opacity-20 text-6xl" data-icon="report">report</span>
+</div>
+<div class="flex items-start gap-6">
+<div class="flex-shrink-0 text-center">
+<div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-900 font-bold text-lg mb-2">DL</div>
+<span class="block text-[10px] px-2 py-0.5 bg-slate-100 text-slate-500 font-bold rounded-full uppercase">Guest</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-teal-900">Dewi Lestari</h4>
+<p class="text-xs text-teal-700/60">Order #GEL-91044 • Oct 25, 2023</p>
+</div>
+<div class="text-right">
+<div class="flex text-[#FBC117] mb-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+<span class="material-symbols-outlined text-sm">star</span>
+</div>
+<p class="text-[10px] font-bold text-error uppercase">1.0 / 5.0</p>
+</div>
+</div>
+<div class="mb-4">
+<a class="text-xs font-bold text-primary underline decoration-teal-500/30" href="#">Traditional Gamelan Night</a>
+<span class="mx-2 text-teal-200">/</span>
+<span class="text-xs font-medium text-teal-700/60">Heritage Arts Council</span>
+</div>
+<div class="bg-error-container/20 p-4 rounded-lg mb-4">
+<h5 class="font-bold text-sm mb-2 text-error">Unacceptable overcrowding and safety risks</h5>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                                            The <span class="bg-[#FBC117]/30 px-1 rounded font-medium border-b border-[#FBC117]">crowd</span> management was non-existent. There were people everywhere blocking exits. Honestly felt dangerous for my children.
+                                        </p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="flex items-center text-[10px] font-bold text-error uppercase bg-error-container px-2 py-1 rounded">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="emergency">emergency</span>
+                                                Safety Alert
+                                            </span>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2 bg-secondary-container text-white text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded">Escalate To HQ</button>
+<button class="px-6 py-2 border border-error/20 text-error text-xs font-bold uppercase hover:bg-error/5 transition-colors rounded">Reject</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Review Card 3 -->
+<article class="p-8 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow border border-teal-500/5">
+<div class="flex items-start gap-6">
+<div class="flex-shrink-0 text-center">
+<img class="w-12 h-12 rounded-full mb-2" data-alt="Close-up portrait of a woman with a confident and peaceful expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCklpXDLGa3CizLtcO4GJr3gqDnrpX8joLcaEo_IZ9WGvkHBP6Qjzb4UGVfi4QWIxFrQd0edRiuDXOxLjpe-mrIaDJCGtdUhA24Llg-ce62t5Fuk95P8hZV-ojsMuTpXz2sUvOjSwMPhnjWSyQwe9ZbH1WGuYqWsh9VeAbJvQbwwEKw846bZlyMOu55L0QNEP2vVku1qiSscE_VCmaLLBFWqg_8zN0m_7ZTU470z3_Dhd2kmOMhMgXytStgCtEmS9dt8PrtKdVpkFE"/>
+<span class="block text-[10px] px-2 py-0.5 bg-tertiary-fixed text-teal-950 font-bold rounded-full uppercase">Silver Member</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-bold text-teal-900">Maya Putri</h4>
+<p class="text-xs text-teal-700/60">Order #GEL-88211 • Oct 22, 2023</p>
+</div>
+<div class="text-right">
+<div class="flex text-[#FBC117] mb-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-[10px] font-bold text-tertiary uppercase">5.0 / 5.0</p>
+</div>
+</div>
+<div class="mb-4">
+<a class="text-xs font-bold text-primary underline decoration-teal-500/30" href="#">Bali Arts Festival Opening</a>
+<span class="mx-2 text-teal-200">/</span>
+<span class="text-xs font-medium text-teal-700/60">Bali Tourism Board</span>
+</div>
+<div class="p-4 bg-teal-50/10 rounded-lg mb-4 border border-teal-50/50">
+<h5 class="font-bold text-sm mb-2">A truly spiritual and breathtaking experience</h5>
+<p class="text-sm text-on-surface-variant leading-relaxed italic">
+                                            "I've attended many festivals, but this year's opening was special. The lighting and sound were perfect, capturing every nuance of the dance."
+                                        </p>
+</div>
+<div class="flex items-center justify-end">
+<div class="flex gap-3">
+<button class="px-6 py-2 border border-teal-500/20 text-teal-900 text-xs font-bold uppercase hover:bg-teal-50 transition-colors rounded">Featured</button>
+<button class="px-8 py-2 bg-primary-container text-white text-xs font-bold uppercase tracking-widest hover:bg-primary transition-all rounded">Approve</button>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="mt-12 flex items-center justify-between border-t border-teal-500/10 pt-8">
+<button class="flex items-center text-xs font-bold text-teal-700/60 hover:text-teal-900 transition-colors uppercase tracking-widest">
+<span class="material-symbols-outlined mr-2" data-icon="chevron_left">chevron_left</span> Previous
+                        </button>
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 flex items-center justify-center bg-primary-container text-white text-xs font-bold rounded-full">1</span>
+<span class="w-8 h-8 flex items-center justify-center text-teal-700/60 text-xs font-bold hover:bg-teal-50 rounded-full cursor-pointer">2</span>
+<span class="w-8 h-8 flex items-center justify-center text-teal-700/60 text-xs font-bold hover:bg-teal-50 rounded-full cursor-pointer">3</span>
+<span class="text-teal-200">...</span>
+<span class="w-8 h-8 flex items-center justify-center text-teal-700/60 text-xs font-bold hover:bg-teal-50 rounded-full cursor-pointer">12</span>
+</div>
+<button class="flex items-center text-xs font-bold text-teal-700/60 hover:text-teal-900 transition-colors uppercase tracking-widest">
+                            Next <span class="material-symbols-outlined ml-2" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body></html>

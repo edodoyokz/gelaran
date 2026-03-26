@@ -170,14 +170,14 @@ export default function BankAccountPage() {
                 <div className="max-w-2xl mx-auto space-y-6">
                     {success && (
                         <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-200 rounded-xl">
-                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                            <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
                             <p className="text-green-700">{success}</p>
                         </div>
                     )}
 
                     {error && (
                         <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-200 rounded-xl">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                            <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
                             <p className="text-red-700">{error}</p>
                         </div>
                     )}
