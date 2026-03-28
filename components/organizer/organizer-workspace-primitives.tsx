@@ -2,6 +2,7 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
 import Link from "next/link";
 import { ArrowRight, Check, ChevronRight, type LucideIcon } from "lucide-react";
 import { EmptyState } from "@/components/shared/phase-two-shells";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { cn } from "@/lib/utils";
 
 interface OrganizerWorkspaceHeaderProps {
@@ -113,7 +114,7 @@ export function OrganizerMetricCard({
                 <div className="flex justify-between items-start mb-4">
                     <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform", toneStyles.iconBg, toneStyles.iconFg)}>
                         {icon ? (
-                             <span className="material-symbols-outlined">{icon}</span>
+                             <MaterialSymbol name={icon} />
                         ) : LucideIconProp ? (
                              <LucideIconProp className="h-6 w-6" />
                         ) : null}
@@ -125,9 +126,7 @@ export function OrganizerMetricCard({
                                 ? "bg-(--success-bg) text-(--success-text)" 
                                 : "bg-(--error-bg) text-(--error-text)"
                         )}>
-                            <span className="material-symbols-outlined text-[14px]">
-                                {trend.isPositive ? "trending_up" : "trending_down"}
-                            </span>
+                            <MaterialSymbol name={trend.isPositive ? "trending_up" : "trending_down"} className="text-[14px]" />
                             {trend.value}
                         </span>
                     )}

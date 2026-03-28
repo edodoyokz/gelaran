@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { cn } from "@/lib/utils";
 
 interface CustomerSidebarProps {
@@ -62,12 +63,7 @@ export function CustomerSidebar({
                             )}
                             title={isCollapsed ? item.label : undefined}
                         >
-                            <span 
-                                className={cn("material-symbols-outlined", isActive && "font-bold")} 
-                                style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
-                            >
-                                {item.icon}
-                            </span>
+                            <MaterialSymbol name={item.icon} filled={isActive} className={cn(isActive && "font-bold")} />
                             {!isCollapsed && <span className="font-body text-sm leading-none">{item.label}</span>}
                         </Link>
                     );
@@ -79,7 +75,7 @@ export function CustomerSidebar({
                 isCollapsed ? "px-0 w-12 h-12 mx-auto text-xs flex-col" : "text-sm w-full"
             )}>
                 {isCollapsed ? (
-                    <span className="material-symbols-outlined">add</span>
+                    <MaterialSymbol name="add" />
                 ) : (
                     "Book New Event"
                 )}
@@ -96,7 +92,7 @@ export function CustomerSidebar({
                         )}
                         title={isCollapsed ? "Logout" : undefined}
                     >
-                        <span className="material-symbols-outlined">logout</span>
+                        <MaterialSymbol name="logout" />
                         {!isCollapsed && <span className="font-body text-sm font-bold">Logout</span>}
                     </button>
                 )}

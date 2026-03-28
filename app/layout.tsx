@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`${plusJakartaSans.variable} ${playfairDisplay.variable} antialiased`}>
+      <body className={`antialiased ${plusJakartaSans.variable} ${playfairDisplay.variable}`}>
         {children}
       </body>
     </html>

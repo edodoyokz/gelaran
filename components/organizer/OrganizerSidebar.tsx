@@ -21,6 +21,7 @@ import {
     LogOut,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/lib/hooks/useTheme";
@@ -134,7 +135,7 @@ export function OrganizerSidebar({
                                 collapsed && "px-3 rounded-lg border-l-0 justify-center"
                             )}
                         >
-                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>{item.icon}</span>
+                            <MaterialSymbol name={item.icon} className="text-[24px]" />
                             {!collapsed && (
                                 <span className="font-body font-medium text-sm tracking-wide">{item.label}</span>
                             )}
@@ -181,10 +182,7 @@ export function OrganizerSidebar({
                     collapsed && "px-3 rounded-lg border-l-0 justify-center"
                 )}
             >
-                <span className={cn(
-                    "material-symbols-outlined", 
-                    isChild ? "text-[20px]" : "text-[24px]"
-                )} style={{ fontVariationSettings: "'FILL' 0" }}>{item.icon}</span>
+                <MaterialSymbol name={item.icon} className={cn(isChild ? "text-[20px]" : "text-[24px]")} />
                 {!collapsed && (
                     <span className={cn("font-body tracking-wide", isChild ? "text-xs font-semibold" : "text-sm font-medium")}>{item.label}</span>
                 )}
@@ -220,13 +218,13 @@ export function OrganizerSidebar({
 
             <div className={cn("mt-auto space-y-4 pt-6 px-6", collapsed && "px-2")}>
                 {!collapsed ? (
-                    <button className="w-full bg-brand-orange text-white py-4 rounded-xl font-bold text-sm shadow-lg hover:brightness-110 transition-all active:scale-95 flex items-center justify-center gap-2">
-                        <span className="material-symbols-outlined text-base">add_circle</span>
+                    <button type="button" className="w-full bg-brand-orange text-white py-4 rounded-xl font-bold text-sm shadow-lg hover:brightness-110 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <MaterialSymbol name="add_circle" className="text-base" />
                         Create Event
                     </button>
                 ) : (
-                    <button className="w-full bg-brand-orange text-white py-3 rounded-xl flex items-center justify-center hover:brightness-110 transition-all active:scale-95">
-                        <span className="material-symbols-outlined text-xl">add_circle</span>
+                    <button type="button" className="w-full bg-brand-orange text-white py-3 rounded-xl flex items-center justify-center hover:brightness-110 transition-all active:scale-95">
+                        <MaterialSymbol name="add_circle" className="text-xl" />
                     </button>
                 )}
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { AdminSidebar } from "./AdminSidebar";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { useTheme } from "@/lib/hooks/useTheme";
 import { useAdminProfile } from "./AdminProfileProvider";
 import { cn } from "@/lib/utils";
@@ -98,20 +99,20 @@ export function AdminLayoutWrapper({ children }: AdminLayoutWrapperProps) {
                         </button>
                         <h2 className="hidden sm:block font-headline text-2xl font-black text-teal-900 dark:text-teal-50">Gelaran</h2>
                         <div className="relative w-48 sm:w-96 hidden md:block">
-                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                            <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
                             <input className="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg text-sm focus:ring-2 focus:ring-primary-container/20 placeholder:text-slate-400 outline-none" placeholder="Search analytics, events, or users..." type="text"/>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 sm:gap-4">
-                        <button onClick={toggleTheme} className="p-2 text-teal-900 dark:text-teal-100 hover:bg-teal-50 dark:hover:bg-teal-900/50 rounded-full transition-colors relative active:scale-95 duration-150">
+                        <button type="button" onClick={toggleTheme} className="p-2 text-teal-900 dark:text-teal-100 hover:bg-teal-50 dark:hover:bg-teal-900/50 rounded-full transition-colors relative active:scale-95 duration-150">
                             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                         </button>
-                        <button className="hidden sm:block p-2 text-teal-900 dark:text-teal-100 hover:bg-teal-50 dark:hover:bg-teal-900/50 rounded-full transition-colors relative active:scale-95 duration-150">
-                            <span className="material-symbols-outlined shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>notifications</span>
+                        <button type="button" className="hidden sm:block p-2 text-teal-900 dark:text-teal-100 hover:bg-teal-50 dark:hover:bg-teal-900/50 rounded-full transition-colors relative active:scale-95 duration-150">
+                            <MaterialSymbol name="notifications" className="shrink-0" />
                             <span className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full"></span>
                         </button>
-                        <button className="hidden sm:block p-2 text-teal-900 dark:text-teal-100 hover:bg-teal-50 dark:hover:bg-teal-900/50 rounded-full transition-colors active:scale-95 duration-150">
-                            <span className="material-symbols-outlined shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>settings</span>
+                        <button type="button" className="hidden sm:block p-2 text-teal-900 dark:text-teal-100 hover:bg-teal-50 dark:hover:bg-teal-900/50 rounded-full transition-colors active:scale-95 duration-150">
+                            <MaterialSymbol name="settings" className="shrink-0" />
                         </button>
                         <div className="hidden sm:block h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
                         <div className="flex items-center gap-3 sm:pl-2">

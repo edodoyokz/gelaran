@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { useTheme } from "@/lib/hooks/useTheme";
 import { createClient } from "@/lib/supabase/client";
-import { cn } from "@/lib/utils";
 
 interface CustomerHeaderProps {
     user: {
@@ -59,7 +59,7 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
                     Gelaran
                 </Link>
                 <form onSubmit={handleSearch} className="hidden md:flex items-center bg-slate-50 dark:bg-slate-900 rounded-full px-4 py-1.5 border border-slate-200 dark:border-slate-700">
-                    <span className="material-symbols-outlined text-slate-400 text-sm mr-2">search</span>
+                    <MaterialSymbol name="search" className="text-slate-400 text-sm mr-2" />
                     <input 
                         className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-400 text-[#015959] dark:text-[#29B3B6] outline-none" 
                         placeholder="Search events..." 
@@ -77,14 +77,12 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
             </nav>
 
             <div className="flex items-center gap-4">
-                <button onClick={toggleTheme} className="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors hidden sm:block">
-                    <span className="material-symbols-outlined shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>
-                        {resolvedTheme === "dark" ? "light_mode" : "dark_mode"}
-                    </span>
+                <button type="button" onClick={toggleTheme} className="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors hidden sm:block">
+                    <MaterialSymbol name={resolvedTheme === "dark" ? "light_mode" : "dark_mode"} className="shrink-0" />
                 </button>
 
                 <Link href="/notifications" className="p-2 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors relative block">
-                    <span className="material-symbols-outlined shrink-0">notifications</span>
+                    <MaterialSymbol name="notifications" className="shrink-0" />
                     {notificationCount > 0 && (
                         <span className="absolute top-2 right-2 w-2 h-2 bg-[#F95D00] rounded-full"></span>
                     )}
@@ -92,6 +90,7 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
 
                 <div ref={profileRef} className="relative flex items-center gap-2 ml-2 pl-4 border-l border-slate-200 dark:border-slate-700 h-8">
                     <button 
+                        type="button"
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                     >
@@ -110,9 +109,7 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
                                 </span>
                             </div>
                         )}
-                        <span className="material-symbols-outlined text-sm hidden sm:block shrink-0">
-                            {isProfileOpen ? "expand_less" : "expand_more"}
-                        </span>
+                        <MaterialSymbol name={isProfileOpen ? "expand_less" : "expand_more"} className="text-sm hidden sm:block shrink-0" />
                     </button>
 
                     {isProfileOpen && (
@@ -123,22 +120,23 @@ export function CustomerHeader({ user, notificationCount = 0 }: CustomerHeaderPr
                             </div>
                             <div className="p-2">
                                 <Link onClick={() => setIsProfileOpen(false)} href="/profile" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#015959] dark:hover:text-[#29B3B6] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                                    <span className="material-symbols-outlined text-[20px]">person</span> Profile
+                                    <MaterialSymbol name="person" className="text-[20px]" /> Profile
                                 </Link>
                                 <Link onClick={() => setIsProfileOpen(false)} href="/my-bookings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#015959] dark:hover:text-[#29B3B6] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                                    <span className="material-symbols-outlined text-[20px]">confirmation_number</span> Tickets
+                                    <MaterialSymbol name="confirmation_number" className="text-[20px]" /> Tickets
                                 </Link>
                                 <Link onClick={() => setIsProfileOpen(false)} href="/wishlist" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-[#015959] dark:hover:text-[#29B3B6] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                                    <span className="material-symbols-outlined text-[20px]">favorite</span> Wishlist
+                                    <MaterialSymbol name="favorite" className="text-[20px]" /> Wishlist
                                 </Link>
                             </div>
                             <div className="p-2 border-t border-slate-100 dark:border-slate-800">
                                 <button
+                                    type="button"
                                     onClick={handleLogout}
                                     disabled={isLoggingOut}
                                     className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                                    <MaterialSymbol name="logout" className="text-[20px]" />
                                     {isLoggingOut ? "Logging out..." : "Logout"}
                                 </button>
                             </div>

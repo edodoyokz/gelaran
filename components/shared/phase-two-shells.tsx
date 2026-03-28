@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Inbox, type LucideIcon } from "lucide-react";
 import { Navbar } from "@/components/layouts/Navbar";
 import { Footer } from "@/components/layouts/Footer";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { cn } from "@/lib/utils";
 
 interface PublicLayoutProps {
@@ -51,8 +52,8 @@ export function AuthLayout({
                         Gelaran
                     </Link>
                     <div className="hidden sm:flex items-center gap-6">
-                        <button className="hover:bg-[#efeeec] transition-colors duration-300 p-2 rounded-full flex items-center justify-center text-[#015959]">
-                            <span className="material-symbols-outlined shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>light_mode</span>
+                        <button type="button" className="hover:bg-[#efeeec] transition-colors duration-300 p-2 rounded-full flex items-center justify-center text-[#015959]">
+                            <MaterialSymbol className="shrink-0" name="light_mode" />
                         </button>
                     </div>
                 </nav>
@@ -79,7 +80,7 @@ export function AuthLayout({
                             aside
                         ) : (
                             <div className="flex items-center gap-4 py-4 px-6 bg-white/40 backdrop-blur-md rounded-lg w-fit border border-white/20">
-                                <span className="material-symbols-outlined text-[#015959]" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+                                <MaterialSymbol className="text-[#015959]" filled name="verified_user" />
                                 <p className="text-[#002020] font-medium tracking-wide text-sm uppercase">Preserving culture for future generations.</p>
                             </div>
                         )}
@@ -91,7 +92,7 @@ export function AuthLayout({
                     {/* Secure Accent Chip */}
                     <div className="absolute top-24 lg:top-32 right-8 lg:right-24 hidden sm:block">
                         <div className="flex items-center gap-2 px-3 py-1 bg-[#FBC117]/10 rounded-full">
-                            <span className="material-symbols-outlined text-[#483500] text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
+                            <MaterialSymbol className="text-[#483500] text-sm" filled name="lock" />
                             <span className="text-[10px] font-bold uppercase tracking-widest text-[#483500]">Secure Access</span>
                         </div>
                     </div>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
@@ -158,9 +159,7 @@ export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
                 )}
             >
                 {item.icon && !isChild && (
-                    <span className="material-symbols-outlined text-xl" style={active ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                        {item.icon}
-                    </span>
+                    <MaterialSymbol name={item.icon} filled={active} className="text-xl" />
                 )}
                 {!collapsed ? (
                     <span className="min-w-0 flex-1 truncate">{item.label}</span>
@@ -193,16 +192,12 @@ export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
                 >
                     <div className="flex items-center gap-3">
                         {item.icon && (
-                            <span className="material-symbols-outlined text-xl" style={parentActive ? { fontVariationSettings: "'FILL' 1" } : {}}>
-                                {item.icon}
-                            </span>
+                            <MaterialSymbol name={item.icon} filled={parentActive} className="text-xl" />
                         )}
                         {!collapsed ? <span>{item.label}</span> : null}
                     </div>
                     {!collapsed && (
-                        <span className="material-symbols-outlined text-lg">
-                            {expanded ? "expand_less" : "expand_more"}
-                        </span>
+                        <MaterialSymbol name={expanded ? "expand_less" : "expand_more"} className="text-lg" />
                     )}
                 </button>
 
@@ -225,9 +220,7 @@ export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
             <div className={cn("mb-8 py-2", collapsed ? "px-0 flex justify-center" : "px-4")}>
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center shrink-0">
-                        <span className="material-symbols-outlined text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>
-                            dataset
-                        </span>
+                        <MaterialSymbol name="dataset" filled className="text-primary-container" />
                     </div>
                     {!collapsed && (
                         <div>
@@ -244,7 +237,7 @@ export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
 
             <div className="mt-auto pt-6 border-t border-white/10 space-y-1">
                 {!collapsed && (
-                    <button className="w-full flex items-center justify-center gap-2 mb-4 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-body text-xs font-bold uppercase tracking-widest transition-all">
+                    <button type="button" className="w-full flex items-center justify-center gap-2 mb-4 bg-white/10 hover:bg-white/20 text-white py-3 rounded-lg font-body text-xs font-bold uppercase tracking-widest transition-all">
                         New Report
                     </button>
                 )}
@@ -256,7 +249,7 @@ export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
                         collapsed && "justify-center px-0"
                     )}
                 >
-                    <span className="material-symbols-outlined text-xl">home</span>
+                    <MaterialSymbol name="home" className="text-xl" />
                     {!collapsed && <span className="text-sm">Back to site</span>}
                 </Link>
 
@@ -269,7 +262,7 @@ export function AdminSidebar({ isCollapsed }: AdminSidebarProps) {
                         collapsed && "justify-center px-0"
                     )}
                 >
-                    <span className="material-symbols-outlined text-xl">logout</span>
+                    <MaterialSymbol name="logout" className="text-xl" />
                     {!collapsed && <span className="text-sm">{isLoggingOut ? "Signing out..." : "Logout"}</span>}
                 </button>
             </div>

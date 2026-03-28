@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { OrganizerSidebar } from "./OrganizerSidebar";
+import { MaterialSymbol } from "@/components/ui/material-symbol";
 import { useTheme } from "@/lib/hooks/useTheme";
 import { cn } from "@/lib/utils";
 
@@ -107,17 +108,17 @@ export function OrganizerLayoutWrapper({
                     </div>
 
                     <div className="hidden md:flex items-center gap-4 bg-slate-100 dark:bg-slate-800 rounded-full px-4 py-2 w-96 border border-slate-200/50 dark:border-slate-700/50 focus-within:ring-2 ring-brand-light-teal transition-all">
-                        <span className="material-symbols-outlined text-slate-400">search</span>
+                        <MaterialSymbol name="search" className="text-slate-400" />
                         <input className="bg-transparent border-none outline-none focus:ring-0 text-sm w-full placeholder:text-slate-400 text-slate-900 dark:text-slate-100" placeholder="Search events, orders, or curators..." type="text"/>
                     </div>
                     
                     <div className="flex items-center gap-4 sm:gap-6">
-                        <button onClick={toggleTheme} className="text-slate-600 dark:text-slate-300 hover:text-brand-teal transition-colors active:scale-95">
+                        <button type="button" onClick={toggleTheme} className="text-slate-600 dark:text-slate-300 hover:text-brand-teal transition-colors active:scale-95">
                             {theme === 'dark' ? <Sun className="h-[22px] w-[22px]" /> : <Moon className="h-[22px] w-[22px]" />}
                         </button>
                         <div className="relative">
-                            <button className="text-slate-600 dark:text-slate-300 hover:text-brand-teal transition-colors">
-                                <span className="material-symbols-outlined shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>notifications</span>
+                            <button type="button" className="text-slate-600 dark:text-slate-300 hover:text-brand-teal transition-colors">
+                                <MaterialSymbol name="notifications" className="shrink-0" />
                             </button>
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-orange rounded-full"></span>
                         </div>
