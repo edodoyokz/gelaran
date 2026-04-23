@@ -251,8 +251,8 @@ export default function HomePage() {
         >
             <PublicSection
                 eyebrow="Browse by interest"
-                title="Pilih ritme event yang ingin kamu ikuti"
-                description="Kategori utama dirancang seperti rak editorial—mudah dipindai, ringan di mobile, dan langsung mengarahkan ke kumpulan event yang relevan."
+                title="Pilih kategori event yang sesuai minatmu"
+                description="Temukan event berdasarkan kategori favorit—dari musik, bisnis, hingga teknologi. Semua tersusun rapi untuk memudahkan eksplorasimu."
                 className="pt-0"
             >
                 <EditorialPanel className="p-4 sm:p-5">
@@ -276,8 +276,8 @@ export default function HomePage() {
 
             <PublicSection
                 eyebrow="Popular now"
-                title="Event populer pilihan Gelaran"
-                description="Koleksi utama ini memadukan event yang banyak dicari dengan presentasi kartu yang lebih konsisten, lapang, dan nyaman di berbagai ukuran layar."
+                title="Event populer yang sedang trending"
+                description="Jelajahi event yang paling banyak dicari dan dihadiri oleh komunitas Gelaran."
                 action={
                     <Link
                         href="/events"
@@ -287,7 +287,7 @@ export default function HomePage() {
                         <ArrowRight className="h-4 w-4" />
                     </Link>
                 }
-                className="pt-0"
+                className="pt-4 sm:pt-6"
             >
                 {isLoading ? (
                     <div
@@ -341,9 +341,9 @@ export default function HomePage() {
             {featuredEvents.length > 0 ? (
                 <PublicSection
                     eyebrow="Featured stories"
-                    title="Sorotan editorial untuk pengalaman yang lebih immersif"
-                    description="Banner utama diubah menjadi modul editorial bergaya majalah untuk memberi penekanan lebih kuat pada event unggulan tanpa memecah ritme halaman."
-                    className="pt-0"
+                    title="Event unggulan yang tidak boleh dilewatkan"
+                    description="Kurasi khusus dari tim Gelaran untuk pengalaman event terbaik bulan ini."
+                    className="pt-4 sm:pt-6"
                 >
                     <div className="grid gap-5 lg:grid-cols-3">
                         {featuredEvents.map((event) => (
@@ -382,8 +382,8 @@ export default function HomePage() {
             {topEvents.length > 0 ? (
                 <PublicSection
                     eyebrow="Most visited"
-                    title="Top events dengan momentum tertinggi"
-                    description="Ranking mingguan diberi treatment lebih rapi agar mudah dibandingkan, terutama pada tablet dan desktop."
+                    title="Event dengan momentum tertinggi minggu ini"
+                    description="Lihat event yang paling banyak dikunjungi dan diminati oleh pengguna Gelaran."
                     action={
                         <Link
                             href="/events?sort=viewCount-desc"
@@ -393,7 +393,7 @@ export default function HomePage() {
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     }
-                    className="pt-0"
+                    className="pt-4 sm:pt-6"
                 >
                     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {topEvents.map((event, index) => (
@@ -424,8 +424,8 @@ export default function HomePage() {
             {onlineEvents.length > 0 ? (
                 <PublicSection
                     eyebrow="Remote-friendly"
-                    title="Agenda online untuk audiens yang lebih luas"
-                    description="Section online event tetap dipertahankan, namun sekarang mengikuti grid dan CTA yang sama dengan section publik lainnya."
+                    title="Event online untuk audiens yang lebih luas"
+                    description="Ikuti event dari mana saja dengan pilihan event virtual yang berkualitas."
                     action={
                         <Link
                             href="/events?eventType=ONLINE"
@@ -435,7 +435,7 @@ export default function HomePage() {
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     }
-                    className="pt-0"
+                    className="pt-4 sm:pt-6"
                 >
                     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                         {onlineEvents.map((event) => (
@@ -462,9 +462,9 @@ export default function HomePage() {
             {reviewHighlights.length > 0 ? (
                 <PublicSection
                     eyebrow="Social proof"
-                    title="Ulasan yang memperkuat kepercayaan pengunjung"
-                    description="Testimoni publik ditampilkan dalam kartu ringan yang menjaga tone editorial sekaligus tetap mudah dipindai."
-                    className="pt-0"
+                    title="Apa kata mereka yang sudah hadir"
+                    description="Pengalaman nyata dari pengguna Gelaran yang telah menghadiri berbagai event."
+                    className="pt-4 sm:pt-6"
                 >
                     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {reviewHighlights.slice(0, 6).map((review) => (

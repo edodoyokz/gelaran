@@ -192,9 +192,9 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-4 rounded-2xl px-4 py-4 text-lg font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-hover)] active:bg-[var(--surface-elevated)]"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-hover)] active:bg-[var(--surface-elevated)]"
             >
-                {Icon ? <Icon size={22} className="text-[var(--text-muted)]" /> : null}
+                {Icon ? <Icon size={20} className="text-[var(--text-muted)]" /> : null}
                 {item.label}
             </Link>
         );
@@ -389,39 +389,41 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
 
             <div
                 className={cn(
-                    "fixed inset-y-0 right-0 z-50 flex h-full w-[85%] max-w-[320px] flex-col bg-[var(--surface-editorial-strong)] shadow-2xl transition-transform duration-300 ease-out md:hidden",
-                    isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+                    "fixed inset-y-0 right-0 z-50 flex h-full w-full max-w-[min(420px,92vw)] flex-col rounded-l-[1.75rem] border-l border-[var(--border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,249,247,0.96))] shadow-[0_0_80px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-all duration-300 ease-out md:hidden",
+                    isMobileMenuOpen 
+                        ? "translate-x-0 visible opacity-100" 
+                        : "translate-x-full invisible opacity-0 pointer-events-none"
                 )}
             >
-                <div className="flex-1 overflow-y-auto p-5 pt-24">
-                    <div className="mb-8">
+                <div className="flex-1 overflow-y-auto px-5 pb-5 pt-20">
+                    <div className="mb-6">
                         <div className="relative">
                             <input
                                 type="text"
                                 placeholder="Cari event..."
-                                className="w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-public-panel)] py-3 pr-4 pl-11 text-base text-[var(--text-primary)] outline-none transition-all focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/20"
+                                className="w-full rounded-2xl border border-[var(--border)] bg-white py-3 pr-4 pl-11 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/10"
                             />
-                            <Search className="absolute left-4 top-3.5 text-[var(--text-muted)]" size={20} />
+                            <Search className="absolute left-4 top-3.5 text-[var(--text-muted)]" size={18} />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {user && profile ? (
-                            <div className="mb-6 bg-[var(--surface-elevated)] p-4 rounded-2xl border border-[var(--border)]">
+                            <div className="mb-6 rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,250,249,0.9))] p-5 shadow-[var(--shadow-sm)]">
                                 <div className="flex items-center gap-4 mb-4">
                                     {profile.avatarUrl ? (
                                         <img
                                             src={profile.avatarUrl}
                                             alt={profile.name}
-                                            className="w-12 h-12 rounded-full object-cover ring-2 ring-[var(--surface)] shadow-sm"
+                                            className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-sm"
                                         />
                                     ) : (
-                                        <div className="w-12 h-12 rounded-full bg-[var(--accent-gradient)] flex items-center justify-center text-white font-bold text-lg shadow-sm ring-2 ring-[var(--surface)]">
+                                        <div className="w-12 h-12 rounded-full bg-[var(--accent-gradient)] flex items-center justify-center text-white font-bold text-lg shadow-sm ring-2 ring-white">
                                             {getInitials(profile.name)}
                                         </div>
                                     )}
                                     <div className="overflow-hidden">
-                                        <p className="font-bold text-[var(--text-primary)] truncate text-lg">{profile.name}</p>
+                                        <p className="font-bold text-[var(--text-primary)] truncate text-base">{profile.name}</p>
                                         <p className="text-sm text-[var(--text-secondary)] truncate">{profile.email}</p>
                                     </div>
                                 </div>
@@ -429,29 +431,29 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                                     <Link
                                         href={getDashboardLink()}
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="flex flex-col items-center justify-center p-3 bg-[var(--bg-primary)] rounded-xl shadow-sm border border-[var(--border)] active:scale-95 transition-transform"
+                                        className="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm border border-[var(--border)] active:scale-95 transition-transform"
                                     >
-                                        <LayoutDashboard size={20} className="text-[var(--accent-primary)] mb-1" />
+                                        <LayoutDashboard size={18} className="text-[var(--accent-primary)] mb-1" />
                                         <span className="text-xs font-medium text-[var(--text-secondary)]">Dashboard</span>
                                     </Link>
                                     <Link
                                         href="/my-bookings"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="flex flex-col items-center justify-center p-3 bg-[var(--bg-primary)] rounded-xl shadow-sm border border-[var(--border)] active:scale-95 transition-transform"
+                                        className="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm border border-[var(--border)] active:scale-95 transition-transform"
                                     >
-                                        <Ticket size={20} className="text-[var(--accent-primary)] mb-1" />
+                                        <Ticket size={18} className="text-[var(--accent-primary)] mb-1" />
                                         <span className="text-xs font-medium text-[var(--text-secondary)]">Tiket</span>
                                     </Link>
                                 </div>
                             </div>
                         ) : (
-                            <div className="mb-8">
+                            <div className="mb-6">
                                 <Link
                                     href="/login"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--accent-secondary)] py-4 text-lg font-bold text-white shadow-[0_18px_40px_rgba(249,93,0,0.22)] transition-all active:scale-95"
+                                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--accent-secondary)] py-3.5 text-base font-bold text-white shadow-[0_8px_24px_rgba(249,93,0,0.18)] transition-all active:scale-95"
                                 >
-                                    <User size={20} />
+                                    <User size={18} />
                                     Masuk / Daftar
                                 </Link>
                             </div>
@@ -461,9 +463,9 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                             <Link
                                 href="/"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 rounded-2xl px-4 py-4 text-lg font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-hover)] active:bg-[var(--surface-elevated)]"
+                                className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-hover)] active:bg-[var(--surface-elevated)]"
                             >
-                                <Search size={22} className="text-[var(--text-muted)]" />
+                                <Search size={20} className="text-[var(--text-muted)]" />
                                 Jelajahi Event
                             </Link>
                             {primaryNavItems.map(renderMobileNavLink)}
@@ -477,13 +479,13 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                 </div>
 
                 {user && (
-                    <div className="p-5 border-t border-[var(--border)]">
+                    <div className="border-t border-[var(--border)] p-5">
                         <button
                             type="button"
                             onClick={handleLogout}
-                            className="flex items-center justify-center gap-2 w-full py-3 text-[var(--error-text)] bg-[var(--error-bg)] hover:bg-[var(--error-bg)]/80 rounded-xl font-bold transition-colors min-h-[44px]"
+                            className="flex items-center justify-center gap-2 w-full py-3 text-[var(--error-text)] bg-[var(--error-bg)] hover:bg-[var(--error-bg)]/80 rounded-xl font-semibold transition-colors min-h-[44px]"
                         >
-                            <LogOut size={20} />
+                            <LogOut size={18} />
                             Keluar
                         </button>
                     </div>
