@@ -54,7 +54,7 @@ export function EventCard({
         <Link
             href={`/events/${slug}`}
             className={cn(
-                "group relative flex h-full min-w-[280px] cursor-pointer flex-row overflow-hidden rounded-[calc(var(--radius-3xl)+0.1rem)] border border-(--border) bg-[rgba(255,255,255,0.88)] shadow-(--shadow-sm) transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lg) md:min-w-0 md:flex-col",
+                "group relative flex h-full w-full min-w-0 cursor-pointer flex-row overflow-hidden rounded-[calc(var(--radius-3xl)+0.1rem)] border border-(--border) bg-[rgba(255,255,255,0.88)] shadow-(--shadow-sm) transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lg) md:flex-col",
                 className,
             )}
         >
