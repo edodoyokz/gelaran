@@ -377,25 +377,15 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                 </div>
             </nav>
 
-            <button
-                type="button"
-                aria-label="Close mobile menu overlay"
-                className={cn(
-                    "fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300",
-                    isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-            />
-
             <div
                 className={cn(
-                    "fixed inset-y-0 right-0 z-50 flex h-full w-full max-w-[min(420px,92vw)] flex-col rounded-l-[1.75rem] border-l border-[var(--border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,249,247,0.96))] shadow-[0_0_80px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-all duration-300 ease-out md:hidden",
+                    "fixed inset-0 z-40 flex h-[100dvh] w-full flex-col bg-[var(--shell-nav-bg-strong)] backdrop-blur-2xl transition-all duration-300 ease-out md:hidden",
                     isMobileMenuOpen 
-                        ? "translate-x-0 visible opacity-100" 
-                        : "translate-x-full invisible opacity-0 pointer-events-none"
+                        ? "opacity-100 visible" 
+                        : "opacity-0 invisible pointer-events-none scale-95"
                 )}
             >
-                <div className="flex-1 overflow-y-auto px-5 pb-5 pt-20">
+                <div className="flex-1 overflow-y-auto px-5 pb-5 pt-24">
                     <div className="mb-6">
                         <div className="relative">
                             <input
