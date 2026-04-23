@@ -36,7 +36,7 @@ interface HeroProps {
 export function Hero({ featuredEvent, supportEvents, stats }: HeroProps) {
     return (
         <section className="px-4 pb-10 pt-6 sm:px-6 sm:pb-14 sm:pt-10 lg:px-8 lg:pb-16 lg:pt-14">
-            <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.95fr)] lg:items-center lg:gap-14">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.95fr)] lg:items-center lg:gap-14">
                 <div className="space-y-8">
                     <div className="space-y-5">
                         <span className="inline-flex rounded-full border border-(--border) bg-(--surface)/88 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-(--accent-primary) shadow-(--shadow-xs) backdrop-blur">
@@ -69,7 +69,7 @@ export function Hero({ featuredEvent, supportEvents, stats }: HeroProps) {
                         </Link>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         {stats.map((stat) => (
                             <article
                                 key={stat.label}
@@ -110,7 +110,7 @@ export function Hero({ featuredEvent, supportEvents, stats }: HeroProps) {
                                             {featuredEvent.title}
                                         </h2>
                                     </div>
-                                    <div className="grid gap-3 text-sm text-white/80 sm:grid-cols-2">
+                                    <div className="grid grid-cols-1 gap-3 text-sm text-white/80 sm:grid-cols-2">
                                         <span className="inline-flex items-center gap-2">
                                             <MapPin className="h-4 w-4" />
                                             {featuredEvent.location}

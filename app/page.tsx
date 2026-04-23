@@ -316,7 +316,7 @@ export default function HomePage() {
                         }
                     />
                 ) : (
-                    <div id={EVENT_GRID_ID} className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                    <div id={EVENT_GRID_ID} className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
                         {filteredEvents.map((event) => (
                             <EventCard
                                 key={event.id}
@@ -345,7 +345,7 @@ export default function HomePage() {
                     description="Kurasi khusus dari tim Gelaran untuk pengalaman event terbaik bulan ini."
                     className="pt-4 sm:pt-6"
                 >
-                    <div className="grid gap-5 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                         {featuredEvents.map((event) => (
                             <Link
                                 key={`featured-${event.id}`}
@@ -395,9 +395,9 @@ export default function HomePage() {
                     }
                     className="pt-4 sm:pt-6"
                 >
-                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {topEvents.map((event, index) => (
-                            <div key={`top-${event.id}`} className="relative">
+                            <div key={`top-${event.id}`} className="relative min-w-0">
                                 <span className="absolute left-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-(--accent-primary) text-sm font-semibold text-white shadow-(--shadow-sm)">
                                     #{index + 1}
                                 </span>
@@ -437,7 +437,7 @@ export default function HomePage() {
                     }
                     className="pt-4 sm:pt-6"
                 >
-                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
                         {onlineEvents.map((event) => (
                             <EventCard
                                 key={`online-${event.id}`}
@@ -466,7 +466,7 @@ export default function HomePage() {
                     description="Pengalaman nyata dari pengguna Gelaran yang telah menghadiri berbagai event."
                     className="pt-4 sm:pt-6"
                 >
-                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {reviewHighlights.slice(0, 6).map((review) => (
                             <EditorialPanel key={review.id} className="h-full space-y-4 p-6">
                                 <div className="flex items-center gap-1 text-(--warning)">
