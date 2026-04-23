@@ -22,7 +22,7 @@ export function PublicLayout({
     mainClassName,
 }: PublicLayoutProps) {
     return (
-        <div className={cn("public-shell min-h-screen bg-background text-foreground max-w-[100vw] overflow-x-hidden", className)}>
+        <div className={cn("public-shell min-h-screen w-full bg-background text-foreground overflow-x-hidden", className)}>
             <Navbar transparent={navbarTransparent} className="public-shell-navbar" />
             <main className={cn("relative pt-24", mainClassName)}>
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,rgba(251,193,23,0.08),transparent_35%),radial-gradient(circle_at_top_right,rgba(41,179,182,0.08),transparent_32%)]" />

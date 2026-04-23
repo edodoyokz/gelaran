@@ -21,7 +21,7 @@ export function PublicPageShell({
     contentClassName,
 }: PublicPageShellProps) {
     return (
-        <PublicLayout className={cn("overflow-hidden", className)} mainClassName="pt-20 sm:pt-24">
+        <PublicLayout className={cn("overflow-x-hidden", className)} mainClassName="pt-20 sm:pt-24">
             <div className="relative">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-112 bg-[radial-gradient(circle_at_top_left,rgba(251,193,23,0.16),transparent_36%),radial-gradient(circle_at_top_right,rgba(41,179,182,0.12),transparent_34%)]" />
                 <div className="pointer-events-none absolute inset-x-0 top-20 h-64 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.5),transparent)]" />
