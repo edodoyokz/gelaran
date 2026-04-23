@@ -389,7 +389,7 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
 
             <div
                 className={cn(
-                    "fixed top-0 right-0 bottom-0 z-50 flex w-[85%] max-w-[320px] flex-col bg-[var(--surface-editorial-strong)] shadow-2xl transition-transform duration-300 ease-out md:hidden",
+                    "fixed inset-y-0 right-0 z-50 flex h-full w-[85%] max-w-[320px] flex-col bg-[var(--surface-editorial-strong)] shadow-2xl transition-transform duration-300 ease-out md:hidden",
                     isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                 )}
             >
