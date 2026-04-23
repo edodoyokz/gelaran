@@ -377,14 +377,8 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                 </div>
             </nav>
 
-            <div
-                className={cn(
-                    "fixed inset-0 z-50 flex flex-col bg-[var(--shell-nav-bg-strong)] backdrop-blur-2xl transition-all duration-300 ease-out md:hidden",
-                    isMobileMenuOpen 
-                        ? "opacity-100 visible" 
-                        : "opacity-0 invisible pointer-events-none"
-                )}
-            >
+            {isMobileMenuOpen && (
+                <div className="fixed inset-0 z-50 flex flex-col bg-[var(--shell-nav-bg-strong)] backdrop-blur-2xl md:hidden">
                 <div className="flex-1 overflow-y-auto px-5 pb-5 pt-24">
                     <div className="mb-6">
                         <div className="relative">
@@ -481,6 +475,7 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
                     </div>
                 )}
             </div>
+            )}
         </>
     );
 }
