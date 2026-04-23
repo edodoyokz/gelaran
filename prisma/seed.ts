@@ -16,8 +16,11 @@ const DEFAULT_PASSWORD = "password123";
 async function main() {
     console.log("🗑️  Deleting existing data...");
 
+    await prisma.checkInLog.deleteMany();
     await prisma.bookedTicket.deleteMany();
     await prisma.booking.deleteMany();
+    await prisma.complimentaryTicketRequestItem.deleteMany();
+    await prisma.complimentaryTicketRequest.deleteMany();
     await prisma.eventFaq.deleteMany();
     await prisma.seat.deleteMany();
     await prisma.venueSection.deleteMany();
@@ -347,15 +350,15 @@ async function main() {
         }),
         prisma.venue.create({
             data: {
-                name: "De Tjolomadoe",
-                slug: "de-tjolomadoe",
-                address: "Jl. Adi Sumarmo, Paulan",
-                city: "Karanganyar",
+                name: "Benteng Vastenburg",
+                slug: "benteng-vastenburg",
+                address: "Jl. Kapten Mulyadi",
+                city: "Surakarta",
                 province: "Jawa Tengah",
-                postalCode: "57772",
-                capacity: 1000,
-                latitude: -7.501944,
-                longitude: 110.809722,
+                postalCode: "57131",
+                capacity: 800,
+                latitude: -7.569167,
+                longitude: 110.824444,
             },
         }),
     ]);
@@ -520,7 +523,7 @@ Lineup:
 - Pamungkas
 - Local band: Jogjarockartakulture
 
-Venue: De Tjolomadoe - Bekas pabrik gula yang ikonik dengan nuansa industrial yang artistik.
+Venue: Benteng Vastenburg - Benteng bersejarah dengan nuansa heritage yang artistik.
 
 Fasilitas:
 - Standing area luas
@@ -609,7 +612,277 @@ Limited seats - Book now!`,
         include: { schedules: true },
     });
 
-    console.log("Created 5 events");
+    const eventBatikWorkshop = await prisma.event.create({
+        data: {
+            organizerId: organizerSriwedari.id,
+            categoryId: categories[2].id,
+            venueId: venues[0].id,
+            title: "Workshop Batik Tulis: Belajar Membatik Tradisional Solo",
+            slug: "workshop-batik-tulis-solo",
+            shortDescription: "Workshop membatik langsung dari pengrajin batik Solo",
+            description: `Belajar seni membatik tradisional Solo langsung dari pengrajin berpengalaman!
+
+Materi Workshop:
+- Sejarah batik Solo dan motif khasnya
+- Teknik membatik tulis dengan canting
+- Pewarnaan alami batik
+- Praktik membuat batik sendiri
+
+Yang Didapat:
+- Kain batik hasil karya sendiri
+- Sertifikat workshop
+- Snack & coffee break
+- Goodie bag batik
+
+Cocok untuk: Pemula, pecinta seni, wisatawan, keluarga
+
+Durasi: 4 jam (termasuk praktik)`,
+            posterImage: "/images/events/batik-workshop.png",
+            bannerImage: "/images/events/batik-workshop.png",
+            eventType: "OFFLINE",
+            status: "PUBLISHED",
+            visibility: "PUBLIC",
+            isFeatured: false,
+            minTicketsPerOrder: 1,
+            maxTicketsPerOrder: 3,
+            hasSeatingChart: false,
+            schedules: {
+                create: [
+                    {
+                        scheduleDate: new Date("2026-02-22"),
+                        startTime: new Date("2026-02-22T09:00:00"),
+                        endTime: new Date("2026-02-22T13:00:00"),
+                        isActive: true,
+                    },
+                ],
+            },
+        },
+        include: { schedules: true },
+    });
+
+    const eventJazzNight = await prisma.event.create({
+        data: {
+            organizerId: organizerMusic.id,
+            categoryId: categories[3].id,
+            venueId: venues[3].id,
+            title: "Solo Jazz Night: Featuring Indra Lesmana & Friends",
+            slug: "solo-jazz-night-indra-lesmana",
+            shortDescription: "Malam jazz dengan musisi jazz terbaik Indonesia di rooftop hotel",
+            description: `Solo Jazz Night menghadirkan pengalaman jazz premium di rooftop The Sunan Hotel!
+
+Lineup:
+- Indra Lesmana (Piano)
+- Tompi (Vocal)
+- Barry Likumahuwa (Bass)
+- Elfa Dwi Putra (Drums)
+
+Venue: The Sunan Hotel Rooftop - View kota Solo dengan suasana intimate
+
+Fasilitas:
+- Welcome drink
+- Dinner buffet (VIP)
+- Premium seating
+- Photo opportunity
+- Merchandise corner
+
+Genre: Jazz, Fusion, Contemporary
+
+Dress code: Smart casual
+
+Acara ini cocok untuk pecinta musik jazz dan suasana malam yang elegan.`,
+            posterImage: "/images/events/jazz-night.png",
+            bannerImage: "/images/events/jazz-night.png",
+            eventType: "OFFLINE",
+            status: "PUBLISHED",
+            visibility: "PUBLIC",
+            isFeatured: false,
+            minTicketsPerOrder: 1,
+            maxTicketsPerOrder: 4,
+            hasSeatingChart: true,
+            schedules: {
+                create: [
+                    {
+                        scheduleDate: new Date("2026-02-28"),
+                        startTime: new Date("2026-02-28T19:00:00"),
+                        endTime: new Date("2026-02-28T22:30:00"),
+                        isActive: true,
+                    },
+                ],
+            },
+        },
+        include: { schedules: true },
+    });
+
+    const eventCarFreeDay = await prisma.event.create({
+        data: {
+            organizerId: organizerSport.id,
+            categoryId: categories[4].id,
+            venueId: venues[1].id,
+            title: "Solo Car Free Day Festival: Olahraga & Hiburan Keluarga",
+            slug: "solo-car-free-day-festival",
+            shortDescription: "Festival mingguan dengan senam, musik, kuliner, dan aktivitas keluarga",
+            description: `Car Free Day Solo hadir dengan konsep festival keluarga yang meriah!
+
+Aktivitas:
+- Senam pagi bersama
+- Zumba & aerobik
+- Sepeda santai
+- Live music performance
+- Bazar kuliner tradisional
+- Kids playground
+- Pameran UMKM Solo
+
+Venue: Area GOR Manahan & sekitarnya
+
+Fasilitas:
+- Area parkir sepeda gratis
+- Toilet umum
+- Pos kesehatan
+- Area istirahat
+
+GRATIS untuk umum!
+
+Cocok untuk: Keluarga, anak-anak, pecinta olahraga, komunitas
+
+Acara rutin setiap minggu pagi.`,
+            posterImage: "/images/events/car-free-day.png",
+            bannerImage: "/images/events/car-free-day.png",
+            eventType: "OFFLINE",
+            status: "PUBLISHED",
+            visibility: "PUBLIC",
+            isFeatured: false,
+            minTicketsPerOrder: 1,
+            maxTicketsPerOrder: 10,
+            hasSeatingChart: false,
+            schedules: {
+                create: [
+                    {
+                        scheduleDate: new Date("2026-02-16"),
+                        startTime: new Date("2026-02-16T06:00:00"),
+                        endTime: new Date("2026-02-16T10:00:00"),
+                        isActive: true,
+                    },
+                ],
+            },
+        },
+        include: { schedules: true },
+    });
+
+    const eventKulinerMalam = await prisma.event.create({
+        data: {
+            organizerId: organizerParty.id,
+            categoryId: categories[4].id,
+            venueId: venues[2].id,
+            title: "Solo Night Culinary Festival: Jelajah Kuliner Nusantara",
+            slug: "solo-night-culinary-festival",
+            shortDescription: "Festival kuliner malam dengan 50+ tenant makanan dan live music",
+            description: `Festival kuliner terbesar di Solo dengan konsep night market!
+
+Kuliner:
+- 50+ tenant makanan Nusantara
+- Street food khas Solo
+- Dessert & minuman kekinian
+- Food truck zone
+- Traditional snack corner
+
+Entertainment:
+- Live acoustic music
+- DJ performance
+- Traditional dance show
+- Cooking demo by chef
+
+Venue: Solo Paragon Convention Hall & outdoor area
+
+Fasilitas:
+- Seating area luas
+- Instagram-able photo spots
+- Kids corner
+- Free WiFi
+- Ample parking
+
+Tiket masuk GRATIS, bayar per makanan!
+
+Cocok untuk: Keluarga, foodies, anak muda, komunitas kuliner`,
+            posterImage: "/images/events/culinary-festival.png",
+            bannerImage: "/images/events/culinary-festival.png",
+            eventType: "OFFLINE",
+            status: "PUBLISHED",
+            visibility: "PUBLIC",
+            isFeatured: false,
+            minTicketsPerOrder: 1,
+            maxTicketsPerOrder: 5,
+            hasSeatingChart: false,
+            schedules: {
+                create: [
+                    {
+                        scheduleDate: new Date("2026-03-05"),
+                        startTime: new Date("2026-03-05T17:00:00"),
+                        endTime: new Date("2026-03-05T23:00:00"),
+                        isActive: true,
+                    },
+                ],
+            },
+        },
+        include: { schedules: true },
+    });
+
+    const eventStartupMeetup = await prisma.event.create({
+        data: {
+            organizerId: organizerSeminar.id,
+            categoryId: categories[2].id,
+            venueId: venues[2].id,
+            title: "Solo Startup Meetup: Networking & Pitching Session",
+            slug: "solo-startup-meetup-networking",
+            shortDescription: "Pertemuan bulanan untuk startup, founder, dan investor di Solo",
+            description: `Solo Startup Meetup adalah wadah networking untuk ekosistem startup Solo!
+
+Agenda:
+- Keynote: "Building Startup in Tier-2 City"
+- Startup pitching session (5 startups)
+- Panel discussion dengan investor
+- Networking session
+- Speed mentoring
+
+Speaker:
+- Founder startup unicorn
+- Angel investor
+- Startup mentor
+- Government representative
+
+Benefit:
+- Networking dengan founder & investor
+- Mentoring session
+- Snack & coffee
+- Startup toolkit digital
+- Certificate of attendance
+
+Target: Founder, co-founder, startup team, investor, mahasiswa entrepreneurship
+
+Kapasitas terbatas!`,
+            posterImage: "/images/events/startup-meetup.png",
+            bannerImage: "/images/events/startup-meetup.png",
+            eventType: "OFFLINE",
+            status: "PUBLISHED",
+            visibility: "PUBLIC",
+            isFeatured: false,
+            minTicketsPerOrder: 1,
+            maxTicketsPerOrder: 3,
+            hasSeatingChart: false,
+            schedules: {
+                create: [
+                    {
+                        scheduleDate: new Date("2026-03-10"),
+                        startTime: new Date("2026-03-10T14:00:00"),
+                        endTime: new Date("2026-03-10T18:00:00"),
+                        isActive: true,
+                    },
+                ],
+            },
+        },
+        include: { schedules: true },
+    });
+
+    console.log("Created 10 events");
 
     const ticketWayang = await Promise.all([
         prisma.ticketType.create({
@@ -706,6 +979,87 @@ Limited seats - Book now!`,
                 basePrice: 300000,
                 totalQuantity: 500,
                 maxPerOrder: 5,
+                isFree: false,
+            },
+        }),
+    ]);
+
+    await Promise.all([
+        prisma.ticketType.create({
+            data: {
+                eventId: eventBatikWorkshop.id,
+                name: "Workshop Ticket",
+                description: "Termasuk bahan batik, canting, dan sertifikat",
+                basePrice: 175000,
+                totalQuantity: 30,
+                maxPerOrder: 3,
+                isFree: false,
+            },
+        }),
+    ]);
+
+    await Promise.all([
+        prisma.ticketType.create({
+            data: {
+                eventId: eventJazzNight.id,
+                name: "Regular",
+                description: "Standing area dengan welcome drink",
+                basePrice: 250000,
+                totalQuantity: 150,
+                maxPerOrder: 4,
+                isFree: false,
+            },
+        }),
+        prisma.ticketType.create({
+            data: {
+                eventId: eventJazzNight.id,
+                name: "VIP",
+                description: "Premium seating dengan dinner buffet",
+                basePrice: 500000,
+                totalQuantity: 50,
+                maxPerOrder: 4,
+                isFree: false,
+            },
+        }),
+    ]);
+
+    await Promise.all([
+        prisma.ticketType.create({
+            data: {
+                eventId: eventCarFreeDay.id,
+                name: "Free Entry",
+                description: "Gratis untuk umum",
+                basePrice: 0,
+                totalQuantity: 5000,
+                maxPerOrder: 10,
+                isFree: true,
+            },
+        }),
+    ]);
+
+    await Promise.all([
+        prisma.ticketType.create({
+            data: {
+                eventId: eventKulinerMalam.id,
+                name: "Free Entry",
+                description: "Tiket masuk gratis, bayar per makanan",
+                basePrice: 0,
+                totalQuantity: 3000,
+                maxPerOrder: 5,
+                isFree: true,
+            },
+        }),
+    ]);
+
+    await Promise.all([
+        prisma.ticketType.create({
+            data: {
+                eventId: eventStartupMeetup.id,
+                name: "General Admission",
+                description: "Akses penuh ke semua sesi dan networking",
+                basePrice: 50000,
+                totalQuantity: 100,
+                maxPerOrder: 3,
                 isFree: false,
             },
         }),
@@ -830,14 +1184,19 @@ Limited seats - Book now!`,
     console.log(`- Customers: ${customers.length}`);
     console.log(`- Admin: 1`);
     console.log(`- Venues: ${venues.length}`);
-    console.log(`- Events: 5`);
+    console.log(`- Events: 10`);
     console.log(`  - Wayang Orang Sriwedari`);
     console.log(`  - Basket: Satria Muda vs Pelita Jaya`);
     console.log(`  - Seminar Digital Transformation`);
     console.log(`  - Solo Indie Gigs`);
     console.log(`  - New Year Party 2026`);
-    console.log(`- Ticket Types: 10`);
-    console.log(`- Bookings: 4 (with paid tickets)`);
+    console.log(`  - Workshop Batik Tulis`);
+    console.log(`  - Solo Jazz Night`);
+    console.log(`  - Car Free Day Festival`);
+    console.log(`  - Night Culinary Festival`);
+    console.log(`  - Startup Meetup`);
+    console.log(`- Ticket Types: 18`);
+    console.log(`- Bookings: 2 (with paid tickets)`);
     console.log(`- FAQs: Created`);
     console.log("\n✉️  Login credentials:");
     console.log(`Password untuk semua user: ${DEFAULT_PASSWORD}`);
