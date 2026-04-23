@@ -40,7 +40,7 @@ interface AuthLayoutProps {
     leftImageSrc?: string;
 }
 
-const DEFAULT_AUTH_ASIDE_IMAGE = "https://lh3.googleusercontent.com/aida-public/AB6AXuCmsN8i1VFRYb23lkGJh1NyRupq1_s6H9YdW7UijQAiZ8qscXpnh9Y_BYHCqLL98eOu7-0OEIQKHges0gxr2eHTWrTjYJSVRyYzjgvkCZ1LYZ3VeTiJ9FvtBTll7WQEXqFYP9fmJFBDBsEe5_88KHe8xm_PIT9hD8qeHUGMO0NVcSbbfUN0JBJOySBKdV6vPCD0rAKr1IupHNa-zfwkAq7T0x9EzJRv-AiPLPU_Y0vVJROxrsncUCrPan4L9NKnn6uOcDu6YQWOqNw";
+const DEFAULT_AUTH_ASIDE_IMAGE = "https://images.unsplash.com/photo-1555400038-63f5ba517a47?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80";
 
 const authLayoutClasses = {
     root: "relative overflow-hidden bg-[var(--bg-auth-shell)] text-[var(--text-primary)] selection:bg-[var(--surface-chip)]",
