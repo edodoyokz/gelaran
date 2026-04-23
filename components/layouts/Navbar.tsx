@@ -379,10 +379,10 @@ export function Navbar({ transparent = true, className }: NavbarProps) {
 
             <div
                 className={cn(
-                    "fixed inset-0 z-40 flex h-[100dvh] w-full flex-col bg-[var(--shell-nav-bg-strong)] backdrop-blur-2xl transition-all duration-300 ease-out md:hidden",
+                    "fixed inset-0 z-50 flex flex-col bg-[var(--shell-nav-bg-strong)] backdrop-blur-2xl transition-all duration-300 ease-out md:hidden",
                     isMobileMenuOpen 
                         ? "opacity-100 visible" 
-                        : "opacity-0 invisible pointer-events-none scale-95"
+                        : "opacity-0 invisible pointer-events-none"
                 )}
             >
                 <div className="flex-1 overflow-y-auto px-5 pb-5 pt-24">
