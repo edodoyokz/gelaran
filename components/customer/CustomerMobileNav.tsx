@@ -23,10 +23,10 @@ export function CustomerMobileNav() {
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden">
-            <div className="glass-strong border-t border-[var(--glass-border)] safe-area-pb">
-                <div className="flex items-center justify-around px-2 py-2 relative">
+            <div className="safe-area-pb border-t border-[rgba(1,89,89,0.08)] bg-white/92 shadow-[0_-18px_40px_rgba(1,89,89,0.08)] backdrop-blur-xl dark:border-[rgba(78,222,225,0.12)] dark:bg-[#101818]/92">
+                <div className="relative flex items-center justify-around px-2 py-2.5">
                     <div
-                        className="absolute bottom-0 h-0.5 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-300 ease-out"
+                        className="absolute bottom-0 h-0.5 rounded-full bg-linear-to-r from-[#015959] to-[#29B3B6] transition-all duration-300 ease-out"
                         style={{
                             width: "40px",
                             left: `calc(${activeIndex * 20}% + 10% - 20px)`,
@@ -46,16 +46,16 @@ export function CustomerMobileNav() {
                                 >
                                     <div
                                         className={`
-                                            w-14 h-14 rounded-2xl flex items-center justify-center text-white 
-                                            shadow-lg transition-all duration-300
-                                            bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500
+                                            w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-white
+                                            shadow-(--shadow-glow) transition-all duration-300
+                                            bg-(--accent-gradient)
                                             group-hover:scale-110 group-active:scale-95
-                                            ${isActive ? "shadow-indigo-500/40 shadow-xl scale-105" : "shadow-indigo-500/25"}
+                                            ${isActive ? "scale-105" : ""}
                                         `}
                                     >
                                         <item.icon className="w-6 h-6" />
                                     </div>
-                                    <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-[var(--text-muted)] whitespace-nowrap">
+                                    <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium text-[var(--text-muted)]">
                                         {item.label}
                                     </span>
                                 </Link>
@@ -69,7 +69,7 @@ export function CustomerMobileNav() {
                                 className={`
                                     flex flex-col items-center gap-1 p-2 min-w-[56px] rounded-xl 
                                     transition-all duration-200 relative group
-                                    ${isActive ? "text-[var(--accent-primary)]" : "text-[var(--text-muted)]"}
+                                     ${isActive ? "text-[var(--accent-primary)]" : "text-[var(--text-muted)]"}
                                 `}
                             >
                                 <div className={`

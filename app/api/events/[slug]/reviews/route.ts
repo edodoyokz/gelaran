@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedAppUser } from "@/lib/auth/route-auth";
 
 interface ReviewWithUser {
   id: string;
@@ -121,15 +121,12 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -154,7 +151,7 @@ export async function POST(
 
     const booking = await prisma.booking.findFirst({
       where: {
-        userId: user.id,
+        userId: authContext.dbUserId,
         eventId: event.id,
         status: { in: ["CONFIRMED", "PAID"] },
       },
@@ -168,7 +165,7 @@ export async function POST(
     }
 
     const existingReview = await prisma.review.findFirst({
-      where: { userId: user.id, eventId: event.id },
+      where: { userId: authContext.dbUserId, eventId: event.id },
     });
 
     if (existingReview) {
@@ -180,7 +177,7 @@ export async function POST(
 
     const review = await prisma.review.create({
       data: {
-        userId: user.id,
+        userId: authContext.dbUserId,
         eventId: event.id,
         bookingId: booking.id,
         rating,
@@ -234,15 +231,12 @@ export async function PUT(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -259,7 +253,7 @@ export async function PUT(
     }
 
     const existingReview = await prisma.review.findFirst({
-      where: { id: reviewId, userId: user.id, eventId: event.id },
+      where: { id: reviewId, userId: authContext.dbUserId, eventId: event.id },
     });
 
     if (!existingReview) {
@@ -321,15 +315,12 @@ export async function DELETE(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -346,7 +337,7 @@ export async function DELETE(
     }
 
     const existingReview = await prisma.review.findFirst({
-      where: { id: reviewId, userId: user.id, eventId: event.id },
+      where: { id: reviewId, userId: authContext.dbUserId, eventId: event.id },
     });
 
     if (!existingReview) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { ownsLocalUserResource } from "@/lib/auth/local-identity";
+import { requireOrganizerContext } from "@/lib/auth/route-auth";
 
 interface MediaRecord {
   id: string;
@@ -20,24 +21,21 @@ export async function GET(
   try {
     const { id: eventId } = await params;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
     const event = await prisma.event.findFirst({
-      where: { id: eventId, organizerId: user.id },
-      select: { id: true },
+      where: { id: eventId },
+      select: { id: true, organizerId: true },
     });
 
-    if (!event) {
+    if (!event || !ownsLocalUserResource(event.organizerId, authContext)) {
       return NextResponse.json(
         { success: false, error: { message: "Event not found" } },
         { status: 404 }
@@ -94,24 +92,21 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
     const event = await prisma.event.findFirst({
-      where: { id: eventId, organizerId: user.id },
-      select: { id: true },
+      where: { id: eventId },
+      select: { id: true, organizerId: true },
     });
 
-    if (!event) {
+    if (!event || !ownsLocalUserResource(event.organizerId, authContext)) {
       return NextResponse.json(
         { success: false, error: { message: "Event not found" } },
         { status: 404 }
@@ -173,24 +168,21 @@ export async function PUT(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
     const event = await prisma.event.findFirst({
-      where: { id: eventId, organizerId: user.id },
-      select: { id: true },
+      where: { id: eventId },
+      select: { id: true, organizerId: true },
     });
 
-    if (!event) {
+    if (!event || !ownsLocalUserResource(event.organizerId, authContext)) {
       return NextResponse.json(
         { success: false, error: { message: "Event not found" } },
         { status: 404 }
@@ -255,24 +247,21 @@ export async function DELETE(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
     const event = await prisma.event.findFirst({
-      where: { id: eventId, organizerId: user.id },
-      select: { id: true },
+      where: { id: eventId },
+      select: { id: true, organizerId: true },
     });
 
-    if (!event) {
+    if (!event || !ownsLocalUserResource(event.organizerId, authContext)) {
       return NextResponse.json(
         { success: false, error: { message: "Event not found" } },
         { status: 404 }

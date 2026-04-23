@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
-import { Resend } from "resend";
+import { requireAuthenticatedAppUser } from "@/lib/auth/route-auth";
+import { getPublicEnv } from "@/lib/env";
+import { FROM_EMAIL, resend } from "@/lib/email/client";
 
 interface TicketTransferRecord {
   id: string;
@@ -12,11 +13,6 @@ interface TicketTransferRecord {
   acceptedAt: Date | null;
   expiresAt: Date;
 }
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-
-
 
 export async function POST(
   request: NextRequest,
@@ -42,15 +38,12 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -82,7 +75,7 @@ export async function POST(
       );
     }
 
-    if (ticket.booking.userId !== user.id) {
+    if (ticket.booking.userId !== authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "You do not own this ticket" } },
         { status: 403 }
@@ -122,7 +115,7 @@ export async function POST(
       }
     }
 
-    if (recipientEmail.toLowerCase() === user.email?.toLowerCase()) {
+    if (recipientEmail.toLowerCase() === authContext.email.toLowerCase()) {
       return NextResponse.json(
         { success: false, error: { message: "Cannot transfer ticket to yourself" } },
         { status: 400 }
@@ -154,7 +147,7 @@ export async function POST(
     const transfer = await prisma.ticketTransfer.create({
       data: {
         bookedTicketId: ticketId,
-        fromUserId: user.id,
+        fromUserId: authContext.dbUserId,
         toUserId: recipientUser?.id || null,
         recipientEmail: recipientEmail.toLowerCase(),
         recipientName: recipientName || recipientUser?.name || null,
@@ -164,7 +157,8 @@ export async function POST(
       },
     });
 
-    const acceptUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/tickets/transfer/accept?token=${transfer.id}`;
+    const publicEnv = getPublicEnv();
+    const acceptUrl = `${publicEnv.NEXT_PUBLIC_APP_URL}/tickets/transfer/accept?token=${transfer.id}`;
     const fromName = ticket.booking.user?.name || "Someone";
     const eventTitle = ticket.booking.event.title;
     const ticketTypeName = ticket.ticketType.name;
@@ -180,7 +174,7 @@ export async function POST(
 
     try {
       await resend.emails.send({
-        from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
+        from: FROM_EMAIL,
         to: recipientEmail,
         subject: `Anda menerima tiket untuk ${eventTitle}`,
         html: `
@@ -269,22 +263,19 @@ export async function GET(
   try {
     const { ticketId } = await params;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
     const transfers = await prisma.ticketTransfer.findMany({
       where: {
         bookedTicketId: ticketId,
-        fromUserId: user.id,
+        fromUserId: authContext.dbUserId,
       },
       orderBy: { initiatedAt: "desc" },
     });
@@ -317,22 +308,19 @@ export async function DELETE(
   try {
     const { ticketId } = await params;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
     const transfer = await prisma.ticketTransfer.findFirst({
       where: {
         bookedTicketId: ticketId,
-        fromUserId: user.id,
+        fromUserId: authContext.dbUserId,
         status: "PENDING",
       },
     });

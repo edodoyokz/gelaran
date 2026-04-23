@@ -25,6 +25,9 @@ import {
     Settings,
 } from "lucide-react";
 import { POSSeatSelector } from "@/components/pos/POSSeatSelector";
+import { getPublicEnv } from "@/lib/env";
+
+const env = getPublicEnv();
 
 // Error codes from backend
 enum SeatError {
@@ -201,8 +204,8 @@ export default function POSPage() {
 
     useEffect(() => {
         const script = document.createElement("script");
-        script.src = process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL || "https://app.sandbox.midtrans.com/snap/snap.js";
-        script.setAttribute("data-client-key", process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "");
+        script.src = env.NEXT_PUBLIC_MIDTRANS_SNAP_URL;
+        script.setAttribute("data-client-key", env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "");
         script.async = true;
         document.body.appendChild(script);
         return () => {
@@ -379,29 +382,29 @@ export default function POSPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
+            <div className="flex min-h-screen items-center justify-center bg-(--background)">
+                <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900">
-            <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
-                <div className="max-w-2xl mx-auto px-4 py-3">
+        <div className="min-h-screen bg-(--background)">
+            <header className="sticky top-0 z-10 border-b border-(--border) bg-(--surface)">
+                <div className="mx-auto max-w-2xl px-4 py-3">
                     <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                                <ShoppingCart className="h-5 w-5 text-emerald-500" />
-                                <h1 className="text-lg font-semibold text-white truncate">{event?.title}</h1>
+                                <ShoppingCart className="h-5 w-5 text-(--accent-primary)" />
+                                <h1 className="truncate text-lg font-semibold text-foreground">{event?.title}</h1>
                             </div>
-                            <p className="text-sm text-gray-400 truncate">Kasir: {staffName}</p>
+                            <p className="truncate text-sm text-(--text-secondary)">Kasir: {staffName}</p>
                         </div>
-                        <div className="flex items-center gap-2 ml-4">
+                        <div className="ml-4 flex items-center gap-2">
                             <button
                                 type="button"
                                 onClick={() => deviceToken && fetchEventData(deviceToken)}
-                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                                className="rounded-lg p-2 text-(--text-secondary) transition-colors hover:bg-(--surface-hover) hover:text-foreground"
                                 title="Refresh"
                             >
                                 <RefreshCw className="h-5 w-5" />
@@ -411,7 +414,7 @@ export default function POSPage() {
                                     href={`/organizer/events/${event.id}/gate`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                                    className="rounded-lg p-2 text-(--text-secondary) transition-colors hover:bg-(--surface-hover) hover:text-foreground"
                                     title="Pengaturan"
                                 >
                                     <Settings className="h-5 w-5" />
@@ -420,7 +423,7 @@ export default function POSPage() {
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                                className="rounded-lg p-2 text-(--error) transition-colors hover:bg-[rgba(239,68,68,0.1)] hover:text-red-300"
                                 title="Logout"
                             >
                                 <LogOut className="h-5 w-5" />
@@ -430,30 +433,30 @@ export default function POSPage() {
                 </div>
             </header>
 
-            <main className="max-w-2xl mx-auto px-4 py-6">
+            <main className="mx-auto max-w-2xl px-4 py-6">
                 {stats && (
-                    <div className="mb-6 rounded-2xl border border-gray-700 bg-gray-800 p-4">
+                    <div className="mb-6 rounded-2xl border border-(--border) bg-(--surface) p-4 shadow-(--shadow-sm)">
                         <div className="grid gap-3 sm:grid-cols-3">
-                            <article className="rounded-xl border border-gray-700 bg-gray-900/60 p-3">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                            <article className="rounded-xl border border-(--border) bg-(--surface-brand-soft) p-3">
+                                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">
                                     <Ticket className="h-3.5 w-3.5" />
                                     Total tiket
                                 </div>
-                                <p className="mt-2 text-2xl font-semibold text-white">{stats.totalSold}</p>
+                                <p className="mt-2 text-2xl font-semibold text-foreground">{stats.totalSold}</p>
                             </article>
-                            <article className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                            <article className="rounded-xl border border-(--success-bg) bg-(--success-bg) p-3 text-(--success)">
+                                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
                                     <ShoppingCart className="h-3.5 w-3.5" />
                                     On-site sales
                                 </div>
-                                <p className="mt-2 text-2xl font-semibold text-emerald-300">{stats.onSiteSales}</p>
+                                <p className="mt-2 text-2xl font-semibold">{stats.onSiteSales}</p>
                             </article>
-                            <article className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-3">
-                                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+                            <article className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-3 text-blue-300">
+                                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
                                     <TrendingUp className="h-3.5 w-3.5" />
                                     Hari ini
                                 </div>
-                                <p className="mt-2 text-2xl font-semibold text-blue-300">{stats.todaySales}</p>
+                                <p className="mt-2 text-2xl font-semibold">{stats.todaySales}</p>
                             </article>
                         </div>
                     </div>
@@ -461,22 +464,22 @@ export default function POSPage() {
 
                 <div className="space-y-6">
                     {sellResult ? (
-                        <div className="bg-emerald-900/50 border border-emerald-700 rounded-xl p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <CheckCircle className="h-12 w-12 text-emerald-500" />
+                        <div className="rounded-xl border border-(--success-bg) bg-(--success-bg) p-6">
+                            <div className="mb-4 flex items-center gap-3">
+                                <CheckCircle className="h-12 w-12 text-(--success)" />
                                 <div>
-                                    <h3 className="text-xl font-bold text-emerald-400">Penjualan Berhasil!</h3>
-                                    <p className="text-gray-400">Kode: {sellResult.bookingCode}</p>
+                                    <h3 className="text-xl font-bold text-(--success)">Penjualan Berhasil!</h3>
+                                    <p className="text-(--success) opacity-80">Kode: {sellResult.bookingCode}</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-3 mb-6">
+                            <div className="mb-6 space-y-3">
                                 {sellResult.tickets.map((ticket) => (
-                                    <div key={ticket.id} className="bg-gray-800 rounded-lg p-3 flex items-center gap-3">
-                                        <Ticket className="h-5 w-5 text-emerald-400" />
+                                    <div key={ticket.id} className="flex items-center gap-3 rounded-lg bg-(--surface) p-3 border border-(--border)">
+                                        <Ticket className="h-5 w-5 text-(--accent-primary)" />
                                         <div className="flex-1">
-                                            <p className="text-white font-mono text-sm">{ticket.uniqueCode}</p>
-                                            <p className="text-gray-400 text-sm">{ticket.ticketType}</p>
+                                            <p className="font-mono text-sm text-foreground">{ticket.uniqueCode}</p>
+                                            <p className="text-sm text-(--text-secondary)">{ticket.ticketType}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -486,7 +489,7 @@ export default function POSPage() {
                                 <button
                                     type="button"
                                     onClick={handlePrint}
-                                    className="flex-1 py-3 bg-gray-700 text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-gray-600 transition-colors"
+                                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-(--surface-brand-soft) py-3 font-medium text-foreground transition-colors hover:bg-(--surface-hover) border border-(--border)"
                                 >
                                     <Printer className="h-5 w-5" />
                                     Cetak Tiket
@@ -494,7 +497,7 @@ export default function POSPage() {
                                 <button
                                     type="button"
                                     onClick={() => setSellResult(null)}
-                                    className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors"
+                                    className="flex-1 rounded-xl bg-(--accent-primary) py-3 font-medium text-white transition-colors hover:bg-(--accent-primary-hover)"
                                 >
                                     Penjualan Baru
                                 </button>
@@ -510,22 +513,22 @@ export default function POSPage() {
                                     onSeatDeselect={handleSeatDeselect}
                                 />
                             ) : (
-                                <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-                                    <div className="p-4 border-b border-gray-700">
-                                        <h3 className="font-semibold text-white flex items-center gap-2">
-                                            <Ticket className="h-5 w-5 text-emerald-400" />
+                                <div className="overflow-hidden rounded-xl border border-(--border) bg-(--surface) shadow-(--shadow-sm)">
+                                    <div className="border-b border-(--border) p-4">
+                                        <h3 className="flex items-center gap-2 font-semibold text-foreground">
+                                            <Ticket className="h-5 w-5 text-(--accent-primary)" />
                                             Pilih Tiket
                                         </h3>
                                     </div>
-                                    <div className="divide-y divide-gray-700">
+                                    <div className="divide-y divide-(--border)">
                                         {event?.ticketTypes.map((ticketType) => (
-                                            <div key={ticketType.id} className="p-4 flex items-center justify-between gap-4">
+                                            <div key={ticketType.id} className="flex items-center justify-between gap-4 p-4">
                                                 <div className="min-w-0 flex-1">
-                                                    <h4 className="font-medium text-white">{ticketType.name}</h4>
-                                                    <p className="text-sm text-gray-400">
+                                                    <h4 className="font-medium text-foreground">{ticketType.name}</h4>
+                                                    <p className="text-sm text-(--text-secondary)">
                                                         {ticketType.isFree ? "Gratis" : formatCurrency(ticketType.basePrice)}
                                                     </p>
-                                                    <p className="text-xs text-gray-500">
+                                                    <p className="text-xs text-(--text-muted)">
                                                         Tersedia: {ticketType.availableQuantity}
                                                     </p>
                                                 </div>
@@ -534,11 +537,11 @@ export default function POSPage() {
                                                         type="button"
                                                         onClick={() => updateTicketQuantity(ticketType.id, -1)}
                                                         disabled={!selectedTickets[ticketType.id]}
-                                                        className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center disabled:opacity-30 hover:bg-gray-600 transition-colors"
+                                                        className="flex h-10 w-10 items-center justify-center rounded-full bg-(--surface-brand-soft) text-foreground transition-colors hover:bg-(--surface-hover) disabled:opacity-30 border border-(--border)"
                                                     >
                                                         <Minus className="h-4 w-4" />
                                                     </button>
-                                                    <span className="w-8 text-center text-lg font-semibold text-white">
+                                                    <span className="w-8 shrink-0 text-center text-lg font-semibold text-foreground">
                                                         {selectedTickets[ticketType.id] || 0}
                                                     </span>
                                                     <button
@@ -548,7 +551,7 @@ export default function POSPage() {
                                                             (selectedTickets[ticketType.id] || 0) >= ticketType.maxPerOrder ||
                                                             (selectedTickets[ticketType.id] || 0) >= ticketType.availableQuantity
                                                         }
-                                                        className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center disabled:opacity-30 hover:bg-emerald-700 transition-colors"
+                                                        className="flex h-10 w-10 items-center justify-center rounded-full bg-(--accent-primary) text-white transition-colors hover:bg-(--accent-primary-hover) disabled:opacity-30"
                                                     >
                                                         <Plus className="h-4 w-4" />
                                                     </button>
@@ -561,55 +564,55 @@ export default function POSPage() {
 
                             {getTotalTickets() > 0 && (
                                 <>
-                                    <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 space-y-4">
-                                        <h3 className="font-semibold text-white flex items-center gap-2">
-                                            <User className="h-5 w-5 text-emerald-400" />
+                                    <div className="space-y-4 rounded-xl border border-(--border) bg-(--surface) p-4 shadow-(--shadow-sm)">
+                                        <h3 className="flex items-center gap-2 font-semibold text-foreground">
+                                            <User className="h-5 w-5 text-(--accent-primary)" />
                                             Data Pembeli
                                         </h3>
 
                                         <div>
-                                            <label htmlFor="buyerName" className="block text-sm text-gray-400 mb-1">
-                                                Nama <span className="text-red-400">*</span>
+                                            <label htmlFor="buyerName" className="mb-1 block text-sm text-(--text-secondary)">
+                                                Nama <span className="text-(--error)">*</span>
                                             </label>
                                             <div className="relative">
-                                                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                                                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-(--text-muted)" />
                                                 <input
                                                     id="buyerName"
                                                     type="text"
                                                     value={buyerName}
                                                     onChange={(e) => setBuyerName(e.target.value)}
                                                     placeholder="Nama pembeli"
-                                                    className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                                    className="w-full rounded-xl border border-(--border) bg-(--background) py-3 pl-10 pr-4 text-foreground placeholder:text-(--text-muted) outline-none transition-colors focus:border-transparent focus:ring-2 focus:ring-(--info-bg)"
                                                 />
                                             </div>
                                         </div>
 
                                         <div>
-                                            <label htmlFor="buyerPhone" className="block text-sm text-gray-400 mb-1">Telepon</label>
+                                            <label htmlFor="buyerPhone" className="mb-1 block text-sm text-(--text-secondary)">Telepon</label>
                                             <div className="relative">
-                                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-(--text-muted)" />
                                                 <input
                                                     id="buyerPhone"
                                                     type="tel"
                                                     value={buyerPhone}
                                                     onChange={(e) => setBuyerPhone(e.target.value)}
                                                     placeholder="08xxxxxxxxxx"
-                                                    className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                                    className="w-full rounded-xl border border-(--border) bg-(--background) py-3 pl-10 pr-4 text-foreground placeholder:text-(--text-muted) outline-none transition-colors focus:border-transparent focus:ring-2 focus:ring-(--info-bg)"
                                                 />
                                             </div>
                                         </div>
 
                                         <div>
-                                            <label htmlFor="buyerEmail" className="block text-sm text-gray-400 mb-1">Email</label>
+                                            <label htmlFor="buyerEmail" className="mb-1 block text-sm text-(--text-secondary)">Email</label>
                                             <div className="relative">
-                                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-(--text-muted)" />
                                                 <input
                                                     id="buyerEmail"
                                                     type="email"
                                                     value={buyerEmail}
                                                     onChange={(e) => setBuyerEmail(e.target.value)}
                                                     placeholder="email@example.com"
-                                                    className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder:text-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                                    className="w-full rounded-xl border border-(--border) bg-(--background) py-3 pl-10 pr-4 text-foreground placeholder:text-(--text-muted) outline-none transition-colors focus:border-transparent focus:ring-2 focus:ring-(--info-bg)"
                                                 />
                                             </div>
                                         </div>
@@ -618,42 +621,42 @@ export default function POSPage() {
                                     <button
                                         type="button"
                                         onClick={() => setAutoCheckIn(!autoCheckIn)}
-                                        className="w-full bg-gray-800 rounded-xl p-4 border border-gray-700 flex items-center justify-between"
+                                        className="flex w-full items-center justify-between rounded-xl border border-(--border) bg-(--surface) p-4 shadow-(--shadow-sm)"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <CheckCircle className="h-5 w-5 text-emerald-400" />
-                                            <span className="text-white">Auto Check-in setelah bayar</span>
+                                            <CheckCircle className="h-5 w-5 text-(--accent-primary)" />
+                                            <span className="text-foreground">Auto Check-in setelah bayar</span>
                                         </div>
                                         {autoCheckIn ? (
-                                            <ToggleRight className="h-8 w-8 text-emerald-500" />
+                                            <ToggleRight className="h-8 w-8 text-(--accent-primary)" />
                                         ) : (
-                                            <ToggleLeft className="h-8 w-8 text-gray-500" />
+                                            <ToggleLeft className="h-8 w-8 text-(--text-muted)" />
                                         )}
                                     </button>
 
-                                    <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <span className="text-gray-400">Subtotal ({getTotalTickets()} tiket)</span>
-                                            <span className="text-xl font-bold text-white">{formatCurrency(calculateTotal())}</span>
+                                    <div className="rounded-xl border border-(--border) bg-(--surface) p-4 shadow-(--shadow-sm)">
+                                        <div className="mb-4 flex items-center justify-between">
+                                            <span className="text-(--text-secondary)">Subtotal ({getTotalTickets()} tiket)</span>
+                                            <span className="text-xl font-bold text-foreground">{formatCurrency(calculateTotal())}</span>
                                         </div>
-                                        <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
+                                        <div className="mb-2 flex items-center justify-between text-sm text-(--text-muted)">
                                             <span>Platform Fee (5%)</span>
                                             <span>{formatCurrency(Math.round(calculateTotal() * 0.05))}</span>
                                         </div>
-                                        <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                                        <div className="mb-4 flex items-center justify-between text-sm text-(--text-muted)">
                                             <span>PPN (11%)</span>
                                             <span>{formatCurrency(Math.round(calculateTotal() * 0.11))}</span>
                                         </div>
-                                        <div className="flex justify-between items-center pt-4 border-t border-gray-700">
-                                            <span className="text-white font-semibold">Total</span>
-                                            <span className="text-2xl font-bold text-emerald-400">
+                                        <div className="flex items-center justify-between border-t border-(--border) pt-4">
+                                            <span className="font-semibold text-foreground">Total</span>
+                                            <span className="text-2xl font-bold text-(--accent-primary)">
                                                 {formatCurrency(calculateTotal() + Math.round(calculateTotal() * 0.05) + Math.round(calculateTotal() * 0.11))}
                                             </span>
                                         </div>
                                     </div>
 
                                     {sellError && (
-                                        <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
+                                        <div className="flex items-center gap-2 rounded-xl border border-[rgba(239,68,68,0.2)] bg-(--error-bg) px-4 py-3 text-(--error)">
                                             <AlertCircle className="h-5 w-5 shrink-0" />
                                             <span>{sellError}</span>
                                         </div>
@@ -668,7 +671,7 @@ export default function POSPage() {
                                             (event?.hasSeatingChart && selectedSeats.length === 0) ||
                                             (!event?.hasSeatingChart && getTotalTickets() === 0)
                                         }
-                                        className="w-full py-4 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+                                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--accent-primary) py-4 font-semibold text-white transition-all hover:bg-(--accent-primary-hover) disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         {isProcessing ? (
                                             <>
@@ -691,9 +694,9 @@ export default function POSPage() {
                             )}
 
                             {getTotalTickets() === 0 && (
-                                <div className="rounded-2xl border border-dashed border-gray-700 bg-gray-900/40 py-10 text-center">
-                                    <DollarSign className="mx-auto mb-3 h-12 w-12 text-gray-600" />
-                                    <p className="text-sm text-gray-400">Pilih tiket untuk memulai penjualan</p>
+                                <div className="rounded-2xl border border-dashed border-(--border) bg-(--surface-brand-soft) py-10 text-center">
+                                    <DollarSign className="mx-auto mb-3 h-12 w-12 text-(--text-muted)" />
+                                    <p className="text-sm text-(--text-secondary)">Pilih tiket untuk memulai penjualan</p>
                                 </div>
                             )}
                         </>

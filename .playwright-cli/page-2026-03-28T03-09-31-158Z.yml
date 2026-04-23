@@ -1,0 +1,226 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e73] [cursor=pointer]:
+    - img [ref=e74]
+  - alert [ref=e77]
+  - generic [ref=e203]:
+    - navigation [ref=e204]:
+      - generic [ref=e205]:
+        - link "Gelaran Cultural Curator" [ref=e206] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e207]: Gelaran
+          - generic [ref=e208]: Cultural Curator
+        - generic [ref=e210]:
+          - textbox "Cari konser, seminar..." [ref=e211]
+          - img [ref=e212]
+        - generic [ref=e215]:
+          - link "Buat Event" [ref=e216] [cursor=pointer]:
+            - /url: /organizer
+            - img [ref=e217]
+            - generic [ref=e222]: Buat Event
+          - link "Bantuan" [ref=e223] [cursor=pointer]:
+            - /url: /docs
+            - img [ref=e224]
+            - generic [ref=e226]: Bantuan
+          - link "Masuk" [ref=e227] [cursor=pointer]:
+            - /url: /login
+            - img [ref=e228]
+            - generic [ref=e231]: Masuk
+    - main [ref=e232]:
+      - generic [ref=e235]:
+        - generic [ref=e237]:
+          - generic [ref=e238]:
+            - generic [ref=e239]:
+              - generic [ref=e240]: Contact Gelaran
+              - generic [ref=e241]:
+                - heading "Butuh bantuan, klarifikasi, atau ingin memulai percakapan dengan tim Gelaran?" [level=1] [ref=e242]:
+                  - text: Butuh bantuan, klarifikasi, atau ingin memulai percakapan dengan tim
+                  - emphasis [ref=e243]: Gelaran
+                  - text: "?"
+                - paragraph [ref=e245]: Halaman ini dirancang sebagai titik kontak publik yang lebih rapi—menyatukan formulir, kanal komunikasi, dan FAQ ringan dalam pengalaman yang konsisten dengan landing pages Gelaran.
+            - generic [ref=e246]:
+              - link "Kirim pesan" [ref=e247] [cursor=pointer]:
+                - /url: "#contact-form"
+                - text: Kirim pesan
+                - img [ref=e248]
+              - link "Jadi organizer" [ref=e250] [cursor=pointer]:
+                - /url: /become-organizer
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - paragraph [ref=e254]: Fast response lane
+              - heading "Tim kami meninjau pesan terkait support, partnership, dan organizer onboarding." [level=2] [ref=e255]
+            - generic [ref=e256]:
+              - link "Email support@bsctickets.com" [ref=e257] [cursor=pointer]:
+                - /url: mailto:support@bsctickets.com
+                - generic [ref=e259]:
+                  - img [ref=e261]
+                  - generic [ref=e264]:
+                    - paragraph [ref=e265]: Email
+                    - generic [ref=e266]: support@bsctickets.com
+              - link "Telepon +62 21 1234 5678" [ref=e267] [cursor=pointer]:
+                - /url: tel:+622112345678
+                - generic [ref=e269]:
+                  - img [ref=e271]
+                  - generic [ref=e273]:
+                    - paragraph [ref=e274]: Telepon
+                    - generic [ref=e275]: +62 21 1234 5678
+            - paragraph [ref=e276]: Untuk pertanyaan yang lebih cepat dijawab, gunakan subjek yang paling relevan saat mengirim pesan melalui formulir di bawah.
+        - generic [ref=e278]:
+          - generic [ref=e280]:
+            - generic [ref=e281]: Get in touch
+            - generic [ref=e282]:
+              - heading "Kirim pesan tanpa kehilangan konteks" [level=2] [ref=e283]
+              - paragraph [ref=e284]: Formulir dan informasi kontak ditempatkan berdampingan agar pengguna bisa memilih kanal terbaik sesuai kebutuhan mereka.
+          - generic [ref=e286]:
+            - generic [ref=e288]:
+              - generic [ref=e289]:
+                - img [ref=e291]
+                - generic [ref=e293]:
+                  - heading "Kirim pesan" [level=2] [ref=e294]
+                  - paragraph [ref=e295]: Ceritakan kebutuhan Anda dan tim kami akan menindaklanjuti secepatnya.
+              - generic [ref=e296]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]:
+                    - text: Nama lengkap
+                    - textbox "Nama lengkap" [ref=e299]:
+                      - /placeholder: Nama Anda
+                  - generic [ref=e300]:
+                    - text: Email
+                    - textbox "Email" [ref=e301]:
+                      - /placeholder: nama@email.com
+                - generic [ref=e302]:
+                  - text: Subjek
+                  - combobox "Subjek" [ref=e303]:
+                    - option "Pilih subjek" [selected]
+                    - option "Pertanyaan umum"
+                    - option "Masalah booking"
+                    - option "Masalah pembayaran"
+                    - option "Pengajuan refund"
+                    - option "Menjadi organizer"
+                    - option "Kerja sama"
+                    - option "Lainnya"
+                - generic [ref=e304]:
+                  - text: Pesan
+                  - textbox "Pesan" [ref=e305]:
+                    - /placeholder: Tuliskan konteks, pertanyaan, atau kebutuhan Anda di sini...
+                - button "Tinjau opsi kontak" [ref=e306]:
+                  - img [ref=e307]
+                  - text: Tinjau opsi kontak
+            - generic [ref=e310]:
+              - generic [ref=e311]:
+                - generic [ref=e312]:
+                  - heading "Informasi kontak" [level=3] [ref=e313]
+                  - paragraph [ref=e314]: Gunakan kanal berikut jika Anda ingin menghubungi Gelaran secara langsung.
+                - generic [ref=e315]:
+                  - link "Email support@bsctickets.com" [ref=e316] [cursor=pointer]:
+                    - /url: mailto:support@bsctickets.com
+                    - generic [ref=e318]:
+                      - img [ref=e320]
+                      - generic [ref=e323]:
+                        - paragraph [ref=e324]: Email
+                        - generic [ref=e325]: support@bsctickets.com
+                  - link "Telepon +62 21 1234 5678" [ref=e326] [cursor=pointer]:
+                    - /url: tel:+622112345678
+                    - generic [ref=e328]:
+                      - img [ref=e330]
+                      - generic [ref=e332]:
+                        - paragraph [ref=e333]: Telepon
+                        - generic [ref=e334]: +62 21 1234 5678
+                  - link "Alamat Jl. Sudirman No. 123, Jakarta Pusat, 10220" [ref=e335] [cursor=pointer]:
+                    - /url: https://maps.google.com
+                    - generic [ref=e337]:
+                      - img [ref=e339]
+                      - generic [ref=e342]:
+                        - paragraph [ref=e343]: Alamat
+                        - generic [ref=e344]: Jl. Sudirman No. 123, Jakarta Pusat, 10220
+                  - generic [ref=e346]:
+                    - img [ref=e348]
+                    - generic [ref=e351]:
+                      - paragraph [ref=e352]: Jam operasional
+                      - generic [ref=e353]: Senin - Jumat, 09:00 - 18:00 WIB
+              - generic [ref=e354]:
+                - generic [ref=e355]:
+                  - heading "Ikuti Gelaran" [level=3] [ref=e356]
+                  - paragraph [ref=e357]: Tetap terhubung untuk update event, insight organizer, dan rilis platform terbaru.
+                - generic [ref=e358]:
+                  - link "Instagram" [ref=e359] [cursor=pointer]:
+                    - /url: https://instagram.com
+                    - img [ref=e360]
+                    - text: Instagram
+                  - link "Facebook" [ref=e363] [cursor=pointer]:
+                    - /url: https://facebook.com
+                    - img [ref=e364]
+                    - text: Facebook
+                  - link "Twitter / X" [ref=e366] [cursor=pointer]:
+                    - /url: https://twitter.com
+                    - img [ref=e367]
+                    - text: Twitter / X
+        - generic [ref=e370]:
+          - generic [ref=e372]:
+            - generic [ref=e373]: Quick answers
+            - generic [ref=e374]:
+              - heading "Pertanyaan yang paling sering muncul" [level=2] [ref=e375]
+              - paragraph [ref=e376]: FAQ ringan ini membantu pengunjung mendapatkan jawaban cepat tanpa harus keluar dari alur halaman.
+          - generic [ref=e377]:
+            - generic [ref=e378]:
+              - generic [ref=e379]:
+                - heading "Bagaimana cara membeli tiket?" [level=3] [ref=e380]
+                - paragraph [ref=e381]: Pilih event yang ingin Anda hadiri, tentukan jenis tiket dan jumlahnya, lalu selesaikan pembayaran melalui metode yang tersedia.
+              - generic [ref=e382]:
+                - heading "Apakah tiket bisa di-refund?" [level=3] [ref=e383]
+                - paragraph [ref=e384]: Kebijakan refund mengikuti aturan masing-masing organizer. Informasi lengkap dapat dilihat di halaman detail event terkait.
+              - generic [ref=e385]:
+                - heading "Bagaimana cara menjadi organizer?" [level=3] [ref=e386]
+                - paragraph [ref=e387]: Buat akun, ajukan profil organizer, lalu lengkapi informasi organisasi Anda agar tim kami dapat meninjau pengajuan tersebut.
+              - generic [ref=e388]:
+                - heading "Berapa biaya platform untuk organizer?" [level=3] [ref=e389]
+                - paragraph [ref=e390]: Struktur biaya disesuaikan dengan kebijakan platform dan kebutuhan operasional. Tim kami dapat menjelaskan detailnya melalui kanal kontak resmi.
+            - link "Buka pusat bantuan" [ref=e392] [cursor=pointer]:
+              - /url: /docs
+    - contentinfo [ref=e393]:
+      - generic [ref=e396]:
+        - generic [ref=e397]:
+          - generic [ref=e398]:
+            - generic [ref=e399]: Cultural Ticketing
+            - heading "Gelaran ID" [level=3] [ref=e400]:
+              - text: Gelaran
+              - generic [ref=e401]: ID
+            - paragraph [ref=e402]: Platform manajemen event dan penjualan tiket terpercaya.
+          - generic [ref=e403]:
+            - heading "Perusahaan" [level=4] [ref=e404]
+            - list [ref=e405]:
+              - listitem [ref=e406]:
+                - link "Tentang Kami" [ref=e407] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e408]:
+                - link "Hubungi" [ref=e409] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e410]:
+                - link "Syarat & Ketentuan" [ref=e411] [cursor=pointer]:
+                  - /url: /terms
+          - generic [ref=e412]:
+            - heading "Dukungan" [level=4] [ref=e413]
+            - list [ref=e414]:
+              - listitem [ref=e415]:
+                - link "Kebijakan Privasi" [ref=e416] [cursor=pointer]:
+                  - /url: /privacy
+          - generic [ref=e417]:
+            - heading "Hubungi Kami" [level=4] [ref=e418]
+            - list [ref=e419]:
+              - listitem [ref=e420]:
+                - img [ref=e421]
+                - generic [ref=e424]: Jl. Jendral Sudirman No. 1, Jakarta Pusat
+              - listitem [ref=e425]:
+                - img [ref=e426]
+                - generic [ref=e429]: support@bsctickets.com
+              - listitem [ref=e430]:
+                - img [ref=e431]
+                - generic [ref=e433]: +62 21 5555 8888
+        - generic [ref=e434]:
+          - paragraph [ref=e435]: © 2026 BSC Event Platform. All rights reserved.
+          - generic [ref=e436]:
+            - link "Privacy" [ref=e437] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e438] [cursor=pointer]:
+              - /url: /terms
+            - link "Sitemap" [ref=e439] [cursor=pointer]:
+              - /url: /sitemap

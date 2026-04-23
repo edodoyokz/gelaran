@@ -21,7 +21,7 @@ export default async function EventFaqPage({
 }) {
   const { slug } = await params;
   const event = await prisma.event.findUnique({
-    where: { slug, deletedAt: null },
+    where: { slug, deletedAt: null, status: "PUBLISHED" },
     include: {
       faqs: {
         where: { isActive: true },

@@ -17,11 +17,12 @@ import {
 import { cn } from "@/lib/utils";
 
 interface AdminWorkspacePageProps {
-    eyebrow: string;
+    eyebrow?: string;
     title: string;
     description: string;
     children: ReactNode;
     actions?: ReactNode;
+    backHref?: string;
     width?: "default" | "wide" | "full";
 }
 
@@ -31,15 +32,29 @@ export function AdminWorkspacePage({
     description,
     children,
     actions,
+    backHref,
     width = "wide",
 }: AdminWorkspacePageProps) {
     return (
         <DashboardContent width={width}>
             <DashboardPageHeader
-                eyebrow={eyebrow}
+                eyebrow={eyebrow ?? "Admin workspace"}
                 title={title}
                 description={description}
-                actions={actions}
+                actions={
+                    backHref ? (
+                        <div className="flex items-center gap-3">
+                            <Link
+                                href={backHref}
+                                className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-[rgba(41,179,182,0.28)] hover:text-(--accent-primary)"
+                            >
+                                <ArrowRight className="h-4 w-4 rotate-180" />
+                                Back
+                            </Link>
+                            {actions}
+                        </div>
+                    ) : actions
+                }
             />
             <div className="mt-6 space-y-6">{children}</div>
         </DashboardContent>

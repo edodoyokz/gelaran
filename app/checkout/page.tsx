@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useId, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
     CheckCircle2,
@@ -19,13 +19,19 @@ import {
 } from "lucide-react";
 import {
     BookingCodePill,
+    CheckoutAssuranceChip,
     CheckoutCallout,
     CheckoutCard,
     CheckoutEventSummary,
     CheckoutPageShell,
+    CheckoutSectionHeading,
+    CheckoutTrustPanel,
 } from "@/components/features/checkout/checkout-primitives";
+import { getPublicEnv } from "@/lib/env";
 import { formatCurrency } from "@/lib/utils";
 import { canCreatePaidOrder } from "@/lib/payments/stage-guard";
+
+const env = getPublicEnv();
 
 interface TicketSelection {
     ticketTypeId: string;
@@ -62,6 +68,570 @@ interface EventData {
     }>;
 }
 
+const checkoutFieldClassName = "w-full rounded-2xl border border-transparent bg-[rgba(175,245,244,0.42)] px-12 py-4 text-sm text-foreground shadow-none transition-colors duration-200 placeholder:text-(--text-muted) focus:border-[rgba(41,179,182,0.5)] focus:bg-white focus-visible:border-[rgba(41,179,182,0.82)] focus-visible:ring-2 focus-visible:ring-[rgba(41,179,182,0.22)] focus-visible:outline-none";
+
+interface CheckoutAttendeeSectionProps {
+    guestName: string;
+    setGuestName: (value: string) => void;
+    guestEmail: string;
+    setGuestEmail: (value: string) => void;
+    guestPhone: string;
+    setGuestPhone: (value: string) => void;
+}
+
+function CheckoutAttendeeSection({
+    guestName,
+    setGuestName,
+    guestEmail,
+    setGuestEmail,
+    guestPhone,
+    setGuestPhone,
+}: CheckoutAttendeeSectionProps) {
+    return (
+        <section className="space-y-8">
+            <CheckoutSectionHeading
+                step={1}
+                title="Attendee Details"
+                description="Lengkapi detail pembeli untuk konfirmasi booking, instruksi pembayaran, dan pengiriman e-ticket."
+            />
+
+            <CheckoutCard
+                title="Informasi pembeli"
+                description="Field guest tetap aktif untuk checkout tanpa mengubah flow autentikasi yang ada."
+                icon={User}
+            >
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="space-y-2 sm:col-span-2">
+                        <span className="text-sm font-semibold text-foreground">Nama lengkap *</span>
+                        <div className="relative">
+                            <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                            <input
+                                type="text"
+                                name="guestName"
+                                autoComplete="name"
+                                value={guestName}
+                                onChange={(e) => setGuestName(e.target.value)}
+                                spellCheck={false}
+                                className={checkoutFieldClassName}
+                                placeholder="John Doe"
+                            />
+                        </div>
+                    </label>
+
+                    <label className="space-y-2">
+                        <span className="text-sm font-semibold text-foreground">Email *</span>
+                        <div className="relative">
+                            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                            <input
+                                type="email"
+                                name="guestEmail"
+                                autoComplete="email"
+                                inputMode="email"
+                                value={guestEmail}
+                                onChange={(e) => setGuestEmail(e.target.value)}
+                                spellCheck={false}
+                                className={checkoutFieldClassName}
+                                placeholder="email@example.com"
+                            />
+                        </div>
+                    </label>
+
+                    <label className="space-y-2">
+                        <span className="text-sm font-semibold text-foreground">No. WhatsApp</span>
+                        <div className="relative">
+                            <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                            <input
+                                type="tel"
+                                name="guestPhone"
+                                autoComplete="tel"
+                                inputMode="tel"
+                                value={guestPhone}
+                                onChange={(e) => setGuestPhone(e.target.value)}
+                                spellCheck={false}
+                                className={checkoutFieldClassName}
+                                placeholder="08123456789"
+                            />
+                        </div>
+                    </label>
+                </div>
+            </CheckoutCard>
+        </section>
+    );
+}
+
+interface CheckoutTicketSelectionSectionProps {
+    isSeatCheckout: boolean;
+    lockedSeats: LockedSeat[];
+    tickets: TicketSelection[];
+    updateQuantity: (ticketTypeId: string, delta: number) => void;
+    totalTickets: number;
+}
+
+function CheckoutTicketSelectionSection({
+    isSeatCheckout,
+    lockedSeats,
+    tickets,
+    updateQuantity,
+    totalTickets,
+}: CheckoutTicketSelectionSectionProps) {
+    return (
+        <section className="space-y-8">
+            <CheckoutSectionHeading
+                step={2}
+                title={isSeatCheckout ? "Selected Seats" : "Ticket Selection"}
+                description={isSeatCheckout
+                    ? "Kursi yang sudah terkunci tetap dipertahankan sebagai dasar transaksi."
+                    : "Atur jumlah tiket per kategori tanpa mengubah guard kuota dan batas maksimal per order."}
+            />
+
+            <CheckoutCard
+                title={isSeatCheckout ? "Kursi dan tiket terpilih" : "Pilih jumlah tiket"}
+                description={isSeatCheckout
+                    ? "Kursi yang sudah kamu lock akan dipakai sebagai dasar checkout."
+                    : "Atur jumlah tiket untuk tiap kategori sesuai kuota maksimal per transaksi."}
+                icon={ShoppingCart}
+            >
+                {isSeatCheckout ? (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                        {lockedSeats.map((seat) => (
+                            <div
+                                key={seat.id}
+                                className="rounded-[1.4rem] border border-(--border-light) bg-white px-4 py-4 shadow-(--shadow-xs)"
+                            >
+                                <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p className="text-sm font-semibold text-foreground">{seat.seatLabel}</p>
+                                        <p className="mt-1 text-sm text-(--text-secondary)">{seat.ticketTypeName}</p>
+                                    </div>
+                                    <span className="rounded-full bg-(--surface-brand-soft) px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-(--accent-primary)">
+                                        Locked
+                                    </span>
+                                </div>
+                                <p className="mt-4 text-sm font-semibold text-(--accent-secondary)">{formatCurrency(seat.price)}</p>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="space-y-3">
+                        {tickets.map((ticket) => (
+                            <div
+                                key={ticket.ticketTypeId}
+                                className="rounded-[1.4rem] border border-(--border-light) bg-white px-4 py-4 shadow-(--shadow-xs)"
+                            >
+                                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="space-y-1 pr-0 sm:pr-4">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <p className="text-base font-semibold text-foreground">{ticket.name}</p>
+                                            <span className="rounded-full border border-(--border-light) bg-(--surface-muted) px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--text-muted)">
+                                                Maks {ticket.maxPerOrder}/order
+                                            </span>
+                                        </div>
+                                        <p className="text-sm font-semibold text-(--accent-secondary)">
+                                            {ticket.price === 0 ? "Gratis" : formatCurrency(ticket.price)}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex items-center justify-between gap-4 sm:justify-end">
+                                        <div className="inline-flex items-center rounded-full border border-(--border) bg-[rgba(181,250,249,0.55)] p-1 shadow-(--shadow-xs)">
+                                            <button
+                                                type="button"
+                                                onClick={() => updateQuantity(ticket.ticketTypeId, -1)}
+                                                disabled={ticket.quantity === 0 || isSeatCheckout}
+                                                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-(--text-secondary) transition-colors duration-200 hover:bg-white hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                                                aria-label={`Kurangi ${ticket.name}`}
+                                            >
+                                                <Minus className="h-4 w-4" />
+                                            </button>
+                                            <span className="inline-flex min-w-12 items-center justify-center text-sm font-semibold text-foreground">
+                                                {ticket.quantity}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={() => updateQuantity(ticket.ticketTypeId, 1)}
+                                                disabled={ticket.quantity >= ticket.maxPerOrder || isSeatCheckout}
+                                                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-(--text-secondary) transition-colors duration-200 hover:bg-white hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                                                aria-label={`Tambah ${ticket.name}`}
+                                            >
+                                                <Plus className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {totalTickets === 0 ? (
+                    <CheckoutCallout
+                        tone="warning"
+                        title="Belum ada tiket di pesanan"
+                        description="Pilih minimal satu tiket agar proses checkout bisa dilanjutkan."
+                    />
+                ) : null}
+            </CheckoutCard>
+        </section>
+    );
+}
+
+interface CheckoutSummaryAsideProps {
+    event: EventData;
+    isSeatCheckout: boolean;
+    lockedSeats: LockedSeat[];
+    selectedTickets: TicketSelection[];
+    promoInput: string;
+    setPromoInput: (value: string) => void;
+    appliedPromoCode: string | null;
+    removePromoCode: () => void;
+    applyPromoCode: () => void;
+    promoMessage: string | null | undefined;
+    promoTone: "success" | "warning";
+    pricingData: {
+        subtotal: number;
+        discountAmount: number;
+        taxAmount: number;
+        platformFee: number;
+        totalAmount: number;
+        taxLabel?: string;
+        promoApplied?: boolean;
+        promoMessage?: string;
+    } | null;
+    subtotal: number;
+    platformFee: number;
+    tax: number;
+    total: number;
+    isPaidCheckoutBlocked: boolean;
+    error: string | null;
+    handleCheckout: () => void;
+    totalTickets: number;
+    isProcessing: boolean;
+}
+
+function CheckoutSummaryAside({
+    event,
+    isSeatCheckout,
+    lockedSeats,
+    selectedTickets,
+    promoInput,
+    setPromoInput,
+    appliedPromoCode,
+    removePromoCode,
+    applyPromoCode,
+    promoMessage,
+    promoTone,
+    pricingData,
+    subtotal,
+    platformFee,
+    tax,
+    total,
+    isPaidCheckoutBlocked,
+    error,
+    handleCheckout,
+    totalTickets,
+    isProcessing,
+}: CheckoutSummaryAsideProps) {
+    return (
+        <aside className="space-y-6 lg:col-span-4 xl:sticky xl:top-28">
+            <CheckoutCard
+                title="Ringkasan checkout"
+                description="Semua komponen biaya dihitung ulang sebelum kamu diarahkan ke pembayaran."
+                icon={Wallet}
+                className="space-y-0"
+            >
+                <div className="space-y-5">
+                    <CheckoutEventSummary
+                        title={event.title}
+                        posterImage={event.posterImage}
+                        scheduleDate={event.schedules?.[0]?.scheduleDate}
+                        venueName={event.venue?.name}
+                        venueCity={event.venue?.city}
+                        eventType={event.eventType}
+                        badge={isSeatCheckout ? "Reserved seating" : "General admission"}
+                    />
+
+                    <div className="space-y-3">
+                        {(isSeatCheckout ? lockedSeats : selectedTickets).length > 0 ? (
+                            isSeatCheckout ? (
+                                lockedSeats.map((seat) => (
+                                    <div key={seat.id} className="flex items-start justify-between gap-3 rounded-2xl border border-(--border-light) bg-white px-4 py-3 shadow-(--shadow-xs)">
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground">{seat.seatLabel}</p>
+                                            <p className="mt-1 text-sm text-(--text-secondary)">{seat.ticketTypeName}</p>
+                                        </div>
+                                        <p className="text-sm font-semibold text-foreground">{formatCurrency(seat.price)}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                selectedTickets.map((ticket) => (
+                                    <div key={ticket.ticketTypeId} className="flex items-start justify-between gap-3 rounded-2xl border border-(--border-light) bg-white px-4 py-3 shadow-(--shadow-xs)">
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground">{ticket.name}</p>
+                                            <p className="mt-1 text-sm text-(--text-secondary)">{ticket.quantity} × {ticket.price === 0 ? "Gratis" : formatCurrency(ticket.price)}</p>
+                                        </div>
+                                        <p className="text-sm font-semibold text-foreground">{formatCurrency(ticket.price * ticket.quantity)}</p>
+                                    </div>
+                                ))
+                            )
+                        ) : (
+                            <div className="rounded-2xl border border-dashed border-(--border-strong) bg-(--surface-muted) px-4 py-5 text-center text-sm leading-6 text-(--text-secondary)">
+                                Belum ada tiket yang masuk ke ringkasan pesanan.
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-3 rounded-3xl border border-(--border-light) bg-(--surface-muted) p-4 shadow-(--shadow-xs)">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                            <Tag className="h-4 w-4 text-(--accent-primary)" />
+                            Voucher diskon
+                        </div>
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                            <input
+                                type="text"
+                                name="promoCode"
+                                autoComplete="off"
+                                autoCapitalize="characters"
+                                spellCheck={false}
+                                value={promoInput}
+                                onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                                placeholder="Masukkan kode voucher"
+                                className="min-w-0 flex-1 rounded-full border border-(--border) bg-white px-4 py-3 text-sm text-foreground shadow-(--shadow-xs) transition-colors duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus) focus-visible:border-[rgba(41,179,182,0.82)] focus-visible:ring-2 focus-visible:ring-[rgba(41,179,182,0.22)] focus-visible:outline-none"
+                            />
+                            {appliedPromoCode ? (
+                                <button
+                                    type="button"
+                                    onClick={removePromoCode}
+                                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(217,79,61,0.22)] bg-white px-4 py-3 text-sm font-semibold text-(--error-text) transition-colors duration-200 hover:bg-(--error-bg)"
+                                >
+                                    Hapus
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={applyPromoCode}
+                                    className="inline-flex min-h-12 items-center justify-center rounded-full bg-(--accent-primary) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-sm) transition-colors duration-200 hover:bg-(--accent-primary-hover)"
+                                >
+                                    Pakai
+                                </button>
+                            )}
+                        </div>
+                        {promoMessage ? (
+                            <CheckoutCallout
+                                tone={promoTone}
+                                title={pricingData?.promoApplied ? "Voucher diterapkan" : "Status voucher"}
+                                description={promoMessage}
+                                className="rounded-[1.25rem]"
+                            />
+                        ) : null}
+                    </div>
+
+                    <div className="space-y-3 rounded-3xl border border-(--border-light) bg-white p-4 shadow-(--shadow-xs)">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                            <CreditCard className="h-4 w-4 text-(--accent-primary)" />
+                            Rincian biaya
+                        </div>
+                        <div className="space-y-2 text-sm text-(--text-secondary)">
+                            <div className="flex items-center justify-between gap-3">
+                                <span>Subtotal</span>
+                                <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
+                            </div>
+                            {(pricingData?.discountAmount || 0) > 0 ? (
+                                <div className="flex items-center justify-between gap-3 text-(--success-text)">
+                                    <span>Diskon voucher</span>
+                                    <span className="font-medium">-{formatCurrency(pricingData?.discountAmount || 0)}</span>
+                                </div>
+                            ) : null}
+                            <div className="flex items-center justify-between gap-3">
+                                <span>Platform fee (5%)</span>
+                                <span className="font-medium text-foreground">{formatCurrency(platformFee)}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-3">
+                                <span>{pricingData?.taxLabel || "PPN (11%)"}</span>
+                                <span className="font-medium text-foreground">{formatCurrency(tax)}</span>
+                            </div>
+                            <div className="mt-3 border-t border-dashed border-(--border) pt-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <span className="text-base font-semibold text-foreground">Total pembayaran</span>
+                                    <span className="text-lg font-semibold text-(--accent-secondary)">{formatCurrency(total)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {isPaidCheckoutBlocked ? (
+                        <CheckoutCallout
+                            tone="warning"
+                            title="Pembayaran online belum tersedia"
+                            description="Tahap implementasi saat ini hanya mengizinkan order gratis atau flow pembayaran yang memang sudah diaktifkan di environment aplikasi."
+                        />
+                    ) : (
+                        <CheckoutCallout
+                            tone="info"
+                            title={total === 0 ? "Pesanan gratis siap dikonfirmasi" : "Kamu akan diarahkan ke pembayaran"}
+                            description={
+                                total === 0
+                                    ? "Setelah konfirmasi, booking akan langsung diproses ke halaman sukses tanpa langkah pembayaran tambahan."
+                                    : "Gelaran akan membuat booking lebih dulu lalu mengarahkan kamu ke payment gateway atau mode demo yang aktif."
+                            }
+                        />
+                    )}
+
+                    {error ? (
+                        <CheckoutCallout tone="error" title="Checkout belum dapat diproses" description={error} />
+                    ) : null}
+
+                    <div className="space-y-3">
+                        <button
+                            type="button"
+                            onClick={handleCheckout}
+                            disabled={totalTickets === 0 || isProcessing || isPaidCheckoutBlocked}
+                            className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3.5 text-sm font-semibold text-white shadow-(--shadow-md) transition-all duration-200 hover:-translate-y-0.5 hover:bg-(--accent-secondary-hover) disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                        >
+                            {isProcessing ? (
+                                <>
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                    Memproses checkout...
+                                </>
+                            ) : (
+                                <>
+                                    <CreditCard className="h-5 w-5" />
+                                    {total === 0 ? "Konfirmasi pesanan gratis" : isPaidCheckoutBlocked ? "Pembayaran belum tersedia" : "Lanjut ke pembayaran"}
+                                </>
+                            )}
+                        </button>
+
+                        <p className="text-center text-xs leading-6 text-(--text-muted)">
+                            Dengan melanjutkan, kamu menyetujui syarat dan ketentuan Gelaran serta kebijakan yang berlaku untuk event ini.
+                        </p>
+                    </div>
+                </div>
+            </CheckoutCard>
+
+            <CheckoutAssuranceChip>
+                Authenticity guaranteed for every ticket
+            </CheckoutAssuranceChip>
+        </aside>
+    );
+}
+
+interface DemoPaymentDialogProps {
+    show: boolean;
+    demoPaymentStatus: "idle" | "processing" | "success";
+    demoDialogTitleId: string;
+    demoDialogDescriptionId: string;
+    demoCloseButtonRef: React.RefObject<HTMLButtonElement | null>;
+    setShowDemoModal: (value: boolean) => void;
+    setDemoPaymentStatus: (value: "idle" | "processing" | "success") => void;
+    pendingBookingCode: string | null;
+    total: number;
+    handleDemoPayment: () => void;
+}
+
+function DemoPaymentDialog({
+    show,
+    demoPaymentStatus,
+    demoDialogTitleId,
+    demoDialogDescriptionId,
+    demoCloseButtonRef,
+    setShowDemoModal,
+    setDemoPaymentStatus,
+    pendingBookingCode,
+    total,
+    handleDemoPayment,
+}: DemoPaymentDialogProps) {
+    if (!show) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(15,23,42,0.55)] p-4 backdrop-blur-sm">
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={demoDialogTitleId}
+                aria-describedby={demoDialogDescriptionId}
+                className="w-full max-w-lg rounded-[calc(var(--radius-3xl)+0.25rem)] border border-(--border) bg-[rgba(255,255,255,0.94)] p-6 shadow-(--shadow-2xl) backdrop-blur-xl sm:p-8"
+            >
+                {demoPaymentStatus === "success" ? (
+                    <div className="space-y-5 text-center">
+                        <span className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-[1.75rem] bg-(--success-bg) text-(--success) shadow-(--shadow-sm)">
+                            <CheckCircle2 className="h-9 w-9" />
+                        </span>
+                        <div className="space-y-2">
+                            <h3 id={demoDialogTitleId} className="font-(--font-editorial) text-3xl tracking-(--tracking-display) text-foreground">
+                                Pembayaran demo berhasil
+                            </h3>
+                            <p id={demoDialogDescriptionId} className="text-sm leading-6 text-(--text-secondary)">
+                                Booking sedang diarahkan ke halaman sukses checkout Gelaran.
+                            </p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="space-y-2">
+                                <span className="inline-flex rounded-full border border-[rgba(251,193,23,0.3)] bg-(--warning-bg) px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-(--warning-text)">
+                                    Demo payment
+                                </span>
+                                <h3 id={demoDialogTitleId} className="font-(--font-editorial) text-3xl tracking-(--tracking-display) text-foreground">
+                                    Simulasikan pembayaran checkout
+                                </h3>
+                                <p id={demoDialogDescriptionId} className="text-sm leading-6 text-(--text-secondary)">
+                                    Gunakan dialog ini untuk menguji outcome pembayaran demo tanpa memproses transaksi nyata.
+                                </p>
+                            </div>
+                            <button
+                                ref={demoCloseButtonRef}
+                                type="button"
+                                onClick={() => {
+                                    setShowDemoModal(false);
+                                    setDemoPaymentStatus("idle");
+                                }}
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-(--border) bg-white text-(--text-secondary) transition-colors duration-200 hover:text-foreground focus-visible:border-[rgba(41,179,182,0.82)] focus-visible:ring-2 focus-visible:ring-[rgba(41,179,182,0.22)] focus-visible:outline-none"
+                                disabled={demoPaymentStatus === "processing"}
+                                aria-label="Tutup demo payment"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        <CheckoutCallout
+                            tone="warning"
+                            title="Mode simulasi aktif"
+                            description="Tidak ada transaksi nyata yang diproses. Alur ini hanya dipakai untuk menguji state checkout dan outcome page."
+                            icon={Zap}
+                        />
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            <BookingCodePill bookingCode={pendingBookingCode} label="Booking code" />
+                            <div className="rounded-2xl border border-(--border-light) bg-(--surface-muted) px-4 py-3 shadow-(--shadow-xs)">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">Total simulasi</p>
+                                <p className="mt-2 text-base font-semibold text-(--accent-secondary)">{formatCurrency(total)}</p>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleDemoPayment}
+                            disabled={demoPaymentStatus === "processing"}
+                            className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-linear-to-r from-amber-500 to-orange-500 px-6 py-3.5 text-sm font-semibold text-white shadow-(--shadow-md) transition-transform duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                        >
+                            {demoPaymentStatus === "processing" ? (
+                                <>
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                    Memproses demo...
+                                </>
+                            ) : (
+                                <>
+                                    <Zap className="h-5 w-5" />
+                                    Simulasi pembayaran berhasil
+                                </>
+                            )}
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
 function CheckoutContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -81,8 +651,8 @@ function CheckoutContent() {
     const [pendingBookingId, setPendingBookingId] = useState<string | null>(null);
     const [pendingBookingCode, setPendingBookingCode] = useState<string | null>(null);
 
-    const isDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT === "true";
-    const isPaymentsEnabled = process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true";
+    const isDemoMode = env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT;
+    const isPaymentsEnabled = env.NEXT_PUBLIC_PAYMENTS_ENABLED;
     const isSeatCheckout = !!seatsParam;
 
     const [guestEmail, setGuestEmail] = useState("");
@@ -102,6 +672,9 @@ function CheckoutContent() {
     const [promoInput, setPromoInput] = useState("");
     const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
     const [promoFeedback, setPromoFeedback] = useState<string | null>(null);
+    const demoDialogTitleId = useId();
+    const demoDialogDescriptionId = useId();
+    const demoCloseButtonRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         async function fetchUserProfile() {
@@ -267,6 +840,25 @@ function CheckoutContent() {
             }
         };
     }, [eventSlug, seatSessionId, lockedSeats.length]);
+
+    useEffect(() => {
+        if (!showDemoModal) return;
+
+        demoCloseButtonRef.current?.focus();
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape" && demoPaymentStatus !== "processing") {
+                setShowDemoModal(false);
+                setDemoPaymentStatus("idle");
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [showDemoModal, demoPaymentStatus]);
 
     const updateQuantity = (ticketTypeId: string, delta: number) => {
         if (isSeatCheckout) return;
@@ -464,400 +1056,70 @@ function CheckoutContent() {
                     </div>
                 }
             >
-                <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(19rem,0.7fr)] xl:items-start">
-                    <div className="space-y-6">
-                        <CheckoutEventSummary
-                            title={event.title}
-                            posterImage={event.posterImage}
-                            scheduleDate={event.schedules?.[0]?.scheduleDate}
-                            venueName={event.venue?.name}
-                            venueCity={event.venue?.city}
-                            eventType={event.eventType}
-                            badge={isSeatCheckout ? "Reserved seating" : "General admission"}
+                <div className="grid gap-8 lg:grid-cols-10 lg:gap-10 xl:gap-16">
+                    <div className="space-y-10 lg:col-span-6">
+                        <CheckoutAttendeeSection
+                            guestName={guestName}
+                            setGuestName={setGuestName}
+                            guestEmail={guestEmail}
+                            setGuestEmail={setGuestEmail}
+                            guestPhone={guestPhone}
+                            setGuestPhone={setGuestPhone}
                         />
 
-                        <CheckoutCard
-                            title={isSeatCheckout ? "Kursi dan tiket terpilih" : "Pilih jumlah tiket"}
-                            description={isSeatCheckout
-                                ? "Kursi yang sudah kamu lock akan dipakai sebagai dasar checkout."
-                                : "Atur jumlah tiket untuk tiap kategori sesuai kuota maksimal per transaksi."}
-                            icon={ShoppingCart}
-                        >
-                            {isSeatCheckout ? (
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                    {lockedSeats.map((seat) => (
-                                        <div
-                                            key={seat.id}
-                                            className="rounded-3xl border border-(--border-light) bg-(--surface) px-4 py-4 shadow-(--shadow-xs)"
-                                        >
-                                            <div className="flex items-start justify-between gap-3">
-                                                <div>
-                                                    <p className="text-sm font-semibold text-foreground">{seat.seatLabel}</p>
-                                                    <p className="mt-1 text-sm text-(--text-secondary)">{seat.ticketTypeName}</p>
-                                                </div>
-                                                <span className="rounded-full bg-(--surface-brand-soft) px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-(--accent-primary)">
-                                                    Locked
-                                                </span>
-                                            </div>
-                                            <p className="mt-4 text-sm font-semibold text-(--accent-secondary)">{formatCurrency(seat.price)}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="space-y-3">
-                                    {tickets.map((ticket) => (
-                                        <div
-                                            key={ticket.ticketTypeId}
-                                            className="rounded-3xl border border-(--border-light) bg-(--surface) px-4 py-4 shadow-(--shadow-xs)"
-                                        >
-                                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                                <div className="space-y-1 pr-0 sm:pr-4">
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <p className="text-base font-semibold text-foreground">{ticket.name}</p>
-                                                        <span className="rounded-full border border-(--border-light) bg-(--surface-muted) px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-(--text-muted)">
-                                                            Maks {ticket.maxPerOrder}/order
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-sm font-semibold text-(--accent-secondary)">
-                                                        {ticket.price === 0 ? "Gratis" : formatCurrency(ticket.price)}
-                                                    </p>
-                                                </div>
+                        <CheckoutTicketSelectionSection
+                            isSeatCheckout={isSeatCheckout}
+                            lockedSeats={lockedSeats}
+                            tickets={tickets}
+                            updateQuantity={updateQuantity}
+                            totalTickets={totalTickets}
+                        />
 
-                                                <div className="flex items-center justify-between gap-4 sm:justify-end">
-                                                    <div className="inline-flex items-center rounded-full border border-(--border) bg-(--surface-muted) p-1 shadow-(--shadow-xs)">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => updateQuantity(ticket.ticketTypeId, -1)}
-                                                            disabled={ticket.quantity === 0 || isSeatCheckout}
-                                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-(--text-secondary) transition-colors duration-200 hover:bg-white hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
-                                                            aria-label={`Kurangi ${ticket.name}`}
-                                                        >
-                                                            <Minus className="h-4 w-4" />
-                                                        </button>
-                                                        <span className="inline-flex min-w-12 items-center justify-center text-sm font-semibold text-foreground">
-                                                            {ticket.quantity}
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => updateQuantity(ticket.ticketTypeId, 1)}
-                                                            disabled={ticket.quantity >= ticket.maxPerOrder || isSeatCheckout}
-                                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-(--text-secondary) transition-colors duration-200 hover:bg-white hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
-                                                            aria-label={`Tambah ${ticket.name}`}
-                                                        >
-                                                            <Plus className="h-4 w-4" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {totalTickets === 0 ? (
-                                <CheckoutCallout
-                                    tone="warning"
-                                    title="Belum ada tiket di pesanan"
-                                    description="Pilih minimal satu tiket agar proses checkout bisa dilanjutkan."
-                                />
-                            ) : null}
-                        </CheckoutCard>
-
-                        <CheckoutCard
-                            title="Informasi pembeli"
-                            description="Data ini dipakai untuk konfirmasi booking, pengiriman instruksi pembayaran, dan e-ticket."
-                            icon={User}
-                        >
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <label className="space-y-2 sm:col-span-2">
-                                    <span className="text-sm font-semibold text-foreground">Nama lengkap *</span>
-                                    <div className="relative">
-                                        <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
-                                        <input
-                                            type="text"
-                                            value={guestName}
-                                            onChange={(e) => setGuestName(e.target.value)}
-                                            className="w-full rounded-2xl border border-(--border) bg-(--surface) px-12 py-3.5 text-sm text-foreground shadow-(--shadow-xs) outline-none transition-colors duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus)"
-                                            placeholder="John Doe"
-                                        />
-                                    </div>
-                                </label>
-
-                                <label className="space-y-2">
-                                    <span className="text-sm font-semibold text-foreground">Email *</span>
-                                    <div className="relative">
-                                        <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
-                                        <input
-                                            type="email"
-                                            value={guestEmail}
-                                            onChange={(e) => setGuestEmail(e.target.value)}
-                                            className="w-full rounded-2xl border border-(--border) bg-(--surface) px-12 py-3.5 text-sm text-foreground shadow-(--shadow-xs) outline-none transition-colors duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus)"
-                                            placeholder="email@example.com"
-                                        />
-                                    </div>
-                                </label>
-
-                                <label className="space-y-2">
-                                    <span className="text-sm font-semibold text-foreground">No. WhatsApp</span>
-                                    <div className="relative">
-                                        <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
-                                        <input
-                                            type="tel"
-                                            value={guestPhone}
-                                            onChange={(e) => setGuestPhone(e.target.value)}
-                                            className="w-full rounded-2xl border border-(--border) bg-(--surface) px-12 py-3.5 text-sm text-foreground shadow-(--shadow-xs) outline-none transition-colors duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus)"
-                                            placeholder="08123456789"
-                                        />
-                                    </div>
-                                </label>
-                            </div>
-                        </CheckoutCard>
+                        <CheckoutTrustPanel
+                            title="Secure Booking Guaranteed"
+                            description="Transaksi checkout tetap memakai guard dan pricing flow Gelaran, dengan status booking terenkripsi serta tervalidasi sebelum pembayaran diteruskan."
+                            badge="Verified by Gelaran"
+                        />
                     </div>
 
-                    <aside className="xl:sticky xl:top-28">
-                        <CheckoutCard
-                            title="Ringkasan checkout"
-                            description="Semua komponen biaya dihitung ulang sebelum kamu diarahkan ke pembayaran."
-                            icon={Wallet}
-                            className="space-y-0"
-                        >
-                            <div className="space-y-5">
-                                <div className="space-y-3">
-                                    {(isSeatCheckout ? lockedSeats : selectedTickets).length > 0 ? (
-                                        isSeatCheckout ? (
-                                            lockedSeats.map((seat) => (
-                                                <div key={seat.id} className="flex items-start justify-between gap-3 rounded-2xl border border-(--border-light) bg-(--surface) px-4 py-3 shadow-(--shadow-xs)">
-                                                    <div>
-                                                        <p className="text-sm font-semibold text-foreground">{seat.seatLabel}</p>
-                                                        <p className="mt-1 text-sm text-(--text-secondary)">{seat.ticketTypeName}</p>
-                                                    </div>
-                                                    <p className="text-sm font-semibold text-foreground">{formatCurrency(seat.price)}</p>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            selectedTickets.map((ticket) => (
-                                                <div key={ticket.ticketTypeId} className="flex items-start justify-between gap-3 rounded-2xl border border-(--border-light) bg-(--surface) px-4 py-3 shadow-(--shadow-xs)">
-                                                    <div>
-                                                        <p className="text-sm font-semibold text-foreground">{ticket.name}</p>
-                                                        <p className="mt-1 text-sm text-(--text-secondary)">{ticket.quantity} × {ticket.price === 0 ? "Gratis" : formatCurrency(ticket.price)}</p>
-                                                    </div>
-                                                    <p className="text-sm font-semibold text-foreground">{formatCurrency(ticket.price * ticket.quantity)}</p>
-                                                </div>
-                                            ))
-                                        )
-                                    ) : (
-                                        <div className="rounded-2xl border border-dashed border-(--border-strong) bg-(--surface-muted) px-4 py-5 text-center text-sm leading-6 text-(--text-secondary)">
-                                            Belum ada tiket yang masuk ke ringkasan pesanan.
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="space-y-3 rounded-3xl border border-(--border-light) bg-(--surface-muted) p-4 shadow-(--shadow-xs)">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                                        <Tag className="h-4 w-4 text-(--accent-primary)" />
-                                        Voucher diskon
-                                    </div>
-                                    <div className="flex flex-col gap-2 sm:flex-row">
-                                        <input
-                                            type="text"
-                                            value={promoInput}
-                                            onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                                            placeholder="Masukkan kode voucher"
-                                            className="min-w-0 flex-1 rounded-full border border-(--border) bg-white px-4 py-3 text-sm text-foreground shadow-(--shadow-xs) outline-none transition-colors duration-200 placeholder:text-(--text-muted) focus:border-(--border-focus)"
-                                        />
-                                        {appliedPromoCode ? (
-                                            <button
-                                                type="button"
-                                                onClick={removePromoCode}
-                                                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[rgba(217,79,61,0.22)] bg-white px-4 py-3 text-sm font-semibold text-(--error-text) transition-colors duration-200 hover:bg-(--error-bg)"
-                                            >
-                                                Hapus
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={applyPromoCode}
-                                                className="inline-flex min-h-12 items-center justify-center rounded-full bg-(--accent-primary) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-sm) transition-colors duration-200 hover:bg-(--accent-primary-hover)"
-                                            >
-                                                Pakai
-                                            </button>
-                                        )}
-                                    </div>
-                                    {promoMessage ? (
-                                        <CheckoutCallout
-                                            tone={promoTone}
-                                            title={pricingData?.promoApplied ? "Voucher diterapkan" : "Status voucher"}
-                                            description={promoMessage}
-                                            className="rounded-[1.25rem]"
-                                        />
-                                    ) : null}
-                                </div>
-
-                                <div className="space-y-3 rounded-3xl border border-(--border-light) bg-(--surface) p-4 shadow-(--shadow-xs)">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                                        <CreditCard className="h-4 w-4 text-(--accent-primary)" />
-                                        Rincian biaya
-                                    </div>
-                                    <div className="space-y-2 text-sm text-(--text-secondary)">
-                                        <div className="flex items-center justify-between gap-3">
-                                            <span>Subtotal</span>
-                                            <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
-                                        </div>
-                                        {(pricingData?.discountAmount || 0) > 0 ? (
-                                            <div className="flex items-center justify-between gap-3 text-(--success-text)">
-                                                <span>Diskon voucher</span>
-                                                <span className="font-medium">-{formatCurrency(pricingData?.discountAmount || 0)}</span>
-                                            </div>
-                                        ) : null}
-                                        <div className="flex items-center justify-between gap-3">
-                                            <span>Platform fee (5%)</span>
-                                            <span className="font-medium text-foreground">{formatCurrency(platformFee)}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between gap-3">
-                                            <span>{pricingData?.taxLabel || "PPN (11%)"}</span>
-                                            <span className="font-medium text-foreground">{formatCurrency(tax)}</span>
-                                        </div>
-                                        <div className="mt-3 border-t border-dashed border-(--border) pt-3">
-                                            <div className="flex items-center justify-between gap-3">
-                                                <span className="text-base font-semibold text-foreground">Total pembayaran</span>
-                                                <span className="text-lg font-semibold text-(--accent-secondary)">{formatCurrency(total)}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {isPaidCheckoutBlocked ? (
-                                    <CheckoutCallout
-                                        tone="warning"
-                                        title="Pembayaran online belum tersedia"
-                                        description="Tahap implementasi saat ini hanya mengizinkan order gratis atau flow pembayaran yang memang sudah diaktifkan di environment aplikasi."
-                                    />
-                                ) : (
-                                    <CheckoutCallout
-                                        tone="info"
-                                        title={total === 0 ? "Pesanan gratis siap dikonfirmasi" : "Kamu akan diarahkan ke pembayaran"}
-                                        description={
-                                            total === 0
-                                                ? "Setelah konfirmasi, booking akan langsung diproses ke halaman sukses tanpa langkah pembayaran tambahan."
-                                                : "Gelaran akan membuat booking lebih dulu lalu mengarahkan kamu ke payment gateway atau mode demo yang aktif."
-                                        }
-                                    />
-                                )}
-
-                                {error ? (
-                                    <CheckoutCallout tone="error" title="Checkout belum dapat diproses" description={error} />
-                                ) : null}
-
-                                <div className="space-y-3">
-                                    <button
-                                        type="button"
-                                        onClick={handleCheckout}
-                                        disabled={totalTickets === 0 || isProcessing || isPaidCheckoutBlocked}
-                                        className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3.5 text-sm font-semibold text-white shadow-(--shadow-md) transition-all duration-200 hover:-translate-y-0.5 hover:bg-(--accent-secondary-hover) disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
-                                    >
-                                        {isProcessing ? (
-                                            <>
-                                                <Loader2 className="h-5 w-5 animate-spin" />
-                                                Memproses checkout...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <CreditCard className="h-5 w-5" />
-                                                {total === 0 ? "Konfirmasi pesanan gratis" : isPaidCheckoutBlocked ? "Pembayaran belum tersedia" : "Lanjut ke pembayaran"}
-                                            </>
-                                        )}
-                                    </button>
-
-                                    <p className="text-center text-xs leading-6 text-(--text-muted)">
-                                        Dengan melanjutkan, kamu menyetujui syarat dan ketentuan Gelaran serta kebijakan yang berlaku untuk event ini.
-                                    </p>
-                                </div>
-                            </div>
-                        </CheckoutCard>
-                    </aside>
+                    <CheckoutSummaryAside
+                        event={event}
+                        isSeatCheckout={isSeatCheckout}
+                        lockedSeats={lockedSeats}
+                        selectedTickets={selectedTickets}
+                        promoInput={promoInput}
+                        setPromoInput={setPromoInput}
+                        appliedPromoCode={appliedPromoCode}
+                        removePromoCode={removePromoCode}
+                        applyPromoCode={applyPromoCode}
+                        promoMessage={promoMessage}
+                        promoTone={promoTone}
+                        pricingData={pricingData}
+                        subtotal={subtotal}
+                        platformFee={platformFee}
+                        tax={tax}
+                        total={total}
+                        isPaidCheckoutBlocked={isPaidCheckoutBlocked}
+                        error={error}
+                        handleCheckout={handleCheckout}
+                        totalTickets={totalTickets}
+                        isProcessing={isProcessing}
+                    />
                 </div>
             </CheckoutPageShell>
 
-            {showDemoModal ? (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(15,23,42,0.55)] p-4 backdrop-blur-sm">
-                    <div className="w-full max-w-lg rounded-[calc(var(--radius-3xl)+0.25rem)] border border-(--border) bg-[rgba(255,255,255,0.94)] p-6 shadow-(--shadow-2xl) backdrop-blur-xl sm:p-8">
-                        {demoPaymentStatus === "success" ? (
-                            <div className="space-y-5 text-center">
-                                <span className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-[1.75rem] bg-(--success-bg) text-(--success) shadow-(--shadow-sm)">
-                                    <CheckCircle2 className="h-9 w-9" />
-                                </span>
-                                <div className="space-y-2">
-                                    <h3 className="font-(--font-editorial) text-3xl tracking-(--tracking-display) text-foreground">
-                                        Pembayaran demo berhasil
-                                    </h3>
-                                    <p className="text-sm leading-6 text-(--text-secondary)">
-                                        Booking sedang diarahkan ke halaman sukses checkout Gelaran.
-                                    </p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="space-y-6">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="space-y-2">
-                                        <span className="inline-flex rounded-full border border-[rgba(251,193,23,0.3)] bg-(--warning-bg) px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-(--warning-text)">
-                                            Demo payment
-                                        </span>
-                                        <h3 className="font-(--font-editorial) text-3xl tracking-(--tracking-display) text-foreground">
-                                            Simulasikan pembayaran checkout
-                                        </h3>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setShowDemoModal(false);
-                                            setDemoPaymentStatus("idle");
-                                        }}
-                                        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-(--border) bg-white text-(--text-secondary) transition-colors duration-200 hover:text-foreground"
-                                        disabled={demoPaymentStatus === "processing"}
-                                        aria-label="Tutup demo payment"
-                                    >
-                                        <X className="h-5 w-5" />
-                                    </button>
-                                </div>
-
-                                <CheckoutCallout
-                                    tone="warning"
-                                    title="Mode simulasi aktif"
-                                    description="Tidak ada transaksi nyata yang diproses. Alur ini hanya dipakai untuk menguji state checkout dan outcome page."
-                                    icon={Zap}
-                                />
-
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                    <BookingCodePill bookingCode={pendingBookingCode} label="Booking code" />
-                                    <div className="rounded-2xl border border-(--border-light) bg-(--surface-muted) px-4 py-3 shadow-(--shadow-xs)">
-                                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">Total simulasi</p>
-                                        <p className="mt-2 text-base font-semibold text-(--accent-secondary)">{formatCurrency(total)}</p>
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={handleDemoPayment}
-                                    disabled={demoPaymentStatus === "processing"}
-                                    className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-linear-to-r from-amber-500 to-orange-500 px-6 py-3.5 text-sm font-semibold text-white shadow-(--shadow-md) transition-transform duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
-                                >
-                                    {demoPaymentStatus === "processing" ? (
-                                        <>
-                                            <Loader2 className="h-5 w-5 animate-spin" />
-                                            Memproses demo...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Zap className="h-5 w-5" />
-                                            Simulasi pembayaran berhasil
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            ) : null}
+            <DemoPaymentDialog
+                show={showDemoModal}
+                demoPaymentStatus={demoPaymentStatus}
+                demoDialogTitleId={demoDialogTitleId}
+                demoDialogDescriptionId={demoDialogDescriptionId}
+                demoCloseButtonRef={demoCloseButtonRef}
+                setShowDemoModal={setShowDemoModal}
+                setDemoPaymentStatus={setDemoPaymentStatus}
+                pendingBookingCode={pendingBookingCode}
+                total={total}
+                handleDemoPayment={handleDemoPayment}
+            />
         </>
     );
 }

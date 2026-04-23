@@ -12,7 +12,7 @@
     "test:demo-mode": "node --import tsx --test lib/demo-mode.test.ts",
     "test:logging": "node --import tsx --test lib/logging-request.test.ts",
     "test:platform-settings": "node --import tsx --test lib/platform-settings.test.ts",
-    "test": "pnpm run test:env && pnpm run test:demo-mode && pnpm run test:logging && pnpm run test:platform-settings && pnpm run test:layout-fonts && pnpm run test:prisma-config && pnpm run test:complimentary-flow && pnpm run test:cron-auth && pnpm run test:stage-guard && pnpm run test:payments && pnpm run test:rate-limit && pnpm run test:health && pnpm run test:auth-route-coverage",
+    "test": "pnpm run test:env && pnpm run test:demo-mode && pnpm run test:logging && pnpm run test:platform-settings && pnpm run test:layout-fonts && pnpm run test:prisma-config && pnpm run test:complimentary-flow && pnpm run test:cron-auth && pnpm run test:stage-guard && pnpm run test:payments && pnpm run test:rate-limit && pnpm run test:health && pnpm run test:auth-route-coverage && pnpm run test:auth-recovery-ui && pnpm run test:route-contracts",
     "verify": "pnpm run lint && pnpm run test && pnpm run typecheck && pnpm run build:verify",
     "build:verify": "node scripts/run-build-with-ci-env.mjs",
     "test:layout-fonts": "node --import tsx --test lib/layout-fonts.test.ts",
@@ -25,7 +25,9 @@
     "test:payments": "node --import tsx --test lib/payments/audit-payloads.test.ts lib/payments/idempotency.test.ts lib/payments/webhook-transitions.test.ts lib/payments/pos-retry.test.ts",
     "test:rate-limit": "node --import tsx --test lib/rate-limit.test.ts",
     "test:health": "node --import tsx --test lib/health.test.ts",
-    "test:auth-route-coverage": "node --import tsx --test lib/auth/route-auth-coverage.test.ts"
+    "test:auth-route-coverage": "node --import tsx --test lib/auth/route-auth-coverage.test.ts",
+    "test:auth-recovery-ui": "node --import tsx --test lib/auth-recovery-ui.test.ts",
+    "test:route-contracts": "node --import tsx --test lib/route-contracts.test.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -68,6 +70,7 @@
     "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "playwright": "^1.59.1",
     "prisma": "^6.19.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import Link from "next/link";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -58,9 +58,10 @@ export function DiscoveryHero({
     );
 }
 
-export function DiscoveryPanel({ children, className }: { children: ReactNode; className?: string }) {
+export function DiscoveryPanel({ children, className, ...props }: ComponentPropsWithoutRef<"div">) {
     return (
         <div
+            {...props}
             className={cn(
                 "rounded-[calc(var(--radius-3xl)+0.25rem)] border border-(--border) bg-[rgba(255,255,255,0.82)] shadow-(--shadow-lg) backdrop-blur-xl",
                 className,

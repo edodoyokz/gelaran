@@ -354,9 +354,9 @@ export async function POST(request: NextRequest) {
                     phone: existingBooking.guestPhone || "",
                 },
                 callbacks: {
-                    finish: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-success?booking=${existingBooking.bookingCode}`,
-                    error: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-failed?booking=${existingBooking.bookingCode}`,
-                    pending: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-pending?booking=${existingBooking.bookingCode}`,
+                    finish: `${env.NEXT_PUBLIC_APP_URL}/pos/payment-success?booking=${existingBooking.bookingCode}`,
+                    error: `${env.NEXT_PUBLIC_APP_URL}/pos/payment-failed?booking=${existingBooking.bookingCode}`,
+                    pending: `${env.NEXT_PUBLIC_APP_URL}/pos/payment-pending?booking=${existingBooking.bookingCode}`,
                 },
                 expiry: {
                     unit: "minutes",
@@ -656,9 +656,9 @@ export async function POST(request: NextRequest) {
                 phone: buyerPhone || "",
             },
             callbacks: {
-                finish: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-success?booking=${bookingCode}`,
-                error: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-failed?booking=${bookingCode}`,
-                pending: `${process.env.NEXT_PUBLIC_APP_URL}/pos/payment-pending?booking=${bookingCode}`,
+                finish: `${env.NEXT_PUBLIC_APP_URL}/pos/payment-success?booking=${bookingCode}`,
+                error: `${env.NEXT_PUBLIC_APP_URL}/pos/payment-failed?booking=${bookingCode}`,
+                pending: `${env.NEXT_PUBLIC_APP_URL}/pos/payment-pending?booking=${bookingCode}`,
             },
             expiry: {
                 unit: "minutes",

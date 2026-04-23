@@ -22,6 +22,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface NavbarProps {
     transparent?: boolean;
+    className?: string;
 }
 
 interface UserProfile {
@@ -32,7 +33,25 @@ interface UserProfile {
     avatarUrl: string | null;
 }
 
-export function Navbar({ transparent = true }: NavbarProps) {
+interface NavLinkItem {
+    href: string;
+    label: string;
+    icon?: typeof BookOpen;
+    desktopLabel?: string;
+    requiresAuth?: boolean;
+}
+
+const primaryNavItems: NavLinkItem[] = [
+    { href: "/organizer", label: "Buat Event", icon: LayoutDashboard },
+    { href: "/docs", label: "Bantuan & Dokumentasi", desktopLabel: "Bantuan", icon: BookOpen },
+];
+
+const authenticatedNavItems: NavLinkItem[] = [
+    { href: "/wishlist", label: "Wishlist", icon: Heart, requiresAuth: true },
+    { href: "/profile", label: "Pengaturan", icon: Settings, requiresAuth: true },
+];
+
+export function Navbar({ transparent = true, className }: NavbarProps) {
     const router = useRouter();
     const [isScrolled, setIsScrolled] = useState(false);
     const [user, setUser] = useState<SupabaseUser | null>(null);
@@ -145,81 +164,98 @@ export function Navbar({ transparent = true }: NavbarProps) {
             .slice(0, 2);
     };
 
+    const renderDesktopNavLink = (item: NavLinkItem) => {
+        const Icon = item.icon;
+
+        return (
+            <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                    "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] transition-colors",
+                    showBackground
+                        ? "text-[var(--text-secondary)] hover:bg-[var(--surface-editorial)] hover:text-[var(--accent-primary)]"
+                        : "text-white/88 hover:bg-white/10 hover:text-white"
+                )}
+            >
+                {Icon ? <Icon size={18} /> : null}
+                <span className={cn(item.desktopLabel ? "hidden lg:inline" : undefined)}>{item.desktopLabel ?? item.label}</span>
+            </Link>
+        );
+    };
+
+    const renderMobileNavLink = (item: NavLinkItem) => {
+        const Icon = item.icon;
+
+        return (
+            <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-4 rounded-2xl px-4 py-4 text-lg font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-hover)] active:bg-[var(--surface-elevated)]"
+            >
+                {Icon ? <Icon size={22} className="text-[var(--text-muted)]" /> : null}
+                {item.label}
+            </Link>
+        );
+    };
+
     return (
         <>
             <nav
                 className={cn(
                     "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
                     showBackground
-                        ? "bg-white/90 backdrop-blur-xl shadow-sm py-3 border-b border-white/20"
-                        : "bg-transparent py-5"
+                        ? "border-b border-[var(--shell-nav-border)] bg-[var(--shell-nav-bg-strong)] py-3 shadow-[var(--shell-nav-shadow)] backdrop-blur-2xl"
+                        : "bg-transparent py-5",
+                    className
                 )}
             >
-                <div className="container mx-auto px-4 flex items-center justify-between">
+                <div className="container mx-auto flex items-center justify-between gap-6 px-4 md:px-6">
                     <Link
                         href="/"
                         className={cn(
-                            "text-2xl font-bold tracking-tighter relative z-50 transition-colors",
-                            showBackground ? "text-indigo-600" : "text-white"
+                            "relative z-50 flex flex-col transition-colors",
+                            showBackground ? "text-[var(--accent-primary)]" : "text-white"
                         )}
                     >
-                        Gelaran
-                        <span className={showBackground ? "text-gray-800" : "text-white/90"}>
-                            .id
+                        <span className="font-[var(--font-editorial)] text-[1.85rem] font-bold leading-none tracking-[-0.05em]">Gelaran</span>
+                        <span className={cn(
+                            "mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.3em]",
+                            showBackground ? "text-[var(--text-secondary)]" : "text-white/72"
+                        )}>
+                            Cultural Curator
                         </span>
                     </Link>
 
-                    <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+                    <div className="hidden md:flex items-center flex-1 max-w-md mx-4 lg:mx-8">
                         {showBackground && (
                             <div className="relative w-full group">
                                 <input
                                     type="text"
                                     placeholder="Cari konser, seminar..."
-                                    className="w-full pl-10 pr-4 py-2.5 rounded-full bg-[var(--surface-elevated)]/50 border border-transparent focus:bg-[var(--surface)] focus:border-[var(--accent-primary)]/20 focus:ring-4 focus:ring-[var(--accent-primary)]/10 text-[var(--text-primary)] text-sm outline-none transition-all duration-300"
+                                    className="w-full rounded-full border border-[rgba(1,89,89,0.1)] bg-[var(--bg-public-panel)] py-3 pr-4 pl-10 text-sm text-[var(--text-primary)] outline-none transition-all duration-300 focus:border-[var(--accent-primary)]/20 focus:bg-[var(--surface)] focus:ring-4 focus:ring-[var(--accent-primary)]/10"
                                 />
                                 <Search className="absolute left-3 top-2.5 text-[var(--text-muted)] group-focus-within:text-[var(--accent-primary)] transition-colors" size={18} />
                             </div>
                         )}
                     </div>
 
-                    <div className="hidden md:flex items-center space-x-4">
-                        <Link
-                            href="/organizer"
-                            className={cn(
-                                "font-medium transition-colors px-4 py-2 rounded-full",
-                                showBackground
-                                    ? "text-[var(--text-secondary)] hover:text-[var(--accent-primary)] hover:bg-[var(--surface-hover)]"
-                                    : "text-white/90 hover:text-white hover:bg-white/10"
-                            )}
-                        >
-                            Buat Event
-                        </Link>
-
-                        <Link
-                            href="/docs"
-                            className={cn(
-                                "font-medium transition-colors px-4 py-2 rounded-full flex items-center gap-2",
-                                showBackground
-                                    ? "text-[var(--text-secondary)] hover:text-[var(--accent-primary)] hover:bg-[var(--surface-hover)]"
-                                    : "text-white/90 hover:text-white hover:bg-white/10"
-                            )}
-                        >
-                            <BookOpen size={18} />
-                            <span className="hidden lg:inline">Bantuan</span>
-                        </Link>
+                    <div className="hidden md:flex items-center gap-2 lg:gap-3">
+                        {primaryNavItems.map(renderDesktopNavLink)}
 
                         {isLoading ? (
-                            <div className="w-24 h-10 bg-[var(--bg-tertiary)] animate-pulse rounded-full" />
+                            <div className="h-10 w-24 animate-pulse rounded-full bg-[var(--bg-tertiary)]" />
                         ) : user && profile ? (
                             <div className="relative" ref={dropdownRef}>
                                 <button
                                     type="button"
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                     className={cn(
-                                        "flex items-center gap-2 px-2 py-1.5 pr-3 rounded-full font-medium transition-all duration-300",
+                                        "flex items-center gap-2 rounded-full px-2 py-1.5 pr-3 font-medium transition-all duration-300",
                                         showBackground
-                                            ? "bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] hover:border-[var(--accent-primary)]/30 hover:shadow-md"
-                                            : "bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10"
+                                            ? "border border-[rgba(1,89,89,0.1)] bg-[var(--bg-public-panel)] text-[var(--text-primary)] hover:border-[var(--accent-primary)]/30 hover:shadow-md"
+                                            : "border border-white/12 bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
                                     )}
                                 >
                                     {profile.avatarUrl ? (
@@ -244,11 +280,11 @@ export function Navbar({ transparent = true }: NavbarProps) {
                                 </button>
 
                                 {isDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-72 bg-[var(--surface)] rounded-2xl shadow-xl border border-[var(--border)] py-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                                        <div className="px-5 py-4 border-b border-[var(--border)] bg-[var(--surface-elevated)]/50">
+                                    <div className="absolute right-0 z-50 mt-2 w-72 overflow-hidden rounded-[1.75rem] border border-[rgba(1,89,89,0.12)] bg-[var(--surface-editorial-strong)] py-2 shadow-[var(--shadow-lg)] animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div className="border-b border-[var(--border)] bg-[var(--surface-editorial)] px-5 py-4">
                                             <p className="font-bold text-[var(--text-primary)] truncate text-lg">{profile.name}</p>
                                             <p className="text-sm text-[var(--text-secondary)] truncate mb-2">{profile.email}</p>
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--info-bg)] text-[var(--info-text)] capitalize">
+                                            <span className="inline-flex items-center rounded-full bg-[var(--surface-chip)] px-2.5 py-0.5 text-xs font-medium capitalize text-[var(--info-text)]">
                                                 {profile.role.toLowerCase().replace("_", " ")}
                                             </span>
                                         </div>
@@ -313,10 +349,10 @@ export function Navbar({ transparent = true }: NavbarProps) {
                             <Link
                                 href="/login"
                                 className={cn(
-                                    "flex items-center space-x-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 shadow-glow",
+                                    "flex items-center space-x-2 rounded-2xl px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] transition-all duration-300",
                                     showBackground
-                                        ? "bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary-hover)] hover:-translate-y-0.5"
-                                        : "bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-white/20"
+                                        ? "bg-[var(--accent-secondary)] text-white shadow-[0_18px_40px_rgba(249,93,0,0.22)] hover:-translate-y-0.5 hover:bg-[var(--accent-secondary-hover)]"
+                                        : "border border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white/20"
                                 )}
                             >
                                 <User size={18} />
@@ -329,9 +365,9 @@ export function Navbar({ transparent = true }: NavbarProps) {
                         type="button"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className={cn(
-                            "md:hidden p-2 rounded-xl transition-colors relative z-50 min-w-[44px] min-h-[44px] flex items-center justify-center",
+                            "relative z-50 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl p-2 transition-colors md:hidden",
                             showBackground
-                                ? "text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
+                                ? "text-[var(--text-primary)] hover:bg-[var(--surface-editorial)]"
                                 : "text-white hover:bg-white/10"
                         )}
                         aria-label="Toggle menu"
@@ -341,7 +377,9 @@ export function Navbar({ transparent = true }: NavbarProps) {
                 </div>
             </nav>
 
-            <div
+            <button
+                type="button"
+                aria-label="Close mobile menu overlay"
                 className={cn(
                     "fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300",
                     isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -351,17 +389,17 @@ export function Navbar({ transparent = true }: NavbarProps) {
 
             <div
                 className={cn(
-                    "fixed top-0 right-0 bottom-0 w-[85%] max-w-[320px] bg-[var(--surface)] z-50 md:hidden shadow-2xl transition-transform duration-300 ease-out flex flex-col",
+                    "fixed top-0 right-0 bottom-0 z-50 flex w-[85%] max-w-[320px] flex-col bg-[var(--surface-editorial-strong)] shadow-2xl transition-transform duration-300 ease-out md:hidden",
                     isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
                 )}
             >
-                <div className="p-5 pt-24 flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto p-5 pt-24">
                     <div className="mb-8">
                         <div className="relative">
                             <input
                                 type="text"
                                 placeholder="Cari event..."
-                                className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border)] focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)] text-base outline-none transition-all text-[var(--text-primary)]"
+                                className="w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-public-panel)] py-3 pr-4 pl-11 text-base text-[var(--text-primary)] outline-none transition-all focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/20"
                             />
                             <Search className="absolute left-4 top-3.5 text-[var(--text-muted)]" size={20} />
                         </div>
@@ -411,7 +449,7 @@ export function Navbar({ transparent = true }: NavbarProps) {
                                 <Link
                                     href="/login"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex items-center justify-center gap-2 w-full py-4 bg-[var(--accent-primary)] text-white rounded-2xl font-bold text-lg shadow-glow active:scale-95 transition-all"
+                                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--accent-secondary)] py-4 text-lg font-bold text-white shadow-[0_18px_40px_rgba(249,93,0,0.22)] transition-all active:scale-95"
                                 >
                                     <User size={20} />
                                     Masuk / Daftar
@@ -423,45 +461,15 @@ export function Navbar({ transparent = true }: NavbarProps) {
                             <Link
                                 href="/"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 px-4 py-4 text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-2xl font-medium text-lg active:bg-[var(--surface-elevated)] transition-colors"
+                                className="flex items-center gap-4 rounded-2xl px-4 py-4 text-lg font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-hover)] active:bg-[var(--surface-elevated)]"
                             >
                                 <Search size={22} className="text-[var(--text-muted)]" />
                                 Jelajahi Event
                             </Link>
-                            <Link
-                                href="/organizer"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 px-4 py-4 text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-2xl font-medium text-lg active:bg-[var(--surface-elevated)] transition-colors"
-                            >
-                                <LayoutDashboard size={22} className="text-[var(--text-muted)]" />
-                                Buat Event
-                            </Link>
-                            <Link
-                                href="/docs"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 px-4 py-4 text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-2xl font-medium text-lg active:bg-[var(--surface-elevated)] transition-colors"
-                            >
-                                <BookOpen size={22} className="text-[var(--text-muted)]" />
-                                Bantuan & Dokumentasi
-                            </Link>
+                            {primaryNavItems.map(renderMobileNavLink)}
                             {user && (
                                 <>
-                                    <Link
-                                        href="/wishlist"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="flex items-center gap-4 px-4 py-4 text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-2xl font-medium text-lg active:bg-[var(--surface-elevated)] transition-colors"
-                                    >
-                                        <Heart size={22} className="text-[var(--text-muted)]" />
-                                        Wishlist
-                                    </Link>
-                                    <Link
-                                        href="/profile"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="flex items-center gap-4 px-4 py-4 text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-2xl font-medium text-lg active:bg-[var(--surface-elevated)] transition-colors"
-                                    >
-                                        <Settings size={22} className="text-[var(--text-muted)]" />
-                                        Pengaturan
-                                    </Link>
+                                    {authenticatedNavItems.map(renderMobileNavLink)}
                                 </>
                             )}
                         </div>

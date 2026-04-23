@@ -3,6 +3,8 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createClient } from "@/lib/supabase/server";
 import type { BookingStatus, PrismaTransactionClient } from "@/types/prisma";
 import type { Decimal } from "@prisma/client/runtime/library";
+import { createAdminClient } from "@/lib/supabase/server";
+import { createPaymentProofReadUrl } from "@/lib/storage/payment-proof";
 
 interface BookedTicketForDisplay {
     id: string;
@@ -136,6 +138,10 @@ export async function GET(
                         amount: true,
                         status: true,
                         paidAt: true,
+                        paymentProofUrl: true,
+                        paymentProofUploadedAt: true,
+                        verificationStatus: true,
+                        verificationNotes: true,
                     },
                 },
                 refunds: {
@@ -166,6 +172,12 @@ export async function GET(
         const isUpcoming = booking.eventSchedule
             ? new Date(booking.eventSchedule.scheduleDate) > new Date()
             : false;
+        let paymentProofUrl: string | null = null;
+
+        if (booking.transaction) {
+            const storage = createAdminClient();
+            paymentProofUrl = await createPaymentProofReadUrl(storage, booking.transaction.paymentProofUrl);
+        }
 
         return successResponse({
             booking: {
@@ -187,6 +199,7 @@ export async function GET(
                     ? {
                           ...booking.transaction,
                           amount: booking.transaction.amount.toString(),
+                          paymentProofUrl,
                       }
                     : null,
                 refunds: booking.refunds.map((refund: RefundForDisplay) => ({

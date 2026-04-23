@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdminContext } from "@/lib/auth/route-auth";
 
 function toSafeNumber(value: unknown): number {
     const parsed = Number(value ?? 0);
@@ -9,19 +9,10 @@ function toSafeNumber(value: unknown): number {
 
 export async function GET() {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authContext = await requireAdminContext();
 
-        if (!user || !user.email) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const admin = await prisma.user.findUnique({
-            where: { email: user.email },
-        });
-
-        if (!admin || !["ADMIN", "SUPER_ADMIN"].includes(admin.role)) {
-            return errorResponse("Admin access required", 403);
+        if ("error" in authContext) {
+            return errorResponse(authContext.error, authContext.status);
         }
 
         const bookings = await prisma.booking.findMany({

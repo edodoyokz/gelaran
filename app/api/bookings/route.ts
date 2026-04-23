@@ -4,12 +4,13 @@ import { successResponse, errorResponse } from "@/lib/api/response";
 import { createRequestLogger } from "@/lib/logging/logger";
 import { attachRequestIdHeader, createRequestContext } from "@/lib/logging/request";
 import { createBookingSchema } from "@/lib/validators";
-import { createClient } from "@/lib/supabase/server";
 import { generateBookingCode } from "@/lib/utils";
 import { calculatePricing } from "@/lib/pricing/calculate";
 import { DEFAULT_PAYMENT_GATEWAY_FEE_PERCENTAGE, DEFAULT_PLATFORM_FEE_PERCENTAGE } from "@/lib/pricing/constants";
 import type { Decimal } from "@prisma/client/runtime/library";
 import type { PrismaTransactionClient } from "@/types/prisma";
+import { getOptionalAuthenticatedAppUser } from "@/lib/auth/route-auth";
+import { getLocalUserId } from "@/lib/auth/local-identity";
 
 interface TicketTypeRecord {
     id: string;
@@ -42,9 +43,13 @@ export async function POST(request: NextRequest) {
 
     try {
         logger.info("bookings.request_received", "Create booking request received");
-        // Get authenticated user (optional for guest checkout)
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authContext = await getOptionalAuthenticatedAppUser();
+
+        if (authContext && "error" in authContext) {
+            return fail(authContext.error, authContext.status);
+        }
+
+        const dbUserId = getLocalUserId(authContext);
 
         // Parse request body
         const body = await request.json();
@@ -67,7 +72,7 @@ export async function POST(request: NextRequest) {
         } = parsed.data;
 
         // Require either user or guest info
-        if (!user && !guestEmail) {
+        if (!dbUserId && !guestEmail) {
             return fail("Email is required for guest checkout", 400);
         }
 
@@ -355,7 +360,7 @@ export async function POST(request: NextRequest) {
             const newBooking = await tx.booking.create({
                 data: {
                     bookingCode,
-                    userId: user?.id || null,
+                    userId: dbUserId,
                     eventId,
                     eventScheduleId,
                     guestEmail: guestEmail || null,

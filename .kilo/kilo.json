@@ -1,0 +1,15 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "linear": {
+      "type": "local",
+      "command": [
+        "node",
+        "{{LINEAR_PATH}}/build/index.js"
+      ],
+      "environment": {
+        "LINEAR_API_KEY": ""
+      }
+    }
+  }
+}

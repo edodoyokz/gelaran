@@ -1,0 +1,136 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Gelaran Cultural Curator" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e6]: Gelaran
+          - generic [ref=e7]: Cultural Curator
+        - generic [ref=e9]:
+          - textbox "Cari konser, seminar..." [ref=e10]
+          - img [ref=e11]
+        - generic [ref=e14]:
+          - link "Buat Event" [ref=e15] [cursor=pointer]:
+            - /url: /organizer
+            - img [ref=e16]
+            - generic [ref=e21]: Buat Event
+          - link [ref=e22] [cursor=pointer]:
+            - /url: /docs
+            - img [ref=e23]
+    - main [ref=e26]:
+      - generic [ref=e29]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - generic [ref=e34]: The cultural curator
+              - generic [ref=e35]:
+                - heading "Discover the soul of Solo." [level=1] [ref=e36]
+                - paragraph [ref=e37]: Dari panggung tradisi hingga workshop kontemporer, Gelaran merangkai event budaya Surakarta dalam halaman depan yang terasa kuratorial, terang, dan mudah dipindai.
+            - generic [ref=e38]:
+              - link "Explore now" [ref=e39] [cursor=pointer]:
+                - /url: /events
+                - text: Explore now
+                - img [ref=e40]
+              - link "Become organizer" [ref=e42] [cursor=pointer]:
+                - /url: /become-organizer
+            - generic [ref=e43]:
+              - article [ref=e44]:
+                - paragraph [ref=e45]: Kategori aktif
+                - paragraph [ref=e46]: 0+
+              - article [ref=e47]:
+                - paragraph [ref=e48]: Event tayang
+                - paragraph [ref=e49]: "0"
+              - article [ref=e50]:
+                - paragraph [ref=e51]: Review unggulan
+                - paragraph [ref=e52]: "0"
+          - generic [ref=e53]:
+            - paragraph [ref=e54]: This week in Solo
+            - generic [ref=e55]: Featured event akan muncul setelah data publik dimuat.
+        - generic [ref=e57]:
+          - generic [ref=e59]:
+            - generic [ref=e60]: Browse by interest
+            - generic [ref=e61]:
+              - heading "Pilih ritme event yang ingin kamu ikuti" [level=2] [ref=e62]
+              - paragraph [ref=e63]: Kategori utama dirancang seperti rak editorial—mudah dipindai, ringan di mobile, dan langsung mengarahkan ke kumpulan event yang relevan.
+          - group "Filter kategori event" [ref=e66]:
+            - generic [ref=e67]: Filter kategori event
+            - button "Semua" [pressed] [ref=e69]:
+              - img [ref=e71]
+              - generic [ref=e74]: Semua
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e79]: Popular now
+              - generic [ref=e80]:
+                - heading "Event populer pilihan Gelaran" [level=2] [ref=e81]
+                - paragraph [ref=e82]: Koleksi utama ini memadukan event yang banyak dicari dengan presentasi kartu yang lebih konsisten, lapang, dan nyaman di berbagai ukuran layar.
+            - link "Lihat semua event" [ref=e84] [cursor=pointer]:
+              - /url: /events
+              - text: Lihat semua event
+              - img [ref=e85]
+          - generic [ref=e88]:
+            - img [ref=e89]
+            - paragraph [ref=e91]: Memuat kurasi event publik Gelaran.
+    - contentinfo [ref=e92]:
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - generic [ref=e97]:
+            - generic [ref=e98]: Cultural Ticketing
+            - heading "Gelaran ID" [level=3] [ref=e99]:
+              - text: Gelaran
+              - generic [ref=e100]: ID
+            - paragraph [ref=e101]: Platform manajemen event dan penjualan tiket terpercaya untuk pengalaman terbaik Anda.
+            - generic [ref=e102]:
+              - link [ref=e103] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e104]
+              - link [ref=e107] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e108]
+              - link [ref=e110] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e111]
+          - generic [ref=e115]:
+            - heading "Perusahaan" [level=4] [ref=e116]
+            - list [ref=e117]:
+              - listitem [ref=e118]:
+                - link "Tentang Kami" [ref=e119] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e120]:
+                - link "Hubungi Kami" [ref=e121] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e122]:
+                - link "Syarat & Ketentuan" [ref=e123] [cursor=pointer]:
+                  - /url: /terms
+          - generic [ref=e124]:
+            - heading "Dukungan" [level=4] [ref=e125]
+            - list [ref=e126]:
+              - listitem [ref=e127]:
+                - link "Kebijakan Privasi" [ref=e128] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e129]:
+                - link "Bantuan" [ref=e130] [cursor=pointer]:
+                  - /url: /help
+          - generic [ref=e131]:
+            - heading "Hubungi Kami" [level=4] [ref=e132]
+            - list [ref=e133]:
+              - listitem [ref=e134]:
+                - img [ref=e135]
+                - generic [ref=e138]: Jl. Jendral Sudirman No. 1, Jakarta Pusat
+              - listitem [ref=e139]:
+                - img [ref=e140]
+                - generic [ref=e143]: support@bsctickets.com
+              - listitem [ref=e144]:
+                - img [ref=e145]
+                - generic [ref=e147]: +62 21 5555 8888
+        - generic [ref=e148]:
+          - paragraph [ref=e149]: © 2026 Gelaran. All rights reserved.
+          - generic [ref=e150]:
+            - link "Privacy" [ref=e151] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e152] [cursor=pointer]:
+              - /url: /terms
+            - link "Sitemap" [ref=e153] [cursor=pointer]:
+              - /url: /sitemap
+  - button "Open Next.js Dev Tools" [ref=e159] [cursor=pointer]:
+    - img [ref=e160]

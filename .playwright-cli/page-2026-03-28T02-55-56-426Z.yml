@@ -1,0 +1,270 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e195] [cursor=pointer]:
+    - img [ref=e196]
+  - alert [ref=e207]
+  - generic [ref=e208]:
+    - banner [ref=e209]:
+      - generic [ref=e210]:
+        - link "Gelaran" [ref=e211] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=e212]:
+          - generic [ref=e213]: Cari event, organizer, atau kota
+          - generic [ref=e214]: search
+          - textbox "Cari event, organizer, atau kota" [ref=e215]:
+            - /placeholder: Cari event, organizer, atau kota...
+      - navigation [ref=e216]:
+        - link "Explore" [ref=e217] [cursor=pointer]:
+          - /url: /events
+        - link "Help" [ref=e218] [cursor=pointer]:
+          - /url: /docs/customer
+        - link "Partner" [ref=e219] [cursor=pointer]:
+          - /url: /partner
+      - generic [ref=e220]:
+        - button "Aktifkan tema gelap" [ref=e221]: dark_mode
+        - link "Buka notifikasi" [ref=e222] [cursor=pointer]:
+          - /url: /notifications
+          - text: notifications
+        - button "Buka menu profil" [ref=e224]:
+          - generic [ref=e226]: B
+          - paragraph [ref=e228]: Budi Santoso
+          - generic [ref=e229]: expand_more
+    - generic [ref=e230]:
+      - complementary [ref=e231]:
+        - generic [ref=e232]:
+          - paragraph [ref=e233]: Budi Santoso
+          - paragraph [ref=e234]: Cultural Curator
+        - navigation [ref=e235]:
+          - link "Overview" [ref=e236] [cursor=pointer]:
+            - /url: /dashboard
+            - generic [ref=e237]: dashboard
+            - generic [ref=e238]: Overview
+          - link "My Tickets" [ref=e239] [cursor=pointer]:
+            - /url: /my-bookings
+            - generic [ref=e240]: confirmation_number
+            - generic [ref=e241]: My Tickets
+          - link "Wishlist" [ref=e242] [cursor=pointer]:
+            - /url: /wishlist
+            - generic [ref=e243]: favorite
+            - generic [ref=e244]: Wishlist
+          - link "Following" [ref=e245] [cursor=pointer]:
+            - /url: /following
+            - generic [ref=e246]: group
+            - generic [ref=e247]: Following
+          - link "Notifications" [ref=e248] [cursor=pointer]:
+            - /url: /notifications
+            - generic [ref=e249]: notifications
+            - generic [ref=e250]: Notifications
+          - link "Settings" [ref=e251] [cursor=pointer]:
+            - /url: /profile
+            - generic [ref=e252]: settings
+            - generic [ref=e253]: Settings
+        - link "Book New Event" [ref=e254] [cursor=pointer]:
+          - /url: /events
+        - button "Logout" [ref=e256]:
+          - generic [ref=e257]: logout
+          - generic [ref=e258]: Logout
+      - main [ref=e259]:
+        - generic [ref=e261]:
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - generic [ref=e265]: Customer dashboard
+              - generic [ref=e266]:
+                - heading "Selamat Pagi, Budi" [level=1] [ref=e267]
+                - generic [ref=e268]: Pantau pesanan aktif, wishlist, dan rekomendasi event terbaru dari satu dashboard yang konsisten dengan alur customer Gelaran.
+              - generic [ref=e269]:
+                - generic [ref=e270]:
+                  - img [ref=e271]
+                  - text: 0 event mendatang
+                - generic [ref=e273]:
+                  - img [ref=e274]
+                  - text: 0 item wishlist
+            - generic [ref=e276]:
+              - link "Lihat Pesanan" [ref=e277] [cursor=pointer]:
+                - /url: /my-bookings
+                - img [ref=e278]
+                - text: Lihat Pesanan
+              - link "Jelajahi Event" [ref=e280] [cursor=pointer]:
+                - /url: /events
+                - img [ref=e281]
+                - text: Jelajahi Event
+          - generic [ref=e284]:
+            - link [ref=e285] [cursor=pointer]:
+              - /url: /my-bookings
+              - article [ref=e286]:
+                - generic [ref=e287]:
+                  - generic [ref=e288]:
+                    - paragraph [ref=e289]: Total Pesanan
+                    - generic [ref=e290]:
+                      - paragraph [ref=e291]: "9"
+                      - application [ref=e294]
+                  - img [ref=e301]
+                - paragraph [ref=e303]: +12% vs bulan lalu
+            - link [ref=e304] [cursor=pointer]:
+              - /url: /my-bookings?status=confirmed
+              - article [ref=e305]:
+                - generic [ref=e306]:
+                  - generic [ref=e307]:
+                    - paragraph [ref=e308]: Event Mendatang
+                    - generic [ref=e309]:
+                      - paragraph [ref=e310]: "0"
+                      - application [ref=e313]
+                  - img [ref=e320]
+                - paragraph [ref=e322]: Belum ada agenda aktif
+            - link [ref=e323] [cursor=pointer]:
+              - /url: /wishlist
+              - article [ref=e324]:
+                - generic [ref=e325]:
+                  - generic [ref=e326]:
+                    - paragraph [ref=e327]: Wishlist
+                    - generic [ref=e328]:
+                      - paragraph [ref=e329]: "0"
+                      - application [ref=e332]
+                  - img [ref=e339]
+                - paragraph [ref=e341]: Mulai simpan event favorit
+            - link [ref=e342] [cursor=pointer]:
+              - /url: /my-bookings
+              - article [ref=e343]:
+                - generic [ref=e344]:
+                  - generic [ref=e345]:
+                    - paragraph [ref=e346]: Total Belanja
+                    - generic [ref=e347]:
+                      - paragraph [ref=e348]: Rp 1.110.000
+                      - application [ref=e351]
+                  - img [ref=e358]
+                - paragraph [ref=e361]: Ringkasan pengeluaran sepanjang booking
+          - generic [ref=e362]:
+            - generic [ref=e363]:
+              - generic [ref=e365]:
+                - heading "Aktivitas booking" [level=2] [ref=e366]
+                - paragraph [ref=e367]: Ringkasan aktivitas booking dalam 6 bulan terakhir untuk membantu melihat ritme pembelian dan periode terpadat.
+              - application [ref=e370]:
+                - generic [ref=e380]:
+                  - generic [ref=e382]: Feb
+                  - generic [ref=e384]: Mar
+                  - generic [ref=e386]: Apr
+                  - generic [ref=e388]: May
+                  - generic [ref=e390]: Jun
+            - generic [ref=e391]:
+              - generic [ref=e393]:
+                - heading "Aksi cepat" [level=2] [ref=e394]
+                - paragraph [ref=e395]: Shortcut utama untuk melanjutkan aktivitas customer tanpa berpindah-pindah halaman.
+              - generic [ref=e396]:
+                - link "Kelola profil Perbarui data personal, alamat, preferensi bahasa, dan zona waktu akunmu. Buka profil" [ref=e397] [cursor=pointer]:
+                  - /url: /profile
+                  - generic [ref=e398]:
+                    - img [ref=e400]
+                    - generic [ref=e403]:
+                      - heading "Kelola profil" [level=3] [ref=e404]
+                      - paragraph [ref=e405]: Perbarui data personal, alamat, preferensi bahasa, dan zona waktu akunmu.
+                  - generic [ref=e406]:
+                    - text: Buka profil
+                    - img [ref=e407]
+                - link "Notifikasi terbaru Baca update booking, pengingat event, dan pemberitahuan sistem terbaru. Buka notifikasi" [ref=e409] [cursor=pointer]:
+                  - /url: /notifications
+                  - generic [ref=e410]:
+                    - img [ref=e412]
+                    - generic [ref=e415]:
+                      - heading "Notifikasi terbaru" [level=3] [ref=e416]
+                      - paragraph [ref=e417]: Baca update booking, pengingat event, dan pemberitahuan sistem terbaru.
+                  - generic [ref=e418]:
+                    - text: Buka notifikasi
+                    - img [ref=e419]
+          - generic [ref=e421]:
+            - generic [ref=e422]:
+              - generic [ref=e423]:
+                - heading "Event mendatang" [level=2] [ref=e424]
+                - paragraph [ref=e425]: Pesanan yang paling dekat dengan jadwal acara ditampilkan lebih dulu agar kamu bisa cepat mengakses tiket dan detail event.
+              - link "Lihat semua pesanan" [ref=e426] [cursor=pointer]:
+                - /url: /my-bookings
+                - text: Lihat semua pesanan
+                - img [ref=e427]
+            - generic [ref=e430]:
+              - img [ref=e432]
+              - generic [ref=e434]:
+                - heading "Belum ada event mendatang" [level=3] [ref=e435]
+                - paragraph [ref=e436]: Setelah kamu menyelesaikan booking, ringkasan acara berikutnya akan muncul di sini lengkap dengan status dan jumlah tiket.
+              - link "Temukan event" [ref=e438] [cursor=pointer]:
+                - /url: /events
+                - text: Temukan event
+                - img [ref=e439]
+          - generic [ref=e441]:
+            - generic [ref=e442]:
+              - generic [ref=e444]:
+                - heading "Pesanan terbaru" [level=2] [ref=e445]
+                - paragraph [ref=e446]: Monitor transaksi terbaru dan lanjutkan ke halaman detail jika perlu cek status, tiket, atau invoice.
+              - generic [ref=e447]:
+                - 'link "BSC-HI3LVJGN Dikonfirmasi Solo Indie Gigs: Featuring Efek Rumah Kaca & Hindia Dibuat Jum, 20 Feb 2026 Rp 222.000 Detail" [ref=e448] [cursor=pointer]':
+                  - /url: /my-bookings/BSC-HI3LVJGN
+                  - generic [ref=e449]:
+                    - generic [ref=e450]:
+                      - paragraph [ref=e451]: BSC-HI3LVJGN
+                      - generic [ref=e452]: Dikonfirmasi
+                    - 'heading "Solo Indie Gigs: Featuring Efek Rumah Kaca & Hindia" [level=3] [ref=e453]'
+                    - paragraph [ref=e454]: Dibuat Jum, 20 Feb 2026
+                  - generic [ref=e455]:
+                    - paragraph [ref=e456]: Rp 222.000
+                    - generic [ref=e457]:
+                      - text: Detail
+                      - img [ref=e458]
+                - 'link "BSC-PDCPU9B7 Dikonfirmasi Solo Indie Gigs: Featuring Efek Rumah Kaca & Hindia Dibuat Sel, 27 Jan 2026 Rp 333.000 Detail" [ref=e460] [cursor=pointer]':
+                  - /url: /my-bookings/BSC-PDCPU9B7
+                  - generic [ref=e461]:
+                    - generic [ref=e462]:
+                      - paragraph [ref=e463]: BSC-PDCPU9B7
+                      - generic [ref=e464]: Dikonfirmasi
+                    - 'heading "Solo Indie Gigs: Featuring Efek Rumah Kaca & Hindia" [level=3] [ref=e465]'
+                    - paragraph [ref=e466]: Dibuat Sel, 27 Jan 2026
+                  - generic [ref=e467]:
+                    - paragraph [ref=e468]: Rp 333.000
+                    - generic [ref=e469]:
+                      - text: Detail
+                      - img [ref=e470]
+                - 'link "BSC-T1GF0AOH Dikonfirmasi Solo Indie Gigs: Featuring Efek Rumah Kaca & Hindia Dibuat Sel, 27 Jan 2026 Rp 333.000 Detail" [ref=e472] [cursor=pointer]':
+                  - /url: /my-bookings/BSC-T1GF0AOH
+                  - generic [ref=e473]:
+                    - generic [ref=e474]:
+                      - paragraph [ref=e475]: BSC-T1GF0AOH
+                      - generic [ref=e476]: Dikonfirmasi
+                    - 'heading "Solo Indie Gigs: Featuring Efek Rumah Kaca & Hindia" [level=3] [ref=e477]'
+                    - paragraph [ref=e478]: Dibuat Sel, 27 Jan 2026
+                  - generic [ref=e479]:
+                    - paragraph [ref=e480]: Rp 333.000
+                    - generic [ref=e481]:
+                      - text: Detail
+                      - img [ref=e482]
+                - link "BSC-MGZ0DHX9 Dikonfirmasi Pertunjukan Wayang Orang Sriwedari - Rama Tambak Dibuat Sen, 26 Jan 2026 Rp 111.000 Detail" [ref=e484] [cursor=pointer]:
+                  - /url: /my-bookings/BSC-MGZ0DHX9
+                  - generic [ref=e485]:
+                    - generic [ref=e486]:
+                      - paragraph [ref=e487]: BSC-MGZ0DHX9
+                      - generic [ref=e488]: Dikonfirmasi
+                    - heading "Pertunjukan Wayang Orang Sriwedari - Rama Tambak" [level=3] [ref=e489]
+                    - paragraph [ref=e490]: Dibuat Sen, 26 Jan 2026
+                  - generic [ref=e491]:
+                    - paragraph [ref=e492]: Rp 111.000
+                    - generic [ref=e493]:
+                      - text: Detail
+                      - img [ref=e494]
+            - generic [ref=e496]:
+              - generic [ref=e497]:
+                - generic [ref=e498]:
+                  - heading "Rekomendasi untukmu" [level=2] [ref=e499]
+                  - paragraph [ref=e500]: Pilihan event yang relevan berdasarkan minat dan aktivitas eksplorasimu di Gelaran.
+                - link "Lihat katalog" [ref=e501] [cursor=pointer]:
+                  - /url: /events
+                  - text: Lihat katalog
+                  - img [ref=e502]
+              - 'link "New Year Party 2026: Sky Lounge Edition Party & Hiburan New Year Party 2026: Sky Lounge Edition Kam, 31 Des 2026 • 20.00 The Sunan Hotel Solo, Surakarta Mulai Rp 500.000" [ref=e505] [cursor=pointer]':
+                - /url: /events/new-year-party-2026-sky-lounge
+                - 'img "New Year Party 2026: Sky Lounge Edition" [ref=e507]'
+                - generic [ref=e508]:
+                  - paragraph [ref=e509]: Party & Hiburan
+                  - 'heading "New Year Party 2026: Sky Lounge Edition" [level=3] [ref=e510]'
+                  - generic [ref=e511]:
+                    - img [ref=e512]
+                    - generic [ref=e514]: Kam, 31 Des 2026 • 20.00
+                  - generic [ref=e515]:
+                    - img [ref=e516]
+                    - generic [ref=e519]: The Sunan Hotel Solo, Surakarta
+                  - paragraph [ref=e520]: Mulai Rp 500.000
+  - generic [ref=e521]: Jan

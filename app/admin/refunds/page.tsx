@@ -3,7 +3,6 @@
 import { useCallback, useState, useEffect } from "react";
 import Link from "next/link";
 import {
-    ArrowLeft,
     Search,
     CheckCircle,
     XCircle,
@@ -11,11 +10,18 @@ import {
     RefreshCw,
     AlertTriangle,
     User,
-    Wallet,
     Ticket,
     Loader2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import {
+    AdminDataTable,
+    AdminFilterBar,
+    AdminMetricCard,
+    AdminNotice,
+    AdminStatusBadge,
+    AdminWorkspacePage,
+} from "@/components/admin/admin-workspace";
 
 interface Refund {
     id: string;
@@ -37,15 +43,23 @@ interface Refund {
     processorName: string | null;
 }
 
-interface _RefundResponse {
-    refunds: Refund[];
-    pagination: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-    };
-}
+const STATUS_TONE_MAP: Record<string, "success" | "warning" | "danger" | "default" | "accent"> = {
+    REQUESTED: "warning",
+    APPROVED: "accent",
+    PROCESSING: "accent",
+    COMPLETED: "success",
+    REJECTED: "danger",
+    FAILED: "danger",
+};
+
+const STATUS_LABEL_MAP: Record<string, string> = {
+    REQUESTED: "Menunggu Review",
+    APPROVED: "Disetujui",
+    PROCESSING: "Sedang Diproses",
+    COMPLETED: "Selesai",
+    REJECTED: "Ditolak",
+    FAILED: "Gagal",
+};
 
 export default function AdminRefundsPage() {
     const [refunds, setRefunds] = useState<Refund[]>([]);
@@ -56,7 +70,7 @@ export default function AdminRefundsPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [total, setTotal] = useState(0);
-    const [showDetails, setShowDetails] = useState<Record<string, boolean>>({});
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
     const fetchRefunds = useCallback(async () => {
         try {
@@ -92,356 +106,211 @@ export default function AdminRefundsPage() {
         fetchRefunds();
     }, [page, search, statusFilter, fetchRefunds]);
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "REQUESTED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
-                        <Clock className="h-3 w-3" />
-                        Menunggu Review
-                    </span>
-                );
-            case "APPROVED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-500 text-xs font-medium rounded-full">
-                        <CheckCircle className="h-3 w-3" />
-                        Disetujui
-                    </span>
-                );
-            case "PROCESSING":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/10 text-purple-500 text-xs font-medium rounded-full">
-                        <RefreshCw className="h-3 w-3" />
-                        Sedang Diproses
-                    </span>
-                );
-            case "COMPLETED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-600 text-xs font-medium rounded-full">
-                        <CheckCircle className="h-3 w-3" />
-                        Selesai
-                    </span>
-                );
-            case "REJECTED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-500 text-xs font-medium rounded-full">
-                        <XCircle className="h-3 w-3" />
-                        Ditolak
-                    </span>
-                );
-            case "FAILED":
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-medium rounded-full">
-                        <AlertTriangle className="h-3 w-3" />
-                        Gagal
-                    </span>
-                );
-            default:
-                return (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-medium rounded-full">
-                        {status}
-                    </span>
-                );
-        }
-    };
+    const pendingCount = refunds.filter((r) => r.status === "REQUESTED").length;
+    const completedCount = refunds.filter((r) => r.status === "COMPLETED").length;
 
-    const getRefundTypeBadge = (type: string) => {
+    if (isLoading && refunds.length === 0) {
         return (
-            <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${
-                type === "FULL" 
-                    ? "bg-red-500/10 text-red-500" 
-                    : "bg-amber-100 text-amber-700"
-            }`}>
-                {type}
-            </span>
+            <div className="flex min-h-[60vh] items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
+            </div>
         );
-    };
+    }
+
+    if (error && refunds.length === 0) {
+        return (
+            <AdminWorkspacePage eyebrow="Admin refunds" title="Refund management" description="Review and manage customer refund requests across all events.">
+                <AdminNotice tone="warning" title="Refund data is unavailable" description={error} actionHref="/admin" actionLabel="Back to dashboard" />
+            </AdminWorkspacePage>
+        );
+    }
 
     return (
-        <>
-            <div className="max-w-7xl mx-auto px-4 py-6">
-                    <div className="mb-6">
-                    <Link
-                        href="/admin"
-                        className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        <span>Kembali ke Dashboard Admin</span>
-                    </Link>
+        <AdminWorkspacePage
+            eyebrow="Admin refunds"
+            title="Refund management"
+            description="Review and manage customer refund requests across all events."
+            actions={
+                <button
+                    type="button"
+                    onClick={fetchRefunds}
+                    className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface) px-4 py-2 text-sm font-semibold text-foreground hover:bg-(--surface-elevated)"
+                >
+                    <RefreshCw className="h-4 w-4" />
+                    Refresh
+                </button>
+            }
+        >
+            <section className="grid gap-4 md:grid-cols-3">
+                <AdminMetricCard label="Total refunds" value={total.toLocaleString("en-US")} icon={Ticket} meta="Across all statuses" />
+                <AdminMetricCard label="Pending review" value={pendingCount.toString()} icon={Clock} tone="warning" meta="Requires admin action" />
+                <AdminMetricCard label="Completed" value={completedCount.toString()} icon={CheckCircle} tone="success" meta="Successfully processed" />
+            </section>
+
+            <AdminFilterBar>
+                <label className="relative block min-w-[16rem] flex-1">
+                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
+                    <input
+                        type="search"
+                        value={search}
+                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                        placeholder="Search by booking code, name, or email"
+                        className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) py-3 pl-11 pr-4 text-sm text-foreground outline-none"
+                    />
+                </label>
+                <select
+                    value={statusFilter}
+                    onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+                    className="rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm"
+                >
+                    <option value="">All statuses</option>
+                    <option value="REQUESTED">Menunggu Review</option>
+                    <option value="APPROVED">Disetujui</option>
+                    <option value="PROCESSING">Sedang Diproses</option>
+                    <option value="COMPLETED">Selesai</option>
+                    <option value="REJECTED">Ditolak</option>
+                    <option value="FAILED">Gagal</option>
+                </select>
+                <div className="text-sm text-(--text-muted) flex items-center gap-1">
+                    <span>Total:</span>
+                    <span className="font-semibold text-foreground">{total} refund</span>
                 </div>
+            </AdminFilterBar>
 
-                <div className="mb-6 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Manajemen Refund</h1>
-                        <p className="text-[var(--text-secondary)]">Kelola permintaan refund dari pelanggan.</p>
-                    </div>
-
-                    <div className="flex gap-3">
-                        <Link
-                            href="/admin/analytics"
-                            className="px-4 py-2 bg-[var(--surface)] rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-2 transition-colors"
+            <AdminDataTable
+                columns={["Booking", "Event", "Customer", "Type", "Amount", "Status", "Date", "Action"]}
+                hasRows={refunds.length > 0}
+                emptyTitle="No refunds match the current filters"
+                emptyDescription="Try adjusting the status filter or search term."
+            >
+                {refunds.map((refund) => (
+                    <>
+                        <tr
+                            key={refund.id}
+                            className="cursor-pointer transition-colors hover:bg-(--surface-elevated)"
+                            onClick={() => setExpandedId(expandedId === refund.id ? null : refund.id)}
                         >
-                            <Wallet className="h-4 w-4 text-[var(--accent-primary)]" />
-                            <span className="text-sm">Lihat Statistik</span>
-                        </Link>
+                            <td className="px-5 py-4 align-top">
+                                <div className="flex items-center gap-2">
+                                    <Ticket className="h-4 w-4 text-(--accent-primary) shrink-0" />
+                                    <span className="font-mono text-sm font-semibold text-foreground">{refund.bookingCode}</span>
+                                </div>
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <p className="text-sm font-semibold text-foreground">{refund.eventName}</p>
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <div className="flex items-center gap-2 text-sm">
+                                    <User className="h-4 w-4 text-(--text-muted) shrink-0" />
+                                    <div>
+                                        <p className="font-semibold text-foreground">{refund.guestName || "—"}</p>
+                                        <p className="text-xs text-(--text-muted)">{refund.guestEmail || "—"}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <AdminStatusBadge
+                                    label={refund.refundType}
+                                    tone={refund.refundType === "FULL" ? "danger" : "warning"}
+                                />
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <span className="font-bold text-foreground text-sm">{formatCurrency(Number(refund.refundAmount))}</span>
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <AdminStatusBadge
+                                    label={STATUS_LABEL_MAP[refund.status] || refund.status}
+                                    tone={STATUS_TONE_MAP[refund.status] ?? "default"}
+                                />
+                            </td>
+                            <td className="px-5 py-4 align-top text-sm text-(--text-secondary)">
+                                {formatDate(refund.requestedAt)}
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <Link
+                                    href={`/my-bookings/${refund.bookingCode}`}
+                                    className="text-sm font-semibold text-(--accent-primary) hover:opacity-80"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    View order
+                                </Link>
+                            </td>
+                        </tr>
+
+                        {expandedId === refund.id && (
+                            <tr key={`${refund.id}-detail`}>
+                                <td colSpan={8} className="px-5 py-4 bg-(--surface-elevated) border-t border-b border-(--border)">
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <p className="text-(--text-muted) mb-1">Requester</p>
+                                                <p className="font-semibold text-foreground">{refund.requesterName || "—"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-(--text-muted) mb-1">Processed by</p>
+                                                <p className="font-semibold text-foreground">{refund.processorName || "—"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-(--text-muted) mb-1">Request date</p>
+                                                <p className="font-semibold text-foreground">{formatDate(refund.requestedAt)}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-(--text-muted) mb-1">Payment method</p>
+                                                <p className="font-semibold text-foreground">{refund.paymentMethod || "—"}</p>
+                                            </div>
+                                        </div>
+
+                                        {refund.reason && (
+                                            <div>
+                                                <p className="text-sm font-semibold text-foreground mb-1">Refund reason</p>
+                                                <p className="text-sm text-(--text-secondary) bg-(--surface) border border-(--border) p-3 rounded-xl">{refund.reason}</p>
+                                            </div>
+                                        )}
+
+                                        {refund.adminNotes && (
+                                            <div>
+                                                <p className="text-sm font-semibold text-foreground mb-1">Admin notes</p>
+                                                <p className="text-sm text-(--text-secondary) bg-(--surface) border border-(--border) p-3 rounded-xl">{refund.adminNotes}</p>
+                                            </div>
+                                        )}
+
+                                        {refund.completedAt && (
+                                            <div>
+                                                <p className="text-sm font-semibold text-foreground mb-1">Completed on</p>
+                                                <p className="text-sm text-(--text-secondary)">{formatDate(refund.completedAt)}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
+                    </>
+                ))}
+            </AdminDataTable>
+
+            {total > 20 && (
+                <div className="flex items-center justify-between">
+                    <p className="text-sm text-(--text-muted)">
+                        Showing {(page - 1) * 20 + 1}–{Math.min(page * 20, total)} of {total} refunds
+                    </p>
+                    <div className="flex items-center gap-2">
                         <button
-                            onClick={fetchRefunds}
-                            className="px-4 py-2 bg-[var(--surface)] rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-2 transition-colors"
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="rounded-full border border-(--border) px-4 py-2 text-sm font-semibold text-foreground hover:bg-(--surface-elevated) disabled:opacity-50"
                         >
-                            <RefreshCw className="h-4 w-4 text-[var(--text-secondary)]" />
-                            <span className="text-sm">Refresh</span>
+                            Previous
+                        </button>
+                        <button
+                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                            disabled={page >= totalPages}
+                            className="rounded-full bg-(--accent-gradient) px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                        >
+                            Next
                         </button>
                     </div>
                 </div>
-
-                <div className="bg-[var(--surface)] rounded-xl shadow-sm border border-[var(--border)] overflow-hidden">
-                    <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-hover)] flex flex-col sm:flex-row gap-4">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-                            <input
-                                type="text"
-                                placeholder="Cari refund berdasarkan kode booking, nama, email..."
-                                value={search}
-                                onChange={(e) => {
-                                    setSearch(e.target.value);
-                                    setPage(1);
-                                }}
-                                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent"
-                            />
-                        </div>
-
-                        <div className="flex gap-2">
-                            <select
-                                value={statusFilter}
-                                onChange={(e) => {
-                                    setStatusFilter(e.target.value);
-                                    setPage(1);
-                                }}
-                                className="px-4 py-2 border rounded-lg bg-[var(--surface)] focus:ring-2 focus:ring-[var(--accent-primary)]"
-                            >
-                                <option value="">Semua Status</option>
-                                <option value="REQUESTED">Menunggu Review</option>
-                                <option value="APPROVED">Disetujui</option>
-                                <option value="PROCESSING">Sedang Diproses</option>
-                                <option value="COMPLETED">Selesai</option>
-                                <option value="REJECTED">Ditolak</option>
-                                <option value="FAILED">Gagal</option>
-                            </select>
-
-                            <div className="text-sm text-[var(--text-muted)] flex items-center gap-1">
-                                <span>Total:</span>
-                                <span className="font-semibold text-[var(--text-primary)]">{total} refund</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {isLoading ? (
-                        <div className="p-12 flex items-center justify-center">
-                            <Loader2 className="h-8 w-8 text-[var(--accent-primary)] animate-spin" />
-                        </div>
-                    ) : error ? (
-                        <div className="p-12 text-center text-red-600">
-                            {error}
-                        </div>
-                    ) : refunds.length === 0 ? (
-                        <div className="p-12 text-center text-[var(--text-muted)]">
-                            <Ticket className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
-                            <p>Tidak ada refund ditemukan.</p>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)]">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Kode Booking
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Event
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Pelanggan
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Jenis
-                                            </th>
-                                            <th className="px-6 py-3 text-right text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Jumlah
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Status
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Tanggal
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-                                                Aksi
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-[var(--border)]">
-                                        {refunds.map((refund) => (
-                                            <>
-                                                <tr
-                                                    key={refund.id}
-                                                    className="hover:bg-[var(--surface-hover)] transition-colors"
-                                                    onClick={() => {
-                                                        setShowDetails((prev) => ({ ...prev, [refund.id]: !prev[refund.id] }));
-                                                    }}
-                                                >
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-2">
-                                                            <Ticket className="h-4 w-4 text-[var(--accent-primary)]" />
-                                                            <span className="font-mono text-sm font-medium text-[var(--text-primary)]">
-                                                                {refund.bookingCode}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="font-medium text-[var(--text-primary)]">{refund.eventName}</span>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-2 text-sm">
-                                                            <User className="h-4 w-4 text-[var(--text-muted)]" />
-                                                            <div>
-                                                                <p className="font-medium text-[var(--text-primary)]">
-                                                                    {refund.guestName || "-"}
-                                                                </p>
-                                                                <p className="text-xs text-[var(--text-muted)]">
-                                                                    {refund.guestEmail || "-"}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        {getRefundTypeBadge(refund.refundType)}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <span className="font-bold text-[var(--text-primary)]">
-                                                            {formatCurrency(Number(refund.refundAmount))}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        {getStatusBadge(refund.status)}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="text-sm text-[var(--text-secondary)]">
-                                                            {formatDate(refund.requestedAt)}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <Link
-                                                            href={`/my-bookings/${refund.bookingCode}`}
-                                                            className="text-[var(--accent-primary)] hover:text-[var(--accent-primary)] hover:underline"
-                                                        >
-                                                            Lihat Pesanan
-                                                        </Link>
-                                                    </td>
-                                                </tr>
-                                                {showDetails[refund.id] && (
-                                                    <tr>
-                                                        <td colSpan={8} className="px-6 py-4 bg-[var(--surface-hover)] border-t border-b border-l border-r border-[var(--border)]">
-                                                            <div className="space-y-4">
-                                                                <div className="flex justify-between items-start">
-                                                                    <div>
-                                                                        <h4 className="font-semibold text-[var(--text-primary)] mb-2">Detail Request</h4>
-                                                                        <div className="grid grid-cols-2 gap-4 text-sm">
-                                                                            <div>
-                                                                                <p className="text-[var(--text-muted)] mb-1">Requester</p>
-                                                                                <p className="font-medium text-[var(--text-primary)]">
-                                                                                    {refund.requesterName || "-"}
-                                                                                </p>
-                                                                            </div>
-                                                                            <div>
-                                                                                <p className="text-[var(--text-muted)] mb-1">Diproses Oleh</p>
-                                                                                <p className="font-medium text-[var(--text-primary)]">
-                                                                                    {refund.processorName || "-"}
-                                                                                </p>
-                                                                            </div>
-                                                                            <div>
-                                                                                <p className="text-[var(--text-muted)] mb-1">Tanggal Request</p>
-                                                                                <p className="font-medium text-[var(--text-primary)]">
-                                                                                    {formatDate(refund.requestedAt)}
-                                                                                </p>
-                                                                            </div>
-                                                                            <div>
-                                                                                <p className="text-[var(--text-muted)] mb-1">Payment Method</p>
-                                                                                <p className="font-medium text-[var(--text-primary)]">
-                                                                                    {refund.paymentMethod || "-"}
-                                                                                </p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button
-                                                                        onClick={() => setShowDetails((prev) => ({ ...prev, [refund.id]: false }))}
-                                                                        className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                                                                    >
-                                                                        <XCircle className="h-5 w-5" />
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-
-                                                            {refund.reason && (
-                                                                <div>
-                                                                    <h4 className="font-semibold text-[var(--text-primary)] mb-2">Alasan Refund</h4>
-                                                                    <p className="text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] p-3 rounded-lg">
-                                                                        {refund.reason}
-                                                                    </p>
-                                                                </div>
-                                                            )}
-
-                                                            {refund.adminNotes && (
-                                                                <div>
-                                                                    <h4 className="font-semibold text-[var(--text-primary)] mb-2">Catatan Admin</h4>
-                                                                    <p className="text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] p-3 rounded-lg">
-                                                                        {refund.adminNotes}
-                                                                    </p>
-                                                                </div>
-                                                            )}
-
-                                                            {refund.completedAt && (
-                                                                <div>
-                                                                    <h4 className="font-semibold text-[var(--text-primary)] mb-2">Tanggal Selesai</h4>
-                                                                    <p className="text-sm text-[var(--text-secondary)]">
-                                                                        {formatDate(refund.completedAt)}
-                                                                    </p>
-                                                                </div>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                            </>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div className="px-6 py-4 border-t border-[var(--border)] flex items-center justify-between">
-                                <p className="text-sm text-[var(--text-muted)]">
-                                    Menampilkan {(page - 1) * 20 + 1} - {Math.min(page * 20, total)} dari {total} refund
-                                </p>
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                                        disabled={page === 1}
-                                        className="px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        Sebelumnya
-                                    </button>
-                                    <button
-                                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                                        disabled={page >= totalPages}
-                                        className="px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        Selanjutnya
-                                    </button>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
-        </>
+            )}
+        </AdminWorkspacePage>
     );
 }

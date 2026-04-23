@@ -24,6 +24,25 @@ const publicEnvSchema = z.object({
     NEXT_PUBLIC_MIDTRANS_SNAP_URL: z.string().url("NEXT_PUBLIC_MIDTRANS_SNAP_URL must be a valid URL").optional(),
 });
 
+const databaseEnvSchema = z.object({
+    NODE_ENV: nodeEnvSchema.default("development"),
+    DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+    DIRECT_URL: z.string().min(1, "DIRECT_URL is required"),
+});
+
+const supabaseServerEnvSchema = publicEnvSchema.extend({
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "SUPABASE_SERVICE_ROLE_KEY is required"),
+});
+
+const defaultEmailFrom = "Gelaran <noreply@gelaran.id>";
+
+const emailEnvSchema = z.object({
+    RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
+    EMAIL_FROM: z.string().min(1).optional(),
+    RESEND_FROM_EMAIL: z.string().min(1).optional(),
+    NEXT_PUBLIC_APP_URL: z.string().url("NEXT_PUBLIC_APP_URL must be a valid URL"),
+});
+
 const serverEnvSchema = publicEnvSchema.extend({
     DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
     DIRECT_URL: z.string().min(1, "DIRECT_URL is required"),
@@ -40,6 +59,9 @@ const serverEnvSchema = publicEnvSchema.extend({
 
 export type PublicEnvSource = z.input<typeof publicEnvSchema>;
 export type ServerEnvSource = z.input<typeof serverEnvSchema>;
+export type DatabaseEnvSource = z.input<typeof databaseEnvSchema>;
+export type SupabaseServerEnvSource = z.input<typeof supabaseServerEnvSchema>;
+export type EmailEnvSource = z.input<typeof emailEnvSchema>;
 type EnvSource = Record<string, string | undefined>;
 
 export type PublicEnv = {
@@ -66,8 +88,22 @@ export type ServerEnv = PublicEnv & {
     OPS_ALERT_WEBHOOK_URL?: string;
 };
 
+export type DatabaseEnv = z.infer<typeof databaseEnvSchema>;
+export type SupabaseServerEnv = PublicEnv & {
+    SUPABASE_SERVICE_ROLE_KEY: string;
+};
+export type EmailEnv = {
+    RESEND_API_KEY: string;
+    EMAIL_FROM: string;
+    NEXT_PUBLIC_APP_URL: string;
+};
+
 let cachedPublicEnv: PublicEnv | undefined;
 let cachedServerEnv: ServerEnv | undefined;
+let cachedDatabaseEnv: DatabaseEnv | undefined;
+let cachedSupabaseServerEnv: SupabaseServerEnv | undefined;
+let cachedEmailEnv: EmailEnv | undefined;
+let cachedBootEnv: PublicEnv | undefined;
 
 function formatZodError(error: z.ZodError) {
     return error.issues
@@ -139,6 +175,58 @@ export function parsePublicEnv(rawEnv: PublicEnvSource | EnvSource): PublicEnv {
     return env;
 }
 
+export function parseDatabaseEnv(rawEnv: DatabaseEnvSource | EnvSource): DatabaseEnv {
+    const parsed = databaseEnvSchema.safeParse(rawEnv);
+
+    if (!parsed.success) {
+        throw buildEnvError(formatZodError(parsed.error));
+    }
+
+    return parsed.data;
+}
+
+export function parseSupabaseServerEnv(
+    rawEnv: SupabaseServerEnvSource | EnvSource
+): SupabaseServerEnv {
+    const parsed = supabaseServerEnvSchema.safeParse(rawEnv);
+
+    if (!parsed.success) {
+        throw buildEnvError(formatZodError(parsed.error));
+    }
+
+    const env: SupabaseServerEnv = {
+        ...parsed.data,
+        NEXT_PUBLIC_ENABLE_DEMO_PAYMENT:
+            parsed.data.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT === "true",
+        NEXT_PUBLIC_PAYMENTS_ENABLED:
+            parsed.data.NEXT_PUBLIC_PAYMENTS_ENABLED === "true",
+        NEXT_PUBLIC_MIDTRANS_SNAP_URL:
+            parsed.data.NEXT_PUBLIC_MIDTRANS_SNAP_URL ??
+            getDefaultMidtransSnapUrl(false),
+    };
+
+    validateSharedFlags(env);
+
+    return env;
+}
+
+export function parseEmailEnv(rawEnv: EmailEnvSource | EnvSource): EmailEnv {
+    const parsed = emailEnvSchema.safeParse(rawEnv);
+
+    if (!parsed.success) {
+        throw buildEnvError(formatZodError(parsed.error));
+    }
+
+    return {
+        RESEND_API_KEY: parsed.data.RESEND_API_KEY,
+        EMAIL_FROM: parsed.data.EMAIL_FROM
+            ?? (parsed.data.RESEND_FROM_EMAIL
+                ? `Gelaran <${parsed.data.RESEND_FROM_EMAIL}>`
+                : defaultEmailFrom),
+        NEXT_PUBLIC_APP_URL: parsed.data.NEXT_PUBLIC_APP_URL,
+    };
+}
+
 export function parseServerEnv(rawEnv: ServerEnvSource | EnvSource): ServerEnv {
     const parsed = serverEnvSchema.safeParse(rawEnv);
 
@@ -181,9 +269,51 @@ export function parseServerEnv(rawEnv: ServerEnvSource | EnvSource): ServerEnv {
     return env;
 }
 
+function readPublicEnvSource() {
+    return {
+        NODE_ENV: process.env.NODE_ENV,
+        NEXT_PUBLIC_APP_STAGE: process.env.NEXT_PUBLIC_APP_STAGE,
+        NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+        NEXT_PUBLIC_ENABLE_DEMO_PAYMENT: process.env.NEXT_PUBLIC_ENABLE_DEMO_PAYMENT,
+        NEXT_PUBLIC_PAYMENTS_ENABLED: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED,
+        NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
+        NEXT_PUBLIC_MIDTRANS_SNAP_URL: process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL,
+    };
+}
+
 export function getPublicEnv() {
     if (!cachedPublicEnv) {
-        cachedPublicEnv = parsePublicEnv({
+        cachedPublicEnv = parsePublicEnv(readPublicEnvSource());
+    }
+
+    return cachedPublicEnv;
+}
+
+export function getDatabaseEnv() {
+    if (!cachedDatabaseEnv) {
+        cachedDatabaseEnv = parseDatabaseEnv({
+            NODE_ENV: process.env.NODE_ENV,
+            DATABASE_URL: process.env.DATABASE_URL,
+            DIRECT_URL: process.env.DIRECT_URL,
+        });
+    }
+
+    return cachedDatabaseEnv;
+}
+
+export function getBootEnv() {
+    if (!cachedBootEnv) {
+        cachedBootEnv = parsePublicEnv(readPublicEnvSource());
+    }
+
+    return cachedBootEnv;
+}
+
+export function getSupabaseServerEnv() {
+    if (!cachedSupabaseServerEnv) {
+        cachedSupabaseServerEnv = parseSupabaseServerEnv({
             NODE_ENV: process.env.NODE_ENV,
             NEXT_PUBLIC_APP_STAGE: process.env.NEXT_PUBLIC_APP_STAGE,
             NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -193,10 +323,24 @@ export function getPublicEnv() {
             NEXT_PUBLIC_PAYMENTS_ENABLED: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED,
             NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
             NEXT_PUBLIC_MIDTRANS_SNAP_URL: process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL,
+            SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
         });
     }
 
-    return cachedPublicEnv;
+    return cachedSupabaseServerEnv;
+}
+
+export function getEmailEnv() {
+    if (!cachedEmailEnv) {
+        cachedEmailEnv = parseEmailEnv({
+            RESEND_API_KEY: process.env.RESEND_API_KEY,
+            EMAIL_FROM: process.env.EMAIL_FROM,
+            RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+            NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+        });
+    }
+
+    return cachedEmailEnv;
 }
 
 export function getServerEnv() {
@@ -210,4 +354,8 @@ export function getServerEnv() {
 export function resetEnvCache() {
     cachedPublicEnv = undefined;
     cachedServerEnv = undefined;
+    cachedDatabaseEnv = undefined;
+    cachedSupabaseServerEnv = undefined;
+    cachedEmailEnv = undefined;
+    cachedBootEnv = undefined;
 }

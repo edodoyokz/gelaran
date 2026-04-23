@@ -131,21 +131,21 @@ export default function POSAccessPage() {
         staffName.trim().length >= 2;
 
     return (
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.2),transparent_28%),#061215] px-4 py-10 text-white">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.1),transparent_28%)] bg-(--background) px-4 py-10 text-foreground">
             <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
-                <section className="rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-emerald-950/30 backdrop-blur sm:p-8 lg:p-10">
-                    <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/30">
+                <section className="rounded-[calc(var(--radius-3xl)+0.5rem)] border border-(--border) bg-(--surface) p-6 shadow-(--shadow-lg) sm:p-8 lg:p-10">
+                    <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-(--accent-primary) shadow-(--shadow-xs)">
                         <ShoppingCart className="h-7 w-7 text-white" />
                     </div>
                     <div className="mt-6 space-y-4">
-                        <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
+                        <span className="inline-flex rounded-full border border-(--border) bg-(--surface-brand-soft) px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-(--accent-primary)">
                             POS operations
                         </span>
                         <div className="space-y-3">
-                            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                            <h1 className="text-3xl font-semibold tracking-(--tracking-heading) text-foreground sm:text-4xl">
                                 Access the on-site sales terminal with a staff-issued POS session
                             </h1>
-                            <p className="max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
+                            <p className="max-w-2xl text-sm leading-7 text-(--text-secondary) sm:text-base">
                                 Use organizer-issued credentials to open the cashier terminal for event-day sales. Each device is registered so the organizer can monitor active POS usage and revoke sessions when needed.
                             </p>
                         </div>
@@ -171,30 +171,30 @@ export default function POSAccessPage() {
                         ].map((item) => (
                             <article
                                 key={item.label}
-                                className="rounded-2xl border border-white/10 bg-slate-950/30 p-4 shadow-lg shadow-black/10"
+                                className="rounded-2xl border border-(--border) bg-(--surface-brand-soft) p-4"
                             >
-                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-(--text-muted)">
                                     {item.label}
                                 </p>
-                                <p className="mt-3 text-lg font-semibold text-white">{item.value}</p>
-                                <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
+                                <p className="mt-3 text-lg font-semibold text-foreground">{item.value}</p>
+                                <p className="mt-2 text-sm leading-6 text-(--text-secondary)">{item.description}</p>
                             </article>
                         ))}
                     </div>
                 </section>
 
-                <section className="rounded-4xl border border-white/10 bg-slate-950/65 p-6 shadow-2xl shadow-black/30 backdrop-blur sm:p-8">
+                <section className="rounded-[calc(var(--radius-3xl)+0.5rem)] border border-(--border) bg-(--surface) p-6 shadow-(--shadow-lg) sm:p-8">
                     <div className="space-y-2">
-                        <h2 className="text-2xl font-semibold text-white">POS Kasir login</h2>
-                        <p className="text-sm leading-6 text-slate-400">
+                        <h2 className="text-2xl font-semibold text-foreground">POS Kasir login</h2>
+                        <p className="text-sm leading-6 text-(--text-secondary)">
                             Identify the event, enter the access PIN, and register the cashier using this sales device.
                         </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                         <div>
-                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200">
-                                <Ticket className="h-4 w-4 text-emerald-300" />
+                            <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                                <Ticket className="h-4 w-4 text-(--text-muted)" />
                                 Kode Event
                             </label>
                             <input
@@ -203,16 +203,16 @@ export default function POSAccessPage() {
                                 onChange={handleEventSlugChange}
                                 placeholder="contoh: konser-musik-2025"
                                 maxLength={100}
-                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-mono text-white placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm font-mono text-foreground placeholder:text-(--text-muted) outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                 autoComplete="off"
                                 autoFocus
                             />
-                            <p className="mt-1.5 text-xs text-slate-500">Gunakan kode event yang dibagikan organizer.</p>
+                            <p className="mt-1.5 text-xs text-(--text-muted)">Gunakan kode event yang dibagikan organizer.</p>
                         </div>
 
                         <div>
-                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200">
-                                <KeyRound className="h-4 w-4 text-emerald-300" />
+                            <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                                <KeyRound className="h-4 w-4 text-(--text-muted)" />
                                 PIN Akses
                             </label>
                             <input
@@ -222,14 +222,14 @@ export default function POSAccessPage() {
                                 onChange={handlePinChange}
                                 placeholder="XXXX-XXXX"
                                 maxLength={9}
-                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center text-2xl font-mono tracking-[0.3em] text-white placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-4 text-center text-2xl font-mono tracking-[0.3em] text-foreground placeholder:text-(--text-muted) outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                 autoComplete="off"
                             />
                         </div>
 
                         <div>
-                            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200">
-                                <User className="h-4 w-4 text-emerald-300" />
+                            <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                                <User className="h-4 w-4 text-(--text-muted)" />
                                 Nama Kasir
                             </label>
                             <input
@@ -238,19 +238,19 @@ export default function POSAccessPage() {
                                 onChange={(e) => setStaffName(e.target.value)}
                                 placeholder="Masukkan nama Anda"
                                 maxLength={100}
-                                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground placeholder:text-(--text-muted) outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                 autoComplete="name"
                             />
-                            <p className="mt-1.5 text-xs text-slate-500">Nama kasir ini akan muncul pada transaksi penjualan yang diproses.</p>
+                            <p className="mt-1.5 text-xs text-(--text-muted)">Nama kasir ini akan muncul pada transaksi penjualan yang diproses.</p>
                         </div>
 
-                        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
-                            <Smartphone className="h-4 w-4 shrink-0 text-emerald-300" />
+                        <div className="flex items-center gap-3 rounded-2xl border border-(--border) bg-(--surface-brand-soft) px-4 py-3 text-sm text-(--text-secondary)">
+                            <Smartphone className="h-4 w-4 shrink-0 text-(--accent-primary)" />
                             <span>Perangkat ini akan didaftarkan sebagai terminal POS aktif untuk event.</span>
                         </div>
 
                         {error ? (
-                            <div className="flex items-start gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                            <div className="flex items-start gap-3 rounded-2xl border border-[rgba(239,68,68,0.24)] bg-(--error-bg) px-4 py-3 text-sm text-(--error)">
                                 <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
                                 <span>{error}</span>
                             </div>
@@ -259,7 +259,7 @@ export default function POSAccessPage() {
                         <button
                             type="submit"
                             disabled={isLoading || !isFormValid}
-                            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-4 text-sm font-semibold text-white transition-all hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-(--accent-primary) px-4 py-4 text-sm font-semibold text-white transition-all hover:bg-(--accent-primary-hover) disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isLoading ? (
                                 <>

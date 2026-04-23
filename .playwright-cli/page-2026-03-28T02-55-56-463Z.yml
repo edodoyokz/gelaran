@@ -1,0 +1,258 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e195] [cursor=pointer]:
+    - img [ref=e196]
+  - alert [ref=e207]
+  - generic [ref=e209]:
+    - complementary [ref=e210]:
+      - generic [ref=e212]:
+        - generic [ref=e214]: dataset
+        - generic [ref=e215]:
+          - heading "Gelaran" [level=1] [ref=e216]
+          - paragraph [ref=e217]: Admin Console
+      - navigation [ref=e218]:
+        - link "Dashboard" [ref=e219] [cursor=pointer]:
+          - /url: /admin
+          - generic [ref=e220]: dashboard
+          - generic [ref=e221]: Dashboard
+        - link "Analytics" [ref=e222] [cursor=pointer]:
+          - /url: /admin/analytics
+          - generic [ref=e223]: analytics
+          - generic [ref=e224]: Analytics
+        - link "Users" [ref=e225] [cursor=pointer]:
+          - /url: /admin/users
+          - generic [ref=e226]: group
+          - generic [ref=e227]: Users
+        - link "Events" [ref=e228] [cursor=pointer]:
+          - /url: /admin/events
+          - generic [ref=e229]: event
+          - generic [ref=e230]: Events
+        - link "Bookings" [ref=e231] [cursor=pointer]:
+          - /url: /admin/bookings
+          - generic [ref=e232]: receipt_long
+          - generic [ref=e233]: Bookings
+        - link "Complimentary" [ref=e234] [cursor=pointer]:
+          - /url: /admin/complimentary-requests
+          - generic [ref=e235]: redeem
+          - generic [ref=e236]: Complimentary
+        - button "Finance" [ref=e238]:
+          - generic [ref=e239]:
+            - generic [ref=e240]: account_balance
+            - generic [ref=e241]: Finance
+          - generic [ref=e242]: expand_more
+        - generic [ref=e243]:
+          - button "Master data" [expanded] [ref=e244]:
+            - generic [ref=e245]:
+              - generic [ref=e246]: sell
+              - generic [ref=e247]: Master data
+            - generic [ref=e248]: expand_less
+          - generic [ref=e249]:
+            - link "Categories" [ref=e250] [cursor=pointer]:
+              - /url: /admin/categories
+              - generic [ref=e251]: Categories
+            - link "Venues" [ref=e252] [cursor=pointer]:
+              - /url: /admin/venues
+              - generic [ref=e253]: Venues
+        - button "Content" [ref=e255]:
+          - generic [ref=e256]:
+            - generic [ref=e257]: view_quilt
+            - generic [ref=e258]: Content
+          - generic [ref=e259]: expand_more
+        - link "Settings" [ref=e260] [cursor=pointer]:
+          - /url: /admin/settings
+          - generic [ref=e261]: settings
+          - generic [ref=e262]: Settings
+        - link "Documentation" [ref=e263] [cursor=pointer]:
+          - /url: /docs/admin
+          - generic [ref=e264]: menu_book
+          - generic [ref=e265]: Documentation
+      - generic [ref=e266]:
+        - button "New Report" [ref=e267]
+        - link "Back to site" [ref=e268] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e269]: home
+          - generic [ref=e270]: Back to site
+        - button "Logout" [ref=e271]:
+          - generic [ref=e272]: logout
+          - generic [ref=e273]: Logout
+    - main [ref=e274]:
+      - generic [ref=e275]:
+        - generic [ref=e276]:
+          - button [ref=e277]:
+            - img [ref=e278]
+          - heading "Gelaran" [level=2] [ref=e279]
+          - generic [ref=e280]:
+            - generic [ref=e281]: search
+            - textbox "Search analytics, events, or users..." [ref=e282]
+        - generic [ref=e283]:
+          - button [ref=e284]:
+            - img [ref=e285]
+          - button [ref=e287]: notifications
+          - button [ref=e289]: settings
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - paragraph [ref=e293]: Admin User
+              - paragraph [ref=e294]: Admin
+            - generic [ref=e295]: AD
+      - generic [ref=e297]:
+        - generic [ref=e299]:
+          - generic [ref=e300]:
+            - generic [ref=e301]: Admin categories
+            - generic [ref=e302]:
+              - heading "Category management" [level=1] [ref=e303]
+              - paragraph [ref=e304]: Organise event discovery by managing the platform taxonomy and subcategory structure.
+          - button "Add category" [ref=e306]:
+            - img [ref=e307]
+            - text: Add category
+        - generic [ref=e308]:
+          - generic [ref=e309]:
+            - article [ref=e310]:
+              - generic [ref=e311]:
+                - generic [ref=e312]:
+                  - paragraph [ref=e313]: Total categories
+                  - generic [ref=e314]:
+                    - paragraph [ref=e315]: "5"
+                    - generic [ref=e316]: All taxonomy entries
+                - img [ref=e318]
+            - article [ref=e323]:
+              - generic [ref=e324]:
+                - generic [ref=e325]:
+                  - paragraph [ref=e326]: Active categories
+                  - generic [ref=e327]:
+                    - paragraph [ref=e328]: "5"
+                    - generic [ref=e329]: Currently visible to users
+                - img [ref=e331]
+            - article [ref=e334]:
+              - generic [ref=e335]:
+                - generic [ref=e336]:
+                  - paragraph [ref=e337]: Parent categories
+                  - generic [ref=e338]:
+                    - paragraph [ref=e339]: "5"
+                    - generic [ref=e340]: Top-level taxonomy nodes
+                - img [ref=e342]
+            - article [ref=e345]:
+              - generic [ref=e346]:
+                - generic [ref=e347]:
+                  - paragraph [ref=e348]: Total events
+                  - generic [ref=e349]:
+                    - paragraph [ref=e350]: "5"
+                    - generic [ref=e351]: Events across all categories
+                - img [ref=e353]
+          - generic [ref=e361]:
+            - img
+            - searchbox [ref=e362]
+          - table [ref=e365]:
+            - rowgroup [ref=e366]:
+              - row "Category Slug Parent Events Order Status Actions" [ref=e367]:
+                - columnheader "Category" [ref=e368]
+                - columnheader "Slug" [ref=e369]
+                - columnheader "Parent" [ref=e370]
+                - columnheader "Events" [ref=e371]
+                - columnheader "Order" [ref=e372]
+                - columnheader "Status" [ref=e373]
+                - columnheader "Actions" [ref=e374]
+            - rowgroup [ref=e375]:
+              - row "🎭 Seni & Budaya seni-budaya — 1 events 1 Active" [ref=e376]:
+                - cell "🎭 Seni & Budaya" [ref=e377]:
+                  - generic [ref=e378]:
+                    - generic [ref=e379]: 🎭
+                    - paragraph [ref=e381]: Seni & Budaya
+                - cell "seni-budaya" [ref=e382]:
+                  - code [ref=e383]: seni-budaya
+                - cell "—" [ref=e384]
+                - cell "1 events" [ref=e385]:
+                  - generic [ref=e386]: 1 events
+                - cell "1" [ref=e387]
+                - cell "Active" [ref=e388]:
+                  - button "Active" [ref=e389]:
+                    - img [ref=e390]
+                    - generic [ref=e393]: Active
+                - cell [ref=e394]:
+                  - generic [ref=e395]:
+                    - button "Edit" [ref=e396]:
+                      - img [ref=e397]
+                    - button "Cannot delete — has events" [disabled] [ref=e399]:
+                      - img [ref=e400]
+              - row "🏀 Olahraga olahraga — 1 events 2 Active" [ref=e403]:
+                - cell "🏀 Olahraga" [ref=e404]:
+                  - generic [ref=e405]:
+                    - generic [ref=e406]: 🏀
+                    - paragraph [ref=e408]: Olahraga
+                - cell "olahraga" [ref=e409]:
+                  - code [ref=e410]: olahraga
+                - cell "—" [ref=e411]
+                - cell "1 events" [ref=e412]:
+                  - generic [ref=e413]: 1 events
+                - cell "2" [ref=e414]
+                - cell "Active" [ref=e415]:
+                  - button "Active" [ref=e416]:
+                    - img [ref=e417]
+                    - generic [ref=e420]: Active
+                - cell [ref=e421]:
+                  - generic [ref=e422]:
+                    - button "Edit" [ref=e423]:
+                      - img [ref=e424]
+                    - button "Cannot delete — has events" [disabled] [ref=e426]:
+                      - img [ref=e427]
+              - row "📚 Seminar & Workshop seminar-workshop — 1 events 3 Active" [ref=e430]:
+                - cell "📚 Seminar & Workshop" [ref=e431]:
+                  - generic [ref=e432]:
+                    - generic [ref=e433]: 📚
+                    - paragraph [ref=e435]: Seminar & Workshop
+                - cell "seminar-workshop" [ref=e436]:
+                  - code [ref=e437]: seminar-workshop
+                - cell "—" [ref=e438]
+                - cell "1 events" [ref=e439]:
+                  - generic [ref=e440]: 1 events
+                - cell "3" [ref=e441]
+                - cell "Active" [ref=e442]:
+                  - button "Active" [ref=e443]:
+                    - img [ref=e444]
+                    - generic [ref=e447]: Active
+                - cell [ref=e448]:
+                  - generic [ref=e449]:
+                    - button "Edit" [ref=e450]:
+                      - img [ref=e451]
+                    - button "Cannot delete — has events" [disabled] [ref=e453]:
+                      - img [ref=e454]
+              - row "🎵 Musik musik — 1 events 4 Active" [ref=e457]:
+                - cell "🎵 Musik" [ref=e458]:
+                  - generic [ref=e459]:
+                    - generic [ref=e460]: 🎵
+                    - paragraph [ref=e462]: Musik
+                - cell "musik" [ref=e463]:
+                  - code [ref=e464]: musik
+                - cell "—" [ref=e465]
+                - cell "1 events" [ref=e466]:
+                  - generic [ref=e467]: 1 events
+                - cell "4" [ref=e468]
+                - cell "Active" [ref=e469]:
+                  - button "Active" [ref=e470]:
+                    - img [ref=e471]
+                    - generic [ref=e474]: Active
+                - cell [ref=e475]:
+                  - generic [ref=e476]:
+                    - button "Edit" [ref=e477]:
+                      - img [ref=e478]
+                    - button "Cannot delete — has events" [disabled] [ref=e480]:
+                      - img [ref=e481]
+              - row "🎉 Party & Hiburan party-hiburan — 1 events 5 Active" [ref=e484]:
+                - cell "🎉 Party & Hiburan" [ref=e485]:
+                  - generic [ref=e486]:
+                    - generic [ref=e487]: 🎉
+                    - paragraph [ref=e489]: Party & Hiburan
+                - cell "party-hiburan" [ref=e490]:
+                  - code [ref=e491]: party-hiburan
+                - cell "—" [ref=e492]
+                - cell "1 events" [ref=e493]:
+                  - generic [ref=e494]: 1 events
+                - cell "5" [ref=e495]
+                - cell "Active" [ref=e496]:
+                  - button "Active" [ref=e497]:
+                    - img [ref=e498]
+                    - generic [ref=e501]: Active
+                - cell [ref=e502]:
+                  - generic [ref=e503]:
+                    - button "Edit" [ref=e504]:
+                      - img [ref=e505]
+                    - button "Cannot delete — has events" [disabled] [ref=e507]:
+                      - img [ref=e508]

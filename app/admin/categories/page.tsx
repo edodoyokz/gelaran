@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
     Search,
@@ -9,7 +8,6 @@ import {
     Edit2,
     Trash2,
     Loader2,
-    AlertCircle,
     FolderTree,
     ToggleLeft,
     ToggleRight,
@@ -17,7 +15,14 @@ import {
     Hash,
     Palette,
 } from "lucide-react";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import {
+    AdminDataTable,
+    AdminFilterBar,
+    AdminMetricCard,
+    AdminNotice,
+    AdminStatusBadge,
+    AdminWorkspacePage,
+} from "@/components/admin/admin-workspace";
 import { useToast } from "@/components/ui/toast-provider";
 
 interface Category {
@@ -150,6 +155,7 @@ export default function AdminCategoriesPage() {
             await fetchCategories();
             setShowAddModal(false);
             setFormData(initialFormData);
+            showToast("Category created successfully", "success");
         } catch {
             setFormError("Failed to create category");
         } finally {
@@ -190,6 +196,7 @@ export default function AdminCategoriesPage() {
             await fetchCategories();
             setShowEditModal(null);
             setFormData(initialFormData);
+            showToast("Category updated successfully", "success");
         } catch {
             setFormError("Failed to update category");
         } finally {
@@ -288,241 +295,144 @@ export default function AdminCategoriesPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Loading categories...</p>
-                </div>
+            <div className="flex min-h-[60vh] items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error}</p>
-                    <Link href="/admin" className="text-[var(--accent-primary)] hover:text-indigo-500">
-                        Back to Dashboard
-                    </Link>
-                </div>
-            </div>
+            <AdminWorkspacePage eyebrow="Admin categories" title="Category management" description="Organise event discovery by managing the platform taxonomy.">
+                <AdminNotice tone="warning" title="Category data is unavailable" description={error} actionHref="/admin" actionLabel="Back to dashboard" />
+            </AdminWorkspacePage>
         );
     }
 
     return (
         <>
-            <AdminHeader 
-                title="Category Management" 
-                subtitle={`${categories.length} categories • ${totalEvents} total events`}
-                backHref="/admin"
+            <AdminWorkspacePage
+                eyebrow="Admin categories"
+                title="Category management"
+                description="Organise event discovery by managing the platform taxonomy and subcategory structure."
                 actions={
                     <button
                         type="button"
                         onClick={openAddModal}
-                        className="flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-2 text-sm font-semibold text-white shadow-(--shadow-glow)"
                     >
                         <Plus className="h-4 w-4" />
-                        Add Category
+                        Add category
                     </button>
                 }
-            />
+            >
+                <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    <AdminMetricCard label="Total categories" value={categories.length.toString()} icon={FolderTree} meta="All taxonomy entries" />
+                    <AdminMetricCard label="Active categories" value={activeCount.toString()} icon={ToggleRight} tone="success" meta="Currently visible to users" />
+                    <AdminMetricCard label="Parent categories" value={parentCategories.length.toString()} icon={Hash} tone="accent" meta="Top-level taxonomy nodes" />
+                    <AdminMetricCard label="Total events" value={totalEvents.toLocaleString("en-US")} icon={Palette} meta="Events across all categories" />
+                </section>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-[var(--surface)] rounded-xl p-4 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-indigo-100 rounded-lg">
-                                <FolderTree className="h-5 w-5 text-[var(--accent-primary)]" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{categories.length}</p>
-                                <p className="text-sm text-[var(--text-muted)]">Total Categories</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-[var(--surface)] rounded-xl p-4 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-green-500/10 rounded-lg">
-                                <ToggleRight className="h-5 w-5 text-green-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{activeCount}</p>
-                                <p className="text-sm text-[var(--text-muted)]">Active Categories</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-[var(--surface)] rounded-xl p-4 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-yellow-500/10 rounded-lg">
-                                <Hash className="h-5 w-5 text-yellow-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{parentCategories.length}</p>
-                                <p className="text-sm text-[var(--text-muted)]">Parent Categories</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-[var(--surface)] rounded-xl p-4 shadow-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-purple-500/10 rounded-lg">
-                                <Palette className="h-5 w-5 text-purple-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-[var(--text-primary)]">{totalEvents}</p>
-                                <p className="text-sm text-[var(--text-muted)]">Total Events</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-[var(--surface)] rounded-xl p-4 mb-6">
-                    <div className="relative max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
+                <AdminFilterBar>
+                    <label className="relative block min-w-[16rem] flex-1">
+                        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-(--text-muted)" />
                         <input
-                            type="text"
-                            placeholder="Search categories..."
+                            type="search"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                            placeholder="Search category name or slug"
+                            className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) py-3 pl-11 pr-4 text-sm text-foreground outline-none"
                         />
-                    </div>
-                </div>
+                    </label>
+                </AdminFilterBar>
 
-                <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-[var(--surface-hover)] border-b">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Category
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Slug
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Parent
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Events
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Order
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {filteredCategories.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-[var(--text-muted)]">
-                                        No categories found
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredCategories.map((category) => (
-                                    <tr key={category.id} className="hover:bg-[var(--surface-hover)]">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div
-                                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-medium text-sm"
-                                                    style={{ backgroundColor: category.colorHex || "#6366f1" }}
-                                                >
-                                                    {category.icon || category.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-[var(--text-primary)]">{category.name}</p>
-                                                    {category._count.children > 0 && (
-                                                        <p className="text-xs text-[var(--text-muted)]">
-                                                            {category._count.children} subcategories
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <code className="text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] px-2 py-1 rounded">
-                                                {category.slug}
-                                            </code>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
-                                            {category.parent?.name || "-"}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-medium">
-                                                {category._count.events} events
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-[var(--text-muted)]">
-                                            {category.sortOrder}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleToggleActive(category)}
-                                                disabled={actionLoading === category.id}
-                                                className="flex items-center gap-2"
-                                            >
-                                                {actionLoading === category.id ? (
-                                                    <Loader2 className="h-5 w-5 animate-spin text-[var(--text-muted)]" />
-                                                ) : category.isActive ? (
-                                                    <ToggleRight className="h-6 w-6 text-green-500" />
-                                                ) : (
-                                                    <ToggleLeft className="h-6 w-6 text-[var(--text-muted)]" />
-                                                )}
-                                                <span
-                                                    className={`text-sm ${
-                                                        category.isActive ? "text-green-600" : "text-[var(--text-muted)]"
-                                                    }`}
-                                                >
-                                                    {category.isActive ? "Active" : "Inactive"}
-                                                </span>
-                                            </button>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => openEditModal(category)}
-                                                    className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] rounded-lg hover:bg-[var(--bg-secondary)]"
-                                                    title="Edit"
-                                                >
-                                                    <Edit2 className="h-4 w-4" />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowDeleteModal(category.id)}
-                                                    disabled={category._count.events > 0}
-                                                    className="p-2 text-[var(--text-muted)] hover:text-red-600 rounded-lg hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    title={
-                                                        category._count.events > 0
-                                                            ? "Cannot delete - has events"
-                                                            : "Delete"
-                                                    }
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </main>
+                <AdminDataTable
+                    columns={["Category", "Slug", "Parent", "Events", "Order", "Status", "Actions"]}
+                    hasRows={filteredCategories.length > 0}
+                    emptyTitle="No categories match the current filters"
+                    emptyDescription="Try clearing the search term to reveal all available taxonomy entries."
+                >
+                    {filteredCategories.map((category) => (
+                        <tr key={category.id} className="transition-colors hover:bg-(--surface-elevated)">
+                            <td className="px-5 py-4 align-top">
+                                <div className="flex items-center gap-3">
+                                    <div
+                                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-medium text-sm shrink-0"
+                                        style={{ backgroundColor: category.colorHex || "#6366f1" }}
+                                    >
+                                        {category.icon || category.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold text-foreground">{category.name}</p>
+                                        {category._count.children > 0 && (
+                                            <p className="mt-0.5 text-xs text-(--text-secondary)">{category._count.children} subcategories</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <code className="text-xs text-(--text-secondary) bg-(--surface-elevated) border border-(--border) px-2 py-1 rounded-lg">
+                                    {category.slug}
+                                </code>
+                            </td>
+                            <td className="px-5 py-4 align-top text-sm text-(--text-secondary)">
+                                {category.parent?.name || <span className="text-(--text-muted)">—</span>}
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <AdminStatusBadge label={`${category._count.events} events`} tone="default" />
+                            </td>
+                            <td className="px-5 py-4 align-top text-sm text-(--text-secondary)">
+                                {category.sortOrder}
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <button
+                                    type="button"
+                                    onClick={() => handleToggleActive(category)}
+                                    disabled={actionLoading === category.id}
+                                    className="flex items-center gap-2"
+                                >
+                                    {actionLoading === category.id ? (
+                                        <Loader2 className="h-5 w-5 animate-spin text-(--text-muted)" />
+                                    ) : category.isActive ? (
+                                        <ToggleRight className="h-6 w-6 text-green-500" />
+                                    ) : (
+                                        <ToggleLeft className="h-6 w-6 text-(--text-muted)" />
+                                    )}
+                                    <AdminStatusBadge label={category.isActive ? "Active" : "Inactive"} tone={category.isActive ? "success" : "default"} />
+                                </button>
+                            </td>
+                            <td className="px-5 py-4 align-top">
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => openEditModal(category)}
+                                        className="p-2 text-(--text-muted) hover:text-(--accent-primary) rounded-lg hover:bg-(--surface-elevated)"
+                                        title="Edit"
+                                    >
+                                        <Edit2 className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDeleteModal(category.id)}
+                                        disabled={category._count.events > 0}
+                                        className="p-2 text-(--text-muted) hover:text-red-600 rounded-lg hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title={category._count.events > 0 ? "Cannot delete — has events" : "Delete"}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </AdminDataTable>
+            </AdminWorkspacePage>
 
             {(showAddModal || showEditModal) && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--surface)] rounded-2xl max-w-lg w-full p-6">
+                    <div className="bg-(--surface) rounded-2xl max-w-lg w-full p-6 shadow-2xl">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">
-                                {showAddModal ? "Add New Category" : "Edit Category"}
+                            <h3 className="text-lg font-bold text-foreground">
+                                {showAddModal ? "Add new category" : "Edit category"}
                             </h3>
                             <button
                                 type="button"
@@ -532,21 +442,21 @@ export default function AdminCategoriesPage() {
                                     setFormData(initialFormData);
                                     setFormError(null);
                                 }}
-                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] rounded-lg hover:bg-[var(--bg-secondary)]"
+                                className="p-2 text-(--text-muted) hover:text-(--text-secondary) rounded-lg hover:bg-(--surface-elevated)"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
 
                         {formError && (
-                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-700 text-sm">
+                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-700 text-sm">
                                 {formError}
                             </div>
                         )}
 
                         <div className="space-y-4">
                             <div>
-                                <label htmlFor="category-name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="category-name" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Name *
                                 </label>
                                 <input
@@ -554,13 +464,13 @@ export default function AdminCategoriesPage() {
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => handleNameChange(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none focus:border-(--accent-primary)"
                                     placeholder="e.g., Music"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="category-slug" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="category-slug" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Slug *
                                 </label>
                                 <input
@@ -570,17 +480,17 @@ export default function AdminCategoriesPage() {
                                     onChange={(e) =>
                                         setFormData((prev) => ({ ...prev, slug: e.target.value }))
                                     }
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none focus:border-(--accent-primary)"
                                     placeholder="e.g., music"
                                 />
-                                <p className="mt-1 text-xs text-[var(--text-muted)]">
+                                <p className="mt-1 text-xs text-(--text-muted)">
                                     URL-friendly identifier (lowercase, no spaces)
                                 </p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="category-icon" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="category-icon" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Icon (emoji or text)
                                     </label>
                                     <input
@@ -590,13 +500,13 @@ export default function AdminCategoriesPage() {
                                         onChange={(e) =>
                                             setFormData((prev) => ({ ...prev, icon: e.target.value }))
                                         }
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none focus:border-(--accent-primary)"
                                         placeholder="🎵"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="category-color" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="category-color" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Color
                                     </label>
                                     <div className="flex items-center gap-2">
@@ -607,7 +517,7 @@ export default function AdminCategoriesPage() {
                                             onChange={(e) =>
                                                 setFormData((prev) => ({ ...prev, colorHex: e.target.value }))
                                             }
-                                            className="w-12 h-10 border rounded-lg cursor-pointer"
+                                            className="w-12 h-12 border border-(--border) rounded-xl cursor-pointer"
                                         />
                                         <input
                                             type="text"
@@ -615,7 +525,7 @@ export default function AdminCategoriesPage() {
                                             onChange={(e) =>
                                                 setFormData((prev) => ({ ...prev, colorHex: e.target.value }))
                                             }
-                                            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                            className="flex-1 rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none focus:border-(--accent-primary)"
                                             placeholder="#6366f1"
                                         />
                                     </div>
@@ -624,7 +534,7 @@ export default function AdminCategoriesPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="category-order" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="category-order" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Sort Order
                                     </label>
                                     <input
@@ -638,12 +548,12 @@ export default function AdminCategoriesPage() {
                                                 sortOrder: parseInt(e.target.value) || 0,
                                             }))
                                         }
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none focus:border-(--accent-primary)"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="category-parent" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="category-parent" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Parent Category
                                     </label>
                                     <select
@@ -652,7 +562,7 @@ export default function AdminCategoriesPage() {
                                         onChange={(e) =>
                                             setFormData((prev) => ({ ...prev, parentId: e.target.value }))
                                         }
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-foreground outline-none focus:border-(--accent-primary)"
                                     >
                                         <option value="">None (Top Level)</option>
                                         {parentCategories
@@ -677,9 +587,9 @@ export default function AdminCategoriesPage() {
                                     {formData.isActive ? (
                                         <ToggleRight className="h-6 w-6 text-green-500" />
                                     ) : (
-                                        <ToggleLeft className="h-6 w-6 text-[var(--text-muted)]" />
+                                        <ToggleLeft className="h-6 w-6 text-(--text-muted)" />
                                     )}
-                                    <span className="text-sm text-[var(--text-secondary)]">
+                                    <span className="text-sm text-(--text-secondary)">
                                         {formData.isActive ? "Active" : "Inactive"}
                                     </span>
                                 </button>
@@ -695,7 +605,7 @@ export default function AdminCategoriesPage() {
                                     setFormData(initialFormData);
                                     setFormError(null);
                                 }}
-                                className="flex-1 px-4 py-2 border border-[var(--border)] text-[var(--text-secondary)] rounded-lg font-medium hover:bg-[var(--surface-hover)]"
+                                className="flex-1 rounded-full border border-(--border) px-4 py-2 text-sm font-semibold text-foreground hover:bg-(--surface-elevated)"
                             >
                                 Cancel
                             </button>
@@ -707,12 +617,12 @@ export default function AdminCategoriesPage() {
                                     actionLoading === "edit" ||
                                     !formData.name.trim()
                                 }
-                                className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-2 text-sm font-semibold text-white shadow-(--shadow-glow) disabled:opacity-50"
                             >
                                 {(actionLoading === "create" || actionLoading === "edit") && (
                                     <Loader2 className="h-4 w-4 animate-spin" />
                                 )}
-                                {showAddModal ? "Create Category" : "Save Changes"}
+                                {showAddModal ? "Create category" : "Save changes"}
                             </button>
                         </div>
                     </div>
@@ -721,22 +631,21 @@ export default function AdminCategoriesPage() {
 
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--surface)] rounded-2xl max-w-md w-full p-6">
+                    <div className="bg-(--surface) rounded-2xl max-w-md w-full p-6 shadow-2xl">
                         <div className="text-center mb-6">
                             <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Trash2 className="h-6 w-6 text-red-600" />
                             </div>
-                            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Delete Category</h3>
-                            <p className="text-[var(--text-muted)]">
-                                Are you sure you want to delete this category? This action cannot be
-                                undone.
+                            <h3 className="text-lg font-bold text-foreground mb-2">Delete category</h3>
+                            <p className="text-(--text-muted)">
+                                Are you sure you want to delete this category? This action cannot be undone.
                             </p>
                         </div>
                         <div className="flex gap-3">
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteModal(null)}
-                                className="flex-1 px-4 py-2 border border-[var(--border)] text-[var(--text-secondary)] rounded-lg font-medium hover:bg-[var(--surface-hover)]"
+                                className="flex-1 rounded-full border border-(--border) px-4 py-2 text-sm font-semibold text-foreground hover:bg-(--surface-elevated)"
                             >
                                 Cancel
                             </button>
@@ -744,7 +653,7 @@ export default function AdminCategoriesPage() {
                                 type="button"
                                 onClick={handleDeleteCategory}
                                 disabled={actionLoading === "delete"}
-                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
                             >
                                 {actionLoading === "delete" && (
                                     <Loader2 className="h-4 w-4 animate-spin" />

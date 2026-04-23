@@ -106,6 +106,13 @@ export function createRateLimiter(config: RateLimitConfig) {
 
 // Predefined rate limiters for common use cases
 export const rateLimiters = {
+  /** Public credential entry points - protect PIN-based access surfaces from brute force */
+  accessCredential: createRateLimiter({
+    maxRequests: 10,
+    windowMs: 60_000, // 1 minute
+    keyPrefix: "access-credential",
+  }),
+
   /** Payment API - strict rate limiting to prevent abuse */
   payment: createRateLimiter({
     maxRequests: 10,

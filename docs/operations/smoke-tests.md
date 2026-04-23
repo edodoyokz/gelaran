@@ -96,12 +96,14 @@ curl -I "$APP_URL/"
 **Test Steps:**
 1. Navigate to `/my-bookings`
 2. Open the latest booking
-3. Open the ticket page
-4. Verify QR code and downloadable ticket render correctly
+3. Confirm the booking detail route stays reachable at `/my-bookings/[code]`
+4. Open the ticket page at `/my-bookings/[code]/ticket`
+5. Verify QR code and downloadable ticket render correctly
 
 **Expected Results:**
 - Booking list loads
-- Ticket details are visible
+- Booking detail page loads on `/my-bookings/[code]`
+- Ticket details are visible on `/my-bookings/[code]/ticket`
 - QR code renders
 - Download action succeeds when supported by the current build
 
@@ -111,9 +113,10 @@ curl -I "$APP_URL/"
 
 **Test Steps:**
 1. Login as organizer or gate staff
-2. Open the gate/check-in page for the target event
-3. Scan or submit the ticket code
-4. Re-scan the same ticket once
+2. Open `/gate`
+3. Continue to the gate/check-in page for the target event from the live gate flow
+4. Scan or submit the ticket code
+5. Re-scan the same ticket once
 
 **Expected Results:**
 - First scan is accepted
@@ -155,6 +158,19 @@ curl -I "$APP_URL/"
 
 **Critical Path:** ⚠️ High Priority
 
+### 3. POS Return Routes
+
+**Test Steps:**
+1. Open `/pos/payment-success`
+2. Open `/pos/payment-pending`
+3. Open `/pos/payment-failed`
+
+**Expected Results:**
+- Each route renders a real page instead of `404`
+- Each route presents a clear return path back to `/pos` or `/pos/access`
+
+**Critical Path:** ⚠️ Follow-up Scope
+
 ## API Checks
 
 Use only endpoints that exist in the current codebase.
@@ -178,6 +194,17 @@ These should be checked from the browser after login because they rely on the ap
 - `/api/gate/check-in`
 
 **Expected:** authenticated requests succeed and unauthorized requests fail cleanly without `500` errors.
+
+## Minimum Follow-Up Route List
+
+Re-run at least these route checks for the gate and ticket follow-up scope:
+
+- `/my-bookings/[code]`
+- `/my-bookings/[code]/ticket`
+- `/gate`
+- `/pos/payment-success`
+- `/pos/payment-pending`
+- `/pos/payment-failed`
 
 ### Expected Response Times
 

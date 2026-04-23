@@ -1,0 +1,68 @@
+{
+  "responses": [
+    {
+      "url": "http://localhost:3000/api/my-bookings?page=1&limit=10",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3000/api/my-bookings?page=1&limit=10",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3000/api/my-bookings/BSC-4O1QUFNE",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3000/api/my-bookings/BSC-4O1QUFNE",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3000/api/my-bookings/BSC-4O1QUFNE",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3000/api/tickets/514f1ff7-ab4e-4d1e-8475-22e844d225a9/pdf",
+      "status": 200
+    }
+  ],
+  "afterLogin": {
+    "url": "http://localhost:3000/my-bookings/BSC-4O1QUFNE",
+    "body": "Gelaran\nCari event, organizer, atau kota\nsearch\nExplore\nHelp\nPartner\ndark_mode\nnotifications\n1\nB\n\nBudi Santoso\n\nexpand_more\n\nBudi Santoso\n\nCULTURAL CURATOR\n\ndashboard\nOverview\nconfirmation_number\nMy Tickets\nfavorite\nWishlist\ngroup\nFollowing\nnotifications\nNotifications\nsettings\nSettings\nBook New Event\nlogout\nLogout\n\nMemuat detail pesanan..."
+  },
+  "myBookings": {
+    "url": "http://localhost:3000/my-bookings",
+    "body": "Gelaran\nCari event, organizer, atau kota\nsearch\nExplore\nHelp\nPartner\ndark_mode\nnotifications\n1\nB\n\nBudi Santoso\n\nexpand_more\n\nBudi Santoso\n\nCULTURAL CURATOR\n\ndashboard\nOverview\nconfirmation_number\nMy Tickets\nfavorite\nWishlist\ngroup\nFollowing\nnotifications\nNotifications\nsettings\nSettings\nBook New Event\nlogout\nLogout\nORDER HISTORY\nPesanan saya\nKelola tiket aktif, pantau pembayaran yang belum selesai, dan buka detail booking dari tampilan yang lebih rapi serta mudah dipindai.\n12 total pesanan\n9 dikonfirmasi\nJelajahi Event\n\nTotal pesanan\n\n12\n\nSeluruh transaksi yang pernah dibuat\n\nPesanan aktif\n\n9\n\nSiap dibuka ke halaman tiket\n\nMenunggu aksi\n\n2\n\nPerlu diselesaikan atau dipantau\n\nDibatalkan\n\n0\n\nRiwayat pesanan tidak aktif\n\nFilter dan pencarian\n\nSaring daftar pesanan berdasarkan status atau cari cepat menggunakan kode booking dan nama event.\n\nSemua\nAktif\nPembayaran\nDibatalkan\nDaftar booking\n\nSetiap kartu menampilkan ringkasan event, status pembayaran, komposisi tiket, dan jalur aksi yang paling relevan.\n\nDikonfirmasi\nBSC-4O1QUFNE\n1 tiket\nNew Year Party 2026: Sky Lounge Edition\nKam, 31 Des 2026•20.00\nThe Sunan Hotel Solo, Surakarta\nRegular Pass\n\nRINGKASAN PEMBAYARAN\n\nRp 555.000\n\nDibuat Rab, 8 Apr 2026\n\nLihat tiket\nUnduh ringkasan\nDetail booking\nMenunggu Pembayaran\nBSC-LLEFRVFZ\n1 tiket\nNew Year Party 2026: Sky Lounge Edition\nKam, 31 Des 2026•20.00\nThe Sunan Hotel Solo, Surakarta\nVIP Pass\n\nRINGKASAN PEMBAYARAN\n\nRp 1.110.000\n\nDibuat Rab, 8 Apr 2026\n\nLanjut bayar\nDetail booking\n\nPembayaran berakhir pada Rab, 8 Apr 2026 pukul 16.01. Selesaikan pembayaran agar tiket tetap aktif.\n\nMenunggu Pembayaran\nBSC-KCJZXEDT\n1 tiket\nNew Year Party 2026: Sky Lounge Edition\nKam, 31 Des 2026•20.00\nThe Sunan Hotel Solo, Surakarta\nRegular Pass\n\nRINGKASAN PEMBAYARAN\n\nRp 555.000\n\nDibuat Rab, 8 Apr 2026\n\nLanjut bayar\nDetail booking\n\nPembayaran berakhir pada Rab, 8 Apr 2026 pukul 15.22. Selesaikan pembayaran agar tiket tetap aktif.\n\nDikonfirmasi\nBSC-HI3LVJGN\n1 tiket\nSolo Indie Gigs: Featuring Efek Rumah Kaca & Hindia\nDe Tjolomadoe, Karanganyar\nPresale\n\nRINGKASAN PEMBAYARAN\n\nRp 222.000\n\nDibuat Jum, 20 Feb 2026\n\nLihat tiket\nUnduh ringkasan\nDetail booking\nDikonfirmasi\nBSC-PDCPU9B7\n1 tiket\nSolo Indie G"
+  },
+  "bookingDetail": {
+    "url": "http://localhost:3000/my-bookings/BSC-4O1QUFNE",
+    "body": "Gelaran\nCari event, organizer, atau kota\nsearch\nExplore\nHelp\nPartner\ndark_mode\nnotifications\n1\nB\n\nBudi Santoso\n\nexpand_more\n\nBudi Santoso\n\nCULTURAL CURATOR\n\ndashboard\nOverview\nconfirmation_number\nMy Tickets\nfavorite\nWishlist\ngroup\nFollowing\nnotifications\nNotifications\nsettings\nSettings\nBook New Event\nlogout\nLogout\nBOOKING DETAIL\nNew Year Party 2026: Sky Lounge Edition\nKode booking BSC-4O1QUFNE. Kelola tiket, pantau pembayaran, dan tinjau informasi penting dari satu halaman detail.\nDikonfirmasi\n1 tiket\nKembali\nSalin kode\nRingkasan event\n\nInformasi utama tentang event, jadwal, lokasi, dan penyelenggara untuk pesanan ini.\n\nOFFLINE\nAkan datang\nNew Year Party 2026: Sky Lounge Edition\n\nJADWAL\n\nKamis, 31 Desember 2026\n\n20.00 - 03.00\n\nLOKASI\n\nThe Sunan Hotel Solo\n\nJl. Adi Sucipto No.47, Surakarta\n\nDISELENGGARAKAN OLEH\n\nSolo Nightlife Events\n\nTiket kamu (1)\n\nBuka QR, unduh PDF, atau transfer tiket yang masih aktif ke penerima lain.\n\nUnduh semua\n1\n\nRegular Pass\n\nAktif\n\nRp 555.000\n\nRingkasan pesanan\n\nKomponen biaya, total akhir, dan status pembayaran booking.\n\nSubtotal (1 tiket)\nRp 500.000\nPajak\nRp 55.000\nBiaya layanan\nRp 25.000\nBiaya payment gateway\nRp 16.095\nTotal\nRp 555.000\nInfo pembayaran\n\nDetail transaksi yang terkait langsung dengan booking ini.\n\nID transaksi\nTRX-BSC-4O1QUFNE-MNPT36D0\nMetode pembayaran\nBANK TRANSFER\nStatus\nSUCCESS\nDibayar pada\n8 Apr 2026, 15.49\nButuh bantuan?\n\nAkses cepat ke penyelenggara atau tim dukungan Gelaran.\n\nHubungi penyelenggara\nHubungi dukungan\nAjukan refund\nCetak ringkasan\nBagikan detail",
+    "printButtonFound": true,
+    "printTriggered": true,
+    "buttonLabels": [
+      "BBudi Santosoexpand_more",
+      "logoutLogout",
+      "Salin kode",
+      "Unduh semua",
+      "1Regular PassAktifRp 555.000",
+      "",
+      "Unduh PDF",
+      "Transfer tiket",
+      "Cetak ringkasan",
+      "Bagikan detail"
+    ]
+  },
+  "ticketPage": {
+    "url": "http://localhost:3000/my-bookings/BSC-4O1QUFNE/ticket",
+    "body": "Gelaran\nCari event, organizer, atau kota\nsearch\nExplore\nHelp\nPartner\ndark_mode\nnotifications\n1\nB\n\nBudi Santoso\n\nexpand_more\n\nBudi Santoso\n\nCULTURAL CURATOR\n\ndashboard\nOverview\nconfirmation_number\nMy Tickets\nfavorite\nWishlist\ngroup\nFollowing\nnotifications\nNotifications\nsettings\nSettings\nBook New Event\nlogout\nLogout\nTICKET DETAIL\nTiket untuk New Year Party 2026: Sky Lounge Edition\nBooking BSC-4O1QUFNE. Lihat QR, kode tiket, dan file PDF untuk setiap tiket pada pesanan ini.\n1 tiket\nCONFIRMED\nDetail booking\nBagikan tiket\nRingkasan event\n\nInformasi utama acara untuk membantu pengecekan tiket sebelum hari pelaksanaan.\n\nNew Year Party 2026: Sky Lounge Edition\n\nKode booking: BSC-4O1QUFNE\n\nTANGGAL & WAKTU\n\n31 Desember 2026 • 20.00 WIB - 03.00 WIB WIB\n\nLOKASI\n\nLokasi akan diumumkan\nDaftar tiket\n\nSetiap tiket memiliki QR dan kode unik yang siap dipindai pada saat check-in.\n\nTiket 1 dari 1\nAktif\nRegular Pass\nSalin kode\n\nBSC-4O1QUFNE-8B55-001\n\nTIPE TIKET\n\nRegular Pass\n\nAll you can eat & drink included\n\nCHECK-IN\n\nBelum check-in\n\nTANGGAL & WAKTU\n\n31 Desember 2026 • 20.00 WIB - 03.00 WIB WIB\n\nLOKASI\n\nLokasi akan diumumkan\nHarga tiket\nRp 500.000\nTotal\nRp 555.000\n\nScan QR Code untuk proses check-in.\n\nUnduh tiket PDF\nBagikan tiket",
+    "qrImg": null,
+    "bigSvgCount": 1,
+    "canvasCount": 0,
+    "hasTicketCode": true,
+    "hasDownloadButton": true
+  },
+  "download": {
+    "suggestedFilename": "tiket-BSC-4O1QUFNE.pdf",
+    "size": 6146,
+    "failure": null
+  }
+}

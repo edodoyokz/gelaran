@@ -1,17 +1,9 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import {
-    ArrowLeft,
-    ArrowRight,
-    CalendarDays,
-    CheckCircle2,
-    Clock3,
-    MapPin,
-    type LucideIcon,
-    Ticket,
-    XCircle,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, CheckCircle2, MapPin, ShieldCheck, type LucideIcon } from "lucide-react";
 import { PublicLayout, SectionHeader } from "@/components/shared/phase-two-shells";
+import { publicAuthSurface } from "@/components/shared/public-auth-tokens";
 import { EditorialPanel } from "@/components/shared/public-marketing";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -38,27 +30,30 @@ export function CheckoutPageShell({
     return (
         <PublicLayout withFooter={false} className="overflow-hidden" mainClassName="pt-20 sm:pt-24">
             <div className="relative">
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-120 bg-[radial-gradient(circle_at_top_left,rgba(251,193,23,0.18),transparent_32%),radial-gradient(circle_at_top_right,rgba(41,179,182,0.14),transparent_34%)]" />
-                <section className="relative px-4 pb-8 pt-8 sm:px-6 sm:pb-10 sm:pt-10 lg:px-8 lg:pb-12 lg:pt-12">
-                    <div className="mx-auto max-w-7xl space-y-8 sm:space-y-10">
-                        <div className="space-y-5">
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-144 bg-[radial-gradient(circle_at_top_left,rgba(251,193,23,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(41,179,182,0.18),transparent_32%),linear-gradient(180deg,rgba(226,255,254,0.85),rgba(255,255,255,0))]" />
+                <div className="pointer-events-none absolute inset-x-0 top-24 h-64 bg-[linear-gradient(180deg,rgba(255,255,255,0.28),transparent)]" />
+                <section className="relative px-4 pb-10 pt-8 sm:px-6 sm:pb-12 sm:pt-10 lg:px-8 lg:pb-16 lg:pt-12">
+                    <div className="mx-auto max-w-[96rem] space-y-8 sm:space-y-10">
+                        <div className="space-y-6">
                             {backHref ? (
                                 <Link
                                     href={backHref}
-                                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-(--border) bg-(--surface)/88 px-4 py-2 text-sm font-semibold text-foreground shadow-(--shadow-xs) backdrop-blur transition-colors duration-200 hover:border-(--border-strong) hover:bg-(--surface-hover)"
+                                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-(--border) bg-white/88 px-4 py-2 text-sm font-semibold text-foreground shadow-(--shadow-xs) backdrop-blur transition-colors duration-200 hover:border-(--border-strong) hover:bg-white"
                                 >
                                     <ArrowLeft className="h-4 w-4" />
                                     {backLabel}
                                 </Link>
                             ) : null}
 
-                            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,23rem)] lg:items-end lg:gap-10">
-                                <SectionHeader
-                                    eyebrow={eyebrow}
-                                    title={title}
-                                    description={description}
-                                    className="gap-3"
-                                />
+                            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-end lg:gap-12">
+                                <div className="space-y-4">
+                                    <SectionHeader
+                                        eyebrow={eyebrow}
+                                        title={title}
+                                        description={description}
+                                        className="gap-3"
+                                    />
+                                </div>
                                 {aside ? <div className="lg:justify-self-end">{aside}</div> : null}
                             </div>
                         </div>
@@ -89,18 +84,18 @@ export function CheckoutCard({
     headerAction,
 }: CheckoutCardProps) {
     return (
-        <EditorialPanel className={cn("rounded-[calc(var(--radius-2xl)+0.5rem)] p-5 sm:p-6", className)}>
+        <EditorialPanel className={cn("rounded-[calc(var(--radius-2xl)+0.5rem)] border-[rgba(111,121,120,0.18)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,252,251,0.92))] p-5 sm:p-6", className)}>
             <div className="space-y-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="space-y-2">
                         <div className="flex items-center gap-3">
                             {Icon ? (
-                                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary) shadow-(--shadow-xs)">
+                                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[rgba(167,236,235,0.72)] text-(--accent-primary) shadow-(--shadow-xs)">
                                     <Icon className="h-5 w-5" />
                                 </span>
                             ) : null}
                             <div>
-                                <h2 className="text-lg font-semibold tracking-(--tracking-heading) text-foreground sm:text-xl">
+                                <h2 className="font-(--font-editorial) text-2xl leading-none tracking-(--tracking-display) text-foreground sm:text-[2rem]">
                                     {title}
                                 </h2>
                                 {description ? (
@@ -114,6 +109,28 @@ export function CheckoutCard({
                 {children}
             </div>
         </EditorialPanel>
+    );
+}
+
+interface CheckoutSectionHeadingProps {
+    step: number;
+    title: string;
+    description?: string;
+}
+
+export function CheckoutSectionHeading({ step, title, description }: CheckoutSectionHeadingProps) {
+    return (
+        <div className="flex items-start gap-4">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgba(167,236,235,0.86)] text-sm font-bold text-(--accent-primary) shadow-(--shadow-xs)">
+                {step}
+            </span>
+            <div className="space-y-1.5">
+                <h2 className="font-(--font-editorial) text-[1.9rem] leading-none tracking-(--tracking-display) text-(--accent-primary) sm:text-[2.2rem]">
+                    {title}
+                </h2>
+                {description ? <p className="max-w-2xl text-sm leading-6 text-(--text-secondary)">{description}</p> : null}
+            </div>
+        </div>
     );
 }
 
@@ -137,35 +154,37 @@ export function CheckoutEventSummary({
     badge,
 }: CheckoutEventSummaryProps) {
     return (
-        <EditorialPanel className="overflow-hidden rounded-[calc(var(--radius-3xl)+0.25rem)] p-0">
-            <div className="grid gap-0 sm:grid-cols-[11rem_minmax(0,1fr)]">
-                <div className="relative min-h-56 bg-(--surface-muted) sm:min-h-full">
-                    <img
+        <EditorialPanel className="overflow-hidden rounded-[calc(var(--radius-3xl)+0.25rem)] border-[rgba(111,121,120,0.16)] p-0">
+            <div className="grid gap-0 sm:grid-cols-[6.5rem_minmax(0,1fr)]">
+                <div className="relative min-h-28 bg-(--surface-muted) sm:min-h-full">
+                    <Image
                         src={posterImage || "/placeholder.jpg"}
                         alt={title}
-                        className="absolute inset-0 h-full w-full object-cover"
+                        fill
+                        sizes="(min-width: 640px) 6.5rem, 100vw"
+                        className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/35 via-black/5 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/30 via-black/5 to-transparent" />
                 </div>
-                <div className="space-y-5 p-6 sm:p-8">
+                <div className="space-y-4 p-5 sm:p-6">
                     <div className="flex flex-wrap gap-2">
                         {(badge || eventType) ? (
-                            <span className="inline-flex rounded-full border border-(--border) bg-(--surface-brand-soft) px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-(--accent-primary)">
+                            <span className={cn(publicAuthSurface.eyebrow, "bg-(--surface-brand-soft) px-3 py-1 text-[0.65rem]")}>
                                 {badge || eventType}
                             </span>
                         ) : null}
-                        <span className="inline-flex rounded-full border border-[rgba(249,93,0,0.18)] bg-(--surface-accent) px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-(--accent-secondary)">
+                        <span className="inline-flex rounded-full border border-[rgba(249,93,0,0.18)] bg-(--surface-accent) px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-(--accent-secondary)">
                             Checkout session
                         </span>
                     </div>
 
                     <div className="space-y-3">
-                        <h2 className="font-(--font-editorial) text-3xl leading-[0.98] tracking-(--tracking-display) text-foreground sm:text-4xl">
+                        <h2 className="font-semibold leading-tight tracking-(--tracking-heading) text-foreground sm:text-lg">
                             {title}
                         </h2>
                         <div className="grid gap-3 text-sm text-(--text-secondary) sm:grid-cols-2">
                             {scheduleDate ? (
-                                <div className="flex items-start gap-3 rounded-2xl border border-(--border-light) bg-(--surface) px-4 py-3 shadow-(--shadow-xs)">
+                                <div className="flex items-start gap-3 rounded-2xl border border-(--border-light) bg-white px-4 py-3 shadow-(--shadow-xs)">
                                     <CalendarDays className="mt-0.5 h-4 w-4 text-(--accent-primary)" />
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">Jadwal</p>
@@ -174,7 +193,7 @@ export function CheckoutEventSummary({
                                 </div>
                             ) : null}
                             {(venueName || venueCity) ? (
-                                <div className="flex items-start gap-3 rounded-2xl border border-(--border-light) bg-(--surface) px-4 py-3 shadow-(--shadow-xs)">
+                                <div className="flex items-start gap-3 rounded-2xl border border-(--border-light) bg-white px-4 py-3 shadow-(--shadow-xs)">
                                     <MapPin className="mt-0.5 h-4 w-4 text-(--accent-primary)" />
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">Venue</p>
@@ -225,84 +244,41 @@ export function CheckoutCallout({
     );
 }
 
-interface CheckoutStatusHeroProps {
-    tone: "success" | "pending" | "failed";
+interface CheckoutTrustPanelProps {
     title: string;
-    description: string;
-    bookingCode?: string | null;
-    highlight?: ReactNode;
-    children?: ReactNode;
+    description: ReactNode;
+    badge?: string;
 }
 
-const statusConfig = {
-    success: {
-        icon: CheckCircle2,
-        badge: "Pembayaran sukses",
-        iconClassName: "bg-(--success-bg) text-(--success)",
-        badgeClassName: "border-[rgba(19,135,108,0.22)] bg-(--success-bg) text-(--success-text)",
-    },
-    pending: {
-        icon: Clock3,
-        badge: "Menunggu konfirmasi",
-        iconClassName: "bg-(--warning-bg) text-(--warning)",
-        badgeClassName: "border-[rgba(251,193,23,0.3)] bg-(--warning-bg) text-(--warning-text)",
-    },
-    failed: {
-        icon: XCircle,
-        badge: "Pembayaran gagal",
-        iconClassName: "bg-(--error-bg) text-(--error)",
-        badgeClassName: "border-[rgba(217,79,61,0.22)] bg-(--error-bg) text-(--error-text)",
-    },
-} as const;
-
-export function CheckoutStatusHero({
-    tone,
-    title,
-    description,
-    bookingCode,
-    highlight,
-    children,
-}: CheckoutStatusHeroProps) {
-    const config = statusConfig[tone];
-    const Icon = config.icon;
-
+export function CheckoutTrustPanel({ title, description, badge }: CheckoutTrustPanelProps) {
     return (
-        <EditorialPanel className="rounded-[calc(var(--radius-3xl)+0.25rem)] p-6 sm:p-8 lg:p-10">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)] lg:items-start">
-                <div className="space-y-5">
-                    <span className={cn("inline-flex rounded-full border px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.24em]", config.badgeClassName)}>
-                        {config.badge}
-                    </span>
-                    <div className="space-y-4">
-                        <span className={cn("inline-flex h-18 w-18 items-center justify-center rounded-[1.75rem] shadow-(--shadow-sm)", config.iconClassName)}>
-                            <Icon className="h-9 w-9" />
-                        </span>
-                        <div className="space-y-3">
-                            <h1 className="font-(--font-editorial) text-4xl leading-[0.95] tracking-(--tracking-display) text-foreground sm:text-5xl">
-                                {title}
-                            </h1>
-                            <p className="max-w-2xl text-base leading-8 text-(--text-secondary) sm:text-lg">
-                                {description}
-                            </p>
-                        </div>
-                    </div>
-                    {children ? <div className="space-y-4">{children}</div> : null}
-                </div>
-
-                <div className="space-y-4">
-                    <div className="rounded-[1.75rem] border border-(--border) bg-(--surface)/92 p-5 shadow-(--shadow-sm)">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-(--text-muted)">Referensi transaksi</p>
-                        <div className="mt-4 space-y-4">
-                            <div className="rounded-2xl border border-(--border-light) bg-(--surface-muted) px-4 py-4 shadow-(--shadow-xs)">
-                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">Kode booking</p>
-                                <p className="mt-2 break-all font-mono text-lg font-semibold text-foreground sm:text-xl">{bookingCode || "Akan muncul setelah booking dibuat"}</p>
-                            </div>
-                            {highlight ? highlight : null}
-                        </div>
-                    </div>
-                </div>
+        <div className="flex flex-col gap-4 rounded-[1.6rem] border border-[rgba(41,179,182,0.16)] bg-[linear-gradient(180deg,rgba(193,255,254,0.5),rgba(255,255,255,0.88))] px-5 py-5 shadow-(--shadow-sm) sm:flex-row sm:items-center sm:px-6">
+            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-(--accent-primary) shadow-(--shadow-xs)">
+                <ShieldCheck className="h-5 w-5" />
+            </span>
+            <div className="space-y-1">
+                <p className="font-semibold text-(--accent-primary)">{title}</p>
+                <div className="text-sm leading-6 text-(--text-secondary)">{description}</div>
             </div>
-        </EditorialPanel>
+            {badge ? (
+                <span className="inline-flex rounded-full border border-[rgba(41,179,182,0.18)] bg-white px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-(--accent-primary) sm:ml-auto">
+                    {badge}
+                </span>
+            ) : null}
+        </div>
+    );
+}
+
+interface CheckoutAssuranceChipProps {
+    children: ReactNode;
+}
+
+export function CheckoutAssuranceChip({ children }: CheckoutAssuranceChipProps) {
+    return (
+        <div className="flex items-center justify-center gap-2 rounded-full bg-[rgba(255,223,154,0.8)] px-4 py-3 text-center text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-on-tertiary-fixed,#251a00)]">
+            <CheckCircle2 className="h-4 w-4" />
+            <span>{children}</span>
+        </div>
     );
 }
 
@@ -357,33 +333,5 @@ export function BookingCodePill({ bookingCode, label = "Kode booking" }: Booking
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">{label}</p>
             <p className="mt-2 break-all font-mono text-base font-semibold text-foreground">{bookingCode || "Menunggu kode booking"}</p>
         </div>
-    );
-}
-
-export function CheckoutStatusNotes() {
-    return (
-        <CheckoutCard title="Yang terjadi setelah ini" description="Gunakan halaman ini sebagai titik referensi setelah transaksi diproses." icon={Ticket}>
-            <div className="grid gap-3 sm:grid-cols-3">
-                {[
-                    {
-                        title: "Email & notifikasi",
-                        copy: "Gelaran mengirim pembaruan status dan instruksi lanjutan ke email yang kamu pakai saat checkout.",
-                    },
-                    {
-                        title: "Riwayat booking",
-                        copy: "Semua perubahan status juga bisa dipantau dari area booking customer ketika akun dan email cocok.",
-                    },
-                    {
-                        title: "Dukungan lanjutan",
-                        copy: "Gunakan kode booking saat menghubungi penyelenggara atau tim bantuan agar penanganan lebih cepat.",
-                    },
-                ].map((item) => (
-                    <div key={item.title} className="rounded-2xl border border-(--border-light) bg-(--surface) px-4 py-4 shadow-(--shadow-xs)">
-                        <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                        <p className="mt-2 text-sm leading-6 text-(--text-secondary)">{item.copy}</p>
-                    </div>
-                ))}
-            </div>
-        </CheckoutCard>
     );
 }

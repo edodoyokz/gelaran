@@ -1,6 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedAppUser, requireOrganizerContext } from "@/lib/auth/route-auth";
+
+async function canAccessCheckInPoints(eventId: string, dbUserId: string) {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: { organizerId: true },
+  });
+
+  if (!event) {
+    return { event: null, authorized: false as const };
+  }
+
+  if (event.organizerId === dbUserId) {
+    return { event, authorized: true as const };
+  }
+
+  const organizerProfile = await prisma.organizerProfile.findUnique({
+    where: { userId: event.organizerId },
+    select: { id: true },
+  });
+
+  if (!organizerProfile) {
+    return { event, authorized: false as const };
+  }
+
+  const teamMember = await prisma.organizerTeamMember.findFirst({
+    where: {
+      organizerProfileId: organizerProfile.id,
+      userId: dbUserId,
+      isActive: true,
+    },
+    select: { id: true },
+  });
+
+  return { event, authorized: Boolean(teamMember) };
+}
 
 export async function GET(
   request: NextRequest,
@@ -9,52 +44,29 @@ export async function GET(
   try {
     const { id: eventId } = await params;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
-    const event = await prisma.event.findUnique({
-      where: { id: eventId },
-      select: { organizerId: true },
-    });
+    const access = await canAccessCheckInPoints(eventId, authContext.dbUserId);
 
-    if (!event) {
+    if (!access.event) {
       return NextResponse.json(
         { success: false, error: { message: "Event not found" } },
         { status: 404 }
       );
     }
 
-    if (event.organizerId !== user.id) {
-      const organizerProfile = await prisma.organizerProfile.findUnique({
-        where: { userId: event.organizerId },
-        select: { id: true },
-      });
-
-      if (organizerProfile) {
-        const teamMember = await prisma.organizerTeamMember.findFirst({
-          where: { organizerProfileId: organizerProfile.id, userId: user.id, isActive: true },
-        });
-        if (!teamMember) {
-          return NextResponse.json(
-            { success: false, error: { message: "Not authorized to access this event" } },
-            { status: 403 }
-          );
-        }
-      } else {
-        return NextResponse.json(
-          { success: false, error: { message: "Not authorized to access this event" } },
-          { status: 403 }
-        );
-      }
+    if (!access.authorized) {
+      return NextResponse.json(
+        { success: false, error: { message: "Not authorized to access this event" } },
+        { status: 403 }
+      );
     }
 
     const checkInPoints = await prisma.checkInPoint.findMany({
@@ -105,15 +117,12 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -129,7 +138,7 @@ export async function POST(
       );
     }
 
-    if (event.organizerId !== user.id) {
+    if (event.organizerId !== authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized to manage this event" } },
         { status: 403 }
@@ -174,15 +183,12 @@ export async function PUT(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -198,7 +204,7 @@ export async function PUT(
       );
     }
 
-    if (event.organizerId !== user.id) {
+    if (event.organizerId !== authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized to manage this event" } },
         { status: 403 }
@@ -254,15 +260,12 @@ export async function DELETE(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireOrganizerContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -278,7 +281,7 @@ export async function DELETE(
       );
     }
 
-    if (event.organizerId !== user.id) {
+    if (event.organizerId !== authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized to manage this event" } },
         { status: 403 }

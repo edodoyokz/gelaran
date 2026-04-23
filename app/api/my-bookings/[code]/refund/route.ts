@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
-import { Resend } from "resend";
 import type { Decimal } from "@prisma/client/runtime/library";
+import { requireAuthenticatedAppUser } from "@/lib/auth/route-auth";
+import { FROM_EMAIL, resend } from "@/lib/email/client";
 
 interface RefundRecord {
   id: string;
@@ -16,8 +16,6 @@ interface RefundRecord {
   completedAt: Date | null;
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
@@ -25,15 +23,12 @@ export async function GET(
   try {
     const { code: bookingCode } = await params;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -56,7 +51,7 @@ export async function GET(
       );
     }
 
-    if (booking.userId !== user.id) {
+    if (booking.userId !== authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized" } },
         { status: 403 }
@@ -108,15 +103,12 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -138,7 +130,7 @@ export async function POST(
       );
     }
 
-    if (booking.userId !== user.id) {
+    if (booking.userId !== authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized" } },
         { status: 403 }
@@ -174,7 +166,7 @@ export async function POST(
       data: {
         transactionId: booking.transaction.id,
         bookingId: booking.id,
-        requestedBy: user.id,
+        requestedBy: authContext.dbUserId,
         refundType: refundType === "PARTIAL" ? "PARTIAL" : "FULL",
         refundAmount: booking.totalAmount,
         reason,
@@ -184,13 +176,13 @@ export async function POST(
 
     try {
       const userData = await prisma.user.findUnique({
-        where: { id: user.id },
+        where: { id: authContext.dbUserId },
         select: { email: true, name: true },
       });
 
       if (userData) {
         await resend.emails.send({
-          from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
+          from: FROM_EMAIL,
           to: userData.email,
           subject: `Permintaan Refund Diterima - ${booking.bookingCode}`,
           html: `

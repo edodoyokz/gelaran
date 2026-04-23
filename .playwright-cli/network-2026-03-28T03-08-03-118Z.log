@@ -1,0 +1,6 @@
+[GET] http://127.0.0.1:3001/api/site-content?keys=footer => [200] OK
+[GET] http://127.0.0.1:3001/api/categories => [200] OK
+[GET] http://127.0.0.1:3001/api/events?limit=8&status=PUBLISHED => [200] OK
+[GET] http://127.0.0.1:3001/api/events?limit=4&status=PUBLISHED&eventType=ONLINE => [200] OK
+[GET] http://127.0.0.1:3001/api/home/top-events => [200] OK
+[GET] http://127.0.0.1:3001/api/home/review-highlights => [200] OK

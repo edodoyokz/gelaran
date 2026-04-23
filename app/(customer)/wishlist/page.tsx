@@ -61,6 +61,8 @@ export default function WishlistPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [removingId, setRemovingId] = useState<string | null>(null);
+    const [pendingRemovalId, setPendingRemovalId] = useState<string | null>(null);
+    const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
     const fetchWishlist = useCallback(async () => {
         try {
@@ -92,9 +94,16 @@ export default function WishlistPage() {
         fetchWishlist();
     }, [fetchWishlist]);
 
-    const handleRemove = async (eventId: string) => {
+    const handleRemove = async (eventId: string, eventTitle: string) => {
+        if (pendingRemovalId !== eventId) {
+            setPendingRemovalId(eventId);
+            setStatusMessage(`Tekan sekali lagi untuk menghapus ${eventTitle} dari wishlist.`);
+            return;
+        }
+
         try {
             setRemovingId(eventId);
+            setStatusMessage(null);
             const res = await fetch(`/api/wishlist?eventId=${eventId}`, {
                 method: "DELETE",
             });
@@ -102,15 +111,17 @@ export default function WishlistPage() {
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.error?.message || "Gagal menghapus dari wishlist");
+                setStatusMessage(data.error?.message || "Gagal menghapus dari wishlist.");
                 return;
             }
 
             setWishlists((prev) => prev.filter((w) => w.event.id !== eventId));
+            setStatusMessage(`${eventTitle} dihapus dari wishlist.`);
         } catch {
-            alert("Gagal menghapus dari wishlist");
+            setStatusMessage("Gagal menghapus dari wishlist.");
         } finally {
             setRemovingId(null);
+            setPendingRemovalId(null);
         }
     };
 
@@ -163,7 +174,7 @@ export default function WishlistPage() {
     }
 
     return (
-        <div className="space-y-6 lg:space-y-8">
+        <div className="space-y-7 lg:space-y-9">
             <CustomerHero
                 eyebrow="Saved events"
                 title="Wishlist saya"
@@ -186,6 +197,15 @@ export default function WishlistPage() {
                 }
             />
 
+            {statusMessage ? (
+                <p
+                    className="rounded-2xl border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm text-(--text-secondary) shadow-(--shadow-xs)"
+                    aria-live="polite"
+                >
+                    {statusMessage}
+                </p>
+            ) : null}
+
             <DashboardSection
                 title="Event tersimpan"
                 description="Daftar event favoritmu dengan status, jadwal, lokasi, dan harga awal agar keputusan booking terasa lebih cepat dan terarah."
@@ -200,7 +220,7 @@ export default function WishlistPage() {
                         className="border-none bg-transparent p-0 shadow-none"
                     />
                 ) : (
-                    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {wishlists.map((item) => {
                             const status = EVENT_STATUS_META[item.event.status] || {
                                 label: item.event.status,
@@ -210,7 +230,7 @@ export default function WishlistPage() {
                             return (
                                 <article
                                     key={item.id}
-                                    className="group overflow-hidden rounded-[1.75rem] border border-(--border) bg-(--surface)/96 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
+                                    className="group overflow-hidden rounded-[1.9rem] border border-[rgba(1,89,89,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,249,0.95))] shadow-[0_18px_44px_rgba(1,89,89,0.07)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(1,89,89,0.11)] dark:border-[rgba(78,222,225,0.12)] dark:bg-[linear-gradient(180deg,rgba(26,26,36,0.96),rgba(18,30,31,0.92))]"
                                 >
                                     <div className="relative aspect-16/10 overflow-hidden bg-(--surface-brand-soft)">
                                         <Image
@@ -236,10 +256,10 @@ export default function WishlistPage() {
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => handleRemove(item.event.id)}
+                                            onClick={() => handleRemove(item.event.id, item.event.title)}
                                             disabled={removingId === item.event.id}
                                             className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-black/35 text-white backdrop-blur transition-colors hover:bg-black/55 disabled:cursor-not-allowed disabled:opacity-60"
-                                            aria-label="Hapus dari wishlist"
+                                            aria-label={pendingRemovalId === item.event.id ? `Konfirmasi hapus ${item.event.title} dari wishlist` : `Hapus ${item.event.title} dari wishlist`}
                                         >
                                             {removingId === item.event.id ? (
                                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -297,8 +317,9 @@ export default function WishlistPage() {
                                             </Link>
                                             <button
                                                 type="button"
-                                                onClick={() => handleRemove(item.event.id)}
+                                                onClick={() => handleRemove(item.event.id, item.event.title)}
                                                 disabled={removingId === item.event.id}
+                                                aria-label={pendingRemovalId === item.event.id ? `Konfirmasi hapus ${item.event.title} dari wishlist` : `Hapus ${item.event.title} dari wishlist`}
                                                 className="inline-flex items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover) disabled:cursor-not-allowed disabled:opacity-60"
                                             >
                                                 {removingId === item.event.id ? (

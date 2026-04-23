@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import { QRCodeSVG } from "qrcode.react";
 import {
     ArrowLeft,
     Download,
@@ -103,7 +104,7 @@ function TicketPageContent() {
                 throw new Error(data.error?.message || "Gagal memuat tiket");
             }
 
-            setBooking(data.data);
+            setBooking(data.data.booking);
             setError(null);
         } catch (err) {
             const message = err instanceof Error ? err.message : "Terjadi kesalahan";
@@ -115,7 +116,7 @@ function TicketPageContent() {
 
     useEffect(() => {
         fetchBooking();
-    }, [bookingCode, fetchBooking]);
+    }, [fetchBooking]);
 
     const handleDownloadTicket = async (ticketId: string) => {
         try {
@@ -184,6 +185,7 @@ function TicketPageContent() {
                         <h1 className="mb-2 text-2xl font-semibold text-foreground">Gagal memuat tiket</h1>
                         <p className="mb-6 text-(--text-secondary)">{error}</p>
                         <button
+                            type="button"
                             onClick={() => router.push("/my-bookings")}
                             className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white"
                         >
@@ -228,6 +230,7 @@ function TicketPageContent() {
                             Detail booking
                         </Link>
                         <button
+                            type="button"
                             onClick={handleShare}
                             className="inline-flex items-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
                         >
@@ -311,6 +314,7 @@ function TicketPageContent() {
                                             <div className="flex flex-wrap items-center gap-2">
                                                 <h3 className="text-xl font-semibold text-foreground">{ticket.ticketType.name}</h3>
                                                 <button
+                                                    type="button"
                                                     onClick={() => handleCopyTicketCode(ticket.uniqueCode)}
                                                     className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-3 py-1.5 text-xs font-semibold text-(--text-secondary) transition-colors hover:bg-(--surface-hover)"
                                                 >
@@ -375,28 +379,25 @@ function TicketPageContent() {
                                         </div>
                                     </div>
 
-                                    <aside className="space-y-4">
-                                        <div className="rounded-[1.75rem] border border-[rgba(41,179,182,0.22)] bg-(--surface-brand-soft) p-5 text-center">
-                                            {ticket.qrCodeUrl ? (
-                                                <Image
-                                                    src={ticket.qrCodeUrl}
-                                                    alt={`QR Code ${ticket.uniqueCode}`}
-                                                    width={256}
-                                                    height={256}
-                                                    className="mx-auto h-64 w-64 rounded-2xl bg-white p-3"
-                                                />
-                                            ) : (
+                                        <aside className="space-y-4">
+                                            <div className="rounded-[1.75rem] border border-[rgba(41,179,182,0.22)] bg-(--surface-brand-soft) p-5 text-center">
                                                 <div className="mx-auto flex h-64 w-64 items-center justify-center rounded-2xl bg-white p-3">
-                                                    <QrCode className="h-32 w-32 text-(--text-muted)" />
+                                                    {ticket.status === "ACTIVE" ? (
+                                                        <QRCodeSVG value={ticket.uniqueCode} size={220} level="H" includeMargin={false} />
+                                                    ) : (
+                                                        <QrCode className="h-32 w-32 text-(--text-muted)" />
+                                                    )}
                                                 </div>
-                                            )}
-                                            <p className="mt-4 text-sm text-(--text-secondary)">
-                                                Scan QR Code untuk proses check-in.
-                                            </p>
+                                                <p className="mt-4 text-sm text-(--text-secondary)">
+                                                    {ticket.status === "ACTIVE"
+                                                        ? "Scan QR Code untuk proses check-in."
+                                                        : "QR Code tidak tersedia untuk tiket yang tidak aktif."}
+                                                </p>
                                         </div>
 
                                         <div className="grid gap-3">
                                             <button
+                                                type="button"
                                                 onClick={() => handleDownloadTicket(ticket.id)}
                                                 className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"
                                             >
@@ -404,6 +405,7 @@ function TicketPageContent() {
                                                 Unduh tiket PDF
                                             </button>
                                             <button
+                                                type="button"
                                                 onClick={handleShare}
                                                 className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                                             >
@@ -420,6 +422,7 @@ function TicketPageContent() {
                     {booking.bookedTickets.length > 1 ? (
                         <div className="flex justify-center">
                             <button
+                                type="button"
                                 onClick={handleDownloadAll}
                                 className="inline-flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-elevated) px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-(--surface-hover)"
                             >

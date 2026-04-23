@@ -1422,6 +1422,11 @@ function ComplimentaryTab({ event }: { event: EventData }) {
         return <div className="text-center py-12"><Loader2 className="h-8 w-8 animate-spin mx-auto text-(--accent-primary)" /></div>;
     }
 
+    const totalRequests = requests.length;
+    const pendingCount = requests.filter(r => r.status === "PENDING").length;
+    const approvedCount = requests.filter(r => r.status === "APPROVED").length;
+    const rejectedCount = requests.filter(r => r.status === "REJECTED").length;
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -1434,6 +1439,53 @@ function ComplimentaryTab({ event }: { event: EventData }) {
                     <Gift className="h-4 w-4" />
                     Request Complimentary
                 </button>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-(--surface) rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <Gift className="h-5 w-5 text-(--accent-primary)" />
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-foreground">{totalRequests}</p>
+                            <p className="text-sm text-(--text-muted)">Total Requests</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-(--surface) rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
+                            <Clock className="h-5 w-5 text-yellow-600" />
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-foreground">{pendingCount}</p>
+                            <p className="text-sm text-(--text-muted)">Pending</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-(--surface) rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-foreground">{approvedCount}</p>
+                            <p className="text-sm text-(--text-muted)">Approved</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-(--surface) rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
+                            <XCircle className="h-5 w-5 text-red-600" />
+                        </div>
+                        <div>
+                            <p className="text-2xl font-bold text-foreground">{rejectedCount}</p>
+                            <p className="text-sm text-(--text-muted)">Rejected</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {requests.length === 0 ? (

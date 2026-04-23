@@ -1,14 +1,16 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { getSupabaseServerEnv } from "@/lib/env";
 
 export async function proxy(request: NextRequest) {
+    const env = getSupabaseServerEnv();
     let supabaseResponse = NextResponse.next({
         request,
     });
 
     const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        env.NEXT_PUBLIC_SUPABASE_URL,
+        env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         {
             cookies: {
                 getAll() {
@@ -34,8 +36,18 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const pathname = request.nextUrl.pathname;
+    const returnUrl = `${request.nextUrl.pathname}${request.nextUrl.search}`;
 
-    const protectedPaths = ["/account", "/checkout", "/my-bookings", "/profile", "/wishlist", "/dashboard"];
+    const protectedPaths = [
+        "/account",
+        "/checkout",
+        "/dashboard",
+        "/following",
+        "/my-bookings",
+        "/notifications",
+        "/profile",
+        "/wishlist",
+    ];
     const isProtectedPath = protectedPaths.some((path) =>
         pathname.startsWith(path)
     );
@@ -46,18 +58,18 @@ export async function proxy(request: NextRequest) {
     const organizerPaths = ["/organizer"];
     const isOrganizerPath = organizerPaths.some((path) => pathname.startsWith(path));
 
-    const authPaths = ["/login", "/register", "/forgot-password", "/reset-password"];
+    const authPaths = ["/login", "/register", "/forgot-password"];
     const isAuthPath = authPaths.some((path) => pathname.startsWith(path));
 
     if ((isProtectedPath || isAdminPath || isOrganizerPath) && !user) {
         const redirectUrl = new URL("/login", request.url);
-        redirectUrl.searchParams.set("returnUrl", pathname);
+        redirectUrl.searchParams.set("returnUrl", returnUrl);
         return NextResponse.redirect(redirectUrl);
     }
 
     if (isAuthPath && user) {
-        const returnUrl = request.nextUrl.searchParams.get("returnUrl") || "/";
-        return NextResponse.redirect(new URL(returnUrl, request.url));
+        const authReturnUrl = request.nextUrl.searchParams.get("returnUrl") || "/";
+        return NextResponse.redirect(new URL(authReturnUrl, request.url));
     }
 
     return supabaseResponse;

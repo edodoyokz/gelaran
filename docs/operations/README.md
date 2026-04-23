@@ -6,6 +6,7 @@ This directory contains operational documentation for deploying, maintaining, an
 
 ### Critical Links
 - [Pre-Deployment Checklist](./pre-deployment-checklist.md) - Before every deployment
+- [Beta Verification Checklist](./beta-verification-checklist.md) - Tight backend/frontend wiring checks for beta sign-off
 - [Deployment Procedure](./deployment-procedure.md) - How to deploy
 - [Rollback Procedure](./rollback-procedure.md) - How to rollback if issues occur
 - [Smoke Tests Guide](./smoke-tests.md) - Tests to run after deployment
@@ -17,7 +18,7 @@ This directory contains operational documentation for deploying, maintaining, an
 **Deploy to Production:**
 1. Complete [Pre-Deployment Checklist](./pre-deployment-checklist.md)
 2. Follow [Deployment Procedure](./deployment-procedure.md)
-3. Run [Smoke Tests](./smoke-tests.md)
+3. Run [Smoke Tests](./smoke-tests.md) and the [Beta Verification Checklist](./beta-verification-checklist.md) when the release includes wiring-sensitive flows
 4. Monitor for issues for 24 hours
 
 **Handle Incident:**
@@ -38,6 +39,7 @@ This directory contains operational documentation for deploying, maintaining, an
 docs/operations/
 ├── README.md (this file)
 ├── pre-deployment-checklist.md      # Checklist before deploying
+├── beta-verification-checklist.md   # Beta wiring verification checklist
 ├── deployment-procedure.md          # Step-by-step deployment guide
 ├── rollback-procedure.md            # How to rollback if issues occur
 ├── smoke-tests.md                   # Tests to verify system health

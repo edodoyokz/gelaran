@@ -20,9 +20,9 @@ import { getGateResultDisplay, type GateDisplayResultCode } from "@/lib/gate/res
 const QRScanner = dynamic(() => import("@/components/gate/QRScanner"), {
     ssr: false,
     loading: () => (
-        <div className="bg-gray-800 rounded-xl p-8 border border-gray-700 text-center">
-            <Loader2 className="h-12 w-12 mx-auto text-gray-500 animate-spin mb-3" />
-            <p className="text-gray-400">Memuat scanner...</p>
+        <div className="bg-(--surface) rounded-xl p-8 border border-(--border) text-center">
+            <Loader2 className="h-12 w-12 mx-auto text-(--text-muted) animate-spin mb-3" />
+            <p className="text-(--text-secondary)">Memuat scanner...</p>
         </div>
     ),
 });
@@ -151,18 +151,18 @@ export default function GatePage() {
 
     const getResultIcon = (result: GateDisplayResultCode) => {
         if (result === "SUCCESS") {
-            return <CheckCircle className="h-12 w-12 text-emerald-500" />;
+            return <CheckCircle className="h-12 w-12 text-emerald-600 dark:text-emerald-500" />;
         }
 
         if (result === "ALREADY_CHECKED_IN") {
-            return <AlertCircle className="h-12 w-12 text-yellow-500" />;
+            return <AlertCircle className="h-12 w-12 text-amber-500" />;
         }
 
         if (result === "ACCESS_DENIED" || result === "SESSION_INACTIVE") {
-            return <AlertCircle className="h-12 w-12 text-red-500" />;
+            return <AlertCircle className="h-12 w-12 text-red-600 dark:text-red-500" />;
         }
 
-        return <XCircle className="h-12 w-12 text-red-500" />;
+        return <XCircle className="h-12 w-12 text-red-600 dark:text-red-500" />;
     };
 
     const handleQRCheckIn = useCallback(async (code: string): Promise<CheckInResult> => {
@@ -223,29 +223,29 @@ export default function GatePage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
+            <div className="min-h-screen bg-(--background) flex items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900">
-            <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
+        <div className="min-h-screen bg-(--background)">
+            <header className="bg-(--surface) border-b border-(--border) sticky top-0 z-10 transition-colors">
                 <div className="max-w-2xl mx-auto px-4 py-3">
                     <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                                <Camera className="h-5 w-5 text-indigo-500" />
-                                <h1 className="text-lg font-semibold text-white truncate">{event?.title}</h1>
+                                <Camera className="h-5 w-5 text-(--accent-primary)" />
+                                <h1 className="text-lg font-semibold text-foreground truncate">{event?.title}</h1>
                             </div>
-                            <p className="text-sm text-gray-400 truncate">Staff: {staffName}</p>
+                            <p className="text-sm text-(--text-secondary) truncate">Staff: {staffName}</p>
                         </div>
                         <div className="flex items-center gap-2 ml-4">
                             <button
                                 type="button"
                                 onClick={() => deviceToken && fetchEventData(deviceToken)}
-                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                                className="p-2 text-(--text-secondary) hover:text-foreground hover:bg-(--surface-hover) rounded-lg transition-colors"
                                 title="Refresh"
                             >
                                 <RefreshCw className="h-5 w-5" />
@@ -255,7 +255,7 @@ export default function GatePage() {
                                     href={`/organizer/events/${event.id}/gate`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                                    className="p-2 text-(--text-secondary) hover:text-foreground hover:bg-(--surface-hover) rounded-lg transition-colors"
                                     title="Pengaturan"
                                 >
                                     <Settings className="h-5 w-5" />
@@ -264,7 +264,7 @@ export default function GatePage() {
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                                className="p-2 text-(--error) hover:text-red-600 dark:hover:text-red-400 hover:bg-(--error-bg) rounded-lg transition-colors"
                                 title="Logout"
                             >
                                 <LogOut className="h-5 w-5" />
@@ -276,31 +276,31 @@ export default function GatePage() {
 
             <main className="max-w-2xl mx-auto px-4 py-6">
                 {stats && (
-                    <div className="mb-6 rounded-2xl border border-gray-700 bg-gray-800 p-4">
+                    <div className="mb-6 rounded-2xl border border-(--border) bg-(--surface) p-4 shadow-(--shadow-sm)">
                         <div className="mb-4 grid gap-3 sm:grid-cols-3">
-                            <article className="rounded-xl border border-gray-700 bg-gray-900/60 p-3">
-                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Total tiket</p>
-                                <p className="mt-2 text-2xl font-semibold text-white">{stats.totalSold}</p>
+                            <article className="rounded-xl border border-(--border) bg-(--background) p-3 shadow-(--shadow-xs)">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-(--text-muted)">Total tiket</p>
+                                <p className="mt-2 text-2xl font-semibold text-foreground">{stats.totalSold}</p>
                             </article>
-                            <article className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3">
-                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">Checked in</p>
-                                <p className="mt-2 text-2xl font-semibold text-emerald-300">{stats.checkedIn}</p>
+                            <article className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 shadow-(--shadow-xs)">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">Checked in</p>
+                                <p className="mt-2 text-2xl font-semibold text-emerald-600 dark:text-emerald-400">{stats.checkedIn}</p>
                             </article>
-                            <article className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
-                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">Belum masuk</p>
-                                <p className="mt-2 text-2xl font-semibold text-amber-300">{stats.remaining}</p>
+                            <article className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3 shadow-(--shadow-xs)">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-400">Belum masuk</p>
+                                <p className="mt-2 text-2xl font-semibold text-amber-600 dark:text-amber-400">{stats.remaining}</p>
                             </article>
                         </div>
                         <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-                            <div className="flex items-center gap-2 text-gray-400">
+                            <div className="flex items-center gap-2 text-(--text-secondary)">
                                 <Users className="h-4 w-4" />
                                 Check-in progress
                             </div>
-                            <span className="font-semibold text-emerald-400">{stats.checkInPercentage}%</span>
+                            <span className="font-semibold text-emerald-600 dark:text-emerald-500">{stats.checkInPercentage}%</span>
                         </div>
-                        <div className="h-3 w-full rounded-full bg-gray-700">
+                        <div className="h-3 w-full rounded-full bg-(--surface-hover) overflow-hidden border border-(--border)">
                             <div
-                                className="h-3 rounded-full bg-linear-to-r from-indigo-500 to-emerald-500 transition-all duration-500"
+                                className="h-full bg-linear-to-r from-(--accent-primary) to-emerald-500 transition-all duration-500"
                                 style={{ width: `${stats.checkInPercentage}%` }}
                             />
                         </div>
@@ -319,30 +319,30 @@ export default function GatePage() {
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-700" />
+                            <div className="w-full border-t border-(--border)" />
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-3 bg-gray-900 text-gray-500">atau</span>
+                            <span className="px-3 bg-(--background) text-(--text-muted)">atau</span>
                         </div>
                     </div>
 
                     <form onSubmit={handleCheckIn}>
-                        <div className="flex items-center gap-2 mb-3 text-gray-400">
+                        <div className="flex items-center gap-2 mb-3 text-(--text-secondary)">
                             <Keyboard className="h-4 w-4" />
-                            <span className="text-sm">Input Manual</span>
+                            <span className="text-sm font-medium">Input Manual</span>
                         </div>
                         <input
                             type="text"
                             value={ticketCode}
                             onChange={(e) => setTicketCode(e.target.value.toUpperCase())}
                             placeholder="Masukkan kode tiket..."
-                            className="w-full px-4 py-4 bg-gray-800 border border-gray-700 rounded-xl text-white text-center text-xl font-mono tracking-wider placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-4 py-4 bg-(--surface) border border-(--border) rounded-xl text-foreground text-center text-xl font-mono tracking-wider placeholder:text-(--text-muted) focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent outline-none transition-shadow"
                             autoComplete="off"
                         />
                         <button
                             type="submit"
                             disabled={isScanning || !ticketCode.trim()}
-                            className="w-full mt-4 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+                            className="w-full mt-4 py-4 bg-(--accent-primary) text-white rounded-xl font-semibold hover:bg-(--accent-primary-hover) disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all shadow-(--shadow-sm)"
                         >
                             {isScanning ? (
                                 <>
@@ -362,40 +362,40 @@ export default function GatePage() {
                         const display = getGateResultDisplay(scanResult.result);
                         const toneClasses =
                             display.tone === "success"
-                                ? "bg-emerald-900/50 border border-emerald-700"
+                                ? "bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50"
                                 : display.tone === "warning"
-                                    ? "bg-yellow-900/50 border border-yellow-700"
-                                    : "bg-red-900/50 border border-red-700";
+                                    ? "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50"
+                                    : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50";
                         const titleClasses =
                             display.tone === "success"
-                                ? "text-emerald-400"
+                                ? "text-emerald-700 dark:text-emerald-400"
                                 : display.tone === "warning"
-                                    ? "text-yellow-400"
-                                    : "text-red-400";
+                                    ? "text-amber-700 dark:text-amber-400"
+                                    : "text-red-700 dark:text-red-400";
 
                         return (
-                            <div className={`rounded-xl p-6 ${toneClasses}`}>
+                            <div className={`rounded-xl p-6 ${toneClasses} mt-6 shadow-(--shadow-sm)`}>
                                 <div className="flex items-center gap-3 mb-4">
                                     {getResultIcon(scanResult.result)}
                                     <div>
                                         <h3 className={`text-xl font-bold ${titleClasses}`}>{display.title}</h3>
-                                        <p className="text-sm text-gray-300 mt-1">
+                                        <p className="text-sm text-(--text-secondary) mt-1">
                                             {scanResult.message || display.description}
                                         </p>
                                     </div>
                                 </div>
 
                                 {scanResult.ticket && (
-                                    <div className="space-y-2 text-gray-300">
-                                        <p><span className="text-gray-500">Nama:</span> {scanResult.ticket.attendeeName}</p>
-                                        <p><span className="text-gray-500">Tiket:</span> {scanResult.ticket.ticketType}</p>
-                                        <p><span className="text-gray-500">Booking:</span> {scanResult.ticket.bookingCode}</p>
-                                        <p><span className="text-gray-500">Event:</span> {scanResult.ticket.eventTitle}</p>
+                                    <div className="space-y-2 text-foreground">
+                                        <p><span className="text-(--text-muted) mr-2">Nama:</span> <span className="font-medium">{scanResult.ticket.attendeeName}</span></p>
+                                        <p><span className="text-(--text-muted) mr-2">Tiket:</span> <span className="font-medium">{scanResult.ticket.ticketType}</span></p>
+                                        <p><span className="text-(--text-muted) mr-2">Booking:</span> <span className="font-mono">{scanResult.ticket.bookingCode}</span></p>
+                                        <p><span className="text-(--text-muted) mr-2">Event:</span> {scanResult.ticket.eventTitle}</p>
                                     </div>
                                 )}
 
                                 {scanResult.checkedInAt && (
-                                    <p className="text-gray-400 text-sm mt-4">
+                                    <p className="text-(--text-muted) text-sm mt-4 border-t border-(--border) pt-4">
                                         Check-in pada: {new Date(scanResult.checkedInAt).toLocaleString("id-ID")}
                                     </p>
                                 )}

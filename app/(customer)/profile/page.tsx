@@ -320,7 +320,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="space-y-6 lg:space-y-8">
+        <div className="space-y-7 lg:space-y-9">
             <CustomerHero
                 eyebrow="Account settings"
                 title="Profil & pengaturan"
@@ -368,16 +368,23 @@ export default function ProfilePage() {
             />
 
             {success ? (
-                <div className="rounded-2xl border border-[rgba(19,135,108,0.18)] bg-(--success-bg) p-4 text-(--success-text)">
-                    <div className="flex items-center gap-3">
+                <p
+                    className="rounded-2xl border border-[rgba(19,135,108,0.18)] bg-(--success-bg) p-4 text-(--success-text)"
+                    aria-live="polite"
+                >
+                    <span className="flex items-center gap-3">
                         <CheckCircle className="h-5 w-5 shrink-0" />
-                        <p>{success}</p>
-                    </div>
-                </div>
+                        <span>{success}</span>
+                    </span>
+                </p>
             ) : null}
 
             {error && profile ? (
-                <div className="rounded-2xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-4 text-(--error-text)">
+                <div
+                    className="rounded-2xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-4 text-(--error-text)"
+                    role="alert"
+                    aria-live="assertive"
+                >
                     <div className="flex items-center gap-3">
                         <AlertCircle className="h-5 w-5 shrink-0" />
                         <p>{error}</p>
@@ -385,7 +392,7 @@ export default function ProfilePage() {
                 </div>
             ) : null}
 
-            <div className="grid gap-6 xl:grid-cols-[1.05fr_1.4fr]">
+            <div className="grid gap-6 xl:grid-cols-[1.05fr_1.4fr] xl:gap-7">
                 <DashboardSection
                     title="Ringkasan akun"
                     description="Foto profil, status akun, dan informasi penting yang muncul di area customer Gelaran."
@@ -394,7 +401,7 @@ export default function ProfilePage() {
                     <div className="space-y-6">
                         <div className="flex flex-col items-start gap-5 sm:flex-row">
                             <div className="relative">
-                                <div className="relative h-28 w-28 overflow-hidden rounded-4xl bg-(--accent-gradient) shadow-(--shadow-glow)">
+                                <div className="relative h-28 w-28 overflow-hidden rounded-[2rem] bg-(--accent-gradient) shadow-(--shadow-glow)">
                                     {profile?.avatarUrl ? (
                                         <Image
                                             src={profile.avatarUrl}
@@ -419,6 +426,7 @@ export default function ProfilePage() {
                                     type="button"
                                     onClick={handleAvatarClick}
                                     disabled={isUploadingAvatar}
+                                    aria-label={isUploadingAvatar ? "Mengunggah avatar" : "Ubah avatar profil"}
                                     className="absolute -bottom-2 -right-2 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-(--border) bg-(--surface) text-(--text-secondary) shadow-(--shadow-sm) transition-colors hover:bg-(--surface-hover) disabled:opacity-50"
                                 >
                                     {isUploadingAvatar ? (

@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth/route-auth";
 import { z } from "zod";
 import type { User } from "@/types/prisma";
 import { resend, FROM_EMAIL } from "@/lib/email/client";
+import { getPublicEnv } from "@/lib/env";
 
 type AdminResult = { admin: User } | { error: string; status: number };
 
@@ -56,7 +57,7 @@ async function notifyFollowers(event: PublishedEventData): Promise<void> {
           })
         : "Segera";
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://bsc.id";
+    const baseUrl = getPublicEnv().NEXT_PUBLIC_APP_URL;
     const eventUrl = `${baseUrl}/events/${event.slug}`;
 
     const emailPromises = users.map((user: { email: string; name: string | null }) =>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedAppUser } from "@/lib/auth/route-auth";
 
 interface FollowerRecord {
   id: string;
@@ -12,15 +12,12 @@ interface FollowerRecord {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -44,7 +41,7 @@ export async function GET(request: NextRequest) {
         where: {
           organizerProfileId_userId: {
             organizerProfileId: organizer.id,
-            userId: user.id,
+            userId: authContext.dbUserId,
           },
         },
       });
@@ -59,7 +56,7 @@ export async function GET(request: NextRequest) {
     }
 
     const following = await prisma.organizerFollower.findMany({
-      where: { userId: user.id },
+      where: { userId: authContext.dbUserId },
     });
 
     const enrichedFollowing = await Promise.all(
@@ -109,15 +106,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -133,7 +127,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (organizer.userId === user.id) {
+    if (organizer.userId === authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Cannot follow yourself" } },
         { status: 400 }
@@ -142,11 +136,11 @@ export async function POST(request: NextRequest) {
 
     const existingFollow = await prisma.organizerFollower.findUnique({
       where: {
-        organizerProfileId_userId: {
-          organizerProfileId: organizer.id,
-          userId: user.id,
+          organizerProfileId_userId: {
+            organizerProfileId: organizer.id,
+            userId: authContext.dbUserId,
+          },
         },
-      },
     });
 
     if (existingFollow) {
@@ -159,7 +153,7 @@ export async function POST(request: NextRequest) {
     const follow = await prisma.organizerFollower.create({
       data: {
         organizerProfileId: organizer.id,
-        userId: user.id,
+        userId: authContext.dbUserId,
         notifyNewEvents: notifyNewEvents !== false,
       },
     });
@@ -194,15 +188,12 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -220,11 +211,11 @@ export async function PUT(request: NextRequest) {
 
     const existingFollow = await prisma.organizerFollower.findUnique({
       where: {
-        organizerProfileId_userId: {
-          organizerProfileId: organizer.id,
-          userId: user.id,
+          organizerProfileId_userId: {
+            organizerProfileId: organizer.id,
+            userId: authContext.dbUserId,
+          },
         },
-      },
     });
 
     if (!existingFollow) {
@@ -269,15 +260,12 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -295,11 +283,11 @@ export async function DELETE(request: NextRequest) {
 
     const existingFollow = await prisma.organizerFollower.findUnique({
       where: {
-        organizerProfileId_userId: {
-          organizerProfileId: organizer.id,
-          userId: user.id,
+          organizerProfileId_userId: {
+            organizerProfileId: organizer.id,
+            userId: authContext.dbUserId,
+          },
         },
-      },
     });
 
     if (!existingFollow) {

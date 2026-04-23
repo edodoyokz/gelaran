@@ -220,3 +220,29 @@ test("mapComplimentaryRequestSummary returns latest booking summary", () => {
     createdAt: new Date("2026-03-08T10:05:00.000Z"),
   });
 });
+
+test("mapComplimentaryRequestSummary preserves rejected review evidence without booking", () => {
+  const summary = mapComplimentaryRequestSummary({
+    id: "req-2",
+    status: "REJECTED",
+    reviewedAt: new Date("2026-03-09T11:00:00.000Z"),
+    reviewedNote: "duplicate guest",
+    reviewedBy: {
+      id: "admin-2",
+      name: "Reviewer",
+      email: "reviewer@example.com",
+    },
+    bookings: [],
+  });
+
+  assert.deepEqual(summary.reviewSummary, {
+    reviewedAt: new Date("2026-03-09T11:00:00.000Z"),
+    reviewedNote: "duplicate guest",
+    reviewedBy: {
+      id: "admin-2",
+      name: "Reviewer",
+      email: "reviewer@example.com",
+    },
+  });
+  assert.equal(summary.bookingSummary, null);
+});

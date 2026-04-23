@@ -104,28 +104,32 @@ function generateSparklineData(
     count: number = 7,
     trend: "up" | "down" | "stable" = "up",
 ): { value: number }[] {
-    const data: { value: number }[] = [];
-    let base = Math.random() * 50 + 20;
-    for (let i = 0; i < count; i++) {
-        const variance = (Math.random() - 0.5) * 20;
-        const trendFactor = trend === "up" ? i * 3 : trend === "down" ? -i * 3 : 0;
-        data.push({ value: Math.max(0, base + variance + trendFactor) });
-        base = data[i].value;
-    }
-    return data;
+    const patterns: Record<typeof trend, number[]> = {
+        up: [22, 25, 27, 31, 34, 38, 42],
+        down: [42, 39, 36, 33, 29, 26, 23],
+        stable: [28, 29, 28, 30, 29, 30, 29],
+    };
+
+    const source = patterns[trend];
+
+    return Array.from({ length: count }, (_, index) => ({
+        value: source[index % source.length] + Math.floor(index / source.length) * 2,
+    }));
 }
 
 function generateActivityData(): { name: string; value: number }[] {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-    return months.map((name) => ({
+    const values = [3, 5, 4, 7, 6, 8];
+
+    return months.map((name, index) => ({
         name,
-        value: Math.floor(Math.random() * 10) + 1,
+        value: values[index],
     }));
 }
 
 function DashboardSkeleton() {
     return (
-        <div className="space-y-6 lg:space-y-8">
+        <div className="space-y-7 lg:space-y-9">
             <div className="rounded-4xl border border-(--border) bg-(--surface)/90 p-6 shadow-(--shadow-sm) sm:p-8">
                 <div className="space-y-4">
                     <div className="h-5 w-32 skeleton rounded-full" />
@@ -307,7 +311,7 @@ export default function CustomerDashboardPage() {
     ];
 
     return (
-        <div className="space-y-6 lg:space-y-8">
+        <div className="space-y-7 lg:space-y-9">
             <CustomerHero
                 eyebrow="Customer dashboard"
                 title={
@@ -374,7 +378,7 @@ export default function CustomerDashboardPage() {
                 ))}
             </CustomerMetricGrid>
 
-            <div className="grid gap-6 xl:grid-cols-[1.55fr_0.95fr]">
+            <div className="grid gap-6 xl:grid-cols-[1.55fr_0.95fr] xl:gap-7">
                 <DashboardSection
                     title="Aktivitas booking"
                     description="Ringkasan aktivitas booking dalam 6 bulan terakhir untuk membantu melihat ritme pembelian dan periode terpadat."
@@ -430,14 +434,14 @@ export default function CustomerDashboardPage() {
                         className="border-none bg-transparent p-0 shadow-none"
                     />
                 ) : (
-                    <div className="grid gap-4 lg:grid-cols-2">
+                    <div className="grid gap-5 lg:grid-cols-2">
                         {data.upcomingBookings.map((booking) => {
                             const status = STATUS_META[booking.status] || STATUS_META.PENDING;
                             return (
                                 <Link
                                     key={booking.id}
                                     href={`/my-bookings/${booking.bookingCode}`}
-                                    className="group overflow-hidden rounded-[1.75rem] border border-(--border) bg-(--surface-elevated) shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
+                                    className="group overflow-hidden rounded-[1.9rem] border border-[rgba(1,89,89,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,249,0.95))] shadow-[0_18px_44px_rgba(1,89,89,0.07)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(1,89,89,0.11)] dark:border-[rgba(78,222,225,0.12)] dark:bg-[linear-gradient(180deg,rgba(26,26,36,0.96),rgba(18,30,31,0.92))]"
                                 >
                                     <div className="flex flex-col gap-4 p-4 sm:flex-row sm:p-5">
                                         <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-(--surface-brand-soft) sm:h-32 sm:w-32 sm:shrink-0">
@@ -516,7 +520,7 @@ export default function CustomerDashboardPage() {
                                     <Link
                                         key={booking.id}
                                         href={`/my-bookings/${booking.bookingCode}`}
-                                        className="flex flex-col gap-4 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 transition-colors hover:bg-(--surface-hover) sm:flex-row sm:items-center"
+                                        className="flex flex-col gap-4 rounded-[1.5rem] border border-(--border-light) bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(247,250,249,0.88))] p-4 transition-colors hover:bg-(--surface-hover) sm:flex-row sm:items-center dark:bg-(--surface-elevated)"
                                     >
                                         <div className="min-w-0 flex-1 space-y-2">
                                             <div className="flex flex-wrap items-center gap-2">
@@ -567,7 +571,7 @@ export default function CustomerDashboardPage() {
                                 <Link
                                     key={event.id}
                                     href={`/events/${event.slug}`}
-                                    className="group flex gap-4 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 transition-colors hover:bg-(--surface-hover)"
+                                    className="group flex gap-4 rounded-[1.5rem] border border-(--border-light) bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(247,250,249,0.88))] p-4 transition-colors hover:bg-(--surface-hover) dark:bg-(--surface-elevated)"
                                 >
                                     <div className="relative aspect-3/4 w-24 shrink-0 overflow-hidden rounded-2xl bg-(--surface-brand-soft)">
                                         <Image

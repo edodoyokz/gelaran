@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/prisma/client'
-import { createClient } from '@/lib/supabase/server'
+import { ownsLocalUserResource } from '@/lib/auth/local-identity'
+import { requireOrganizerContext } from '@/lib/auth/route-auth'
 
 const FaqSchema = z.object({
   question: z.string().min(5),
@@ -14,11 +15,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authContext = await requireOrganizerContext()
+
+    if ("error" in authContext) {
+      return NextResponse.json({ error: authContext.error }, { status: authContext.status })
     }
     
     const { id } = await params
@@ -32,7 +32,7 @@ export async function GET(
       }
     })
     
-    if (!event || event.organizerId !== user.id) {
+    if (!event || !ownsLocalUserResource(event.organizerId, authContext)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
     
@@ -49,11 +49,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const authContext = await requireOrganizerContext()
+
+    if ("error" in authContext) {
+      return NextResponse.json({ error: authContext.error }, { status: authContext.status })
     }
     
     const { id } = await params
@@ -61,7 +60,7 @@ export async function POST(
       where: { id }
     })
     
-    if (!event || event.organizerId !== user.id) {
+    if (!event || !ownsLocalUserResource(event.organizerId, authContext)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
     

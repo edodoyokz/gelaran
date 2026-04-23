@@ -1,0 +1,4 @@
+[GET] http://localhost:3000/api/gate/event => [200] OK
+[POST] http://localhost:3000/api/gate/check-in => [200] OK
+  Request body: {"ticketCode":"TICK-WAY-001-01"}
+[GET] http://localhost:3000/api/gate/event => [200] OK

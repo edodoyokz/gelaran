@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import {
+  getOptionalAuthenticatedAppUser,
+  requireAuthenticatedAppUser,
+} from "@/lib/auth/route-auth";
+import { FROM_EMAIL, resend } from "@/lib/email/client";
 
 export async function POST(
   request: NextRequest,
@@ -36,10 +37,14 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await getOptionalAuthenticatedAppUser();
+
+    if (authContext && "error" in authContext) {
+      return NextResponse.json(
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
+      );
+    }
 
     const event = await prisma.event.findUnique({
       where: { slug },
@@ -104,7 +109,7 @@ export async function POST(
     const waitlistEntry = await prisma.waitlistEntry.create({
       data: {
         ticketTypeId,
-        userId: user?.id || null,
+        userId: authContext?.dbUserId ?? null,
         email: email.toLowerCase(),
         name: name || null,
         quantityRequested: Math.min(Math.max(1, quantity), 10),
@@ -114,7 +119,7 @@ export async function POST(
 
     try {
       await resend.emails.send({
-        from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
+        from: FROM_EMAIL,
         to: email,
         subject: `Anda terdaftar di waitlist untuk ${event.title}`,
         html: `
@@ -225,17 +230,21 @@ export async function GET(
       },
     });
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
     let userEntry = null;
-    if (user) {
+    const authContext = await getOptionalAuthenticatedAppUser();
+
+    if (authContext && "error" in authContext) {
+      return NextResponse.json(
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
+      );
+    }
+
+    if (authContext) {
       userEntry = await prisma.waitlistEntry.findFirst({
         where: {
           ticketTypeId,
-          userId: user.id,
+          userId: authContext.dbUserId,
           status: "WAITING",
         },
         select: {
@@ -272,15 +281,12 @@ export async function DELETE(
     const { searchParams } = new URL(request.url);
     const ticketTypeId = searchParams.get("ticketTypeId");
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -306,7 +312,7 @@ export async function DELETE(
     const waitlistEntry = await prisma.waitlistEntry.findFirst({
       where: {
         ticketTypeId,
-        userId: user.id,
+        userId: authContext.dbUserId,
         status: "WAITING",
       },
     });

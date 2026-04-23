@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import "./material-symbols.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-geist-sans",
@@ -37,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`antialiased ${plusJakartaSans.variable} ${playfairDisplay.variable}`}>
+      <body className={`antialiased ${plusJakartaSans.variable} ${playfairDisplay.variable} bg-[var(--bg-primary)] text-[var(--text-primary)]`}>
         {children}
       </body>
     </html>

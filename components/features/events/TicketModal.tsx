@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -23,7 +23,33 @@ interface TicketModalProps {
 }
 
 export function TicketModal({ isOpen, onClose, event, onCheckout }: TicketModalProps) {
+    const dialogTitleId = useId();
+    const dialogDescriptionId = useId();
+    const firstActionRef = useRef<HTMLButtonElement | null>(null);
+    const previousFocusedElementRef = useRef<HTMLElement | null>(null);
     const [quantities, setQuantities] = useState<Record<string, number>>({});
+
+    useEffect(() => {
+        if (!isOpen) {
+            previousFocusedElementRef.current?.focus();
+            return;
+        }
+
+        previousFocusedElementRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        window.setTimeout(() => firstActionRef.current?.focus(), 0);
+
+        return () => {
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -52,18 +78,29 @@ export function TicketModal({ isOpen, onClose, event, onCheckout }: TicketModalP
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             {/* Backdrop */}
-            <div
+            <button
+                type="button"
+                aria-label="Tutup modal tiket"
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />
 
             {/* Modal */}
-            <div className="bg-white rounded-2xl w-full max-w-lg relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={dialogTitleId}
+                aria-describedby={dialogDescriptionId}
+                className="bg-white rounded-2xl w-full max-w-lg relative z-10 overflow-hidden flex flex-col max-h-[90vh]"
+            >
                 {/* Header */}
                 <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0">
-                    <h3 className="font-bold text-lg">Pilih Tiket</h3>
+                    <h3 id={dialogTitleId} className="font-bold text-lg">Pilih Tiket</h3>
                     <button
+                        type="button"
+                        ref={firstActionRef}
                         onClick={onClose}
+                        aria-label="Tutup modal pilih tiket"
                         className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                     >
                         <X size={20} />
@@ -73,14 +110,14 @@ export function TicketModal({ isOpen, onClose, event, onCheckout }: TicketModalP
                 {/* Content */}
                 <div className="p-6 overflow-y-auto">
                     <h4 className="font-bold text-gray-900 mb-1">{event.title}</h4>
-                    <p className="text-sm text-gray-500 mb-6">
+                    <p id={dialogDescriptionId} className="text-sm text-gray-500 mb-6">
                         {event.date} • {event.time}
                     </p>
 
                     <div className="space-y-4">
-                        {event.tickets.map((ticket, idx) => (
+                        {event.tickets.map((ticket) => (
                             <div
-                                key={idx}
+                                key={ticket.type}
                                 className="border border-gray-200 rounded-xl p-4 hover:border-indigo-200 transition-colors"
                             >
                                 <div className="flex justify-between items-start mb-2">
@@ -94,7 +131,9 @@ export function TicketModal({ isOpen, onClose, event, onCheckout }: TicketModalP
                                     </div>
                                     <div className="flex items-center space-x-3">
                                         <button
+                                            type="button"
                                             onClick={() => handleQtyChange(ticket.type, -1)}
+                                            aria-label={`Kurangi jumlah tiket ${ticket.type}`}
                                             className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-colors"
                                             disabled={!quantities[ticket.type]}
                                         >
@@ -104,7 +143,9 @@ export function TicketModal({ isOpen, onClose, event, onCheckout }: TicketModalP
                                             {quantities[ticket.type] || 0}
                                         </span>
                                         <button
+                                            type="button"
                                             onClick={() => handleQtyChange(ticket.type, 1)}
+                                            aria-label={`Tambah jumlah tiket ${ticket.type}`}
                                             className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 hover:bg-indigo-100 transition-colors"
                                         >
                                             +
@@ -128,6 +169,7 @@ export function TicketModal({ isOpen, onClose, event, onCheckout }: TicketModalP
                         </span>
                     </div>
                     <button
+                        type="button"
                         onClick={handleCheckout}
                         disabled={totalTickets === 0}
                         className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white font-bold py-3 rounded-xl transition-all"

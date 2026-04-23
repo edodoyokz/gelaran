@@ -1,0 +1,79 @@
+
+> bsc-platform@0.1.0 dev /home/luckyn00b/Documents/PROJECT/BSC-FINAL
+> next dev --hostname 127.0.0.1 --port 3001
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://127.0.0.1:3001
+- Network:       http://127.0.0.1:3001
+- Environments: .env
+- Experiments (use with caution):
+  ⨯ webpackBuildWorker
+
+✓ Starting...
+✓ Ready in 1200ms
+ GET / 200 in 1478ms (compile: 728ms, proxy.ts: 445ms, render: 305ms)
+ GET / 200 in 177ms (compile: 14ms, proxy.ts: 93ms, render: 70ms)
+ GET /api/site-content?keys=footer 200 in 1549ms (compile: 117ms, render: 1432ms)
+ GET /api/home/review-highlights 200 in 1579ms (compile: 93ms, render: 1486ms)
+ GET /api/categories 200 in 1768ms (compile: 146ms, render: 1622ms)
+ GET /api/site-content?keys=footer 200 in 373ms (compile: 3ms, render: 370ms)
+ GET /api/categories 200 in 382ms (compile: 3ms, render: 380ms)
+ GET /api/profile 200 in 375ms (compile: 47ms, render: 328ms)
+ GET /api/events?limit=4&status=PUBLISHED&eventType=ONLINE 200 in 1929ms (compile: 199ms, render: 1731ms)
+ GET /api/home/top-events 200 in 1970ms (compile: 68ms, render: 1903ms)
+ GET /api/events?limit=4&status=PUBLISHED&eventType=ONLINE 200 in 510ms (compile: 2ms, render: 508ms)
+ GET /api/home/review-highlights 200 in 162ms (compile: 3ms, render: 159ms)
+ GET /api/events?limit=8&status=PUBLISHED 200 in 2.3s (compile: 194ms, render: 2.1s)
+ GET /api/profile 200 in 302ms (compile: 1800µs, render: 300ms)
+ GET /api/events?limit=8&status=PUBLISHED 200 in 987ms (compile: 1742µs, render: 986ms)
+ GET /api/home/top-events 200 in 579ms (compile: 1653µs, render: 577ms)
+ GET / 200 in 146ms (compile: 3ms, proxy.ts: 63ms, render: 80ms)
+ GET /api/profile 200 in 300ms (compile: 1702µs, render: 298ms)
+ GET /api/profile 200 in 427ms (compile: 1975µs, render: 425ms)
+ GET /api/profile 200 in 287ms (compile: 1681µs, render: 285ms)
+ GET /api/profile 200 in 293ms (compile: 1614µs, render: 291ms)
+ GET /api/categories 200 in 158ms (compile: 1378µs, render: 157ms)
+ GET /api/site-content?keys=footer 200 in 169ms (compile: 1517µs, render: 168ms)
+ GET /api/profile 200 in 365ms (compile: 3ms, render: 362ms)
+ GET /api/events?limit=4&status=PUBLISHED&eventType=ONLINE 200 in 314ms (compile: 1604µs, render: 312ms)
+ GET /api/events?limit=8&status=PUBLISHED 200 in 715ms (compile: 1077µs, render: 713ms)
+ GET /api/home/review-highlights 200 in 159ms (compile: 1629µs, render: 157ms)
+ GET /api/home/top-events 200 in 529ms (compile: 1173µs, render: 528ms)
+ GET /api/profile 200 in 301ms (compile: 1805µs, render: 300ms)
+ GET /api/profile 200 in 285ms (compile: 1760µs, render: 284ms)
+ GET /api/profile 200 in 355ms (compile: 1193µs, render: 354ms)
+ HEAD / 200 in 47ms (compile: 3ms, proxy.ts: 4ms, render: 40ms)
+ HEAD / 200 in 44ms (compile: 2ms, proxy.ts: 4ms, render: 37ms)
+ GET /admin 200 in 1919ms (compile: 128ms, proxy.ts: 139ms, render: 1652ms)
+ GET /admin/analytics 200 in 240ms (compile: 84ms, proxy.ts: 132ms, render: 25ms)
+ GET /api/admin/finance?from=2026-02-26T05:42:34.389Z&to=2026-03-28T05:42:34.389Z 200 in 498ms (compile: 25ms, render: 472ms)
+ GET /api/admin/finance?from=2026-02-26T05:42:34.389Z&to=2026-03-28T05:42:34.389Z 200 in 717ms (compile: 1840µs, render: 715ms)
+ GET /login 200 in 67ms (compile: 34ms, proxy.ts: 4ms, render: 30ms)
+ GET /login 200 in 32ms (compile: 3ms, proxy.ts: 4ms, render: 26ms)
+ GET / 200 in 45ms (compile: 2ms, proxy.ts: 3ms, render: 40ms)
+✓ Compiled in 122ms
+ GET / 200 in 650ms (compile: 53ms, proxy.ts: 533ms, render: 63ms)
+ GET / 200 in 89ms (compile: 4ms, proxy.ts: 69ms, render: 17ms)
+ GET / 200 in 187ms (compile: 117ms, proxy.ts: 7ms, render: 63ms)
+ GET / 200 in 183ms (compile: 48ms, proxy.ts: 116ms, render: 19ms)
+ GET /login 200 in 192ms (compile: 54ms, proxy.ts: 6ms, render: 132ms)
+ GET /login 200 in 189ms (compile: 131ms, proxy.ts: 8ms, render: 50ms)
+ HEAD /login 200 in 347ms (compile: 7ms, proxy.ts: 5ms, render: 335ms)
+ HEAD /login 200 in 87ms (compile: 5ms, proxy.ts: 13ms, render: 70ms)
+ GET /login 200 in 71ms (compile: 3ms, proxy.ts: 3ms, render: 65ms)
+ GET /login 200 in 114ms (compile: 6ms, proxy.ts: 6ms, render: 103ms)
+ GET /login 200 in 123ms (compile: 52ms, proxy.ts: 6ms, render: 65ms)
+ GET /login 200 in 58ms (compile: 3ms, proxy.ts: 3ms, render: 52ms)
+ GET /login 200 in 66ms (compile: 4ms, proxy.ts: 5ms, render: 56ms)
+ GET / 200 in 17ms (compile: 3ms, proxy.ts: 3ms, render: 12ms)
+ GET /api/site-content?keys=footer 200 in 560ms (compile: 2ms, render: 558ms)
+ GET /api/categories 200 in 461ms (compile: 2ms, render: 459ms)
+ GET /api/events?limit=4&status=PUBLISHED&eventType=ONLINE 200 in 605ms (compile: 2ms, render: 603ms)
+ GET /api/home/review-highlights 200 in 171ms (compile: 1819µs, render: 169ms)
+ GET /api/site-content?keys=footer 200 in 162ms (compile: 1994µs, render: 160ms)
+ GET /api/home/top-events 200 in 578ms (compile: 3ms, render: 575ms)
+ GET /api/events?limit=8&status=PUBLISHED 200 in 1025ms (compile: 13ms, render: 1012ms)
+ GET /api/profile 200 in 859ms (compile: 2ms, render: 856ms)
+ GET /api/profile 200 in 835ms (compile: 3ms, render: 833ms)
+ ELIFECYCLE  Command failed.
+[?25h

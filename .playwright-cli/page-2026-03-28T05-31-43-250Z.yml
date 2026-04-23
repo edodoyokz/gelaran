@@ -1,0 +1,287 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e44] [cursor=pointer]:
+    - img [ref=e45]
+  - alert [ref=e165]
+  - generic [ref=e166]:
+    - navigation [ref=e167]:
+      - generic [ref=e168]:
+        - link "Gelaran.id" [ref=e169] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e171]:
+          - textbox "Cari konser, seminar..." [ref=e172]
+          - img [ref=e173]
+        - generic [ref=e176]:
+          - link "Buat Event" [ref=e177] [cursor=pointer]:
+            - /url: /organizer
+          - link "Bantuan" [ref=e178] [cursor=pointer]:
+            - /url: /docs
+            - img [ref=e179]
+            - generic [ref=e181]: Bantuan
+          - generic [ref=e182]:
+            - button "BS Budi" [active] [ref=e183]:
+              - generic [ref=e184]: BS
+              - generic [ref=e185]: Budi
+              - img [ref=e186]
+            - generic [ref=e481]:
+              - generic [ref=e482]:
+                - paragraph [ref=e483]: Budi Santoso
+                - paragraph [ref=e484]: budi.santoso@email.com
+                - generic [ref=e485]: customer
+              - generic [ref=e486]:
+                - link "Dashboard" [ref=e487] [cursor=pointer]:
+                  - /url: /dashboard
+                  - img [ref=e488]
+                  - text: Dashboard
+                - link "Tiket Saya" [ref=e493] [cursor=pointer]:
+                  - /url: /my-bookings
+                  - img [ref=e494]
+                  - text: Tiket Saya
+                - link "Wishlist" [ref=e496] [cursor=pointer]:
+                  - /url: /wishlist
+                  - img [ref=e497]
+                  - text: Wishlist
+                - link "Bantuan" [ref=e499] [cursor=pointer]:
+                  - /url: /docs/customer
+                  - img [ref=e500]
+                  - text: Bantuan
+                - link "Pengaturan" [ref=e502] [cursor=pointer]:
+                  - /url: /profile
+                  - img [ref=e503]
+                  - text: Pengaturan
+              - button "Keluar" [ref=e507]:
+                - img [ref=e508]
+                - text: Keluar
+    - main [ref=e188]:
+      - generic [ref=e190]:
+        - generic [ref=e192]:
+          - generic [ref=e193]:
+            - generic [ref=e194]:
+              - generic [ref=e195]: Gelaran editorial selection
+              - generic [ref=e196]:
+                - heading "Temukan event yang terasa terkurasi, bukan sekadar terdaftar." [level=1] [ref=e197]:
+                  - text: Temukan event yang terasa
+                  - emphasis [ref=e198]: terkurasi
+                  - text: ", bukan sekadar terdaftar."
+                - paragraph [ref=e200]: Gelaran menghadirkan pengalaman penemuan event yang lebih terang, terarah, dan kaya konteks— dari pertunjukan budaya hingga kelas kreatif, semua dirangkum dalam bahasa visual editorial yang konsisten.
+            - generic [ref=e201]:
+              - link "Jelajahi event" [ref=e202] [cursor=pointer]:
+                - /url: /events
+                - text: Jelajahi event
+                - img [ref=e203]
+              - link "Jadi organizer" [ref=e205] [cursor=pointer]:
+                - /url: /become-organizer
+            - generic [ref=e206]:
+              - article [ref=e207]:
+                - generic [ref=e209]:
+                  - paragraph [ref=e210]: Kategori aktif
+                  - paragraph [ref=e212]: 5+
+              - article [ref=e213]:
+                - generic [ref=e215]:
+                  - paragraph [ref=e216]: Event tayang
+                  - paragraph [ref=e218]: "1"
+              - article [ref=e219]:
+                - generic [ref=e221]:
+                  - paragraph [ref=e222]: Review unggulan
+                  - paragraph [ref=e224]: "0"
+          - generic [ref=e226]:
+            - generic [ref=e227]:
+              - paragraph [ref=e228]: Pilihan pekan ini
+              - 'link "01 New Year Party 2026: Sky Lounge Edition The Sunan Hotel Solo, Surakarta" [ref=e230] [cursor=pointer]':
+                - /url: /events/new-year-party-2026-sky-lounge
+                - generic [ref=e231]: "01"
+                - generic [ref=e232]:
+                  - paragraph [ref=e233]: "New Year Party 2026: Sky Lounge Edition"
+                  - paragraph [ref=e234]: The Sunan Hotel Solo, Surakarta
+                - img [ref=e235]
+            - generic [ref=e237]: Gunakan filter kategori di bawah untuk berpindah dari event populer, agenda online, hingga rekomendasi komunitas tanpa kehilangan konteks brand Gelaran.
+        - generic [ref=e239]:
+          - generic [ref=e241]:
+            - generic [ref=e242]: Browse by interest
+            - generic [ref=e243]:
+              - heading "Pilih ritme event yang ingin kamu ikuti" [level=2] [ref=e244]
+              - paragraph [ref=e245]: Kategori utama dirancang seperti rak editorial—mudah dipindai, ringan di mobile, dan langsung mengarahkan ke kumpulan event yang relevan.
+          - generic [ref=e248]:
+            - button "Semua" [ref=e249]:
+              - img [ref=e251]
+              - generic [ref=e254]: Semua
+            - button "Seni & Budaya" [ref=e255]:
+              - img [ref=e257]
+              - generic [ref=e260]: Seni & Budaya
+            - button "Olahraga" [ref=e261]:
+              - img [ref=e263]
+              - generic [ref=e266]: Olahraga
+            - button "Seminar & Workshop" [ref=e267]:
+              - img [ref=e269]
+              - generic [ref=e272]: Seminar & Workshop
+            - button "Musik" [ref=e273]:
+              - img [ref=e275]
+              - generic [ref=e278]: Musik
+            - button "Party & Hiburan" [ref=e279]:
+              - img [ref=e281]
+              - generic [ref=e284]: Party & Hiburan
+        - generic [ref=e286]:
+          - generic [ref=e287]:
+            - generic [ref=e288]:
+              - generic [ref=e289]: Popular now
+              - generic [ref=e290]:
+                - heading "Event populer pilihan Gelaran" [level=2] [ref=e291]
+                - paragraph [ref=e292]: Koleksi utama ini memadukan event yang banyak dicari dengan presentasi kartu yang lebih konsisten, lapang, dan nyaman di berbagai ukuran layar.
+            - link "Lihat semua event" [ref=e294] [cursor=pointer]:
+              - /url: /events
+              - text: Lihat semua event
+              - img [ref=e295]
+          - 'link "New Year Party 2026: Sky Lounge Edition Simpan event party-hiburan DES 31 New Year Party 2026: Sky Lounge Edition Solo Nightlife Events Kam, 31 Des 2026 20.00 WIB The Sunan Hotel Solo, Surakarta 4.8 (124) Mulai dari Rp 0" [ref=e299] [cursor=pointer]':
+            - /url: /events/new-year-party-2026-sky-lounge
+            - generic [ref=e300]:
+              - 'img "New Year Party 2026: Sky Lounge Edition" [ref=e301]'
+              - button "Simpan event" [ref=e303]:
+                - img [ref=e304]
+              - generic [ref=e308]: party-hiburan
+            - generic [ref=e309]:
+              - generic [ref=e311]:
+                - generic [ref=e312]:
+                  - generic [ref=e313]: DES
+                  - generic [ref=e314]: "31"
+                - generic [ref=e315]:
+                  - generic [ref=e316]:
+                    - 'heading "New Year Party 2026: Sky Lounge Edition" [level=3] [ref=e317]'
+                    - paragraph [ref=e318]: Solo Nightlife Events
+                  - generic [ref=e319]:
+                    - generic [ref=e320]:
+                      - img [ref=e321]
+                      - generic [ref=e323]: Kam, 31 Des 2026
+                    - generic [ref=e324]:
+                      - img [ref=e325]
+                      - generic [ref=e328]: 20.00 WIB
+                    - generic [ref=e329]:
+                      - img [ref=e330]
+                      - generic [ref=e333]: The Sunan Hotel Solo, Surakarta
+              - generic [ref=e334]:
+                - generic [ref=e335]:
+                  - img [ref=e336]
+                  - generic [ref=e338]: "4.8"
+                  - generic [ref=e339]: (124)
+                - generic [ref=e340]:
+                  - text: Mulai dari
+                  - paragraph [ref=e341]: Rp 0
+        - generic [ref=e343]:
+          - generic [ref=e345]:
+            - generic [ref=e346]: Featured stories
+            - generic [ref=e347]:
+              - heading "Sorotan editorial untuk pengalaman yang lebih immersif" [level=2] [ref=e348]
+              - paragraph [ref=e349]: Banner utama diubah menjadi modul editorial bergaya majalah untuk memberi penekanan lebih kuat pada event unggulan tanpa memecah ritme halaman.
+          - 'link "New Year Party 2026: Sky Lounge Edition Featured event New Year Party 2026: Sky Lounge Edition The Sunan Hotel Solo, Surakarta Kam, 31 Des 2026 · Rp 500.000" [ref=e352] [cursor=pointer]':
+            - /url: /events/new-year-party-2026-sky-lounge
+            - 'img "New Year Party 2026: Sky Lounge Edition" [ref=e353]'
+            - generic [ref=e355]:
+              - generic [ref=e356]:
+                - img [ref=e357]
+                - text: Featured event
+              - generic [ref=e359]:
+                - 'heading "New Year Party 2026: Sky Lounge Edition" [level=3] [ref=e360]'
+                - paragraph [ref=e361]: The Sunan Hotel Solo, Surakarta
+                - paragraph [ref=e362]: Kam, 31 Des 2026 · Rp 500.000
+        - generic [ref=e364]:
+          - generic [ref=e365]:
+            - generic [ref=e366]:
+              - generic [ref=e367]: Most visited
+              - generic [ref=e368]:
+                - heading "Top events dengan momentum tertinggi" [level=2] [ref=e369]
+                - paragraph [ref=e370]: Ranking mingguan diberi treatment lebih rapi agar mudah dibandingkan, terutama pada tablet dan desktop.
+            - link "Lihat ranking" [ref=e372] [cursor=pointer]:
+              - /url: /events?sort=viewCount-desc
+              - text: Lihat ranking
+              - img [ref=e373]
+          - generic [ref=e377]:
+            - generic [ref=e378]: "#1"
+            - 'link "New Year Party 2026: Sky Lounge Edition Simpan event party-hiburan DES 31 New Year Party 2026: Sky Lounge Edition Solo Nightlife Events Kam, 31 Des 2026 20.00 WIB The Sunan Hotel Solo, Surakarta 4.9 (195) Mulai dari Rp 500.000" [ref=e379] [cursor=pointer]':
+              - /url: /events/new-year-party-2026-sky-lounge
+              - generic [ref=e380]:
+                - 'img "New Year Party 2026: Sky Lounge Edition" [ref=e381]'
+                - button "Simpan event" [ref=e383]:
+                  - img [ref=e384]
+                - generic [ref=e388]: party-hiburan
+              - generic [ref=e389]:
+                - generic [ref=e391]:
+                  - generic [ref=e392]:
+                    - generic [ref=e393]: DES
+                    - generic [ref=e394]: "31"
+                  - generic [ref=e395]:
+                    - generic [ref=e396]:
+                      - 'heading "New Year Party 2026: Sky Lounge Edition" [level=3] [ref=e397]'
+                      - paragraph [ref=e398]: Solo Nightlife Events
+                    - generic [ref=e399]:
+                      - generic [ref=e400]:
+                        - img [ref=e401]
+                        - generic [ref=e403]: Kam, 31 Des 2026
+                      - generic [ref=e404]:
+                        - img [ref=e405]
+                        - generic [ref=e408]: 20.00 WIB
+                      - generic [ref=e409]:
+                        - img [ref=e410]
+                        - generic [ref=e413]: The Sunan Hotel Solo, Surakarta
+                - generic [ref=e414]:
+                  - generic [ref=e415]:
+                    - img [ref=e416]
+                    - generic [ref=e418]: "4.9"
+                    - generic [ref=e419]: (195)
+                  - generic [ref=e420]:
+                    - text: Mulai dari
+                    - paragraph [ref=e421]: Rp 500.000
+    - contentinfo [ref=e422]:
+      - generic [ref=e425]:
+        - generic [ref=e426]:
+          - generic [ref=e427]:
+            - heading "Gelaran .id" [level=3] [ref=e428]:
+              - text: Gelaran
+              - generic [ref=e429]: .id
+            - paragraph [ref=e430]: Platform manajemen event dan penjualan tiket terpercaya.
+            - generic [ref=e431]:
+              - link [ref=e432] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e433]
+              - link [ref=e436] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e437]
+              - link [ref=e439] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e440]
+          - generic [ref=e444]:
+            - heading "Perusahaan" [level=4] [ref=e445]
+            - list [ref=e446]:
+              - listitem [ref=e447]:
+                - link "Tentang Kami" [ref=e448] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e449]:
+                - link "Hubungi" [ref=e450] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e451]:
+                - link "Syarat & Ketentuan" [ref=e452] [cursor=pointer]:
+                  - /url: /terms
+          - generic [ref=e453]:
+            - heading "Dukungan" [level=4] [ref=e454]
+            - list [ref=e455]:
+              - listitem [ref=e456]:
+                - link "Kebijakan Privasi" [ref=e457] [cursor=pointer]:
+                  - /url: /privacy
+          - generic [ref=e458]:
+            - heading "Hubungi Kami" [level=4] [ref=e459]
+            - list [ref=e460]:
+              - listitem [ref=e461]:
+                - img [ref=e462]
+                - generic [ref=e465]: Jl. Jendral Sudirman No. 1, Jakarta Pusat
+              - listitem [ref=e466]:
+                - img [ref=e467]
+                - generic [ref=e470]: support@bsctickets.com
+              - listitem [ref=e471]:
+                - img [ref=e472]
+                - generic [ref=e474]: +62 21 5555 8888
+        - generic [ref=e475]:
+          - paragraph [ref=e476]: © 2026 BSC Event Platform. All rights reserved.
+          - generic [ref=e477]:
+            - link "Privacy" [ref=e478] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e479] [cursor=pointer]:
+              - /url: /terms
+            - link "Sitemap" [ref=e480] [cursor=pointer]:
+              - /url: /sitemap

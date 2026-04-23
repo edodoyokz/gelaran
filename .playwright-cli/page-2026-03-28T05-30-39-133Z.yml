@@ -1,0 +1,137 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - navigation [ref=e4]:
+        - link "Gelaran" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - button [ref=e7]:
+          - generic [ref=e8]: light_mode
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - img "Gelaran visual" [ref=e12]
+        - generic [ref=e14]:
+          - heading "Masuk dan lanjutkan pengalaman Gelaran" [level=1] [ref=e15]
+          - generic [ref=e16]:
+            - generic [ref=e17]: verified_user
+            - paragraph [ref=e18]: Preserving culture for future generations.
+      - generic [ref=e19]:
+        - generic [ref=e21]:
+          - generic [ref=e22]: lock
+          - generic [ref=e23]: Secure Access
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - heading "Welcome Back" [level=2] [ref=e27]
+            - paragraph [ref=e28]: Enter your credentials to access the digital archives of the royal city, and manage your tickets, events, or workspaces.
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - generic [ref=e50]:
+                - img [ref=e52]
+                - generic [ref=e55]:
+                  - generic [ref=e56]:
+                    - paragraph [ref=e57]: Demo mode tersedia
+                    - paragraph [ref=e58]: Gunakan akun siap pakai untuk meninjau dashboard customer, organizer, atau admin tanpa membuat kredensial baru.
+                  - paragraph [ref=e59]: "Password default: password123"
+                  - button "Sembunyikan akun demo" [ref=e60]:
+                    - text: Sembunyikan akun demo
+                    - img [ref=e61]
+              - generic [ref=e63]:
+                - generic [ref=e64]:
+                  - generic [ref=e65]:
+                    - img [ref=e67]
+                    - generic [ref=e69]:
+                      - paragraph [ref=e70]: Admin
+                      - paragraph [ref=e71]: Login cepat untuk alur admin.
+                  - button "Admin Gelaran Solo admin@gelaran.id SUPER_ADMIN" [ref=e73]:
+                    - generic [ref=e74]:
+                      - generic [ref=e75]:
+                        - paragraph [ref=e76]: Admin Gelaran Solo
+                        - paragraph [ref=e77]: admin@gelaran.id
+                      - generic [ref=e78]: SUPER_ADMIN
+                - generic [ref=e79]:
+                  - generic [ref=e80]:
+                    - img [ref=e82]
+                    - generic [ref=e85]:
+                      - paragraph [ref=e86]: Organizers
+                      - paragraph [ref=e87]: Login cepat untuk alur organizers.
+                  - generic [ref=e88]:
+                    - button "Taman Sriwedari info@sriwedari.solo.go.id ORGANIZER" [ref=e89]:
+                      - generic [ref=e90]:
+                        - generic [ref=e91]:
+                          - paragraph [ref=e92]: Taman Sriwedari
+                          - paragraph [ref=e93]: info@sriwedari.solo.go.id
+                        - generic [ref=e94]: ORGANIZER
+                    - button "GOR Manahan info@gormanahan.solo.go.id ORGANIZER" [ref=e95]:
+                      - generic [ref=e96]:
+                        - generic [ref=e97]:
+                          - paragraph [ref=e98]: GOR Manahan
+                          - paragraph [ref=e99]: info@gormanahan.solo.go.id
+                        - generic [ref=e100]: ORGANIZER
+                    - button "Solo Creative Hub hello@solocreativehub.id ORGANIZER" [ref=e101]:
+                      - generic [ref=e102]:
+                        - generic [ref=e103]:
+                          - paragraph [ref=e104]: Solo Creative Hub
+                          - paragraph [ref=e105]: hello@solocreativehub.id
+                        - generic [ref=e106]: ORGANIZER
+                    - button "Solo Music Fest contact@solomusicfest.id ORGANIZER" [ref=e107]:
+                      - generic [ref=e108]:
+                        - generic [ref=e109]:
+                          - paragraph [ref=e110]: Solo Music Fest
+                          - paragraph [ref=e111]: contact@solomusicfest.id
+                        - generic [ref=e112]: ORGANIZER
+                    - button "Solo Nightlife party@solonightlife.id ORGANIZER" [ref=e113]:
+                      - generic [ref=e114]:
+                        - generic [ref=e115]:
+                          - paragraph [ref=e116]: Solo Nightlife
+                          - paragraph [ref=e117]: party@solonightlife.id
+                        - generic [ref=e118]: ORGANIZER
+                - generic [ref=e119]:
+                  - generic [ref=e120]:
+                    - img [ref=e122]
+                    - generic [ref=e125]:
+                      - paragraph [ref=e126]: Customers
+                      - paragraph [ref=e127]: Login cepat untuk alur customers.
+                  - generic [ref=e128]:
+                    - button "Budi Santoso budi.santoso@email.com CUSTOMER" [ref=e129]:
+                      - generic [ref=e130]:
+                        - generic [ref=e131]:
+                          - paragraph [ref=e132]: Budi Santoso
+                          - paragraph [ref=e133]: budi.santoso@email.com
+                        - generic [ref=e134]: CUSTOMER
+                    - button "Siti Nurhaliza siti.nur@email.com CUSTOMER" [ref=e135]:
+                      - generic [ref=e136]:
+                        - generic [ref=e137]:
+                          - paragraph [ref=e138]: Siti Nurhaliza
+                          - paragraph [ref=e139]: siti.nur@email.com
+                        - generic [ref=e140]: CUSTOMER
+                    - button "Ahmad Rizki ahmad.rizki@email.com CUSTOMER" [ref=e141]:
+                      - generic [ref=e142]:
+                        - generic [ref=e143]:
+                          - paragraph [ref=e144]: Ahmad Rizki
+                          - paragraph [ref=e145]: ahmad.rizki@email.com
+                        - generic [ref=e146]: CUSTOMER
+            - generic [ref=e147]:
+              - generic [ref=e148]:
+                - generic [ref=e149]: Email
+                - textbox "nama@email.com" [ref=e151]
+                - generic [ref=e152]: Gunakan email yang terhubung ke akun Gelaran
+              - generic [ref=e153]:
+                - generic [ref=e154]: Password
+                - textbox "Masukkan password" [ref=e156]
+                - button "Tampilkan password" [ref=e158]:
+                  - img [ref=e159]
+                - link "Lupa password?" [ref=e163] [cursor=pointer]:
+                  - /url: /forgot-password
+              - button "Masuk ke Gelaran" [ref=e164]
+          - paragraph [ref=e33]:
+            - text: Belum punya akun?
+            - link "Daftar sekarang" [ref=e34] [cursor=pointer]:
+              - /url: /register
+        - generic [ref=e35]:
+          - link "Privacy Policy" [ref=e36] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms of Service" [ref=e37] [cursor=pointer]:
+            - /url: /terms
+          - generic [ref=e38]: © 2026 Gelaran
+  - button "Open Next.js Dev Tools" [ref=e44] [cursor=pointer]:
+    - img [ref=e45]
+  - alert [ref=e165]

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -132,6 +132,10 @@ function formatTime(timeStr: string): string {
 
 export function EventDetailView({ event }: EventDetailViewProps) {
     const router = useRouter();
+    const waitlistDialogTitleId = useId();
+    const waitlistDialogDescriptionId = useId();
+    const waitlistEmailInputRef = useRef<HTMLInputElement | null>(null);
+    const previousFocusedElementRef = useRef<HTMLElement | null>(null);
     const [quantities, setQuantities] = useState<Record<string, number>>({});
     const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
     const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
@@ -163,6 +167,28 @@ export function EventDetailView({ event }: EventDetailViewProps) {
     useEffect(() => {
         checkWishlistStatus();
     }, [checkWishlistStatus]);
+
+    useEffect(() => {
+        if (!showWaitlistModal) {
+            previousFocusedElementRef.current?.focus();
+            return;
+        }
+
+        previousFocusedElementRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setShowWaitlistModal(false);
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+        window.setTimeout(() => waitlistEmailInputRef.current?.focus(), 0);
+
+        return () => {
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [showWaitlistModal]);
 
     const handleWishlistToggle = async () => {
         setIsWishlistLoading(true);
@@ -266,15 +292,26 @@ export function EventDetailView({ event }: EventDetailViewProps) {
     };
 
     const handleShare = async () => {
-        if (navigator.share) {
-            await navigator.share({
-                title: event.title,
-                text: event.shortDescription || "",
-                url: window.location.href,
-            });
-        } else {
-            await navigator.clipboard.writeText(window.location.href);
+        const shareData = {
+            title: event.title,
+            text: event.shortDescription || "",
+            url: window.location.href,
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                return;
+            }
+        } catch {
+            // fall through to clipboard/manual fallback
+        }
+
+        try {
+            await navigator.clipboard.writeText(shareData.url);
             alert("Link berhasil disalin!");
+        } catch {
+            window.prompt("Salin tautan event ini:", shareData.url);
         }
     };
 
@@ -583,24 +620,26 @@ export function EventDetailView({ event }: EventDetailViewProps) {
 
                                                     {ticket.availableQuantity > 0 ? (
                                                         <div className="flex items-center gap-2 rounded-full border border-(--border) bg-(--surface-muted) px-2 py-1.5">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleQtyChange(ticket.id, -1)}
-                                                                disabled={!quantities[ticket.id]}
-                                                                className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-(--text-secondary) disabled:opacity-35"
-                                                            >
-                                                                −
+                                                             <button
+                                                                 type="button"
+                                                                 onClick={() => handleQtyChange(ticket.id, -1)}
+                                                                 disabled={!quantities[ticket.id]}
+                                                                 aria-label={`Kurangi jumlah tiket ${ticket.name}`}
+                                                                 className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-(--text-secondary) disabled:opacity-35"
+                                                             >
+                                                                 −
                                                             </button>
                                                             <span className="w-6 text-center text-sm font-semibold text-foreground">
                                                                 {quantities[ticket.id] || 0}
                                                             </span>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleQtyChange(ticket.id, 1)}
-                                                                disabled={(quantities[ticket.id] || 0) >= ticket.maxPerOrder}
-                                                                className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-(--accent-primary) text-white disabled:opacity-35"
-                                                            >
-                                                                +
+                                                             <button
+                                                                 type="button"
+                                                                 onClick={() => handleQtyChange(ticket.id, 1)}
+                                                                 disabled={(quantities[ticket.id] || 0) >= ticket.maxPerOrder}
+                                                                 aria-label={`Tambah jumlah tiket ${ticket.name}`}
+                                                                 className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-(--accent-primary) text-white disabled:opacity-35"
+                                                             >
+                                                                 +
                                                             </button>
                                                         </div>
                                                     ) : (
@@ -695,16 +734,28 @@ export function EventDetailView({ event }: EventDetailViewProps) {
 
             {showWaitlistModal && waitlistTicket ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                    <DiscoveryPanel className="w-full max-w-md p-6">
+                    <button
+                        type="button"
+                        aria-label="Tutup modal waitlist"
+                        className="absolute inset-0 cursor-default"
+                        onClick={() => setShowWaitlistModal(false)}
+                    />
+                    <DiscoveryPanel
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby={waitlistDialogTitleId}
+                        aria-describedby={waitlistDialogDescriptionId}
+                        className="w-full max-w-md p-6"
+                    >
                         {waitlistSuccess ? (
                             <div className="text-center">
                                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-(--success-bg)">
                                     <CheckCircle className="h-8 w-8 text-(--success)" />
                                 </div>
-                                <h3 className="mt-4 text-2xl font-semibold tracking-(--tracking-heading) text-foreground">
+                                <h3 id={waitlistDialogTitleId} className="mt-4 text-2xl font-semibold tracking-(--tracking-heading) text-foreground">
                                     Berhasil bergabung
                                 </h3>
-                                <p className="mt-3 text-sm leading-7 text-(--text-secondary)">
+                                <p id={waitlistDialogDescriptionId} className="mt-3 text-sm leading-7 text-(--text-secondary)">
                                     Notifikasi akan dikirim ke <strong>{waitlistEmail}</strong> saat tiket <strong>{waitlistTicket.name}</strong> tersedia kembali.
                                 </p>
                                 <button
@@ -723,11 +774,11 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                     </div>
                                     <div>
                                         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Waitlist</p>
-                                        <h3 className="text-xl font-semibold tracking-(--tracking-heading) text-foreground">{waitlistTicket.name}</h3>
+                                        <h3 id={waitlistDialogTitleId} className="text-xl font-semibold tracking-(--tracking-heading) text-foreground">{waitlistTicket.name}</h3>
                                     </div>
                                 </div>
 
-                                <p className="mt-4 text-sm leading-7 text-(--text-secondary)">
+                                <p id={waitlistDialogDescriptionId} className="mt-4 text-sm leading-7 text-(--text-secondary)">
                                     Tiket sedang habis. Daftarkan email untuk mendapatkan notifikasi ketika kuota kembali tersedia.
                                 </p>
 
@@ -742,6 +793,7 @@ export function EventDetailView({ event }: EventDetailViewProps) {
                                     <label className="block space-y-2">
                                         <span className="text-sm font-medium text-foreground">Email</span>
                                         <input
+                                            ref={waitlistEmailInputRef}
                                             id="waitlistEmail"
                                             type="email"
                                             value={waitlistEmail}

@@ -56,6 +56,11 @@ interface VenueMapViewerProps {
     onSeatSelect?: (seatId: string, seat: Seat) => void;
 }
 
+function getSeatAriaLabel(seat: Seat) {
+    const accessibility = seat.isAccessible ? ", kursi aksesibel" : "";
+    return `${seat.seatLabel}, nomor ${seat.seatNumber}, status ${STATUS_LABELS[seat.status]}${accessibility}`;
+}
+
 const STATUS_COLORS: Record<string, string> = {
     AVAILABLE: "bg-emerald-100 border-emerald-300 text-emerald-700",
     LOCKED: "bg-amber-100 border-amber-300 text-amber-600",
@@ -262,6 +267,8 @@ export function VenueMapViewer({
                                                             type="button"
                                                             disabled={mode === "view" || seat.status !== "AVAILABLE"}
                                                             onClick={() => isSelectable && onSeatSelect?.(seat.id, seat)}
+                                                            aria-label={getSeatAriaLabel(seat)}
+                                                            aria-disabled={mode === "view" || seat.status !== "AVAILABLE"}
                                                             className={`
                                                                 w-7 h-7 rounded text-[10px] font-medium flex items-center justify-center
                                                                 border transition-all

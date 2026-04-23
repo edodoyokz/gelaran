@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireOrganizer } from "@/lib/auth/route-auth";
 
 // Helper for consistent responses
 const jsonError = (message: string, status: number) =>
@@ -17,17 +17,16 @@ export async function GET(
     try {
         const { id: eventId } = await params;
 
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireOrganizer();
 
-        if (!user) {
-            return jsonError("Authentication required", 401);
+        if ("error" in authResult) {
+            return jsonError(authResult.error, authResult.status);
         }
 
         const event = await prisma.event.findFirst({
             where: {
                 id: eventId,
-                organizerId: user.id,
+                organizerId: authResult.user.id,
             },
             select: {
                 id: true,
@@ -85,15 +84,14 @@ export async function PUT(
             return jsonError("Invalid sections data", 400);
         }
 
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireOrganizer();
 
-        if (!user) {
-            return jsonError("Authentication required", 401);
+        if ("error" in authResult) {
+            return jsonError(authResult.error, authResult.status);
         }
 
         const event = await prisma.event.findFirst({
-            where: { id: eventId, organizerId: user.id },
+            where: { id: eventId, organizerId: authResult.user.id },
         });
 
         if (!event) {
@@ -142,15 +140,14 @@ export async function POST(
         const body = await request.json();
         const { imageUrl, imageWidth, imageHeight, scale } = body;
 
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireOrganizer();
 
-        if (!user) {
-            return jsonError("Authentication required", 401);
+        if ("error" in authResult) {
+            return jsonError(authResult.error, authResult.status);
         }
 
         const event = await prisma.event.findFirst({
-            where: { id: eventId, organizerId: user.id },
+            where: { id: eventId, organizerId: authResult.user.id },
         });
 
         if (!event) {
@@ -190,15 +187,14 @@ export async function DELETE(
     try {
         const { id: eventId } = await params;
 
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireOrganizer();
 
-        if (!user) {
-            return jsonError("Authentication required", 401);
+        if ("error" in authResult) {
+            return jsonError(authResult.error, authResult.status);
         }
 
         const event = await prisma.event.findFirst({
-            where: { id: eventId, organizerId: user.id },
+            where: { id: eventId, organizerId: authResult.user.id },
         });
 
         if (!event) {

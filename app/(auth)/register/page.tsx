@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Eye,
     EyeOff,
@@ -14,76 +17,89 @@ import {
 } from "lucide-react";
 import {
     AuthField,
-    AuthFinePrint,
+    AuthFeatureGrid,
     AuthFormShell,
     AuthIconButton,
     AuthInputShell,
+    AuthKicker,
+    AuthLegalNote,
     AuthMessage,
-    AuthMetaList,
     AuthPageIntro,
+    AuthPasswordShell,
     AuthPrimaryButton,
     AuthSectionCard,
     AuthTextLink,
 } from "@/components/shared/auth-ui";
+import { AuthLayout } from "@/components/shared/phase-two-shells";
 import { createClient } from "@/lib/supabase/client";
 
+const registerSchema = z.object({
+    name: z.string().min(1, "Nama lengkap harus diisi"),
+    email: z.string().email("Format email tidak valid"),
+    password: z.string()
+        .min(8, "Password minimal 8 karakter")
+        .regex(/[A-Z]/, "Password harus mengandung huruf besar")
+        .regex(/[0-9]/, "Password harus mengandung angka"),
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Password tidak cocok",
+    path: ["confirmPassword"],
+});
+
+type RegisterFormValues = z.infer<typeof registerSchema>;
+
 export default function RegisterPage() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState("");
 
-    const validatePassword = (pass: string) => {
-        if (pass.length < 8) return "Password minimal 8 karakter";
-        if (!/[A-Z]/.test(pass)) return "Password harus mengandung huruf besar";
-        if (!/[0-9]/.test(pass)) return "Password harus mengandung angka";
-        return null;
-    };
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        watch,
+    } = useForm<RegisterFormValues>({
+        resolver: zodResolver(registerSchema),
+        defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+        },
+    });
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const confirmPasswordVal = watch("confirmPassword");
+    const passwordVal = watch("password");
+
+    const onSubmit = async (data: RegisterFormValues) => {
         setIsLoading(true);
         setError(null);
 
-        const passwordError = validatePassword(password);
-        if (passwordError) {
-            setError(passwordError);
-            setIsLoading(false);
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError("Password tidak cocok");
-            setIsLoading(false);
-            return;
-        }
-
         try {
             const supabase = createClient();
-            const { error } = await supabase.auth.signUp({
-                email,
-                password,
+            const { error: signUpError } = await supabase.auth.signUp({
+                email: data.email,
+                password: data.password,
                 options: {
                     data: {
-                        name,
+                        name: data.name,
                     },
                     emailRedirectTo: `${window.location.origin}/login`,
                 },
             });
 
-            if (error) {
-                if (error.message.includes("already registered")) {
+            if (signUpError) {
+                if (signUpError.message.includes("already registered")) {
                     setError("Email sudah terdaftar. Silakan login.");
                 } else {
-                    setError(error.message);
+                    setError(signUpError.message);
                 }
                 return;
             }
 
+            setRegisteredEmail(data.email);
             setSuccess(true);
         } catch {
             setError("Terjadi kesalahan. Coba lagi.");
@@ -100,7 +116,7 @@ export default function RegisterPage() {
                     title="Cek email kamu"
                     description={
                         <p>
-                            Kami sudah mengirim link verifikasi ke <strong className="font-semibold text-foreground">{email}</strong>.
+                            Kami sudah mengirim link verifikasi ke <strong className="font-semibold text-foreground">{registeredEmail}</strong>.
                             Buka email tersebut untuk mengaktifkan akun dan lanjut masuk ke Gelaran.
                         </p>
                     }
@@ -108,11 +124,11 @@ export default function RegisterPage() {
                 />
 
                 <AuthSectionCard tone="success" className="space-y-6 text-center">
-                    <div className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-full bg-white text-(--success) shadow-(--shadow-sm)">
+                    <div className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-full bg-white text-[#13876c] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
                         <CheckCircle className="h-9 w-9" />
                     </div>
                     <div className="space-y-3">
-                        <p className="text-sm leading-7 text-(--success-text)">
+                        <p className="text-sm leading-7 text-[#0e5d4a]">
                             Jika email belum muncul dalam beberapa menit, periksa folder spam atau promotions,
                             lalu ulangi proses pendaftaran bila diperlukan.
                         </p>
@@ -120,7 +136,7 @@ export default function RegisterPage() {
                     <div className="flex justify-center">
                         <Link
                             href="/login"
-                            className="inline-flex min-h-12 items-center justify-center rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white shadow-(--shadow-md) transition-all duration-200 hover:-translate-y-0.5 hover:bg-(--accent-secondary-hover)"
+                            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#015959] px-6 py-3 text-sm font-semibold text-white shadow-[0px_4px_12px_rgba(0,32,32,0.08)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1e6868]"
                         >
                             Ke halaman login
                         </Link>
@@ -131,99 +147,100 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <AuthLayout
+            title="Create your account"
+            aside={
+                <div className="max-w-md space-y-6 mt-8">
+                    <AuthKicker className="bg-white/10 text-white backdrop-blur-md border border-white/20">Join the pulse</AuthKicker>
+                    <AuthFeatureGrid
+                        items={[
+                            {
+                                title: "Early access",
+                                description: "Get closer to new releases, booking windows, and featured cultural programming.",
+                                icon: CheckCircle,
+                            },
+                            {
+                                title: "Protected profile",
+                                description: "Enforces current password rules and email verification before full access.",
+                                icon: ShieldCheck,
+                            },
+                        ]}
+                        className="opacity-90 [&_article]:bg-white/10 [&_article]:border-white/20 [&_article]:backdrop-blur-md [&_article]:text-white [&_h3]:text-white [&_p]:text-white/80 [&_span]:text-white [&_span]:bg-white/20"
+                    />
+                </div>
+            }
+        >
             <AuthPageIntro
-                title="Create Account"
-                description="Start with one account to save tickets, follow favorite organizers, and unlock access to a more personalized event experience."
+                eyebrow="Cultural archive"
+                title="Create your account"
+                description="Enter your details to begin your journey with Gelaran."
             />
-
             <AuthFormShell>
-                <AuthSectionCard className="space-y-4">
-                    <div className="flex items-start gap-4">
-                        <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-(--accent-primary) shadow-(--shadow-xs)">
-                            <ShieldCheck className="h-5 w-5" />
-                        </span>
-                        <div className="space-y-3">
-                            <p className="text-sm font-semibold text-foreground">Standar akun Gelaran</p>
-                            <AuthMetaList
-                                items={[
-                                    "Password minimal 8 karakter dengan kombinasi huruf besar dan angka.",
-                                    "Email verifikasi akan dikirim sebelum akun aktif sepenuhnya.",
-                                    "Satu akun bisa dipakai untuk pembelian tiket dan akses workspace terkait peran.",
-                                ]}
-                            />
-                        </div>
-                    </div>
-                </AuthSectionCard>
-
                 {error ? (
                     <AuthMessage tone="danger" title="Pendaftaran belum berhasil" description={error} />
                 ) : null}
 
-                <form className="space-y-5" onSubmit={handleSubmit}>
-                    <AuthField label="Nama lengkap" helper="Nama ini akan tampil di profil akun">
+                <form className="space-y-7" onSubmit={handleSubmit(onSubmit)}>
+                    <AuthField htmlFor="name" label="Full name" error={errors.name?.message}>
                         <AuthInputShell
                             id="name"
-                            name="name"
+                            {...register("name")}
                             type="text"
                             autoComplete="name"
                             required
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Nama lengkap kamu"
+                            placeholder="Batik Winarno"
+                            icon={User}
                         />
                     </AuthField>
 
-                    <AuthField label="Email" helper="Gunakan email yang aktif untuk verifikasi">
+                    <AuthField htmlFor="email" label="Email address" error={errors.email?.message}>
                         <AuthInputShell
                             id="email"
-                            name="email"
+                            {...register("email")}
                             type="email"
                             autoComplete="email"
                             required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="nama@email.com"
+                            placeholder="archivist@solo.heritage"
+                            icon={Mail}
                         />
                     </AuthField>
 
-                    <AuthField label="Password" helper="Minimal 8 karakter, huruf besar, dan angka">
-                        <AuthInputShell
+                    <AuthField htmlFor="password" label="Password" helper="Minimal 8 karakter, huruf besar, dan angka" error={errors.password?.message}>
+                        <AuthPasswordShell
                             id="password"
-                            name="password"
+                            {...register("password")}
                             type={showPassword ? "text" : "password"}
                             autoComplete="new-password"
                             required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Buat password"
-                            inputClassName="pr-12"
+                            placeholder="••••••••"
+                            icon={Lock}
+                            endAdornment={
+                                <AuthIconButton
+                                    type="button"
+                                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                </AuthIconButton>
+                            }
                         />
-                        <div className="-mt-[3.35rem] flex justify-end pr-3">
-                            <AuthIconButton
-                                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                            </AuthIconButton>
-                        </div>
                     </AuthField>
 
                     <AuthField
-                        label="Konfirmasi password"
-                        error={confirmPassword && password !== confirmPassword ? "Password tidak cocok" : undefined}
+                        htmlFor="confirmPassword"
+                        label="Confirm password"
+                        error={errors.confirmPassword?.message}
                     >
-                        <AuthInputShell
+                        <AuthPasswordShell
                             id="confirmPassword"
-                            name="confirmPassword"
+                            {...register("confirmPassword")}
                             type={showPassword ? "text" : "password"}
                             autoComplete="new-password"
                             required
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Ulangi password"
-                            className={confirmPassword
-                                ? password === confirmPassword
+                            placeholder="••••••••"
+                            icon={Lock}
+                            className={confirmPasswordVal
+                                ? passwordVal === confirmPasswordVal
                                     ? "border-[rgba(19,135,108,0.32)]"
                                     : "border-[rgba(217,79,61,0.32)]"
                                 : undefined}
@@ -237,24 +254,24 @@ export default function RegisterPage() {
                                 Mendaftar...
                             </>
                         ) : (
-                            "Daftar sekarang"
+                            "Create Account"
                         )}
                     </AuthPrimaryButton>
                 </form>
             </AuthFormShell>
 
-            <AuthFinePrint className="mt-8">
+            <AuthLegalNote className="mt-8 text-center hidden text-xs">
                 Dengan mendaftar, kamu menyetujui <Link href="/terms" className="font-semibold text-[#015959] hover:underline">Syarat & Ketentuan</Link> dan <Link href="/privacy" className="font-semibold text-[#015959] hover:underline">Kebijakan Privasi</Link> kami.
-            </AuthFinePrint>
+            </AuthLegalNote>
 
-            <footer className="mt-12 text-center">
+            <footer className="mt-8 text-center">
                 <p className="text-[#3f4948] text-sm">
-                    Sudah punya akun? {" "}
+                    Already have an account? {" "}
                     <AuthTextLink href="/login">
-                        Masuk di sini
+                        Sign in
                     </AuthTextLink>
                 </p>
             </footer>
-        </div>
+        </AuthLayout>
     );
 }

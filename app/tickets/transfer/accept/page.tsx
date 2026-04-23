@@ -90,9 +90,9 @@ function AcceptTransferContent() {
 
       const data = await response.json();
 
-      if (!data.success) {
-        if (response.status === 401) {
-          router.push(`/auth/login?redirect=/tickets/transfer/accept?token=${token}`);
+        if (!data.success) {
+          if (response.status === 401) {
+          router.push(`/login?redirect=/tickets/transfer/accept?token=${token}`);
           return;
         }
         setError(data.error?.message || "Failed to accept transfer");

@@ -1,5 +1,5 @@
-import { getServerEnv } from "./lib/env";
+import { getBootEnv } from "./lib/env";
 
 export async function register() {
-    getServerEnv();
+    getBootEnv();
 }

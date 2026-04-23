@@ -1,7 +1,7 @@
-import { getServerEnv } from "./lib/env";
+import { getBootEnv } from "./lib/env";
 import type { NextConfig } from "next";
 
-getServerEnv();
+getBootEnv();
 
 const skipNextTypecheck = process.env.CI_BUILD_SKIP_NEXT_TYPECHECK === "true";
 

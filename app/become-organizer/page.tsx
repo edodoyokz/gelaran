@@ -94,9 +94,9 @@ function StatusView({
 }) {
     const toneClasses = {
         success: "border-[rgba(19,135,108,0.24)] bg-(--success-bg) text-(--success)",
-        warning: "border-[rgba(251,193,23,0.28)] bg-[var(--warning-bg)] text-(--warning)",
+        warning: "border-[rgba(251,193,23,0.28)] bg-(--warning-bg) text-(--warning)",
         error: "border-[rgba(217,79,61,0.24)] bg-(--error-bg) text-(--error)",
-        accent: "border-[rgba(41,179,182,0.24)] bg-[var(--info-bg)] text-(--accent-primary)",
+        accent: "border-[rgba(41,179,182,0.24)] bg-(--surface-brand-soft) text-(--accent-primary)",
     };
 
     return (
@@ -545,6 +545,9 @@ export default function BecomeOrganizerPage() {
                                     <span className="text-sm font-semibold text-foreground">Social media</span>
                                     <div className="grid gap-3">
                                         <div className="relative">
+                                            <label htmlFor="socialInstagram" className="sr-only">
+                                                Instagram username
+                                            </label>
                                             <Instagram className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                             <input
                                                 type="text"
@@ -556,6 +559,9 @@ export default function BecomeOrganizerPage() {
                                             />
                                         </div>
                                         <div className="relative">
+                                            <label htmlFor="socialFacebook" className="sr-only">
+                                                Facebook page URL
+                                            </label>
                                             <Facebook className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                             <input
                                                 type="text"
@@ -567,6 +573,9 @@ export default function BecomeOrganizerPage() {
                                             />
                                         </div>
                                         <div className="relative">
+                                            <label htmlFor="socialTwitter" className="sr-only">
+                                                Twitter atau X username
+                                            </label>
                                             <Twitter className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)" />
                                             <input
                                                 type="text"
@@ -578,6 +587,9 @@ export default function BecomeOrganizerPage() {
                                             />
                                         </div>
                                         <div className="relative">
+                                            <label htmlFor="socialTiktok" className="sr-only">
+                                                TikTok username
+                                            </label>
                                             <span className="absolute left-4 top-1/2 inline-flex h-5 w-5 -translate-y-1/2 items-center justify-center text-(--text-muted)">
                                                 ♪
                                             </span>

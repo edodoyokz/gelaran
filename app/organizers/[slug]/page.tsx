@@ -2,8 +2,8 @@
 
 import type { ComponentType } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import {
     AlertCircle,
     ArrowLeft,
@@ -19,18 +19,15 @@ import {
     UserPlus,
     Users,
 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
 import { EventCard } from "@/components/features/events/EventCard";
 import {
-    DiscoveryBadge,
-    DiscoveryContainer,
-    DiscoveryHero,
-    DiscoveryLinkRow,
-    DiscoveryPageShell,
-    DiscoveryPanel,
-    DiscoverySection,
-    DiscoveryStat,
-} from "@/components/features/events/discovery-primitives";
+    EditorialPanel,
+    InfoCard,
+    MarketingHero,
+    PublicPageShell,
+    PublicSection,
+} from "@/components/shared/public-marketing";
+import { formatCurrency } from "@/lib/utils";
 
 interface OrganizerData {
     id: string;
@@ -96,6 +93,13 @@ interface ApiResponse {
     error?: { message: string };
 }
 
+interface SocialLinkItem {
+    key: string;
+    href: string;
+    label: string;
+    icon: ComponentType<{ className?: string }>;
+}
+
 function FacebookIcon({ className }: { className?: string }) {
     return (
         <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -126,6 +130,26 @@ function TiktokIcon({ className }: { className?: string }) {
             <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
         </svg>
     );
+}
+
+function sanitizeExternalUrl(value: string | null) {
+    if (!value) return null;
+
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    try {
+        const normalized = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+        const parsed = new URL(normalized);
+
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+            return null;
+        }
+
+        return parsed.toString();
+    } catch {
+        return null;
+    }
 }
 
 export default function OrganizerProfilePage() {
@@ -214,155 +238,181 @@ export default function OrganizerProfilePage() {
             })} WIB`
             : "Waktu diumumkan";
 
-    const socialLinks = useMemo(
-        () =>
-            organizer
-                ? [
-                    organizer.websiteUrl
-                        ? {
-                            key: "website",
-                            href: organizer.websiteUrl,
-                            label: "Website",
-                            icon: Globe,
-                        }
-                        : null,
-                    organizer.socialFacebook
-                        ? {
-                            key: "facebook",
-                            href: organizer.socialFacebook,
-                            label: "Facebook",
-                            icon: FacebookIcon,
-                        }
-                        : null,
-                    organizer.socialInstagram
-                        ? {
-                            key: "instagram",
-                            href: organizer.socialInstagram,
-                            label: "Instagram",
-                            icon: InstagramIcon,
-                        }
-                        : null,
-                    organizer.socialTwitter
-                        ? {
-                            key: "twitter",
-                            href: organizer.socialTwitter,
-                            label: "X / Twitter",
-                            icon: TwitterIcon,
-                        }
-                        : null,
-                    organizer.socialTiktok
-                        ? {
-                            key: "tiktok",
-                            href: organizer.socialTiktok,
-                            label: "TikTok",
-                            icon: TiktokIcon,
-                        }
-                        : null,
-                ].filter(Boolean) as {
-                        key: string;
-                        href: string;
-                        label: string;
-                        icon: ComponentType<{ className?: string }>;
-                    }[]
-                : [],
-        [organizer],
-    );
+    const socialLinks = useMemo<SocialLinkItem[]>(() => {
+        if (!organizer) {
+            return [];
+        }
+
+        const candidates = [
+            {
+                key: "website",
+                href: sanitizeExternalUrl(organizer.websiteUrl),
+                label: "Website",
+                icon: Globe,
+            },
+            {
+                key: "facebook",
+                href: sanitizeExternalUrl(organizer.socialFacebook),
+                label: "Facebook",
+                icon: FacebookIcon,
+            },
+            {
+                key: "instagram",
+                href: sanitizeExternalUrl(organizer.socialInstagram),
+                label: "Instagram",
+                icon: InstagramIcon,
+            },
+            {
+                key: "twitter",
+                href: sanitizeExternalUrl(organizer.socialTwitter),
+                label: "X / Twitter",
+                icon: TwitterIcon,
+            },
+            {
+                key: "tiktok",
+                href: sanitizeExternalUrl(organizer.socialTiktok),
+                label: "TikTok",
+                icon: TiktokIcon,
+            },
+        ];
+
+        return candidates.flatMap((item) => (item.href ? [{ ...item, href: item.href }] : []));
+    }, [organizer]);
+
+    const memberSince = organizer ? formatMemberSince(organizer.createdAt) : "";
+    const bestUpcomingPrice = upcomingEvents
+        .map((event) => event.lowestPrice)
+        .filter((price): price is number => typeof price === "number");
 
     if (isLoading) {
         return (
-            <DiscoveryPageShell>
-                <div className="flex min-h-screen items-center justify-center">
+            <PublicPageShell>
+                <section className="flex min-h-[70vh] items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <Loader2 className="mx-auto h-10 w-10 animate-spin text-(--accent-primary)" />
-                        <p className="mt-4 text-sm text-(--text-secondary)">Memuat profil organizer...</p>
+                        <Loader2 className="mx-auto h-12 w-12 animate-spin text-(--accent-primary)" />
+                        <p className="mt-4 text-sm font-medium text-(--text-secondary)">Memuat profil organizer...</p>
                     </div>
-                </div>
-            </DiscoveryPageShell>
+                </section>
+            </PublicPageShell>
         );
     }
 
     if (error || !organizer) {
         return (
-            <DiscoveryPageShell>
-                <div className="flex min-h-screen items-center justify-center px-4">
-                    <DiscoveryPanel className="max-w-xl p-10 text-center">
-                        <AlertCircle className="mx-auto h-12 w-12 text-(--error)" />
-                        <h1 className="mt-5 text-3xl font-semibold tracking-(--tracking-heading) text-foreground">
-                            Organizer tidak ditemukan
-                        </h1>
-                        <p className="mt-3 text-sm leading-7 text-(--text-secondary) sm:text-base">
-                            {error || "Halaman yang kamu cari tidak tersedia."}
-                        </p>
-                        <Link
-                            href="/"
-                            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-(--accent-primary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-primary-hover)"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            Kembali ke beranda
-                        </Link>
-                    </DiscoveryPanel>
-                </div>
-            </DiscoveryPageShell>
+            <PublicPageShell>
+                <section className="flex min-h-[70vh] items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-xl">
+                        <EditorialPanel className="text-center">
+                            <AlertCircle className="mx-auto h-12 w-12 text-(--error)" />
+                            <h1 className="mt-5 text-3xl font-semibold tracking-(--tracking-heading) text-foreground">
+                                Organizer tidak ditemukan
+                            </h1>
+                            <p className="mt-3 text-sm leading-7 text-(--text-secondary) sm:text-base">
+                                {error || "Halaman yang kamu cari tidak tersedia."}
+                            </p>
+                            <Link
+                                href="/"
+                                className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-(--accent-primary) px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-(--accent-primary-hover)"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                                Kembali ke beranda
+                            </Link>
+                        </EditorialPanel>
+                    </div>
+                </section>
+            </PublicPageShell>
         );
     }
 
     return (
-        <DiscoveryPageShell>
-            <DiscoveryHero
-                eyebrow={
-                    <span className="inline-flex items-center gap-2">
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Organizer public profile
-                    </span>
-                }
-                title={organizer.organizationName}
-                description={
-                    organizer.organizationDescription ||
-                    "Profil publik organizer ini kini mengikuti baseline editorial Gelaran dengan hero media, statistik ringkas, dan presentasi event yang lebih konsisten."
-                }
-            >
-                <DiscoveryPanel className="overflow-hidden p-0">
-                    <div className="relative h-72 w-full bg-[linear-gradient(135deg,rgba(1,89,89,0.94),rgba(41,179,182,0.7))] sm:h-80 lg:h-104">
-                        {organizer.organizationBanner ? (
-                            <img
-                                src={organizer.organizationBanner}
-                                alt={organizer.organizationName}
-                                className="h-full w-full object-cover"
-                            />
-                        ) : null}
-                        <div className="absolute inset-0 bg-linear-to-t from-[rgba(6,18,18,0.8)] via-[rgba(6,18,18,0.22)] to-transparent" />
-                        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                            <div className="grid gap-3 sm:grid-cols-3">
-                                <DiscoveryStat label="Total event" value={stats?.totalEvents ?? 0} hint="Portofolio publik" />
-                                <DiscoveryStat label="Pengikut" value={followersCount} hint="Komunitas aktif" />
-                                <DiscoveryStat
-                                    label="Rating publik"
-                                    value={stats?.averageRating && stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "—"}
-                                    hint={stats?.totalReviews ? `${stats.totalReviews} review` : "Belum ada review"}
-                                />
+        <PublicPageShell
+            hero={
+                <MarketingHero
+                    eyebrow="Organizer public profile"
+                    title={
+                        <>
+                            {organizer.organizationName} membangun pengalaman event yang lebih <em className="text-(--accent-secondary) not-italic">terkurasi</em>.
+                        </>
+                    }
+                    description={
+                        <p>
+                            {organizer.organizationDescription ||
+                                "Profil organizer ini menampilkan cerita brand, sinyal kepercayaan, dan modul event publik dalam bahasa visual yang selaras dengan halaman marketing Gelaran."}
+                        </p>
+                    }
+                    primaryCta={{ href: `/organizers/${slug}#organizer-events`, label: "Lihat event organizer" }}
+                    secondaryCta={{ href: "/events", label: "Jelajahi semua event" }}
+                    stats={[
+                        { label: "Events hosted", value: stats?.totalEvents ?? 0, tone: "accent" },
+                        { label: "Followers", value: followersCount, tone: "default" },
+                        {
+                            label: "Avg rating",
+                            value: stats?.averageRating && stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "-",
+                            tone: "warning",
+                        },
+                    ]}
+                    aside={
+                        <EditorialPanel className="max-w-xl overflow-hidden p-0">
+                            <div className="relative h-80 w-full bg-[linear-gradient(135deg,rgba(1,89,89,0.94),rgba(41,179,182,0.7))] sm:h-96">
+                                {organizer.organizationBanner ? (
+                                    <img
+                                        src={organizer.organizationBanner}
+                                        alt={organizer.organizationName}
+                                        className="h-full w-full object-cover"
+                                    />
+                                ) : null}
+                                <div className="absolute inset-0 bg-linear-to-t from-[rgba(6,18,18,0.78)] via-[rgba(6,18,18,0.18)] to-transparent" />
+                                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                                    <div className="flex items-end gap-4">
+                                        <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-white/88 bg-white shadow-(--shadow-md)">
+                                            {organizer.organizationLogo ? (
+                                                <img
+                                                    src={organizer.organizationLogo}
+                                                    alt={organizer.organizationName}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,rgba(1,89,89,0.92),rgba(41,179,182,0.68))] text-3xl font-semibold text-white">
+                                                    {organizer.organizationName.charAt(0)}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-2 text-white">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <p className="font-(--font-editorial) text-3xl leading-tight tracking-(--tracking-display)">
+                                                    {organizer.organizationName}
+                                                </p>
+                                                {organizer.isVerified ? <CheckCircle className="h-5 w-5 text-white/90" /> : null}
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {organizer.isVerified ? (
+                                                    <span className="inline-flex rounded-full border border-white/20 bg-white/12 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/88 backdrop-blur-sm">
+                                                        Verified organizer
+                                                    </span>
+                                                ) : null}
+                                                <span className="inline-flex rounded-full border border-white/20 bg-white/12 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm">
+                                                    Bergabung sejak {memberSince}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </DiscoveryPanel>
-            </DiscoveryHero>
-
-            <DiscoveryContainer className="pb-16 sm:pb-20">
-                <div className="mb-6 flex flex-wrap items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={() => router.back()}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-(--text-secondary) transition-colors duration-200 hover:text-foreground"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Kembali
-                    </button>
-                    {organizer.isVerified ? <DiscoveryBadge tone="success">Terverifikasi</DiscoveryBadge> : null}
-                    <DiscoveryBadge tone="accent">Bergabung sejak {formatMemberSince(organizer.createdAt)}</DiscoveryBadge>
-                </div>
-
+                        </EditorialPanel>
+                    }
+                />
+            }
+        >
+            <PublicSection
+                eyebrow="Organizer profile"
+                title="Cerita brand, sinyal kepercayaan, dan aksi utama kini berada dalam satu ritme publik"
+                description="Komposisi ini mengikuti arah Stitch organizer profile: hero visual, bio ringkas, CTA follow, lalu modul statistik dan event yang mudah dipindai."
+                className="pt-0"
+            >
                 <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
-                    <div className="space-y-8">
-                        <DiscoveryPanel className="p-5 sm:p-6 lg:p-8">
+                    <div className="space-y-8" id="organizer-events">
+                        <EditorialPanel className="p-5 sm:p-6 lg:p-8">
                             <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="flex flex-col gap-5 sm:flex-row">
                                     <div className="h-24 w-24 shrink-0 overflow-hidden rounded-[1.85rem] bg-[linear-gradient(135deg,rgba(1,89,89,0.92),rgba(41,179,182,0.68))] shadow-(--shadow-md)">
@@ -381,15 +431,23 @@ export default function OrganizerProfilePage() {
 
                                     <div className="min-w-0 space-y-3">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h1 className="font-(--font-editorial) text-4xl leading-tight tracking-(--tracking-heading) text-foreground sm:text-5xl">
+                                            <h2 className="font-(--font-editorial) text-4xl leading-tight tracking-(--tracking-heading) text-foreground sm:text-5xl">
                                                 {organizer.organizationName}
-                                            </h1>
+                                            </h2>
                                             {organizer.isVerified ? <CheckCircle className="h-6 w-6 text-(--info)" /> : null}
                                         </div>
                                         <p className="max-w-3xl text-sm leading-7 text-(--text-secondary) sm:text-base">
                                             {organizer.organizationDescription ||
                                                 "Organizer ini belum menambahkan deskripsi brand publik."}
                                         </p>
+                                        <button
+                                            type="button"
+                                            onClick={() => router.back()}
+                                            className="inline-flex items-center gap-2 text-sm font-semibold text-(--text-secondary) transition-colors duration-200 hover:text-foreground"
+                                        >
+                                            <ArrowLeft className="h-4 w-4" />
+                                            Kembali
+                                        </button>
                                     </div>
                                 </div>
 
@@ -417,38 +475,35 @@ export default function OrganizerProfilePage() {
                                     )}
                                 </button>
                             </div>
-                        </DiscoveryPanel>
+                        </EditorialPanel>
 
-                        <DiscoverySection
-                            title="Statistik publik"
-                            description="Hierarki data diringkas menjadi empat metrik utama agar reputasi organizer cepat dipindai."
-                        >
-                            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                                <DiscoveryStat label="Event" value={stats?.totalEvents ?? 0} hint="Jumlah event publik" />
-                                <DiscoveryStat label="Pengikut" value={followersCount} hint="Komunitas yang mengikuti" />
-                                <DiscoveryStat
-                                    label="Tiket terjual"
-                                    value={
-                                        stats
-                                            ? stats.totalTicketsSold > 1000
-                                                ? `${(stats.totalTicketsSold / 1000).toFixed(1)}K`
-                                                : stats.totalTicketsSold
-                                            : 0
-                                    }
-                                    hint="Akumulasi penjualan"
-                                />
-                                <DiscoveryStat
-                                    label="Rating"
-                                    value={stats?.averageRating && stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "—"}
-                                    hint={stats?.totalReviews ? `${stats.totalReviews} review publik` : "Belum ada review"}
-                                />
-                            </div>
-                        </DiscoverySection>
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                            <InfoCard label="Events hosted" value={stats?.totalEvents ?? 0} icon={CalendarDays} />
+                            <InfoCard label="Followers" value={followersCount} icon={Users} />
+                            <InfoCard
+                                label="Tickets sold"
+                                value={
+                                    stats
+                                        ? stats.totalTicketsSold > 1000
+                                            ? `${(stats.totalTicketsSold / 1000).toFixed(1)}K`
+                                            : stats.totalTicketsSold
+                                        : 0
+                                }
+                                icon={Ticket}
+                            />
+                            <InfoCard
+                                label="Avg rating"
+                                value={stats?.averageRating && stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "-"}
+                                icon={Star}
+                            />
+                        </div>
 
                         {upcomingEvents.length > 0 ? (
-                            <DiscoverySection
-                                title="Event mendatang"
-                                description="Kartu event menggunakan pola discovery yang sama dengan listing publik agar pengalaman lintas halaman terasa konsisten."
+                            <PublicSection
+                                eyebrow="Upcoming events"
+                                title="Event mendatang dari organizer ini"
+                                description="Navigasi kartu event dan data harga tetap memakai komponen publik yang sama dengan listing utama agar perilakunya konsisten."
+                                className="px-0 py-0"
                             >
                                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                                     {upcomingEvents.map((event) => (
@@ -470,13 +525,15 @@ export default function OrganizerProfilePage() {
                                         />
                                     ))}
                                 </div>
-                            </DiscoverySection>
+                            </PublicSection>
                         ) : null}
 
                         {pastEvents.length > 0 ? (
-                            <DiscoverySection
+                            <PublicSection
+                                eyebrow="Archive"
                                 title="Arsip event sebelumnya"
-                                description="Related content untuk organizer tetap hadir melalui arsip event lama dengan treatment visual yang serupa."
+                                description="Arsip tetap tersedia sebagai modul lanjutan dengan treatment yang lebih tenang namun masih berada dalam bahasa visual publik yang sama."
+                                className="px-0 py-0"
                             >
                                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                                     {pastEvents.map((event) => (
@@ -500,11 +557,11 @@ export default function OrganizerProfilePage() {
                                         />
                                     ))}
                                 </div>
-                            </DiscoverySection>
+                            </PublicSection>
                         ) : null}
 
                         {upcomingEvents.length === 0 && pastEvents.length === 0 ? (
-                            <DiscoveryPanel className="p-10 text-center sm:p-14">
+                            <EditorialPanel className="p-10 text-center sm:p-14">
                                 <CalendarDays className="mx-auto h-12 w-12 text-(--text-muted)" />
                                 <h2 className="mt-5 text-2xl font-semibold tracking-(--tracking-heading) text-foreground">
                                     Belum ada event publik
@@ -512,68 +569,32 @@ export default function OrganizerProfilePage() {
                                 <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-(--text-secondary) sm:text-base">
                                     Organizer ini belum memiliki event yang ditampilkan secara publik saat ini.
                                 </p>
-                            </DiscoveryPanel>
+                            </EditorialPanel>
                         ) : null}
                     </div>
 
                     <aside className="space-y-4 lg:sticky lg:top-24">
-                        <DiscoveryPanel className="p-5 sm:p-6">
+                        <EditorialPanel className="p-5 sm:p-6">
                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
                                 Profile summary
                             </p>
-                            <div className="mt-4 space-y-4">
-                                <div className="rounded-3xl border border-(--border) bg-white p-4">
-                                    <div className="flex items-start gap-3">
-                                        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
-                                            <Users className="h-5 w-5" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Followers</p>
-                                            <p className="mt-1 text-xl font-semibold text-foreground">{followersCount}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="rounded-3xl border border-(--border) bg-white p-4">
-                                    <div className="flex items-start gap-3">
-                                        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--warning-bg) text-(--warning-text)">
-                                            <Star className="h-5 w-5" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Public rating</p>
-                                            <p className="mt-1 text-xl font-semibold text-foreground">
-                                                {stats?.averageRating && stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "—"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="rounded-3xl border border-(--border) bg-white p-4">
-                                    <div className="flex items-start gap-3">
-                                        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
-                                            <Ticket className="h-5 w-5" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">Ticket value</p>
-                                            <p className="mt-1 text-xl font-semibold text-foreground">
-                                                {upcomingEvents.some((event) => typeof event.lowestPrice === "number")
-                                                    ? formatCurrency(
-                                                        Math.min(
-                                                            ...upcomingEvents
-                                                                .map((event) => event.lowestPrice)
-                                                                .filter((price): price is number => typeof price === "number"),
-                                                        ),
-                                                    )
-                                                    : "Gratis / TBA"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="mt-4 space-y-3">
+                                <InfoCard label="Member since" value={memberSince} icon={Sparkles} />
+                                <InfoCard
+                                    label="Best upcoming price"
+                                    value={bestUpcomingPrice.length > 0 ? formatCurrency(Math.min(...bestUpcomingPrice)) : "Gratis / TBA"}
+                                    icon={Ticket}
+                                />
+                                <InfoCard
+                                    label="Public reviews"
+                                    value={stats?.totalReviews ? `${stats.totalReviews} review` : "Belum ada review"}
+                                    icon={Star}
+                                />
                             </div>
-                        </DiscoveryPanel>
+                        </EditorialPanel>
 
                         {socialLinks.length > 0 ? (
-                            <DiscoveryPanel className="p-5 sm:p-6">
+                            <EditorialPanel className="p-5 sm:p-6">
                                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
                                     External channels
                                 </p>
@@ -599,10 +620,10 @@ export default function OrganizerProfilePage() {
                                         );
                                     })}
                                 </div>
-                            </DiscoveryPanel>
+                            </EditorialPanel>
                         ) : null}
 
-                        <DiscoveryPanel className="p-5 sm:p-6">
+                        <EditorialPanel className="p-5 sm:p-6">
                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-(--text-muted)">
                                 Related browsing
                             </p>
@@ -610,15 +631,19 @@ export default function OrganizerProfilePage() {
                                 Jelajahi semua event publik
                             </h3>
                             <p className="mt-2 text-sm leading-7 text-(--text-secondary)">
-                                Kembali ke discovery page untuk melihat organizer ini bersama event publik lainnya dalam satu baseline desain.
+                                Kembali ke discovery utama untuk melihat organizer ini bersama event publik lainnya tanpa mengubah perilaku navigasi yang sudah ada.
                             </p>
-                            <div className="mt-4">
-                                <DiscoveryLinkRow href="/events" label="Buka halaman event discovery" />
-                            </div>
-                        </DiscoveryPanel>
+                            <Link
+                                href="/events"
+                                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-(--accent-primary) transition-colors duration-200 hover:text-(--accent-primary-hover)"
+                            >
+                                Buka halaman event discovery
+                                <ExternalLink className="h-4 w-4" />
+                            </Link>
+                        </EditorialPanel>
                     </aside>
                 </div>
-            </DiscoveryContainer>
-        </DiscoveryPageShell>
+            </PublicSection>
+        </PublicPageShell>
     );
 }

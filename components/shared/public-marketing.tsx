@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight, type LucideIcon } from "lucide-react";
 import { PublicLayout, SectionHeader, StatsCard } from "@/components/shared/phase-two-shells";
+import { publicAuthSurface } from "@/components/shared/public-auth-tokens";
 import { cn } from "@/lib/utils";
 
 interface PublicPageShellProps {
@@ -23,6 +24,7 @@ export function PublicPageShell({
         <PublicLayout className={cn("overflow-hidden", className)} mainClassName="pt-20 sm:pt-24">
             <div className="relative">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-112 bg-[radial-gradient(circle_at_top_left,rgba(251,193,23,0.16),transparent_36%),radial-gradient(circle_at_top_right,rgba(41,179,182,0.12),transparent_34%)]" />
+                <div className="pointer-events-none absolute inset-x-0 top-20 h-64 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,0.5),transparent)]" />
                 <div className={cn("relative", contentClassName)}>
                     {hero}
                     {intro}
@@ -66,19 +68,19 @@ export function MarketingHero({
 }: MarketingHeroProps) {
     return (
         <section className={cn("px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 lg:pb-20", className)}>
-            <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:items-end lg:gap-14">
-                <div className="space-y-8">
+            <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] lg:items-end lg:gap-14">
+                <div className="space-y-8 py-2">
                     <div className="space-y-5">
                         {eyebrow ? (
-                            <span className="inline-flex rounded-full border border-(--border) bg-(--surface)/88 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-(--accent-primary) shadow-(--shadow-xs) backdrop-blur">
+                            <span className={publicAuthSurface.eyebrow}>
                                 {eyebrow}
                             </span>
                         ) : null}
                         <div className="space-y-4">
-                            <h1 className="max-w-4xl font-(--font-editorial) text-5xl leading-[0.92] tracking-(--tracking-display) text-foreground sm:text-6xl lg:text-7xl">
+                            <h1 className="max-w-4xl font-(--font-editorial) text-5xl leading-[0.92] tracking-(--tracking-display) text-foreground sm:text-6xl lg:text-[4.75rem]">
                                 {title}
                             </h1>
-                            <div className="max-w-2xl text-base leading-8 text-(--text-secondary) sm:text-lg">
+                            <div className="max-w-2xl text-base leading-8 text-(--text-secondary) sm:text-lg lg:max-w-3xl">
                                 {description}
                             </div>
                         </div>
@@ -114,7 +116,7 @@ export function MarketingHero({
                                     label={stat.label}
                                     value={stat.value}
                                     tone={stat.tone ?? "default"}
-                                    className="h-full bg-(--surface)/88 backdrop-blur"
+                                    className="h-full bg-white/84 backdrop-blur"
                                 />
                             ))}
                         </div>
@@ -136,10 +138,12 @@ export function EditorialPanel({ children, className }: EditorialPanelProps) {
     return (
         <div
             className={cn(
-                "rounded-[calc(var(--radius-3xl)+0.5rem)] border border-(--border) bg-[rgba(255,255,255,0.82)] p-6 shadow-(--shadow-lg) backdrop-blur-xl sm:p-8",
+                publicAuthSurface.panel,
+                "relative overflow-hidden p-6 sm:p-8",
                 className,
             )}
         >
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(255,255,255,0.32),transparent)]" />
             {children}
         </div>
     );
@@ -176,7 +180,7 @@ export function PublicSection({
                     align={align}
                     action={action}
                 />
-                <div className={contentClassName}>{children}</div>
+                <div className={cn("relative", contentClassName)}>{children}</div>
             </div>
         </section>
     );
@@ -210,8 +214,9 @@ export function FeatureGrid({ items, columns = 3, className }: FeatureGridProps)
                 return (
                     <article
                         key={item.title}
-                        className="group rounded-2xl border border-(--border) bg-(--surface)/92 p-6 shadow-(--shadow-sm) transition-transform duration-200 hover:-translate-y-1"
+                        className="group relative overflow-hidden rounded-[1.75rem] border border-(--border) bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,250,249,0.88))] p-6 shadow-(--shadow-sm) transition-transform duration-200 hover:-translate-y-1"
                     >
+                        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0.4),transparent)]" />
                         <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary) shadow-(--shadow-xs)">
                             <Icon className="h-5 w-5" />
                         </div>
@@ -245,7 +250,7 @@ interface InfoCardProps {
 
 export function InfoCard({ label, value, icon: Icon, href, className }: InfoCardProps) {
     const content = (
-        <div className={cn("rounded-2xl border border-(--border) bg-(--surface)/92 p-5 shadow-(--shadow-sm)", className)}>
+        <div className={cn("rounded-[1.6rem] border border-(--border) bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,250,249,0.88))] p-5 shadow-(--shadow-sm)", className)}>
             <div className="flex items-start gap-4">
                 {Icon ? (
                     <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
@@ -299,7 +304,7 @@ export function TextContentSection({
                         <EditorialPanel className="space-y-6 p-8 sm:p-10">
                             <div className="space-y-4">
                                 {eyebrow ? (
-                                    <span className="inline-flex rounded-full border border-(--border) bg-(--surface-brand-soft) px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-(--accent-primary)">
+                                    <span className={cn(publicAuthSurface.eyebrow, "bg-(--surface-brand-soft)")}>
                                         {eyebrow}
                                     </span>
                                 ) : null}

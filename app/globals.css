@@ -1,13 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Material Symbols Outlined";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/material-symbols-outlined.woff2") format("woff2");
-}
-
 /* ============================================
    BSC PLATFORM - DESIGN SYSTEM
    ============================================ */
@@ -16,11 +8,20 @@
 :root {
   --font-geist-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   --font-geist-mono: "SFMono-Regular", SFMono-Regular, ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-editorial: "Noto Serif", Georgia, "Times New Roman", serif;
   /* ---- Backgrounds ---- */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
   --bg-inverse: #0f172a;
+  --bg-public-canvas: #f7f6f0;
+  --bg-public-soft: #fffdfa;
+  --bg-public-panel: rgba(255, 252, 245, 0.92);
+  --bg-public-muted: #f3efe5;
+  --bg-auth-shell: #faf7f1;
+  --bg-auth-panel: #fffdf8;
+  --bg-checkout-shell: #fffdf9;
+  --bg-auth-aside: #efe9de;
 
   /* ---- Surfaces (Cards, Modals, etc) ---- */
   --surface: #ffffff;
@@ -104,11 +105,22 @@
   --surface-brand: #015959;
   --surface-brand-soft: rgba(1, 89, 89, 0.08);
   --surface-accent: rgba(249, 93, 0, 0.08);
+  --surface-editorial: rgba(255, 250, 241, 0.92);
+  --surface-editorial-strong: #fffaf1;
+  --surface-chip: rgba(41, 179, 182, 0.1);
+  --surface-chip-active: rgba(251, 193, 23, 0.18);
+  --surface-status-info: rgba(41, 179, 182, 0.12);
+  --surface-status-warning: rgba(251, 193, 23, 0.18);
+  --surface-status-success: rgba(19, 135, 108, 0.12);
+  --surface-status-error: rgba(217, 79, 61, 0.12);
+  --surface-auth-aside: rgba(255, 255, 255, 0.42);
+  --surface-auth-chip: rgba(251, 193, 23, 0.12);
 
   /* ---- Typography ---- */
   --tracking-display: -0.04em;
   --tracking-heading: -0.025em;
   --tracking-body: -0.01em;
+  --tracking-kicker: 0.24em;
   --leading-display: 0.95;
   --leading-heading: 1.05;
   --leading-body: 1.6;
@@ -117,7 +129,25 @@
   --content-max-width: 80rem;
   --content-narrow-width: 48rem;
   --section-space: clamp(4rem, 6vw, 7rem);
+  --section-space-compact: clamp(3rem, 4vw, 4.75rem);
   --gutter: clamp(1rem, 2vw, 2rem);
+  --shell-header-offset: 5.75rem;
+
+  /* ---- Public/Auth Shell ---- */
+  --shell-nav-bg: rgba(255, 250, 241, 0.72);
+  --shell-nav-bg-strong: rgba(255, 252, 246, 0.92);
+  --shell-nav-border: rgba(1, 89, 89, 0.1);
+  --shell-nav-shadow: 0 18px 44px rgba(87, 65, 33, 0.08);
+  --shell-footer-bg: rgba(255, 251, 245, 0.94);
+  --shell-footer-border: rgba(1, 89, 89, 0.12);
+  --shell-hero-glow: radial-gradient(circle at top left, rgba(251, 193, 23, 0.18), transparent 34%), radial-gradient(circle at top right, rgba(41, 179, 182, 0.16), transparent 38%), linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 243, 235, 0.94) 100%);
+  --shell-page-glow: radial-gradient(circle at 10% 0%, rgba(251, 193, 23, 0.12), transparent 28%), radial-gradient(circle at 92% 2%, rgba(41, 179, 182, 0.11), transparent 30%), linear-gradient(180deg, #fffdf9 0%, #f6f3eb 52%, #f1efe7 100%);
+  --auth-shell-overlay: linear-gradient(90deg, rgba(243, 239, 229, 0.88) 0%, rgba(243, 239, 229, 0.22) 78%, rgba(243, 239, 229, 0) 100%);
+  --auth-shell-border: rgba(190, 200, 200, 0.32);
+  --auth-shell-shadow: 0 20px 50px rgba(0, 32, 32, 0.04);
+  --auth-shell-muted: rgba(1, 89, 89, 0.42);
+  --auth-shell-strong: #002020;
+  --auth-shell-chip-text: #483500;
 
   /* ---- Transitions ---- */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -220,6 +250,38 @@
   --glass-bg: rgba(11, 29, 29, 0.72);
   --glass-bg-strong: rgba(11, 29, 29, 0.88);
   --glass-border: rgba(78, 222, 225, 0.12);
+  --bg-public-canvas: #071515;
+  --bg-public-soft: #0a1f1f;
+  --bg-public-panel: rgba(12, 31, 31, 0.86);
+  --bg-public-muted: #0d2525;
+  --bg-auth-shell: #081515;
+  --bg-auth-panel: #102020;
+  --bg-checkout-shell: #091717;
+  --bg-auth-aside: #0f2121;
+  --surface-editorial: rgba(11, 30, 30, 0.92);
+  --surface-editorial-strong: rgba(13, 34, 34, 0.98);
+  --surface-chip: rgba(41, 179, 182, 0.14);
+  --surface-chip-active: rgba(251, 193, 23, 0.16);
+  --surface-status-info: rgba(41, 179, 182, 0.16);
+  --surface-status-warning: rgba(251, 193, 23, 0.18);
+  --surface-status-success: rgba(61, 195, 160, 0.16);
+  --surface-status-error: rgba(249, 93, 0, 0.18);
+  --surface-auth-aside: rgba(10, 30, 30, 0.56);
+  --surface-auth-chip: rgba(251, 193, 23, 0.16);
+  --shell-nav-bg: rgba(8, 27, 27, 0.72);
+  --shell-nav-bg-strong: rgba(10, 30, 30, 0.9);
+  --shell-nav-border: rgba(78, 222, 225, 0.12);
+  --shell-nav-shadow: 0 18px 54px rgba(0, 0, 0, 0.26);
+  --shell-footer-bg: rgba(8, 24, 24, 0.94);
+  --shell-footer-border: rgba(78, 222, 225, 0.12);
+  --shell-hero-glow: radial-gradient(circle at top left, rgba(78, 222, 225, 0.14), transparent 30%), radial-gradient(circle at top right, rgba(251, 193, 23, 0.08), transparent 24%), linear-gradient(180deg, rgba(7, 21, 21, 0.98) 0%, rgba(10, 31, 31, 0.96) 100%);
+  --shell-page-glow: radial-gradient(circle at 12% 0%, rgba(78, 222, 225, 0.12), transparent 26%), radial-gradient(circle at 92% 4%, rgba(251, 193, 23, 0.08), transparent 26%), linear-gradient(180deg, #071515 0%, #0b1d1d 48%, #102727 100%);
+  --auth-shell-overlay: linear-gradient(90deg, rgba(10, 25, 25, 0.86) 0%, rgba(10, 25, 25, 0.36) 78%, rgba(10, 25, 25, 0) 100%);
+  --auth-shell-border: rgba(78, 222, 225, 0.14);
+  --auth-shell-shadow: 0 24px 56px rgba(0, 0, 0, 0.24);
+  --auth-shell-muted: rgba(181, 199, 197, 0.64);
+  --auth-shell-strong: #f3f6f6;
+  --auth-shell-chip-text: #ffe08a;
 }
 
 /* ============================================
@@ -244,10 +306,7 @@ html {
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(251, 193, 23, 0.12), transparent 26%),
-    radial-gradient(circle at top right, rgba(41, 179, 182, 0.14), transparent 32%),
-    linear-gradient(180deg, #fcfdfc 0%, #f6f8f8 48%, #eef5f4 100%);
+  background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: var(--leading-body);
@@ -258,49 +317,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.material-symbols-outlined {
-  font-family: "Material Symbols Outlined", sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  font-size: 1.5rem;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  user-select: none;
-  font-feature-settings: "liga";
-  -webkit-font-smoothing: antialiased;
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-}
-
-.material-symbols-filled {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
-}
-
 .dark body {
-  background:
-    radial-gradient(circle at top left, rgba(78, 222, 225, 0.12), transparent 28%),
-    radial-gradient(circle at top right, rgba(251, 193, 23, 0.08), transparent 24%),
-    linear-gradient(180deg, #071515 0%, #0b1d1d 46%, #102727 100%);
+  background: var(--bg-primary);
 }
 
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.34) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.24) 1px, transparent 1px);
-  background-size: 120px 120px;
-  mask-image: radial-gradient(circle at center, black 24%, transparent 78%);
-  opacity: 0.28;
-  z-index: -1;
+  content: none;
 }
 
 * {
@@ -342,19 +365,60 @@ select {
   margin-inline: auto;
 }
 
+.public-shell {
+  position: relative;
+  min-height: 100vh;
+  background: var(--shell-page-glow);
+}
+
+.public-shell-navbar {
+  isolation: isolate;
+}
+
+.public-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 160px 160px;
+  mask-image: radial-gradient(circle at center, black 18%, transparent 76%);
+  opacity: 0.16;
+  z-index: 0;
+}
+
+.public-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(251, 193, 23, 0.12), transparent 20%),
+    radial-gradient(circle at 88% 4%, rgba(41, 179, 182, 0.1), transparent 22%);
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.public-shell > * {
+  position: relative;
+}
+
 .editorial-kicker {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(1, 89, 89, 0.12);
+  background: var(--surface-editorial);
   padding: 0.5rem 0.875rem;
   border-radius: var(--radius-full);
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: var(--tracking-kicker);
   text-transform: uppercase;
   color: var(--accent-primary);
+  box-shadow: var(--shadow-xs);
 }
 
 .no-scrollbar {
@@ -434,7 +498,7 @@ select {
    RESPONSIVE ADJUSTMENTS
    ============================================ */
 @media (max-width: 640px) {
-  body::before {
+  .public-shell::before {
     background-size: 88px 88px;
     opacity: 0.18;
   }

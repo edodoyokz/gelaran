@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
-import { Resend } from "resend";
 import type { PrismaTransactionClient } from "@/types/prisma";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { requireAuthenticatedAppUser } from "@/lib/auth/route-auth";
+import { FROM_EMAIL, resend } from "@/lib/email/client";
 
 function generateNewTicketCode(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
@@ -24,15 +22,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAuthenticatedAppUser();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required. Please login to accept the ticket transfer." } },
-        { status: 401 }
+        { success: false, error: { message: authContext.error === "Unauthorized" ? "Authentication required. Please login to accept the ticket transfer." : authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -65,14 +60,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (transfer.recipientEmail.toLowerCase() !== user.email?.toLowerCase()) {
+    if (transfer.recipientEmail.toLowerCase() !== authContext.email.toLowerCase()) {
       return NextResponse.json(
         { success: false, error: { message: "This transfer is intended for a different email address" } },
         { status: 403 }
       );
     }
 
-    if (transfer.fromUserId === user.id) {
+    if (transfer.fromUserId === authContext.dbUserId) {
       return NextResponse.json(
         { success: false, error: { message: "Cannot accept a transfer from yourself" } },
         { status: 400 }
@@ -125,7 +120,7 @@ export async function POST(request: NextRequest) {
 
     const recipientBooking = await prisma.booking.findFirst({
       where: {
-        userId: user.id,
+        userId: authContext.dbUserId,
         eventId: ticket.booking.eventId,
         status: { in: ["PAID", "CONFIRMED"] },
       },
@@ -156,7 +151,7 @@ export async function POST(request: NextRequest) {
         where: { id: token },
         data: {
           status: "ACCEPTED",
-          toUserId: user.id,
+          toUserId: authContext.dbUserId,
           newUniqueCode,
           acceptedAt: new Date(),
         },
@@ -170,9 +165,10 @@ export async function POST(request: NextRequest) {
 
     if (fromUser?.email) {
       try {
-        const recipientName = user.user_metadata?.name || user.email?.split("@")[0] || "the recipient";
+        const recipientName =
+          authContext.dbUser.name || authContext.email.split("@")[0] || "the recipient";
         await resend.emails.send({
-          from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
+          from: FROM_EMAIL,
           to: fromUser.email,
           subject: `Tiket Anda berhasil ditransfer`,
           html: `

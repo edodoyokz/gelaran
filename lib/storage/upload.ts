@@ -21,7 +21,7 @@ const STORAGE_BUCKET_POLICIES: Record<StorageBucketName, BucketPolicy> = {
     },
     events: {
         maxSizeBytes: 5 * 1024 * 1024,
-        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"],
         isPublic: true,
     },
     organizers: {

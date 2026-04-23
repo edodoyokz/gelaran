@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdminContext } from "@/lib/auth/route-auth";
+import { getEmailEnv } from "@/lib/env";
 import { Resend } from "resend";
 import type { Decimal } from "@prisma/client/runtime/library";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const env = getEmailEnv();
+const resend = new Resend(env.RESEND_API_KEY);
+const refundEmailFrom = env.EMAIL_FROM;
 
 interface RefundRecord {
   id: string;
@@ -30,32 +33,14 @@ interface RefundRecord {
   } | null;
 }
 
-async function isAdmin(userId: string): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { role: true },
-  });
-  return user?.role === "SUPER_ADMIN" || user?.role === "ADMIN";
-}
-
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAdminContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
-      );
-    }
-
-    if (!(await isAdmin(user.id))) {
-      return NextResponse.json(
-        { success: false, error: { message: "Admin access required" } },
-        { status: 403 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -140,22 +125,12 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAdminContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
-      );
-    }
-
-    if (!(await isAdmin(user.id))) {
-      return NextResponse.json(
-        { success: false, error: { message: "Admin access required" } },
-        { status: 403 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -213,7 +188,7 @@ export async function PUT(request: NextRequest) {
       }
       newStatus = "APPROVED";
       updateData.status = newStatus;
-      updateData.processedBy = user.id;
+      updateData.processedBy = authContext.dbUserId;
       updateData.processedAt = new Date();
       if (refundAmount !== undefined) {
         updateData.refundAmount = refundAmount;
@@ -227,7 +202,7 @@ export async function PUT(request: NextRequest) {
       }
       newStatus = "REJECTED";
       updateData.status = newStatus;
-      updateData.processedBy = user.id;
+      updateData.processedBy = authContext.dbUserId;
       updateData.processedAt = new Date();
     } else if (action === "COMPLETE") {
       if (refund.status !== "APPROVED" && refund.status !== "PROCESSING") {
@@ -295,7 +270,7 @@ export async function PUT(request: NextRequest) {
         };
 
         await resend.emails.send({
-          from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
+          from: refundEmailFrom,
           to: requester.email,
           subject: `Update Refund - ${refund.booking.bookingCode}`,
           html: `
@@ -331,7 +306,7 @@ export async function PUT(request: NextRequest) {
 
     await prisma.auditLog.create({
       data: {
-        userId: user.id,
+        userId: authContext.dbUserId,
         action: `REFUND_${action}`,
         entityType: "Refund",
         entityId: refundId,

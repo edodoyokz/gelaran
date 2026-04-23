@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
+import { requireOrganizer } from "@/lib/auth/route-auth";
 
 export async function POST(
   request: NextRequest,
@@ -18,15 +18,12 @@ export async function POST(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authResult = await requireOrganizer();
 
-    if (!user) {
+    if ("error" in authResult) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authResult.error } },
+        { status: authResult.status }
       );
     }
 
@@ -35,7 +32,7 @@ export async function POST(
       select: { organizerId: true },
     });
 
-    if (!event || event.organizerId !== user.id) {
+    if (!event || event.organizerId !== authResult.user.id) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized" } },
         { status: 403 }
@@ -91,15 +88,12 @@ export async function PUT(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authResult = await requireOrganizer();
 
-    if (!user) {
+    if ("error" in authResult) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authResult.error } },
+        { status: authResult.status }
       );
     }
 
@@ -108,7 +102,7 @@ export async function PUT(
       select: { organizerId: true },
     });
 
-    if (!event || event.organizerId !== user.id) {
+    if (!event || event.organizerId !== authResult.user.id) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized" } },
         { status: 403 }
@@ -165,15 +159,12 @@ export async function DELETE(
       );
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authResult = await requireOrganizer();
 
-    if (!user) {
+    if ("error" in authResult) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
+        { success: false, error: { message: authResult.error } },
+        { status: authResult.status }
       );
     }
 
@@ -182,7 +173,7 @@ export async function DELETE(
       select: { organizerId: true },
     });
 
-    if (!event || event.organizerId !== user.id) {
+    if (!event || event.organizerId !== authResult.user.id) {
       return NextResponse.json(
         { success: false, error: { message: "Not authorized" } },
         { status: 403 }

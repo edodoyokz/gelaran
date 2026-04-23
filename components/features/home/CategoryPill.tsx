@@ -8,20 +8,24 @@ interface CategoryPillProps {
     name: string;
     isActive?: boolean;
     onClick?: () => void;
+    controlsId?: string;
 }
 
-export function CategoryPill({ icon, name, isActive = false, onClick }: CategoryPillProps) {
+export function CategoryPill({ icon, name, isActive = false, onClick, controlsId }: CategoryPillProps) {
     return (
         <button
+            type="button"
+            aria-pressed={isActive}
+            aria-controls={controlsId}
             onClick={onClick}
             className={cn(
-                "flex items-center space-x-2.5 px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 whitespace-nowrap min-h-[44px] select-none",
+                "flex min-h-[44px] items-center space-x-2.5 rounded-full border px-5 py-3 text-sm font-semibold whitespace-nowrap select-none transition-all duration-300",
                 isActive
-                    ? "bg-[var(--accent-gradient)] text-white shadow-glow scale-105 border-transparent"
-                    : "bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/30 hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] hover:shadow-md active:scale-95"
+                    ? "border-transparent bg-(--accent-secondary) text-white shadow-[0_18px_35px_rgba(249,93,0,0.18)]"
+                    : "border-(--border) bg-white text-(--text-secondary) hover:border-[rgba(249,93,0,0.25)] hover:bg-[rgba(249,93,0,0.04)] hover:text-foreground active:scale-95"
             )}
         >
-            {icon && <span className={cn("shrink-0", isActive ? "text-white" : "text-[var(--text-muted)]")}>{icon}</span>}
+            {icon && <span className={cn("shrink-0", isActive ? "text-white" : "text-(--accent-secondary)")}>{icon}</span>}
             <span>{name}</span>
         </button>
     );

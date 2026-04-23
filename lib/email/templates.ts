@@ -1,6 +1,10 @@
 // lib/email/templates.ts
 // Email templates for Gelaran
 
+import { getPublicEnv } from "@/lib/env";
+
+const appUrl = getPublicEnv().NEXT_PUBLIC_APP_URL;
+
 interface BookingConfirmationProps {
     customerName: string;
     eventTitle: string;
@@ -116,7 +120,7 @@ export function bookingConfirmationHtml(props: BookingConfirmationProps): string
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
-                    <a href="${process.env.NEXT_PUBLIC_APP_URL}/account/bookings" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                    <a href="${appUrl}/my-bookings" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                       Lihat Detail Booking
                     </a>
                   </td>
@@ -371,7 +375,7 @@ export function paymentPendingHtml(props: PaymentPendingProps): string {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
-                    <a href="${props.paymentUrl || `${process.env.NEXT_PUBLIC_APP_URL}/my-bookings/${props.bookingCode}`}" style="display: inline-block; background-color: #f59e0b; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                    <a href="${props.paymentUrl || `${appUrl}/my-bookings/${props.bookingCode}`}" style="display: inline-block; background-color: #f59e0b; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                       Bayar Sekarang
                     </a>
                   </td>
@@ -413,7 +417,7 @@ TOTAL: ${props.totalAmount}
 
 ⚠️ Batas Waktu: ${props.expiresAt}
 
-Bayar sekarang: ${props.paymentUrl || `${process.env.NEXT_PUBLIC_APP_URL}/my-bookings/${props.bookingCode}`}
+Bayar sekarang: ${props.paymentUrl || `${appUrl}/my-bookings/${props.bookingCode}`}
 
 Pesanan akan otomatis dibatalkan jika tidak dibayar tepat waktu.
 
@@ -496,7 +500,7 @@ export function ticketDeliveryHtml(props: TicketDeliveryProps): string {
               </table>
 
               <p style="margin: 30px 0 0; font-size: 14px; color: #6b7280; text-align: center;">
-                Kamu juga bisa mengakses tiket dari halaman <a href="${process.env.NEXT_PUBLIC_APP_URL}/my-bookings/${props.bookingCode}" style="color: #4f46e5;">Pesanan Saya</a>.
+                Kamu juga bisa mengakses tiket dari halaman <a href="${appUrl}/my-bookings/${props.bookingCode}" style="color: #4f46e5;">Pesanan Saya</a>.
               </p>
             </td>
           </tr>
@@ -540,6 +544,270 @@ KODE BOOKING: ${props.bookingCode}
 Download E-Ticket: ${props.downloadUrl}
 
 Simpan dan tunjukkan saat check-in di lokasi.
+
+© ${new Date().getFullYear()} Gelaran
+  `.trim();
+}
+
+interface ComplimentaryNotificationProps {
+    guestName: string;
+    eventTitle: string;
+    eventDate: string;
+    eventTime: string;
+    eventLocation: string;
+    bookingCode?: string;
+    reason?: string;
+}
+
+export function complimentaryApprovedHtml(props: ComplimentaryNotificationProps): string {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complimentary Request Approved</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px;">✅ Request Approved!</h1>
+              <p style="margin: 10px 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">Permintaan tiket complimentary disetujui</p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
+                Halo <strong>${props.guestName}</strong>,
+              </p>
+              <p style="margin: 0 0 30px; font-size: 16px; color: #374151;">
+                Kabar baik! Permintaan tiket complimentary kamu untuk event <strong>${props.eventTitle}</strong> telah disetujui.
+              </p>
+              
+              <!-- Event Details -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 8px; margin-bottom: 30px;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <h2 style="margin: 0 0 16px; font-size: 20px; color: #111827;">${props.eventTitle}</h2>
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding: 4px 0; color: #6b7280;">📅 Tanggal</td>
+                        <td style="padding: 4px 0 4px 16px; color: #111827; font-weight: 500;">${props.eventDate}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0; color: #6b7280;">🕐 Waktu</td>
+                        <td style="padding: 4px 0 4px 16px; color: #111827; font-weight: 500;">${props.eventTime}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0; color: #6b7280;">📍 Lokasi</td>
+                        <td style="padding: 4px 0 4px 16px; color: #111827; font-weight: 500;">${props.eventLocation}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Booking Code -->
+              <div style="background-color: #d1fae5; border: 2px dashed #10b981; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 30px;">
+                <p style="margin: 0 0 8px; font-size: 14px; color: #047857;">Kode Booking</p>
+                <p style="margin: 0; font-size: 32px; font-weight: bold; font-family: monospace; color: #047857; letter-spacing: 2px;">${props.bookingCode}</p>
+              </div>
+
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="${appUrl}/my-bookings" style="display: inline-block; background-color: #10b981; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                      Lihat Detail Booking
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280;">
+                Simpan kode booking ini untuk check-in di event.
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+                © ${new Date().getFullYear()} Gelaran. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+export function complimentaryApprovedText(props: ComplimentaryNotificationProps): string {
+    return `
+✅ REQUEST APPROVED!
+
+Halo ${props.guestName},
+
+Kabar baik! Permintaan tiket complimentary kamu telah disetujui.
+
+====================================
+${props.eventTitle}
+====================================
+
+📅 Tanggal: ${props.eventDate}
+🕐 Waktu: ${props.eventTime}
+📍 Lokasi: ${props.eventLocation}
+
+------------------------------------
+KODE BOOKING: ${props.bookingCode}
+------------------------------------
+
+Simpan kode booking ini untuk check-in di event.
+
+© ${new Date().getFullYear()} Gelaran
+  `.trim();
+}
+
+export function complimentaryRejectedHtml(props: ComplimentaryNotificationProps): string {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complimentary Request Update</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #dc2626; padding: 40px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px;">Request Update</h1>
+              <p style="margin: 10px 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">Tentang permintaan tiket complimentary kamu</p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="margin: 0 0 20px; font-size: 16px; color: #374151;">
+                Halo <strong>${props.guestName}</strong>,
+              </p>
+              <p style="margin: 0 0 30px; font-size: 16px; color: #374151;">
+                Terima kasih atas minat kamu untuk menghadiri <strong>${props.eventTitle}</strong>. Setelah meninjau permintaan kamu, kami mohon maaf untuk memberitahu bahwa permintaan tiket complimentary kamu tidak dapat disetujui saat ini.
+              </p>
+              
+              <!-- Event Details -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 8px; margin-bottom: 30px;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <h2 style="margin: 0 0 16px; font-size: 20px; color: #111827;">${props.eventTitle}</h2>
+                    <table cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding: 4px 0; color: #6b7280;">📅 Tanggal</td>
+                        <td style="padding: 4px 0 4px 16px; color: #111827; font-weight: 500;">${props.eventDate}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0; color: #6b7280;">🕐 Waktu</td>
+                        <td style="padding: 4px 0 4px 16px; color: #111827; font-weight: 500;">${props.eventTime}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0; color: #6b7280;">📍 Lokasi</td>
+                        <td style="padding: 4px 0 4px 16px; color: #111827; font-weight: 500;">${props.eventLocation}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              ${props.reason ? `
+              <!-- Reason -->
+              <div style="background-color: #fef2f2; border-left: 4px solid #dc2626; border-radius: 4px; padding: 20px; margin-bottom: 30px;">
+                <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #991b1b;">Alasan:</p>
+                <p style="margin: 0; font-size: 14px; color: #7f1d1d;">${props.reason}</p>
+              </div>
+              ` : ''}
+
+              <p style="margin: 0 0 30px; font-size: 16px; color: #374151;">
+                Kami tetap mengundang kamu untuk membeli tiket reguler jika masih berminat menghadiri event ini.
+              </p>
+
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="${appUrl}/events" style="display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                      Lihat Event Lainnya
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f9fafb; padding: 24px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="margin: 0 0 8px; font-size: 14px; color: #6b7280;">
+                Terima kasih atas pengertian kamu.
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #9ca3af;">
+                © ${new Date().getFullYear()} Gelaran. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+export function complimentaryRejectedText(props: ComplimentaryNotificationProps): string {
+    return `
+REQUEST UPDATE
+
+Halo ${props.guestName},
+
+Terima kasih atas minat kamu untuk menghadiri ${props.eventTitle}.
+
+Setelah meninjau permintaan kamu, kami mohon maaf untuk memberitahu bahwa permintaan tiket complimentary kamu tidak dapat disetujui saat ini.
+
+====================================
+${props.eventTitle}
+====================================
+
+📅 Tanggal: ${props.eventDate}
+🕐 Waktu: ${props.eventTime}
+📍 Lokasi: ${props.eventLocation}
+
+${props.reason ? `------------------------------------
+ALASAN: ${props.reason}
+------------------------------------
+
+` : ''}Kami tetap mengundang kamu untuk membeli tiket reguler jika masih berminat menghadiri event ini.
+
+Terima kasih atas pengertian kamu.
 
 © ${new Date().getFullYear()} Gelaran
   `.trim();

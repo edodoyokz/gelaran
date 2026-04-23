@@ -32,7 +32,7 @@ import {
     AlertTriangle,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminWorkspacePage } from "@/components/admin/admin-workspace";
 import { ImageUploadField } from "@/components/ui/ImageUploadField";
 import { useToast } from "@/components/ui/toast-provider";
 import { useConfirm } from "@/components/ui/confirm-provider";
@@ -140,11 +140,11 @@ interface EventData {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-    DRAFT: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    DRAFT: "bg-(--bg-secondary) text-(--text-secondary)",
     PENDING_REVIEW: "bg-yellow-500/10 text-yellow-600",
     PUBLISHED: "bg-green-500/10 text-green-600",
     CANCELLED: "bg-red-500/10 text-red-500",
-    ENDED: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    ENDED: "bg-(--bg-secondary) text-(--text-secondary)",
 };
 
 export default function AdminEventDetailPage() {
@@ -713,10 +713,10 @@ export default function AdminEventDetailPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Loading event...</p>
+                    <Loader2 className="h-12 w-12 text-(--accent-primary) animate-spin mx-auto mb-4" />
+                    <p className="text-(--text-muted)">Loading event...</p>
                 </div>
             </div>
         );
@@ -724,11 +724,11 @@ export default function AdminEventDetailPage() {
 
     if (error || !event) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error || "Event not found"}</p>
-                    <Link href="/admin/events" className="text-[var(--accent-primary)] hover:text-indigo-500">
+                    <p className="text-foreground font-medium mb-2">{error || "Event not found"}</p>
+                    <Link href="/admin/events" className="text-(--accent-primary) hover:text-indigo-500">
                         Back to Events
                     </Link>
                 </div>
@@ -741,16 +741,16 @@ export default function AdminEventDetailPage() {
 
     return (
         <>
-            <AdminHeader
+            <AdminWorkspacePage
                 title="Event Details"
-                subtitle={event.title}
+                description={event.title}
                 backHref="/admin/events"
                 actions={
                     <div className="flex items-center gap-2">
                         <button
                             type="button"
                             onClick={openEditEvent}
-                            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] rounded-lg text-sm font-medium hover:bg-[var(--surface-hover)]"
+                            className="inline-flex items-center gap-2 px-4 py-2 border border-(--border) bg-(--surface) text-(--text-secondary) rounded-lg text-sm font-medium hover:bg-(--surface-hover)"
                         >
                             <Pencil className="h-4 w-4" />
                             Edit Event
@@ -758,7 +758,7 @@ export default function AdminEventDetailPage() {
                         <button
                             type="button"
                             onClick={() => setShowDeleteModal(true)}
-                            className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 bg-[var(--surface)] text-red-600 rounded-lg text-sm font-medium hover:bg-red-500/10"
+                            className="inline-flex items-center gap-2 px-4 py-2 border border-red-300 bg-(--surface) text-red-600 rounded-lg text-sm font-medium hover:bg-red-500/10"
                         >
                             <Trash2 className="h-4 w-4" />
                             Delete
@@ -766,7 +766,7 @@ export default function AdminEventDetailPage() {
                         <Link
                             href={`/events/${event.slug}`}
                             target="_blank"
-                            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] rounded-lg text-sm font-medium hover:bg-[var(--surface-hover)]"
+                            className="inline-flex items-center gap-2 px-4 py-2 border border-(--border) bg-(--surface) text-(--text-secondary) rounded-lg text-sm font-medium hover:bg-(--surface-hover)"
                         >
                             <Eye className="h-4 w-4" />
                             View Public Page
@@ -841,14 +841,14 @@ export default function AdminEventDetailPage() {
                         )}
                     </div>
                 }
-            />
+            >
 
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="bg-(--surface) rounded-xl shadow-sm overflow-hidden">
                             {(event.bannerImage || event.posterImage) && (
-                                <div className="h-48 bg-[var(--border)] relative">
+                                <div className="h-48 bg-(--border) relative">
                                     <Image
                                         src={event.bannerImage || event.posterImage || ""}
                                         alt=""
@@ -860,7 +860,7 @@ export default function AdminEventDetailPage() {
                             <div className="p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
-                                        <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+                                        <h1 className="text-xl font-bold text-foreground mb-2">
                                             {event.title}
                                         </h1>
                                         <div className="flex items-center gap-2 flex-wrap">
@@ -886,7 +886,7 @@ export default function AdminEventDetailPage() {
                                 </div>
 
                                 {event.shortDescription && (
-                                    <p className="text-[var(--text-secondary)] mb-4">{event.shortDescription}</p>
+                                    <p className="text-(--text-secondary) mb-4">{event.shortDescription}</p>
                                 )}
 
                                 {event.description && (
@@ -894,47 +894,47 @@ export default function AdminEventDetailPage() {
                                         <button
                                             type="button"
                                             onClick={() => setShowDescription(!showDescription)}
-                                            className="inline-flex items-center gap-2 text-sm text-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                            className="inline-flex items-center gap-2 text-sm text-(--accent-primary) hover:text-(--accent-primary)"
                                         >
                                             <FileText className="h-4 w-4" />
                                             {showDescription ? "Hide" : "Show"} Full Description
                                         </button>
                                         {showDescription && (
-                                            <div className="mt-3 p-4 bg-[var(--surface-hover)] rounded-lg">
-                                                <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap">{event.description}</p>
+                                            <div className="mt-3 p-4 bg-(--surface-hover) rounded-lg">
+                                                <p className="text-sm text-(--text-secondary) whitespace-pre-wrap">{event.description}</p>
                                             </div>
                                         )}
                                     </div>
                                 )}
 
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
-                                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                                    <div className="flex items-center gap-2 text-(--text-secondary)">
                                         <Ticket className="h-5 w-5 text-indigo-500" />
                                         <div>
-                                            <p className="text-sm text-[var(--text-muted)]">Tickets Sold</p>
+                                            <p className="text-sm text-(--text-muted)">Tickets Sold</p>
                                             <p className="font-semibold">
                                                 {totalSold} / {totalTickets}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                                    <div className="flex items-center gap-2 text-(--text-secondary)">
                                         <Users className="h-5 w-5 text-green-500" />
                                         <div>
-                                            <p className="text-sm text-[var(--text-muted)]">Bookings</p>
+                                            <p className="text-sm text-(--text-muted)">Bookings</p>
                                             <p className="font-semibold">{event._count.bookings}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                                    <div className="flex items-center gap-2 text-(--text-secondary)">
                                         <DollarSign className="h-5 w-5 text-emerald-500" />
                                         <div>
-                                            <p className="text-sm text-[var(--text-muted)]">Total Revenue</p>
+                                            <p className="text-sm text-(--text-muted)">Total Revenue</p>
                                             <p className="font-semibold">{formatCurrency(event.revenue.total)}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
+                                    <div className="flex items-center gap-2 text-(--text-secondary)">
                                         <DollarSign className="h-5 w-5 text-purple-500" />
                                         <div>
-                                            <p className="text-sm text-[var(--text-muted)]">Platform Fee</p>
+                                            <p className="text-sm text-(--text-muted)">Platform Fee</p>
                                             <p className="font-semibold">{formatCurrency(event.revenue.platform)}</p>
                                         </div>
                                     </div>
@@ -954,13 +954,13 @@ export default function AdminEventDetailPage() {
                             </div>
                         )}
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-lg font-bold text-[var(--text-primary)]">Schedule & Venue</h2>
+                                <h2 className="text-lg font-bold text-foreground">Schedule & Venue</h2>
                                 <button
                                     type="button"
                                     onClick={openCreateSchedule}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--accent-primary)] text-white rounded-lg text-sm font-medium hover:opacity-90"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-(--accent-primary) text-white rounded-lg text-sm font-medium hover:opacity-90"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Add Schedule
@@ -969,20 +969,20 @@ export default function AdminEventDetailPage() {
 
                             {event.schedules.length > 0 ? (
                                 <div className="mb-4">
-                                    <h3 className="text-sm font-medium text-[var(--text-muted)] mb-2">Event Schedule</h3>
+                                    <h3 className="text-sm font-medium text-(--text-muted) mb-2">Event Schedule</h3>
                                     <div className="space-y-2">
                                         {event.schedules.map((schedule) => (
                                             <div
                                                 key={schedule.id}
-                                                className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg"
+                                                className="flex items-center justify-between p-3 bg-(--surface-hover) rounded-lg"
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <Calendar className="h-5 w-5 text-indigo-500" />
                                                     <div>
-                                                        <p className="font-medium text-[var(--text-primary)]">
+                                                        <p className="font-medium text-foreground">
                                                             {formatDate(schedule.scheduleDate)}
                                                         </p>
-                                                        <p className="text-sm text-[var(--text-muted)]">
+                                                        <p className="text-sm text-(--text-muted)">
                                                             {formatTime(schedule.startTime)} -{" "}
                                                             {formatTime(schedule.endTime)}
                                                             {schedule.gateOpenTime && (
@@ -997,7 +997,7 @@ export default function AdminEventDetailPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => openEditSchedule(schedule)}
-                                                        className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-lg transition-colors"
+                                                        className="p-2 text-(--text-muted) hover:text-(--accent-primary) hover:bg-(--accent-primary)/10 rounded-lg transition-colors"
                                                         title="Edit Schedule"
                                                     >
                                                         <Pencil className="h-4 w-4" />
@@ -1006,7 +1006,7 @@ export default function AdminEventDetailPage() {
                                                         type="button"
                                                         onClick={() => handleDeleteSchedule(schedule.id)}
                                                         disabled={scheduleDeleting === schedule.id}
-                                                        className="p-2 text-[var(--text-muted)] hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                                        className="p-2 text-(--text-muted) hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
                                                         title="Delete Schedule"
                                                     >
                                                         {scheduleDeleting === schedule.id ? (
@@ -1021,13 +1021,13 @@ export default function AdminEventDetailPage() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="mb-4 p-4 bg-[var(--surface-hover)] rounded-lg text-center">
-                                    <Calendar className="h-8 w-8 text-[var(--text-muted)] mx-auto mb-2" />
-                                    <p className="text-[var(--text-muted)] text-sm">No schedule set</p>
+                                <div className="mb-4 p-4 bg-(--surface-hover) rounded-lg text-center">
+                                    <Calendar className="h-8 w-8 text-(--text-muted) mx-auto mb-2" />
+                                    <p className="text-(--text-muted) text-sm">No schedule set</p>
                                     <button
                                         type="button"
                                         onClick={openCreateSchedule}
-                                        className="mt-2 text-sm text-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                        className="mt-2 text-sm text-(--accent-primary) hover:text-(--accent-primary)"
                                     >
                                         Add your first schedule
                                     </button>
@@ -1036,34 +1036,34 @@ export default function AdminEventDetailPage() {
 
                             {event.venue ? (
                                 <div>
-                                    <h3 className="text-sm font-medium text-[var(--text-muted)] mb-2">Venue</h3>
-                                    <div className="flex items-start gap-3 p-3 bg-[var(--surface-hover)] rounded-lg">
+                                    <h3 className="text-sm font-medium text-(--text-muted) mb-2">Venue</h3>
+                                    <div className="flex items-start gap-3 p-3 bg-(--surface-hover) rounded-lg">
                                         <MapPin className="h-5 w-5 text-red-500 mt-0.5" />
                                         <div>
-                                            <p className="font-medium text-[var(--text-primary)]">{event.venue.name}</p>
-                                            <p className="text-sm text-[var(--text-muted)]">
+                                            <p className="font-medium text-foreground">{event.venue.name}</p>
+                                            <p className="text-sm text-(--text-muted)">
                                                 {event.venue.address}, {event.venue.city}, {event.venue.province}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-4 bg-[var(--surface-hover)] rounded-lg text-center">
-                                    <MapPin className="h-8 w-8 text-[var(--text-muted)] mx-auto mb-2" />
-                                    <p className="text-[var(--text-muted)] text-sm">No venue set</p>
+                                <div className="p-4 bg-(--surface-hover) rounded-lg text-center">
+                                    <MapPin className="h-8 w-8 text-(--text-muted) mx-auto mb-2" />
+                                    <p className="text-(--text-muted) text-sm">No venue set</p>
                                 </div>
                             )}
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                                <h2 className="text-lg font-bold text-foreground">
                                     Ticket Types ({event.ticketTypes.length})
                                 </h2>
                                 <button
                                     type="button"
                                     onClick={() => setShowCreateTicketModal(true)}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--accent-primary)] text-white rounded-lg text-sm font-medium hover:opacity-90"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-(--accent-primary) text-white rounded-lg text-sm font-medium hover:opacity-90"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Add Ticket
@@ -1080,24 +1080,24 @@ export default function AdminEventDetailPage() {
                                                 <div
                                                     className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                                                         ticket.isActive
-                                                            ? "bg-indigo-100 text-[var(--accent-primary)]"
-                                                            : "bg-[var(--bg-secondary)] text-[var(--text-muted)]"
+                                                            ? "bg-indigo-100 text-(--accent-primary)"
+                                                            : "bg-(--bg-secondary) text-(--text-muted)"
                                                     }`}
                                                 >
                                                     <Ticket className="h-5 w-5" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-[var(--text-primary)]">
+                                                    <p className="font-medium text-foreground">
                                                         {ticket.name}
                                                         {!ticket.isActive && (
-                                                            <span className="ml-2 text-xs text-[var(--text-muted)]">(Inactive)</span>
+                                                            <span className="ml-2 text-xs text-(--text-muted)">(Inactive)</span>
                                                         )}
                                                     </p>
-                                                    <p className="text-sm text-[var(--text-muted)]">
+                                                    <p className="text-sm text-(--text-muted)">
                                                         {ticket.soldCount || 0} / {ticket.quantity || 0} sold
                                                     </p>
                                                     {(ticket.saleStartDate || ticket.saleEndDate) && (
-                                                        <p className="text-xs text-[var(--text-muted)] mt-1">
+                                                        <p className="text-xs text-(--text-muted) mt-1">
                                                             Sale: {ticket.saleStartDate ? formatShortDate(ticket.saleStartDate) : "Now"} 
                                                             {" - "}
                                                             {ticket.saleEndDate ? formatShortDate(ticket.saleEndDate) : "No end"}
@@ -1107,12 +1107,12 @@ export default function AdminEventDetailPage() {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className="text-right">
-                                                    <p className="font-bold text-[var(--text-primary)]">
+                                                    <p className="font-bold text-foreground">
                                                         {!ticket.price || Number(ticket.price) === 0
                                                             ? "FREE"
                                                             : formatCurrency(Number(ticket.price))}
                                                     </p>
-                                                    <p className="text-xs text-[var(--text-muted)]">
+                                                    <p className="text-xs text-(--text-muted)">
                                                         Max {ticket.maxPerOrder || 10}/order
                                                     </p>
                                                 </div>
@@ -1120,7 +1120,7 @@ export default function AdminEventDetailPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => openEditTicket(ticket)}
-                                                        className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-lg transition-colors"
+                                                        className="p-2 text-(--text-muted) hover:text-(--accent-primary) hover:bg-(--accent-primary)/10 rounded-lg transition-colors"
                                                         title="Edit Ticket"
                                                     >
                                                         <Pencil className="h-4 w-4" />
@@ -1129,7 +1129,7 @@ export default function AdminEventDetailPage() {
                                                         type="button"
                                                         onClick={() => handleDeleteTicket(ticket.id)}
                                                         disabled={ticketDeleting === ticket.id}
-                                                        className="p-2 text-[var(--text-muted)] hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                                        className="p-2 text-(--text-muted) hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
                                                         title="Delete Ticket"
                                                     >
                                                         {ticketDeleting === ticket.id ? (
@@ -1145,21 +1145,21 @@ export default function AdminEventDetailPage() {
                                 </div>
                             ) : (
                                 <div className="p-8 text-center">
-                                    <Ticket className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-3" />
-                                    <p className="text-[var(--text-muted)]">No ticket types configured</p>
+                                    <Ticket className="h-12 w-12 text-(--text-muted) mx-auto mb-3" />
+                                    <p className="text-(--text-muted)">No ticket types configured</p>
                                 </div>
                             )}
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                                <h2 className="text-lg font-bold text-foreground">
                                     Promo Codes ({event.promoCodes?.length || 0})
                                 </h2>
                                 <button
                                     type="button"
                                     onClick={openCreatePromo}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--accent-primary)] text-white rounded-lg text-sm font-medium hover:opacity-90"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-(--accent-primary) text-white rounded-lg text-sm font-medium hover:opacity-90"
                                 >
                                     <Plus className="h-4 w-4" />
                                     Add Promo
@@ -1174,25 +1174,25 @@ export default function AdminEventDetailPage() {
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                                                    promo.isActive ? "bg-green-500/10 text-green-600" : "bg-[var(--bg-secondary)] text-[var(--text-muted)]"
+                                                    promo.isActive ? "bg-green-500/10 text-green-600" : "bg-(--bg-secondary) text-(--text-muted)"
                                                 }`}>
                                                     <Tag className="h-5 w-5" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-[var(--text-primary)] font-mono">
+                                                    <p className="font-medium text-foreground font-mono">
                                                         {promo.code}
                                                         {!promo.isActive && (
-                                                            <span className="ml-2 text-xs text-[var(--text-muted)]">(Inactive)</span>
+                                                            <span className="ml-2 text-xs text-(--text-muted)">(Inactive)</span>
                                                         )}
                                                     </p>
-                                                    <p className="text-sm text-[var(--text-muted)]">
+                                                    <p className="text-sm text-(--text-muted)">
                                                         {promo.discountType === "PERCENTAGE"
                                                             ? `${promo.discountValue}% off`
                                                             : `${formatCurrency(Number(promo.discountValue))} off`}
                                                         {" • "}
                                                         {promo.usedCount}/{promo.usageLimitTotal || "∞"} used
                                                     </p>
-                                                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                                                    <p className="text-xs text-(--text-muted) mt-1">
                                                         Valid: {new Date(promo.validFrom).toLocaleDateString()} - {new Date(promo.validUntil).toLocaleDateString()}
                                                     </p>
                                                 </div>
@@ -1201,7 +1201,7 @@ export default function AdminEventDetailPage() {
                                                 <button
                                                     type="button"
                                                     onClick={() => openEditPromo(promo)}
-                                                    className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-lg transition-colors"
+                                                    className="p-2 text-(--text-muted) hover:text-(--accent-primary) hover:bg-(--accent-primary)/10 rounded-lg transition-colors"
                                                     title="Edit Promo"
                                                 >
                                                     <Pencil className="h-4 w-4" />
@@ -1210,7 +1210,7 @@ export default function AdminEventDetailPage() {
                                                     type="button"
                                                     onClick={() => handleDeletePromo(promo.id)}
                                                     disabled={promoDeleting === promo.id}
-                                                    className="p-2 text-[var(--text-muted)] hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                                    className="p-2 text-(--text-muted) hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
                                                     title="Delete Promo"
                                                 >
                                                     {promoDeleting === promo.id ? (
@@ -1225,12 +1225,12 @@ export default function AdminEventDetailPage() {
                                 </div>
                             ) : (
                                 <div className="p-8 text-center">
-                                    <Tag className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-3" />
-                                    <p className="text-[var(--text-muted)]">No promo codes created</p>
+                                    <Tag className="h-12 w-12 text-(--text-muted) mx-auto mb-3" />
+                                    <p className="text-(--text-muted)">No promo codes created</p>
                                     <button
                                         type="button"
                                         onClick={openCreatePromo}
-                                        className="mt-2 text-sm text-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                        className="mt-2 text-sm text-(--accent-primary) hover:text-(--accent-primary)"
                                     >
                                         Create your first promo code
                                     </button>
@@ -1240,18 +1240,18 @@ export default function AdminEventDetailPage() {
                     </div>
 
                     <div className="space-y-6">
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Organizer</h2>
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-foreground mb-4">Organizer</h2>
                             <div className="flex items-start gap-3">
                                 <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center">
                                     <Building2 className="h-6 w-6 text-purple-600" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="font-medium text-[var(--text-primary)]">
+                                    <p className="font-medium text-foreground">
                                         {event.organizer.organizerProfile?.organizationName ||
                                             event.organizer.name}
                                     </p>
-                                    <p className="text-sm text-[var(--text-muted)]">{event.organizer.email}</p>
+                                    <p className="text-sm text-(--text-muted)">{event.organizer.email}</p>
                                     {event.organizer.organizerProfile?.isVerified && (
                                         <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 text-xs font-medium bg-green-500/10 text-green-600 rounded-full">
                                             <CheckCircle className="h-3 w-3" />
@@ -1262,30 +1262,30 @@ export default function AdminEventDetailPage() {
                             </div>
                             <Link
                                 href={`/admin/users/${event.organizer.id}`}
-                                className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[var(--accent-primary)] bg-[var(--accent-primary)]/10 rounded-lg hover:bg-indigo-100"
+                                className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-(--accent-primary) bg-(--accent-primary)/10 rounded-lg hover:bg-indigo-100"
                             >
                                 <User className="h-4 w-4" />
                                 View Organizer Profile
                             </Link>
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Revenue Breakdown</h2>
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-foreground mb-4">Revenue Breakdown</h2>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Total Revenue</span>
-                                    <span className="font-semibold text-[var(--text-primary)]">
+                                    <span className="text-(--text-muted)">Total Revenue</span>
+                                    <span className="font-semibold text-foreground">
                                         {formatCurrency(event.revenue.total)}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Organizer Share</span>
+                                    <span className="text-(--text-muted)">Organizer Share</span>
                                     <span className="font-semibold text-green-600">
                                         {formatCurrency(event.revenue.organizer)}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Platform Fee</span>
+                                    <span className="text-(--text-muted)">Platform Fee</span>
                                     <span className="font-semibold text-purple-600">
                                         {formatCurrency(event.revenue.platform)}
                                     </span>
@@ -1293,40 +1293,40 @@ export default function AdminEventDetailPage() {
                             </div>
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Statistics</h2>
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-foreground mb-4">Statistics</h2>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Total Bookings</span>
-                                    <span className="font-semibold text-[var(--text-primary)]">
+                                    <span className="text-(--text-muted)">Total Bookings</span>
+                                    <span className="font-semibold text-foreground">
                                         {event._count.bookings}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Tickets Sold</span>
-                                    <span className="font-semibold text-[var(--text-primary)]">{totalSold}</span>
+                                    <span className="text-(--text-muted)">Tickets Sold</span>
+                                    <span className="font-semibold text-foreground">{totalSold}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Total Capacity</span>
-                                    <span className="font-semibold text-[var(--text-primary)]">{totalTickets}</span>
+                                    <span className="text-(--text-muted)">Total Capacity</span>
+                                    <span className="font-semibold text-foreground">{totalTickets}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-muted)]">Reviews</span>
-                                    <span className="font-semibold text-[var(--text-primary)]">
+                                    <span className="text-(--text-muted)">Reviews</span>
+                                    <span className="font-semibold text-foreground">
                                         {event._count.reviews}
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Timeline</h2>
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-foreground mb-4">Timeline</h2>
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3">
-                                    <Clock className="h-5 w-5 text-[var(--text-muted)]" />
+                                    <Clock className="h-5 w-5 text-(--text-muted)" />
                                     <div>
-                                        <p className="text-sm text-[var(--text-muted)]">Created</p>
-                                        <p className="text-[var(--text-primary)]">
+                                        <p className="text-sm text-(--text-muted)">Created</p>
+                                        <p className="text-foreground">
                                             {new Date(event.createdAt).toLocaleString("id-ID")}
                                         </p>
                                     </div>
@@ -1335,8 +1335,8 @@ export default function AdminEventDetailPage() {
                                     <div className="flex items-center gap-3">
                                         <Globe className="h-5 w-5 text-green-500" />
                                         <div>
-                                            <p className="text-sm text-[var(--text-muted)]">Published</p>
-                                            <p className="text-[var(--text-primary)]">
+                                            <p className="text-sm text-(--text-muted)">Published</p>
+                                            <p className="text-foreground">
                                                 {new Date(event.publishedAt).toLocaleString("id-ID")}
                                             </p>
                                         </div>
@@ -1345,20 +1345,20 @@ export default function AdminEventDetailPage() {
                             </div>
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                            <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Quick Links</h2>
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-foreground mb-4">Quick Links</h2>
                             <div className="space-y-2">
                                 <Link
                                     href={`/admin/bookings?eventId=${event.id}`}
-                                    className="w-full flex items-center justify-between p-3 text-left rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
+                                    className="w-full flex items-center justify-between p-3 text-left rounded-lg hover:bg-(--surface-hover) transition-colors"
                                 >
                                     <div className="flex items-center gap-3">
                                         <Ticket className="h-5 w-5 text-indigo-500" />
-                                        <span className="font-medium text-[var(--text-primary)]">
+                                        <span className="font-medium text-foreground">
                                             View Bookings ({event._count.bookings})
                                         </span>
                                     </div>
-                                    <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
+                                    <ChevronRight className="h-5 w-5 text-(--text-muted)" />
                                 </Link>
                             </div>
                         </div>
@@ -1368,17 +1368,17 @@ export default function AdminEventDetailPage() {
 
             {showRejectModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-md w-full">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-md w-full">
                         <div className="p-6">
                             <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-500/10 rounded-full">
                                 <Ban className="h-6 w-6 text-red-600" />
                             </div>
-                            <h3 className="text-lg font-bold text-[var(--text-primary)] text-center mb-2">
+                            <h3 className="text-lg font-bold text-foreground text-center mb-2">
                                 {event.status === "PENDING_REVIEW"
                                     ? "Reject Event"
                                     : "Cancel Event"}
                             </h3>
-                            <p className="text-[var(--text-muted)] text-center mb-4">
+                            <p className="text-(--text-muted) text-center mb-4">
                                 Please provide a reason for{" "}
                                 {event.status === "PENDING_REVIEW" ? "rejecting" : "cancelling"} this
                                 event.
@@ -1398,7 +1398,7 @@ export default function AdminEventDetailPage() {
                                         setRejectionReason("");
                                     }}
                                     disabled={actionLoading !== null}
-                                    className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                    className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                                 >
                                     Cancel
                                 </button>
@@ -1430,20 +1430,20 @@ export default function AdminEventDetailPage() {
 
             {editingTicket && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-6 border-b">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">Edit Ticket Type</h3>
+                            <h3 className="text-lg font-bold text-foreground">Edit Ticket Type</h3>
                             <button
                                 type="button"
                                 onClick={() => setEditingTicket(null)}
-                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] rounded-lg"
+                                className="p-2 text-(--text-muted) hover:text-(--text-secondary) rounded-lg"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label htmlFor="ticket-name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="ticket-name" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Ticket Name
                                 </label>
                                 <input
@@ -1451,11 +1451,11 @@ export default function AdminEventDetailPage() {
                                     type="text"
                                     value={ticketForm.name}
                                     onChange={(e) => setTicketForm({ ...ticketForm, name: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="ticket-description" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="ticket-description" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Description
                                 </label>
                                 <textarea
@@ -1463,12 +1463,12 @@ export default function AdminEventDetailPage() {
                                     value={ticketForm.description}
                                     onChange={(e) => setTicketForm({ ...ticketForm, description: e.target.value })}
                                     rows={2}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="ticket-price" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="ticket-price" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Price (IDR)
                                     </label>
                                     <input
@@ -1478,11 +1478,11 @@ export default function AdminEventDetailPage() {
                                         value={ticketForm.basePrice}
                                         onChange={(e) => setTicketForm({ ...ticketForm, basePrice: Number(e.target.value) })}
                                         disabled={ticketForm.isFree}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] disabled:bg-[var(--bg-secondary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) disabled:bg-(--bg-secondary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="ticket-quantity" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="ticket-quantity" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Total Quantity
                                     </label>
                                     <input
@@ -1491,16 +1491,16 @@ export default function AdminEventDetailPage() {
                                         min="0"
                                         value={ticketForm.totalQuantity}
                                         onChange={(e) => setTicketForm({ ...ticketForm, totalQuantity: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
-                                    <p className="text-xs text-[var(--text-muted)] mt-1">
+                                    <p className="text-xs text-(--text-muted) mt-1">
                                         Sold: {editingTicket.soldQuantity || editingTicket.soldCount || 0}
                                     </p>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="ticket-min" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="ticket-min" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Min per Order
                                     </label>
                                     <input
@@ -1509,11 +1509,11 @@ export default function AdminEventDetailPage() {
                                         min="1"
                                         value={ticketForm.minPerOrder}
                                         onChange={(e) => setTicketForm({ ...ticketForm, minPerOrder: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="ticket-max" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="ticket-max" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Max per Order
                                     </label>
                                     <input
@@ -1522,7 +1522,7 @@ export default function AdminEventDetailPage() {
                                         min="1"
                                         value={ticketForm.maxPerOrder}
                                         onChange={(e) => setTicketForm({ ...ticketForm, maxPerOrder: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
@@ -1536,27 +1536,27 @@ export default function AdminEventDetailPage() {
                                             isFree: e.target.checked,
                                             basePrice: e.target.checked ? 0 : ticketForm.basePrice 
                                         })}
-                                        className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                        className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Free Ticket</span>
+                                    <span className="text-sm text-(--text-secondary)">Free Ticket</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={ticketForm.isHidden}
                                         onChange={(e) => setTicketForm({ ...ticketForm, isHidden: e.target.checked })}
-                                        className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                        className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Hidden</span>
+                                    <span className="text-sm text-(--text-secondary)">Hidden</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={ticketForm.isActive}
                                         onChange={(e) => setTicketForm({ ...ticketForm, isActive: e.target.checked })}
-                                        className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                        className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Active</span>
+                                    <span className="text-sm text-(--text-secondary)">Active</span>
                                 </label>
                             </div>
                         </div>
@@ -1565,7 +1565,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={() => setEditingTicket(null)}
                                 disabled={ticketSaving}
-                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -1573,7 +1573,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={handleSaveTicket}
                                 disabled={ticketSaving || !ticketForm.name.trim()}
-                                className="flex-1 px-4 py-2.5 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2.5 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {ticketSaving ? (
                                     <>
@@ -1591,20 +1591,20 @@ export default function AdminEventDetailPage() {
 
             {showCreateTicketModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-6 border-b">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">Create Ticket Type</h3>
+                            <h3 className="text-lg font-bold text-foreground">Create Ticket Type</h3>
                             <button
                                 type="button"
                                 onClick={() => setShowCreateTicketModal(false)}
-                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] rounded-lg"
+                                className="p-2 text-(--text-muted) hover:text-(--text-secondary) rounded-lg"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label htmlFor="create-ticket-name" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="create-ticket-name" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Ticket Name
                                 </label>
                                 <input
@@ -1613,11 +1613,11 @@ export default function AdminEventDetailPage() {
                                     value={createTicketForm.name}
                                     onChange={(e) => setCreateTicketForm({ ...createTicketForm, name: e.target.value })}
                                     placeholder="e.g., Regular, VIP, Early Bird"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="create-ticket-description" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="create-ticket-description" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Description
                                 </label>
                                 <textarea
@@ -1626,12 +1626,12 @@ export default function AdminEventDetailPage() {
                                     onChange={(e) => setCreateTicketForm({ ...createTicketForm, description: e.target.value })}
                                     rows={2}
                                     placeholder="What's included with this ticket?"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="create-ticket-price" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="create-ticket-price" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Price (IDR)
                                     </label>
                                     <input
@@ -1641,11 +1641,11 @@ export default function AdminEventDetailPage() {
                                         value={createTicketForm.basePrice}
                                         onChange={(e) => setCreateTicketForm({ ...createTicketForm, basePrice: Number(e.target.value) })}
                                         disabled={createTicketForm.isFree}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] disabled:bg-[var(--bg-secondary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) disabled:bg-(--bg-secondary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="create-ticket-quantity" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="create-ticket-quantity" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Total Quantity
                                     </label>
                                     <input
@@ -1654,13 +1654,13 @@ export default function AdminEventDetailPage() {
                                         min="1"
                                         value={createTicketForm.totalQuantity}
                                         onChange={(e) => setCreateTicketForm({ ...createTicketForm, totalQuantity: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="create-ticket-min" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="create-ticket-min" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Min per Order
                                     </label>
                                     <input
@@ -1669,11 +1669,11 @@ export default function AdminEventDetailPage() {
                                         min="1"
                                         value={createTicketForm.minPerOrder}
                                         onChange={(e) => setCreateTicketForm({ ...createTicketForm, minPerOrder: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="create-ticket-max" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="create-ticket-max" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Max per Order
                                     </label>
                                     <input
@@ -1682,7 +1682,7 @@ export default function AdminEventDetailPage() {
                                         min="1"
                                         value={createTicketForm.maxPerOrder}
                                         onChange={(e) => setCreateTicketForm({ ...createTicketForm, maxPerOrder: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
@@ -1696,27 +1696,27 @@ export default function AdminEventDetailPage() {
                                             isFree: e.target.checked,
                                             basePrice: e.target.checked ? 0 : createTicketForm.basePrice 
                                         })}
-                                        className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                        className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Free Ticket</span>
+                                    <span className="text-sm text-(--text-secondary)">Free Ticket</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={createTicketForm.isHidden}
                                         onChange={(e) => setCreateTicketForm({ ...createTicketForm, isHidden: e.target.checked })}
-                                        className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                        className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Hidden</span>
+                                    <span className="text-sm text-(--text-secondary)">Hidden</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={createTicketForm.isActive}
                                         onChange={(e) => setCreateTicketForm({ ...createTicketForm, isActive: e.target.checked })}
-                                        className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                        className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Active</span>
+                                    <span className="text-sm text-(--text-secondary)">Active</span>
                                 </label>
                             </div>
                         </div>
@@ -1725,7 +1725,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={() => setShowCreateTicketModal(false)}
                                 disabled={createTicketSaving}
-                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -1733,7 +1733,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={handleCreateTicket}
                                 disabled={createTicketSaving || !createTicketForm.name.trim()}
-                                className="flex-1 px-4 py-2.5 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2.5 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {createTicketSaving ? (
                                     <>
@@ -1754,20 +1754,20 @@ export default function AdminEventDetailPage() {
 
             {showEditEventModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-6 border-b">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">Edit Event</h3>
+                            <h3 className="text-lg font-bold text-foreground">Edit Event</h3>
                             <button
                                 type="button"
                                 onClick={() => setShowEditEventModal(false)}
-                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] rounded-lg"
+                                className="p-2 text-(--text-muted) hover:text-(--text-secondary) rounded-lg"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label htmlFor="edit-event-title" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="edit-event-title" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Event Title
                                 </label>
                                 <input
@@ -1775,11 +1775,11 @@ export default function AdminEventDetailPage() {
                                     type="text"
                                     value={editEventForm.title}
                                     onChange={(e) => setEditEventForm({ ...editEventForm, title: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="edit-event-short-desc" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="edit-event-short-desc" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Short Description
                                 </label>
                                 <input
@@ -1788,12 +1788,12 @@ export default function AdminEventDetailPage() {
                                     maxLength={200}
                                     value={editEventForm.shortDescription}
                                     onChange={(e) => setEditEventForm({ ...editEventForm, shortDescription: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                 />
-                                <p className="text-xs text-[var(--text-muted)] mt-1">{editEventForm.shortDescription.length}/200</p>
+                                <p className="text-xs text-(--text-muted) mt-1">{editEventForm.shortDescription.length}/200</p>
                             </div>
                             <div>
-                                <label htmlFor="edit-event-description" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="edit-event-description" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Full Description
                                 </label>
                                 <textarea
@@ -1801,7 +1801,7 @@ export default function AdminEventDetailPage() {
                                     value={editEventForm.description}
                                     onChange={(e) => setEditEventForm({ ...editEventForm, description: e.target.value })}
                                     rows={4}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -1828,14 +1828,14 @@ export default function AdminEventDetailPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="edit-event-type" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="edit-event-type" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Event Type
                                     </label>
                                     <select
                                         id="edit-event-type"
                                         value={editEventForm.eventType}
                                         onChange={(e) => setEditEventForm({ ...editEventForm, eventType: e.target.value as "OFFLINE" | "ONLINE" | "HYBRID" })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     >
                                         <option value="OFFLINE">Offline</option>
                                         <option value="ONLINE">Online</option>
@@ -1848,14 +1848,14 @@ export default function AdminEventDetailPage() {
                                             type="checkbox"
                                             checked={editEventForm.isFeatured}
                                             onChange={(e) => setEditEventForm({ ...editEventForm, isFeatured: e.target.checked })}
-                                            className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                            className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                         />
-                                        <span className="text-sm text-[var(--text-secondary)]">Featured Event</span>
+                                        <span className="text-sm text-(--text-secondary)">Featured Event</span>
                                     </label>
                                 </div>
                             </div>
                             <div>
-                                <label htmlFor="edit-event-terms" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="edit-event-terms" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Terms and Conditions
                                 </label>
                                 <textarea
@@ -1863,11 +1863,11 @@ export default function AdminEventDetailPage() {
                                     value={editEventForm.termsAndConditions}
                                     onChange={(e) => setEditEventForm({ ...editEventForm, termsAndConditions: e.target.value })}
                                     rows={3}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="edit-event-refund" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="edit-event-refund" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Refund Policy
                                 </label>
                                 <textarea
@@ -1875,7 +1875,7 @@ export default function AdminEventDetailPage() {
                                     value={editEventForm.refundPolicy}
                                     onChange={(e) => setEditEventForm({ ...editEventForm, refundPolicy: e.target.value })}
                                     rows={3}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                         </div>
@@ -1884,7 +1884,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={() => setShowEditEventModal(false)}
                                 disabled={editEventSaving}
-                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -1892,7 +1892,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={handleSaveEvent}
                                 disabled={editEventSaving || !editEventForm.title.trim()}
-                                className="flex-1 px-4 py-2.5 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2.5 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {editEventSaving ? (
                                     <>
@@ -1913,18 +1913,18 @@ export default function AdminEventDetailPage() {
 
             {showDeleteModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-md w-full">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-md w-full">
                         <div className="p-6">
                             <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-500/10 rounded-full">
                                 <AlertTriangle className="h-6 w-6 text-red-600" />
                             </div>
-                            <h3 className="text-lg font-bold text-[var(--text-primary)] text-center mb-2">
+                            <h3 className="text-lg font-bold text-foreground text-center mb-2">
                                 Delete Event
                             </h3>
-                            <p className="text-[var(--text-muted)] text-center mb-2">
+                            <p className="text-(--text-muted) text-center mb-2">
                                 Are you sure you want to delete this event?
                             </p>
-                            <p className="text-sm text-[var(--text-secondary)] text-center font-medium mb-4">
+                            <p className="text-sm text-(--text-secondary) text-center font-medium mb-4">
                                 &quot;{event.title}&quot;
                             </p>
                             <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-4">
@@ -1937,7 +1937,7 @@ export default function AdminEventDetailPage() {
                                     type="button"
                                     onClick={() => setShowDeleteModal(false)}
                                     disabled={deleteSaving}
-                                    className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                    className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                                 >
                                     Cancel
                                 </button>
@@ -1967,9 +1967,9 @@ export default function AdminEventDetailPage() {
 
             {showScheduleModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-lg w-full">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-lg w-full">
                         <div className="flex items-center justify-between p-6 border-b">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                            <h3 className="text-lg font-bold text-foreground">
                                 {editingSchedule ? "Edit Schedule" : "Create Schedule"}
                             </h3>
                             <button
@@ -1978,14 +1978,14 @@ export default function AdminEventDetailPage() {
                                     setShowScheduleModal(false);
                                     setEditingSchedule(null);
                                 }}
-                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] rounded-lg"
+                                className="p-2 text-(--text-muted) hover:text-(--text-secondary) rounded-lg"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label htmlFor="schedule-title" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="schedule-title" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Title (Optional)
                                 </label>
                                 <input
@@ -1994,11 +1994,11 @@ export default function AdminEventDetailPage() {
                                     value={scheduleForm.title}
                                     onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
                                     placeholder="Day 1, Workshop Session, etc."
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                 />
                             </div>
                             <div>
-                                <label htmlFor="schedule-date" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="schedule-date" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Date
                                 </label>
                                 <input
@@ -2006,12 +2006,12 @@ export default function AdminEventDetailPage() {
                                     type="date"
                                     value={scheduleForm.scheduleDate}
                                     onChange={(e) => setScheduleForm({ ...scheduleForm, scheduleDate: e.target.value })}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="schedule-start-time" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="schedule-start-time" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Start Time
                                     </label>
                                     <input
@@ -2019,11 +2019,11 @@ export default function AdminEventDetailPage() {
                                         type="time"
                                         value={scheduleForm.startTime}
                                         onChange={(e) => setScheduleForm({ ...scheduleForm, startTime: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="schedule-end-time" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="schedule-end-time" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         End Time
                                     </label>
                                     <input
@@ -2031,12 +2031,12 @@ export default function AdminEventDetailPage() {
                                         type="time"
                                         value={scheduleForm.endTime}
                                         onChange={(e) => setScheduleForm({ ...scheduleForm, endTime: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label htmlFor="schedule-description" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="schedule-description" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Description (Optional)
                                 </label>
                                 <textarea
@@ -2045,7 +2045,7 @@ export default function AdminEventDetailPage() {
                                     onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
                                     rows={3}
                                     placeholder="Additional details about this schedule..."
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                             <label className="flex items-center gap-2 cursor-pointer">
@@ -2053,9 +2053,9 @@ export default function AdminEventDetailPage() {
                                     type="checkbox"
                                     checked={scheduleForm.isActive}
                                     onChange={(e) => setScheduleForm({ ...scheduleForm, isActive: e.target.checked })}
-                                    className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                    className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                 />
-                                <span className="text-sm text-[var(--text-secondary)]">Active</span>
+                                <span className="text-sm text-(--text-secondary)">Active</span>
                             </label>
                         </div>
                         <div className="flex gap-3 p-6 border-t">
@@ -2066,7 +2066,7 @@ export default function AdminEventDetailPage() {
                                     setEditingSchedule(null);
                                 }}
                                 disabled={scheduleSaving}
-                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -2074,7 +2074,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={handleSaveSchedule}
                                 disabled={scheduleSaving || !scheduleForm.scheduleDate || !scheduleForm.startTime || !scheduleForm.endTime}
-                                className="flex-1 px-4 py-2.5 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2.5 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {scheduleSaving ? (
                                     <>
@@ -2095,9 +2095,9 @@ export default function AdminEventDetailPage() {
 
             {showPromoModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                    <div className="bg-[var(--surface)] rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-(--surface) rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-6 border-b">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                            <h3 className="text-lg font-bold text-foreground">
                                 {editingPromo ? "Edit Promo Code" : "Create Promo Code"}
                             </h3>
                             <button
@@ -2106,14 +2106,14 @@ export default function AdminEventDetailPage() {
                                     setShowPromoModal(false);
                                     setEditingPromo(null);
                                 }}
-                                className="p-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] rounded-lg"
+                                className="p-2 text-(--text-muted) hover:text-(--text-secondary) rounded-lg"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label htmlFor="promo-code" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="promo-code" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Code
                                 </label>
                                 <input
@@ -2122,13 +2122,13 @@ export default function AdminEventDetailPage() {
                                     value={promoForm.code}
                                     onChange={(e) => setPromoForm({ ...promoForm, code: e.target.value.toUpperCase() })}
                                     placeholder="SUMMER2024"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] font-mono"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) font-mono"
                                     disabled={!!editingPromo}
                                 />
-                                <p className="text-xs text-[var(--text-muted)] mt-1">Use uppercase letters, numbers, hyphens, and underscores only</p>
+                                <p className="text-xs text-(--text-muted) mt-1">Use uppercase letters, numbers, hyphens, and underscores only</p>
                             </div>
                             <div>
-                                <label htmlFor="promo-description" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                <label htmlFor="promo-description" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                     Description (Optional)
                                 </label>
                                 <textarea
@@ -2137,26 +2137,26 @@ export default function AdminEventDetailPage() {
                                     onChange={(e) => setPromoForm({ ...promoForm, description: e.target.value })}
                                     rows={2}
                                     placeholder="What's this promo for?"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] resize-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary) resize-none"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="promo-discount-type" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-discount-type" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Discount Type
                                     </label>
                                     <select
                                         id="promo-discount-type"
                                         value={promoForm.discountType}
                                         onChange={(e) => setPromoForm({ ...promoForm, discountType: e.target.value as "PERCENTAGE" | "FIXED_AMOUNT" })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     >
                                         <option value="PERCENTAGE">Percentage (%)</option>
                                         <option value="FIXED_AMOUNT">Fixed Amount (IDR)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label htmlFor="promo-discount-value" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-discount-value" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Discount Value
                                     </label>
                                     <input
@@ -2166,13 +2166,13 @@ export default function AdminEventDetailPage() {
                                         max={promoForm.discountType === "PERCENTAGE" ? 100 : undefined}
                                         value={promoForm.discountValue}
                                         onChange={(e) => setPromoForm({ ...promoForm, discountValue: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="promo-min-order" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-min-order" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Min Order Amount (IDR)
                                     </label>
                                     <input
@@ -2181,11 +2181,11 @@ export default function AdminEventDetailPage() {
                                         min="0"
                                         value={promoForm.minOrderAmount}
                                         onChange={(e) => setPromoForm({ ...promoForm, minOrderAmount: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="promo-max-discount" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-max-discount" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Max Discount (IDR)
                                     </label>
                                     <input
@@ -2194,13 +2194,13 @@ export default function AdminEventDetailPage() {
                                         min="0"
                                         value={promoForm.maxDiscountAmount}
                                         onChange={(e) => setPromoForm({ ...promoForm, maxDiscountAmount: Number(e.target.value) })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="promo-usage-total" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-usage-total" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Total Usage Limit
                                     </label>
                                     <input
@@ -2210,11 +2210,11 @@ export default function AdminEventDetailPage() {
                                         value={promoForm.usageLimitTotal || ""}
                                         onChange={(e) => setPromoForm({ ...promoForm, usageLimitTotal: e.target.value ? Number(e.target.value) : null })}
                                         placeholder="Unlimited"
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="promo-usage-per-user" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-usage-per-user" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Per User Limit
                                     </label>
                                     <input
@@ -2224,13 +2224,13 @@ export default function AdminEventDetailPage() {
                                         value={promoForm.usageLimitPerUser || ""}
                                         onChange={(e) => setPromoForm({ ...promoForm, usageLimitPerUser: e.target.value ? Number(e.target.value) : null })}
                                         placeholder="Unlimited"
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label htmlFor="promo-valid-from" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-valid-from" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Valid From
                                     </label>
                                     <input
@@ -2238,11 +2238,11 @@ export default function AdminEventDetailPage() {
                                         type="datetime-local"
                                         value={promoForm.validFrom}
                                         onChange={(e) => setPromoForm({ ...promoForm, validFrom: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="promo-valid-until" className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                                    <label htmlFor="promo-valid-until" className="block text-sm font-medium text-(--text-secondary) mb-1">
                                         Valid Until
                                     </label>
                                     <input
@@ -2250,7 +2250,7 @@ export default function AdminEventDetailPage() {
                                         type="datetime-local"
                                         value={promoForm.validUntil}
                                         onChange={(e) => setPromoForm({ ...promoForm, validUntil: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-(--accent-primary)"
                                     />
                                 </div>
                             </div>
@@ -2259,9 +2259,9 @@ export default function AdminEventDetailPage() {
                                     type="checkbox"
                                     checked={promoForm.isActive}
                                     onChange={(e) => setPromoForm({ ...promoForm, isActive: e.target.checked })}
-                                    className="w-4 h-4 text-[var(--accent-primary)] rounded focus:ring-[var(--accent-primary)]"
+                                    className="w-4 h-4 text-(--accent-primary) rounded focus:ring-(--accent-primary)"
                                 />
-                                <span className="text-sm text-[var(--text-secondary)]">Active</span>
+                                <span className="text-sm text-(--text-secondary)">Active</span>
                             </label>
                         </div>
                         <div className="flex gap-3 p-6 border-t">
@@ -2272,7 +2272,7 @@ export default function AdminEventDetailPage() {
                                     setEditingPromo(null);
                                 }}
                                 disabled={promoSaving}
-                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] disabled:opacity-50"
+                                className="flex-1 px-4 py-2.5 border rounded-lg font-medium text-(--text-secondary) hover:bg-(--surface-hover) disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -2280,7 +2280,7 @@ export default function AdminEventDetailPage() {
                                 type="button"
                                 onClick={handleSavePromo}
                                 disabled={promoSaving || !promoForm.code || !promoForm.validFrom || !promoForm.validUntil}
-                                className="flex-1 px-4 py-2.5 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2.5 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {promoSaving ? (
                                     <>
@@ -2298,6 +2298,7 @@ export default function AdminEventDetailPage() {
                     </div>
                 </div>
             )}
+            </AdminWorkspacePage>
         </>
     );
 }

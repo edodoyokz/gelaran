@@ -53,12 +53,12 @@ function RefundPageContent() {
     const [canRequestRefund, setCanRequestRefund] = useState(false);
     const [booking, setBooking] = useState<BookingSummary | null>(null);
     const [showRequestForm, setShowRequestForm] = useState(false);
-    const [refundType, setRefundType] = useState<"FULL" | "PARTIAL">("FULL");
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const refundType: "FULL" = "FULL";
 
     const fetchRefundData = useCallback(async () => {
         try {
@@ -79,12 +79,13 @@ function RefundPageContent() {
             const bookingRes = await fetch(`/api/my-bookings/${bookingCode}`);
             const bookingData = await bookingRes.json();
             if (bookingData.success) {
+                const bookingSummary = bookingData.data.booking;
                 setBooking({
-                    id: bookingData.data.id,
-                    bookingCode: bookingData.data.bookingCode,
-                    status: bookingData.data.status,
-                    totalAmount: bookingData.data.totalAmount,
-                    event: bookingData.data.event,
+                    id: bookingSummary.id,
+                    bookingCode: bookingSummary.bookingCode,
+                    status: bookingSummary.status,
+                    totalAmount: bookingSummary.totalAmount,
+                    event: bookingSummary.event,
                 });
             }
         } catch (err) {
@@ -297,24 +298,14 @@ function RefundPageContent() {
                                 <form onSubmit={handleSubmitRefund} className="space-y-4 rounded-[1.75rem] border border-(--border-light) bg-(--surface-elevated) p-5">
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-(--text-secondary)">
-                                            Jenis refund *
+                                            Jenis refund
                                         </label>
-                                        <div className="flex flex-wrap gap-3">
-                                            <button
-                                                type="button"
-                                                onClick={() => setRefundType("FULL")}
-                                                className={`rounded-full px-4 py-2.5 text-sm font-semibold ${refundType === "FULL" ? "bg-(--accent-gradient) text-white" : "border border-(--border) bg-(--surface) text-(--text-secondary)"}`}
-                                            >
-                                                Full refund (100%)
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setRefundType("PARTIAL")}
-                                                className={`rounded-full px-4 py-2.5 text-sm font-semibold ${refundType === "PARTIAL" ? "bg-(--accent-gradient) text-white" : "border border-(--border) bg-(--surface) text-(--text-secondary)"}`}
-                                            >
-                                                Partial refund
-                                            </button>
+                                        <div className="inline-flex items-center rounded-full bg-(--accent-gradient) px-4 py-2.5 text-sm font-semibold text-white shadow-(--shadow-glow)">
+                                            Full refund (100%)
                                         </div>
+                                        <p className="mt-2 text-xs text-(--text-muted)">
+                                            Pengajuan refund parsial belum didukung pada alur customer saat ini.
+                                        </p>
                                     </div>
 
                                     <div>

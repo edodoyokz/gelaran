@@ -337,6 +337,10 @@ export function generateTicketPdfData(
     paidAt?: Date | null;
     createdAt: Date;
     user?: { name: string; email: string } | null;
+    eventSchedule?: {
+      scheduleDate: Date;
+      startTime: Date;
+    } | null;
     event: {
       title: string;
       eventType: string;
@@ -353,7 +357,7 @@ export function generateTicketPdfData(
     ticketType: { name: string };
   }
 ): TicketPdfData {
-  const schedule = booking.event.schedules[0];
+  const schedule = booking.eventSchedule ?? booking.event.schedules[0];
   const eventDate = schedule
     ? new Date(schedule.scheduleDate).toLocaleDateString("id-ID", {
         weekday: "long",

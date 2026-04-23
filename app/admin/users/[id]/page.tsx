@@ -29,7 +29,7 @@ import {
     Facebook,
     ChevronRight,
 } from "lucide-react";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminWorkspacePage } from "@/components/admin/admin-workspace";
 import { useToast } from "@/components/ui/toast-provider";
 import { CommissionOverride } from "@/components/admin/CommissionOverride";
 
@@ -129,18 +129,18 @@ interface UserData {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-    CUSTOMER: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    CUSTOMER: "bg-(--bg-secondary) text-(--text-secondary)",
     ORGANIZER: "bg-purple-500/10 text-purple-500",
     ADMIN: "bg-red-500/10 text-red-500",
     SUPER_ADMIN: "bg-red-500/10 text-red-500",
 };
 
 const STATUS_COLORS: Record<string, string> = {
-    DRAFT: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    DRAFT: "bg-(--bg-secondary) text-(--text-secondary)",
     PENDING_REVIEW: "bg-yellow-500/10 text-yellow-600",
     PUBLISHED: "bg-green-500/10 text-green-600",
     CANCELLED: "bg-red-500/10 text-red-500",
-    ENDED: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    ENDED: "bg-(--bg-secondary) text-(--text-secondary)",
 };
 
 const BOOKING_STATUS_COLORS: Record<string, string> = {
@@ -150,7 +150,7 @@ const BOOKING_STATUS_COLORS: Record<string, string> = {
     CONFIRMED: "bg-green-500/10 text-green-600",
     CANCELLED: "bg-red-500/10 text-red-500",
     REFUNDED: "bg-purple-500/10 text-purple-500",
-    EXPIRED: "bg-[var(--bg-secondary)] text-[var(--text-secondary)]",
+    EXPIRED: "bg-(--bg-secondary) text-(--text-secondary)",
 };
 
 export default function AdminUserDetailPage({
@@ -278,10 +278,10 @@ export default function AdminUserDetailPage({
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Loading user details...</p>
+                    <Loader2 className="h-12 w-12 text-(--accent-primary) animate-spin mx-auto mb-4" />
+                    <p className="text-(--text-muted)">Loading user details...</p>
                 </div>
             </div>
         );
@@ -289,11 +289,11 @@ export default function AdminUserDetailPage({
 
     if (error || !userData) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error || "User not found"}</p>
-                    <Link href="/admin/users" className="text-[var(--accent-primary)] hover:text-indigo-500">
+                    <p className="text-foreground font-medium mb-2">{error || "User not found"}</p>
+                    <Link href="/admin/users" className="text-(--accent-primary) hover:text-indigo-500">
                         Back to Users
                     </Link>
                 </div>
@@ -305,9 +305,9 @@ export default function AdminUserDetailPage({
 
     return (
         <>
-            <AdminHeader 
+            <AdminWorkspacePage 
                 title="User Details" 
-                subtitle={userData.email}
+                description={userData.email}
                 backHref="/admin/users"
                 actions={
                     userData.role !== "SUPER_ADMIN" && (
@@ -347,14 +347,14 @@ export default function AdminUserDetailPage({
                         </div>
                     )
                 }
-            />
+            >
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="space-y-6">
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="bg-(--surface) rounded-xl shadow-sm overflow-hidden">
                             <div className="p-6 text-center border-b">
-                                <div className="w-24 h-24 bg-[var(--border)] rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
+                                <div className="w-24 h-24 bg-(--border) rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
                                     {userData.avatarUrl ? (
                                         <Image
                                             src={userData.avatarUrl}
@@ -364,10 +364,10 @@ export default function AdminUserDetailPage({
                                             className="rounded-full object-cover"
                                         />
                                     ) : (
-                                        <User className="h-12 w-12 text-[var(--text-muted)]" />
+                                        <User className="h-12 w-12 text-(--text-muted)" />
                                     )}
                                 </div>
-                                <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">{userData.name}</h2>
+                                <h2 className="text-xl font-bold text-foreground mb-1">{userData.name}</h2>
                                 <div className="flex items-center justify-center gap-2 mb-3">
                                     <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${ROLE_COLORS[userData.role]}`}>
                                         {userData.role === "SUPER_ADMIN" && <Shield className="h-3 w-3" />}
@@ -384,7 +384,7 @@ export default function AdminUserDetailPage({
                                             Verified
                                         </span>
                                     ) : (
-                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+                                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-(--bg-secondary) text-(--text-secondary)">
                                             <XCircle className="h-3 w-3" />
                                             Unverified
                                         </span>
@@ -394,76 +394,76 @@ export default function AdminUserDetailPage({
 
                             <div className="p-4 space-y-3">
                                 <div className="flex items-center gap-3">
-                                    <Mail className="h-5 w-5 text-[var(--text-muted)]" />
-                                    <span className="text-sm text-[var(--text-secondary)]">{userData.email}</span>
+                                    <Mail className="h-5 w-5 text-(--text-muted)" />
+                                    <span className="text-sm text-(--text-secondary)">{userData.email}</span>
                                 </div>
                                 {userData.phone && (
                                     <div className="flex items-center gap-3">
-                                        <Phone className="h-5 w-5 text-[var(--text-muted)]" />
-                                        <span className="text-sm text-[var(--text-secondary)]">{userData.phone}</span>
+                                        <Phone className="h-5 w-5 text-(--text-muted)" />
+                                        <span className="text-sm text-(--text-secondary)">{userData.phone}</span>
                                     </div>
                                 )}
                                 <div className="flex items-center gap-3">
-                                    <Calendar className="h-5 w-5 text-[var(--text-muted)]" />
-                                    <span className="text-sm text-[var(--text-secondary)]">Joined {formatDate(userData.createdAt)}</span>
+                                    <Calendar className="h-5 w-5 text-(--text-muted)" />
+                                    <span className="text-sm text-(--text-secondary)">Joined {formatDate(userData.createdAt)}</span>
                                 </div>
                                 {userData.lastLoginAt && (
                                     <div className="flex items-center gap-3">
-                                        <Clock className="h-5 w-5 text-[var(--text-muted)]" />
-                                        <span className="text-sm text-[var(--text-secondary)]">Last login {formatDateTime(userData.lastLoginAt)}</span>
+                                        <Clock className="h-5 w-5 text-(--text-muted)" />
+                                        <span className="text-sm text-(--text-secondary)">Last login {formatDateTime(userData.lastLoginAt)}</span>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm p-4">
-                            <h3 className="text-sm font-medium text-[var(--text-muted)] mb-3">Activity Summary</h3>
+                        <div className="bg-(--surface) rounded-xl shadow-sm p-4">
+                            <h3 className="text-sm font-medium text-(--text-muted) mb-3">Activity Summary</h3>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
-                                    <Ticket className="h-5 w-5 text-[var(--accent-primary)] mx-auto mb-1" />
-                                    <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.bookings}</p>
-                                    <p className="text-xs text-[var(--text-muted)]">Bookings</p>
+                                <div className="text-center p-3 bg-(--surface-hover) rounded-lg">
+                                    <Ticket className="h-5 w-5 text-(--accent-primary) mx-auto mb-1" />
+                                    <p className="text-lg font-bold text-foreground">{userData._count.bookings}</p>
+                                    <p className="text-xs text-(--text-muted)">Bookings</p>
                                 </div>
                                 {userData.role === "ORGANIZER" && (
-                                    <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
+                                    <div className="text-center p-3 bg-(--surface-hover) rounded-lg">
                                         <Calendar className="h-5 w-5 text-purple-600 mx-auto mb-1" />
-                                        <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.events}</p>
-                                        <p className="text-xs text-[var(--text-muted)]">Events</p>
+                                        <p className="text-lg font-bold text-foreground">{userData._count.events}</p>
+                                        <p className="text-xs text-(--text-muted)">Events</p>
                                     </div>
                                 )}
-                                <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
+                                <div className="text-center p-3 bg-(--surface-hover) rounded-lg">
                                     <Star className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
-                                    <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.reviews}</p>
-                                    <p className="text-xs text-[var(--text-muted)]">Reviews</p>
+                                    <p className="text-lg font-bold text-foreground">{userData._count.reviews}</p>
+                                    <p className="text-xs text-(--text-muted)">Reviews</p>
                                 </div>
-                                <div className="text-center p-3 bg-[var(--surface-hover)] rounded-lg">
+                                <div className="text-center p-3 bg-(--surface-hover) rounded-lg">
                                     <Heart className="h-5 w-5 text-red-500 mx-auto mb-1" />
-                                    <p className="text-lg font-bold text-[var(--text-primary)]">{userData._count.wishlists}</p>
-                                    <p className="text-xs text-[var(--text-muted)]">Wishlist</p>
+                                    <p className="text-lg font-bold text-foreground">{userData._count.wishlists}</p>
+                                    <p className="text-xs text-(--text-muted)">Wishlist</p>
                                 </div>
                             </div>
                         </div>
 
                         {userData.customerProfile && (
-                            <div className="bg-[var(--surface)] rounded-xl shadow-sm p-4">
-                                <h3 className="text-sm font-medium text-[var(--text-muted)] mb-3">Customer Profile</h3>
+                            <div className="bg-(--surface) rounded-xl shadow-sm p-4">
+                                <h3 className="text-sm font-medium text-(--text-muted) mb-3">Customer Profile</h3>
                                 <div className="space-y-2 text-sm">
                                     {userData.customerProfile.gender && (
                                         <div className="flex justify-between">
-                                            <span className="text-[var(--text-muted)]">Gender</span>
-                                            <span className="text-[var(--text-primary)] capitalize">{userData.customerProfile.gender.toLowerCase()}</span>
+                                            <span className="text-(--text-muted)">Gender</span>
+                                            <span className="text-foreground capitalize">{userData.customerProfile.gender.toLowerCase()}</span>
                                         </div>
                                     )}
                                     {userData.customerProfile.birthDate && (
                                         <div className="flex justify-between">
-                                            <span className="text-[var(--text-muted)]">Birth Date</span>
-                                            <span className="text-[var(--text-primary)]">{formatDate(userData.customerProfile.birthDate)}</span>
+                                            <span className="text-(--text-muted)">Birth Date</span>
+                                            <span className="text-foreground">{formatDate(userData.customerProfile.birthDate)}</span>
                                         </div>
                                     )}
                                     {userData.customerProfile.city && (
                                         <div className="flex justify-between">
-                                            <span className="text-[var(--text-muted)]">Location</span>
-                                            <span className="text-[var(--text-primary)]">{userData.customerProfile.city}, {userData.customerProfile.province}</span>
+                                            <span className="text-(--text-muted)">Location</span>
+                                            <span className="text-foreground">{userData.customerProfile.city}, {userData.customerProfile.province}</span>
                                         </div>
                                     )}
                                 </div>
@@ -472,7 +472,7 @@ export default function AdminUserDetailPage({
                     </div>
 
                     <div className="lg:col-span-2">
-                        <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                        <div className="bg-(--surface) rounded-xl shadow-sm overflow-hidden">
                             <div className="border-b overflow-x-auto">
                                 <div className="flex">
                                     <button
@@ -480,8 +480,8 @@ export default function AdminUserDetailPage({
                                         onClick={() => setActiveTab("overview")}
                                         className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                             activeTab === "overview"
-                                                ? "border-indigo-600 text-[var(--accent-primary)]"
-                                                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                                ? "border-indigo-600 text-(--accent-primary)"
+                                                : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
                                         }`}
                                     >
                                         Overview
@@ -491,8 +491,8 @@ export default function AdminUserDetailPage({
                                         onClick={() => setActiveTab("bookings")}
                                         className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                             activeTab === "bookings"
-                                                ? "border-indigo-600 text-[var(--accent-primary)]"
-                                                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                                ? "border-indigo-600 text-(--accent-primary)"
+                                                : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
                                         }`}
                                     >
                                         Bookings ({userData._count.bookings})
@@ -504,8 +504,8 @@ export default function AdminUserDetailPage({
                                                 onClick={() => setActiveTab("events")}
                                                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                                     activeTab === "events"
-                                                        ? "border-indigo-600 text-[var(--accent-primary)]"
-                                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                                        ? "border-indigo-600 text-(--accent-primary)"
+                                                        : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
                                                 }`}
                                             >
                                                 Events ({userData._count.events})
@@ -515,8 +515,8 @@ export default function AdminUserDetailPage({
                                                 onClick={() => setActiveTab("organizer")}
                                                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                                     activeTab === "organizer"
-                                                        ? "border-indigo-600 text-[var(--accent-primary)]"
-                                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                                        ? "border-indigo-600 text-(--accent-primary)"
+                                                        : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
                                                 }`}
                                             >
                                                 Organizer Profile
@@ -526,8 +526,8 @@ export default function AdminUserDetailPage({
                                                 onClick={() => setActiveTab("commission")}
                                                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                                                     activeTab === "commission"
-                                                        ? "border-indigo-600 text-[var(--accent-primary)]"
-                                                        : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                                        ? "border-indigo-600 text-(--accent-primary)"
+                                                        : "border-transparent text-(--text-muted) hover:text-(--text-secondary)"
                                                 }`}
                                             >
                                                 Commission
@@ -541,22 +541,22 @@ export default function AdminUserDetailPage({
                                 {activeTab === "overview" && (
                                     <div className="space-y-6">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Account Information</h3>
+                                            <h3 className="text-lg font-semibold text-foreground mb-4">Account Information</h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="p-4 bg-[var(--surface-hover)] rounded-lg">
-                                                    <p className="text-sm text-[var(--text-muted)] mb-1">User ID</p>
-                                                    <p className="text-sm font-mono text-[var(--text-primary)]">{userData.id}</p>
+                                                <div className="p-4 bg-(--surface-hover) rounded-lg">
+                                                    <p className="text-sm text-(--text-muted) mb-1">User ID</p>
+                                                    <p className="text-sm font-mono text-foreground">{userData.id}</p>
                                                 </div>
-                                                <div className="p-4 bg-[var(--surface-hover)] rounded-lg">
-                                                    <p className="text-sm text-[var(--text-muted)] mb-1">Locale / Timezone</p>
-                                                    <p className="text-sm text-[var(--text-primary)]">{userData.locale} / {userData.timezone}</p>
+                                                <div className="p-4 bg-(--surface-hover) rounded-lg">
+                                                    <p className="text-sm text-(--text-muted) mb-1">Locale / Timezone</p>
+                                                    <p className="text-sm text-foreground">{userData.locale} / {userData.timezone}</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {userData.role !== "SUPER_ADMIN" && (
                                             <div>
-                                                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Change Role</h3>
+                                                <h3 className="text-lg font-semibold text-foreground mb-4">Change Role</h3>
                                                 <div className="flex flex-wrap gap-2">
                                                     {["CUSTOMER", "ORGANIZER", "ADMIN"].map((role) => (
                                                         <button
@@ -566,8 +566,8 @@ export default function AdminUserDetailPage({
                                                             disabled={actionLoading || userData.role === role}
                                                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
                                                                 userData.role === role
-                                                                    ? "bg-[var(--accent-primary)] text-white"
-                                                                    : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
+                                                                    ? "bg-(--accent-primary) text-white"
+                                                                    : "bg-(--bg-secondary) text-(--text-secondary) hover:bg-(--border)"
                                                             }`}
                                                         >
                                                             {role}
@@ -580,27 +580,27 @@ export default function AdminUserDetailPage({
                                         {userData.bookings.length > 0 && (
                                             <div>
                                                 <div className="flex items-center justify-between mb-4">
-                                                    <h3 className="text-lg font-semibold text-[var(--text-primary)]">Recent Bookings</h3>
+                                                    <h3 className="text-lg font-semibold text-foreground">Recent Bookings</h3>
                                                     <button
                                                         type="button"
                                                         onClick={() => setActiveTab("bookings")}
-                                                        className="text-sm text-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
+                                                        className="text-sm text-(--accent-primary) hover:text-(--accent-primary)"
                                                     >
                                                         View all
                                                     </button>
                                                 </div>
                                                 <div className="space-y-3">
                                                     {userData.bookings.slice(0, 3).map((booking) => (
-                                                        <div key={booking.id} className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
+                                                        <div key={booking.id} className="flex items-center justify-between p-3 bg-(--surface-hover) rounded-lg">
                                                             <div>
-                                                                <p className="font-medium text-[var(--text-primary)]">{booking.event.title}</p>
-                                                                <p className="text-sm text-[var(--text-muted)]">{booking.bookingCode}</p>
+                                                                <p className="font-medium text-foreground">{booking.event.title}</p>
+                                                                <p className="text-sm text-(--text-muted)">{booking.bookingCode}</p>
                                                             </div>
                                                             <div className="text-right">
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${BOOKING_STATUS_COLORS[booking.status]}`}>
                                                                     {booking.status}
                                                                 </span>
-                                                                <p className="text-sm text-[var(--text-primary)] mt-1">{formatCurrency(booking.totalAmount)}</p>
+                                                                <p className="text-sm text-foreground mt-1">{formatCurrency(booking.totalAmount)}</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -614,8 +614,8 @@ export default function AdminUserDetailPage({
                                     <div>
                                         {userData.bookings.length === 0 ? (
                                             <div className="text-center py-12">
-                                                <Ticket className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
-                                                <p className="text-[var(--text-muted)]">No bookings yet</p>
+                                                <Ticket className="h-12 w-12 text-(--text-muted) mx-auto mb-4" />
+                                                <p className="text-(--text-muted)">No bookings yet</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -623,14 +623,14 @@ export default function AdminUserDetailPage({
                                                     <Link
                                                         key={booking.id}
                                                         href={`/admin/bookings/${booking.id}`}
-                                                        className="flex items-center justify-between p-4 bg-[var(--surface-hover)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
+                                                        className="flex items-center justify-between p-4 bg-(--surface-hover) rounded-lg hover:bg-(--bg-secondary) transition-colors"
                                                     >
                                                         <div>
-                                                            <p className="font-medium text-[var(--text-primary)]">{booking.event.title}</p>
+                                                            <p className="font-medium text-foreground">{booking.event.title}</p>
                                                             <div className="flex items-center gap-2 mt-1">
-                                                                <span className="text-sm font-mono text-[var(--text-muted)]">{booking.bookingCode}</span>
-                                                                <span className="text-[var(--text-muted)]">•</span>
-                                                                <span className="text-sm text-[var(--text-muted)]">{formatDate(booking.createdAt)}</span>
+                                                                <span className="text-sm font-mono text-(--text-muted)">{booking.bookingCode}</span>
+                                                                <span className="text-(--text-muted)">•</span>
+                                                                <span className="text-sm text-(--text-muted)">{formatDate(booking.createdAt)}</span>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center gap-4">
@@ -638,9 +638,9 @@ export default function AdminUserDetailPage({
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${BOOKING_STATUS_COLORS[booking.status]}`}>
                                                                     {booking.status}
                                                                 </span>
-                                                                <p className="text-sm font-medium text-[var(--text-primary)] mt-1">{formatCurrency(booking.totalAmount)}</p>
+                                                                <p className="text-sm font-medium text-foreground mt-1">{formatCurrency(booking.totalAmount)}</p>
                                                             </div>
-                                                            <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
+                                                            <ChevronRight className="h-5 w-5 text-(--text-muted)" />
                                                         </div>
                                                     </Link>
                                                 ))}
@@ -653,8 +653,8 @@ export default function AdminUserDetailPage({
                                     <div>
                                         {userData.events.length === 0 ? (
                                             <div className="text-center py-12">
-                                                <Calendar className="h-12 w-12 text-[var(--text-muted)] mx-auto mb-4" />
-                                                <p className="text-[var(--text-muted)]">No events created</p>
+                                                <Calendar className="h-12 w-12 text-(--text-muted) mx-auto mb-4" />
+                                                <p className="text-(--text-muted)">No events created</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -662,20 +662,20 @@ export default function AdminUserDetailPage({
                                                     <Link
                                                         key={event.id}
                                                         href={`/admin/events/${event.id}`}
-                                                        className="flex items-center justify-between p-4 bg-[var(--surface-hover)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors"
+                                                        className="flex items-center justify-between p-4 bg-(--surface-hover) rounded-lg hover:bg-(--bg-secondary) transition-colors"
                                                     >
                                                         <div>
-                                                            <p className="font-medium text-[var(--text-primary)]">{event.title}</p>
-                                                            <p className="text-sm text-[var(--text-muted)]">{formatDate(event.createdAt)}</p>
+                                                            <p className="font-medium text-foreground">{event.title}</p>
+                                                            <p className="text-sm text-(--text-muted)">{formatDate(event.createdAt)}</p>
                                                         </div>
                                                         <div className="flex items-center gap-4">
                                                             <div className="text-right">
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_COLORS[event.status]}`}>
                                                                     {event.status.replace(/_/g, " ")}
                                                                 </span>
-                                                                <p className="text-sm text-[var(--text-muted)] mt-1">{event._count.bookings} bookings</p>
+                                                                <p className="text-sm text-(--text-muted) mt-1">{event._count.bookings} bookings</p>
                                                             </div>
-                                                            <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
+                                                            <ChevronRight className="h-5 w-5 text-(--text-muted)" />
                                                         </div>
                                                     </Link>
                                                 ))}
@@ -687,7 +687,7 @@ export default function AdminUserDetailPage({
                                 {activeTab === "organizer" && userData.organizerProfile && (
                                     <div className="space-y-6">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-16 h-16 bg-[var(--border)] rounded-xl flex items-center justify-center overflow-hidden">
+                                            <div className="w-16 h-16 bg-(--border) rounded-xl flex items-center justify-center overflow-hidden">
                                                 {userData.organizerProfile.organizationLogo ? (
                                                     <Image
                                                         src={userData.organizerProfile.organizationLogo}
@@ -697,14 +697,14 @@ export default function AdminUserDetailPage({
                                                         className="object-cover"
                                                     />
                                                 ) : (
-                                                    <Building2 className="h-8 w-8 text-[var(--text-muted)]" />
+                                                    <Building2 className="h-8 w-8 text-(--text-muted)" />
                                                 )}
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-lg font-bold text-[var(--text-primary)]">{userData.organizerProfile.organizationName}</h3>
-                                                <p className="text-sm text-[var(--text-muted)]">@{userData.organizerProfile.organizationSlug}</p>
+                                                <h3 className="text-lg font-bold text-foreground">{userData.organizerProfile.organizationName}</h3>
+                                                <p className="text-sm text-(--text-muted)">@{userData.organizerProfile.organizationSlug}</p>
                                                 {userData.organizerProfile.organizationDescription && (
-                                                    <p className="text-sm text-[var(--text-secondary)] mt-2">{userData.organizerProfile.organizationDescription}</p>
+                                                    <p className="text-sm text-(--text-secondary) mt-2">{userData.organizerProfile.organizationDescription}</p>
                                                 )}
                                             </div>
                                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -735,14 +735,14 @@ export default function AdminUserDetailPage({
 
                                         {(userData.organizerProfile.websiteUrl || userData.organizerProfile.socialInstagram || userData.organizerProfile.socialFacebook || userData.organizerProfile.socialTwitter) && (
                                             <div>
-                                                <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">Social Links</h4>
+                                                <h4 className="text-sm font-medium text-(--text-muted) mb-3">Social Links</h4>
                                                 <div className="flex flex-wrap gap-3">
                                                     {userData.organizerProfile.websiteUrl && (
                                                         <a
                                                             href={userData.organizerProfile.websiteUrl}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-(--bg-secondary) rounded-lg text-sm text-(--text-secondary) hover:bg-(--border)"
                                                         >
                                                             <Globe className="h-4 w-4" />
                                                             Website
@@ -754,7 +754,7 @@ export default function AdminUserDetailPage({
                                                             href={`https://instagram.com/${userData.organizerProfile.socialInstagram}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-(--bg-secondary) rounded-lg text-sm text-(--text-secondary) hover:bg-(--border)"
                                                         >
                                                             <Instagram className="h-4 w-4" />
                                                             @{userData.organizerProfile.socialInstagram}
@@ -765,7 +765,7 @@ export default function AdminUserDetailPage({
                                                             href={userData.organizerProfile.socialFacebook}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-(--bg-secondary) rounded-lg text-sm text-(--text-secondary) hover:bg-(--border)"
                                                         >
                                                             <Facebook className="h-4 w-4" />
                                                             Facebook
@@ -776,7 +776,7 @@ export default function AdminUserDetailPage({
                                                             href={`https://twitter.com/${userData.organizerProfile.socialTwitter}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--bg-secondary)] rounded-lg text-sm text-[var(--text-secondary)] hover:bg-[var(--border)]"
+                                                            className="inline-flex items-center gap-2 px-3 py-2 bg-(--bg-secondary) rounded-lg text-sm text-(--text-secondary) hover:bg-(--border)"
                                                         >
                                                             <Twitter className="h-4 w-4" />
                                                             @{userData.organizerProfile.socialTwitter}
@@ -788,20 +788,20 @@ export default function AdminUserDetailPage({
 
                                         {userData.organizerProfile.bankAccounts.length > 0 && (
                                             <div>
-                                                <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">Bank Accounts</h4>
+                                                <h4 className="text-sm font-medium text-(--text-muted) mb-3">Bank Accounts</h4>
                                                 <div className="space-y-2">
                                                     {userData.organizerProfile.bankAccounts.map((bank) => (
-                                                        <div key={bank.id} className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
+                                                        <div key={bank.id} className="flex items-center justify-between p-3 bg-(--surface-hover) rounded-lg">
                                                             <div className="flex items-center gap-3">
-                                                                <CreditCard className="h-5 w-5 text-[var(--text-muted)]" />
+                                                                <CreditCard className="h-5 w-5 text-(--text-muted)" />
                                                                 <div>
-                                                                    <p className="font-medium text-[var(--text-primary)]">{bank.bankName}</p>
-                                                                    <p className="text-sm text-[var(--text-muted)]">{bank.accountNumber} - {bank.accountHolderName}</p>
+                                                                    <p className="font-medium text-foreground">{bank.bankName}</p>
+                                                                    <p className="text-sm text-(--text-muted)">{bank.accountNumber} - {bank.accountHolderName}</p>
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center gap-2">
                                                                 {bank.isPrimary && (
-                                                                    <span className="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-[var(--accent-primary)] rounded-full">Primary</span>
+                                                                    <span className="px-2 py-0.5 text-xs font-medium bg-indigo-100 text-(--accent-primary) rounded-full">Primary</span>
                                                                 )}
                                                                 {bank.isVerified && (
                                                                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -815,16 +815,16 @@ export default function AdminUserDetailPage({
 
                                         {userData.organizerProfile.payouts.length > 0 && (
                                             <div>
-                                                <h4 className="text-sm font-medium text-[var(--text-muted)] mb-3">Recent Payouts</h4>
+                                                <h4 className="text-sm font-medium text-(--text-muted) mb-3">Recent Payouts</h4>
                                                 <div className="space-y-2">
                                                     {userData.organizerProfile.payouts.map((payout) => (
-                                                        <div key={payout.id} className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
+                                                        <div key={payout.id} className="flex items-center justify-between p-3 bg-(--surface-hover) rounded-lg">
                                                             <div>
-                                                                <p className="font-mono text-sm text-[var(--text-secondary)]">{payout.payoutCode}</p>
-                                                                <p className="text-xs text-[var(--text-muted)]">{formatDate(payout.createdAt)}</p>
+                                                                <p className="font-mono text-sm text-(--text-secondary)">{payout.payoutCode}</p>
+                                                                <p className="text-xs text-(--text-muted)">{formatDate(payout.createdAt)}</p>
                                                             </div>
                                                             <div className="text-right">
-                                                                <p className="font-medium text-[var(--text-primary)]">{formatCurrency(payout.amount)}</p>
+                                                                <p className="font-medium text-foreground">{formatCurrency(payout.amount)}</p>
                                                                 <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${
                                                                     payout.status === "COMPLETED"
                                                                         ? "bg-green-500/10 text-green-600"
@@ -856,6 +856,7 @@ export default function AdminUserDetailPage({
                     </div>
                 </div>
             </main>
+            </AdminWorkspacePage>
         </>
     );
 }

@@ -1,8 +1,8 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
 import type { BookingStatus, Prisma } from "@/types/prisma";
+import { requireAuthenticatedAppUser } from "@/lib/auth/route-auth";
 
 const VALID_STATUSES: BookingStatus[] = [
     "PENDING", "AWAITING_PAYMENT", "PAID", "CONFIRMED", "CANCELLED", "REFUNDED", "EXPIRED"
@@ -10,19 +10,10 @@ const VALID_STATUSES: BookingStatus[] = [
 
 export async function GET(request: NextRequest) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authResult = await requireAuthenticatedAppUser();
 
-        if (!user || !user.email) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
-        });
-
-        if (!dbUser) {
-            return errorResponse("User not found", 404);
+        if ("error" in authResult) {
+            return errorResponse(authResult.error, authResult.status);
         }
 
         const { searchParams } = new URL(request.url);
@@ -31,7 +22,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "10");
         const skip = (page - 1) * limit;
 
-        const where: Prisma.BookingWhereInput = { userId: dbUser.id };
+        const where: Prisma.BookingWhereInput = { userId: authResult.dbUserId };
         if (statusParam && statusParam !== "all") {
             const upperStatus = statusParam.toUpperCase() as BookingStatus;
             if (VALID_STATUSES.includes(upperStatus)) {
@@ -45,7 +36,16 @@ export async function GET(request: NextRequest) {
                 orderBy: { createdAt: "desc" },
                 skip,
                 take: limit,
-                include: {
+                select: {
+                    id: true,
+                    bookingCode: true,
+                    status: true,
+                    paymentStatus: true,
+                    totalTickets: true,
+                    totalAmount: true,
+                    createdAt: true,
+                    expiresAt: true,
+                    isComplimentary: true,
                     event: {
                         select: {
                             id: true,
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
 
         const stats = await prisma.booking.groupBy({
             by: ["status"],
-            where: { userId: dbUser.id },
+            where: { userId: authResult.dbUserId },
             _count: true,
         });
 

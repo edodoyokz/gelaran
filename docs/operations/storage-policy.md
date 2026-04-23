@@ -8,6 +8,7 @@ This document defines the explicit storage strategy, upload constraints, and abu
 - `events` (public): event media used on public pages
 - `organizers` (public): organizer profile/branding assets
 - `tickets` (private): ticket artifacts (including PDFs) that must not be publicly enumerable
+- `payment-proofs` (private): uploaded payment confirmation artifacts used for manual review and admin verification workflows
 
 All buckets are configured by `scripts/setup-storage.ts` and validated in application code via `lib/storage/upload.ts`.
 
@@ -28,6 +29,10 @@ All buckets are configured by `scripts/setup-storage.ts` and validated in applic
 ### `tickets`
 - Max size: 1 MB
 - Allowed MIME: `image/png`, `image/jpeg`, `application/pdf`
+
+### `payment-proofs`
+- Max size: 5 MB
+- Allowed MIME: `image/jpeg`, `image/png`, `application/pdf`
 
 ## Defense in Depth
 
@@ -61,7 +66,23 @@ pnpm tsx scripts/setup-storage.ts
 ## Abuse and Misconfiguration Risk Controls
 
 - Keep `tickets` private to avoid direct public access to ticket artifacts.
+- Keep `payment-proofs` private so proof uploads remain visible only to the uploading user and authorized admins.
 - Restrict allowed MIME types tightly; avoid wildcard content types.
 - Keep file-size caps conservative to reduce storage abuse.
 - Review bucket configuration after any environment migration.
 - Use authenticated write policies for all mutable operations.
+
+## Expected Bucket Policies
+
+- `avatars`, `events`, `organizers`
+  - public read allowed
+  - authenticated upload/update/delete allowed
+- `tickets`
+  - authenticated read allowed
+  - authenticated upload allowed
+- `payment-proofs`
+  - authenticated upload allowed only when the first folder segment matches `auth.uid()`
+  - authenticated read allowed only for the user's own proof files when the first folder segment matches `auth.uid()`
+  - authenticated admin read allowed for all proof files when `auth.jwt()->>'role' = 'admin'`
+
+These policies are not applied automatically by `scripts/setup-storage.ts`; they must be configured manually in the Supabase dashboard after bucket provisioning.

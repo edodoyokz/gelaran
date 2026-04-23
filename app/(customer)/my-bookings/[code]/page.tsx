@@ -31,6 +31,9 @@ import {
     AlertTriangle,
     Video,
     Send,
+    Upload,
+    FileText,
+    ImageIcon,
 } from "lucide-react";
 import {
     CustomerHero,
@@ -38,6 +41,7 @@ import {
     CustomerStatusBadge,
     DashboardSection,
 } from "@/components/customer/customer-dashboard-primitives";
+import { getPaymentProofKind } from "@/lib/admin/payment-verification-ui";
 
 interface TicketType {
     id: string;
@@ -114,6 +118,10 @@ interface Transaction {
     amount: string;
     status: string;
     paidAt: string | null;
+    paymentProofUrl: string | null;
+    paymentProofUploadedAt: string | null;
+    verificationStatus: "PENDING_PROOF" | "PROOF_UPLOADED" | "VERIFIED" | "REJECTED" | null;
+    verificationNotes: string | null;
 }
 
 interface Refund {
@@ -200,6 +208,13 @@ export default function BookingDetailPage({
     const [isTransferring, setIsTransferring] = useState(false);
     const [transferError, setTransferError] = useState<string | null>(null);
     const [transferSuccess, setTransferSuccess] = useState(false);
+    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [uploadFile, setUploadFile] = useState<File | null>(null);
+    const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
+    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [dragActive, setDragActive] = useState(false);
 
     useEffect(() => {
         params.then((p) => setBookingCode(p.code));
@@ -399,6 +414,102 @@ export default function BookingDetailPage({
         }
     };
 
+    const openUploadModal = () => {
+        setShowUploadModal(true);
+        setUploadFile(null);
+        setUploadPreview(null);
+        setUploadError(null);
+        setUploadSuccess(false);
+    };
+
+    const closeUploadModal = () => {
+        setShowUploadModal(false);
+        setUploadFile(null);
+        setUploadPreview(null);
+        if (uploadSuccess) {
+            fetchBooking();
+        }
+    };
+
+    const handleFileSelect = (file: File) => {
+        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (!allowedTypes.includes(file.type)) {
+            setUploadError("Format file tidak didukung. Gunakan JPG, PNG, atau PDF.");
+            return;
+        }
+
+        if (file.size > maxSize) {
+            setUploadError("Ukuran file melebihi 5MB. Pilih file yang lebih kecil.");
+            return;
+        }
+
+        setUploadFile(file);
+        setUploadError(null);
+
+        // Generate preview for images
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setUploadPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setUploadPreview(null);
+        }
+    };
+
+    const handleDrag = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === "dragenter" || e.type === "dragover") {
+            setDragActive(true);
+        } else if (e.type === "dragleave") {
+            setDragActive(false);
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragActive(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleFileSelect(e.dataTransfer.files[0]);
+        }
+    };
+
+    const handleUploadProof = async () => {
+        if (!uploadFile || !booking) return;
+
+        setIsUploading(true);
+        setUploadError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", uploadFile);
+
+            const res = await fetch(`/api/bookings/${booking.id}/upload-proof`, {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setUploadError(data.error?.message || "Gagal mengunggah bukti pembayaran");
+                return;
+            }
+
+            setUploadSuccess(true);
+        } catch {
+            setUploadError("Gagal mengunggah bukti pembayaran. Coba lagi.");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
@@ -431,6 +542,7 @@ export default function BookingDetailPage({
     const statusConfig = STATUS_CONFIG[booking.status] || STATUS_CONFIG.PENDING;
     const hasValidTickets = booking.bookedTickets.some((t) => t.status === "ACTIVE" && !t.isCheckedIn);
     const organizerName = booking.event.organizer.organizerProfile?.organizationName || booking.event.organizer.name;
+    const paymentProofKind = getPaymentProofKind(booking.transaction?.paymentProofUrl);
 
     return (
         <div className="space-y-6 lg:space-y-8">
@@ -692,6 +804,82 @@ export default function BookingDetailPage({
                         </div>
                     </DashboardSection>
 
+                    {booking.paymentStatus === "UNPAID" && (booking.status === "PENDING" || booking.status === "AWAITING_PAYMENT") ? (
+                        <DashboardSection title="Upload bukti pembayaran" description="Unggah bukti transfer untuk verifikasi pembayaran manual.">
+                            <div className="space-y-4">
+                                <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-5">
+                                    <h3 className="mb-3 text-sm font-semibold text-foreground">Instruksi transfer bank</h3>
+                                    <div className="space-y-2 text-sm">
+                                        <Row label="Bank" value="BCA" />
+                                        <Row label="Nomor rekening" value="1234567890" />
+                                        <Row label="Atas nama" value="PT Gelaran Indonesia" />
+                                        <Row label="Jumlah transfer" value={formatCurrency(booking.totalAmount)} valueClassName="font-semibold text-(--accent-primary)" />
+                                        <Row label="Kode booking" value={booking.bookingCode} valueClassName="font-mono text-xs" />
+                                    </div>
+                                    <div className="mt-4 rounded-xl border border-[rgba(251,193,23,0.28)] bg-(--warning-bg) p-3 text-xs leading-6 text-(--warning-text)">
+                                        Pastikan menyertakan kode booking <strong>{booking.bookingCode}</strong> pada catatan transfer agar verifikasi lebih cepat.
+                                    </div>
+                                </div>
+
+                                {booking.transaction?.verificationStatus === "PROOF_UPLOADED" || booking.transaction?.verificationStatus === "VERIFIED" || booking.transaction?.verificationStatus === "REJECTED" ? (
+                                    <div className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-5">
+                                        <div className="flex items-start justify-between gap-3 mb-3">
+                                            <h3 className="text-sm font-semibold text-foreground">Status verifikasi</h3>
+                                            {booking.transaction.verificationStatus === "PROOF_UPLOADED" ? (
+                                                <CustomerStatusBadge label="Menunggu verifikasi" tone="warning" icon={Clock} />
+                                            ) : booking.transaction.verificationStatus === "VERIFIED" ? (
+                                                <CustomerStatusBadge label="Terverifikasi" tone="success" icon={CheckCircle} />
+                                            ) : booking.transaction.verificationStatus === "REJECTED" ? (
+                                                <CustomerStatusBadge label="Ditolak" tone="danger" icon={XCircle} />
+                                            ) : null}
+                                        </div>
+
+                                        {booking.transaction.paymentProofUrl ? (
+                                            <div className="mb-3">
+                                                <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">Bukti yang diunggah</p>
+                                                {paymentProofKind === "pdf" ? (
+                                                    <a href={booking.transaction.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-xl border border-(--border) bg-(--surface) p-3 text-sm text-foreground hover:bg-(--surface-hover)">
+                                                        <FileText className="h-5 w-5 text-(--text-muted)" />
+                                                        Lihat PDF
+                                                        <ExternalLink className="ml-auto h-4 w-4" />
+                                                    </a>
+                                                ) : (
+                                                    <a href={booking.transaction.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-xl border border-(--border)">
+                                                        <img src={booking.transaction.paymentProofUrl} alt="Bukti pembayaran" className="h-48 w-full object-cover" />
+                                                    </a>
+                                                )}
+                                                {booking.transaction.paymentProofUploadedAt ? (
+                                                    <p className="mt-2 text-xs text-(--text-muted)">Diunggah {formatDateTime(booking.transaction.paymentProofUploadedAt)}</p>
+                                                ) : null}
+                                            </div>
+                                        ) : null}
+
+                                        {booking.transaction.verificationStatus === "REJECTED" && booking.transaction.verificationNotes ? (
+                                            <div className="mb-3 rounded-xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-3 text-sm text-(--error-text)">
+                                                <p className="mb-1 font-semibold">Alasan penolakan:</p>
+                                                <p>{booking.transaction.verificationNotes}</p>
+                                            </div>
+                                        ) : null}
+
+                                        {booking.transaction.verificationStatus === "PROOF_UPLOADED" ? (
+                                            <p className="text-sm text-(--text-secondary)">Bukti pembayaran sedang ditinjau oleh tim kami. Proses verifikasi biasanya memakan waktu 1-24 jam.</p>
+                                        ) : booking.transaction.verificationStatus === "REJECTED" ? (
+                                            <button type="button" onClick={openUploadModal} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)">
+                                                <Upload className="h-4 w-4" />
+                                                Unggah ulang bukti
+                                            </button>
+                                        ) : null}
+                                    </div>
+                                ) : (
+                                    <button type="button" onClick={openUploadModal} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-5 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)">
+                                        <Upload className="h-4 w-4" />
+                                        Upload bukti pembayaran
+                                    </button>
+                                )}
+                            </div>
+                        </DashboardSection>
+                    ) : null}
+
                     {booking.transaction ? (
                         <DashboardSection title="Info pembayaran" description="Detail transaksi yang terkait langsung dengan booking ini.">
                             <div className="space-y-3 text-sm">
@@ -839,6 +1027,86 @@ export default function BookingDetailPage({
                     )}
                 </ModalCard>
             ) : null}
+
+            {showUploadModal ? (
+                <ModalCard>
+                    {uploadSuccess ? (
+                        <div className="text-center">
+                            <span className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-(--success-bg) text-(--success-text)">
+                                <CheckCircle className="h-8 w-8" />
+                            </span>
+                            <h3 className="mb-2 text-xl font-semibold text-foreground">Bukti berhasil diunggah</h3>
+                            <p className="mb-6 text-sm leading-7 text-(--text-secondary)">Bukti pembayaran kamu sedang ditinjau oleh tim kami. Kamu akan menerima notifikasi setelah pembayaran diverifikasi.</p>
+                            <button type="button" onClick={closeUploadModal} className="inline-flex w-full items-center justify-center rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white">Tutup</button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-(--surface-brand-soft) text-(--accent-primary)">
+                                    <Upload className="h-6 w-6" />
+                                </span>
+                                <div>
+                                    <h3 className="text-lg font-semibold text-foreground">Upload bukti pembayaran</h3>
+                                    <p className="text-sm text-(--text-muted)">JPG, PNG, atau PDF (max 5MB)</p>
+                                </div>
+                            </div>
+
+                            {uploadError ? <div className="mb-4 rounded-2xl border border-[rgba(198,40,40,0.16)] bg-(--error-bg) p-3 text-sm text-(--error-text)">{uploadError}</div> : null}
+
+                            <div className="mb-6">
+                                <label
+                                    htmlFor="payment-proof-upload"
+                                    onDragEnter={handleDrag}
+                                    onDragLeave={handleDrag}
+                                    onDragOver={handleDrag}
+                                    onDrop={handleDrop}
+                                    className={`relative rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${dragActive ? "border-(--accent-primary) bg-(--surface-brand-soft)" : "border-(--border) bg-(--surface-elevated)"}`}
+                                >
+                                    <input
+                                        id="payment-proof-upload"
+                                        type="file"
+                                        accept="image/jpeg,image/png,application/pdf"
+                                        onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
+                                        className="absolute inset-0 cursor-pointer opacity-0"
+                                    />
+                                    {uploadFile ? (
+                                        <div className="space-y-3">
+                                            {uploadPreview ? (
+                                                <img src={uploadPreview} alt="Preview" className="mx-auto h-32 w-auto rounded-xl object-contain" />
+                                            ) : (
+                                                <FileText className="mx-auto h-12 w-12 text-(--accent-primary)" />
+                                            )}
+                                            <p className="text-sm font-medium text-foreground">{uploadFile.name}</p>
+                                            <p className="text-xs text-(--text-muted)">{(uploadFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                                            <button type="button" onClick={() => { setUploadFile(null); setUploadPreview(null); }} className="text-xs text-(--accent-primary) hover:underline">Ganti file</button>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            <ImageIcon className="mx-auto h-12 w-12 text-(--text-muted)" />
+                                            <div>
+                                                <p className="text-sm font-medium text-foreground">Drag & drop file atau klik untuk pilih</p>
+                                                <p className="mt-1 text-xs text-(--text-muted)">JPG, PNG, atau PDF (max 5MB)</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </label>
+                            </div>
+
+                            <div className="mb-6 rounded-2xl border border-[rgba(41,179,182,0.16)] bg-[rgba(41,179,182,0.06)] p-4 text-sm leading-7 text-(--text-secondary)">
+                                Pastikan bukti transfer menampilkan nama pengirim, jumlah, dan tanggal transfer dengan jelas.
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button type="button" onClick={closeUploadModal} disabled={isUploading} className="inline-flex flex-1 items-center justify-center rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-3 text-sm font-semibold text-foreground disabled:opacity-60">Batal</button>
+                                <button type="button" onClick={handleUploadProof} disabled={isUploading || !uploadFile} className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white disabled:opacity-60">
+                                    {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                                    {isUploading ? "Mengunggah..." : "Upload bukti"}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </ModalCard>
+            ) : null}
         </div>
     );
 }
@@ -861,4 +1129,3 @@ function ModalCard({ children }: { children: React.ReactNode }) {
         </div>
     );
 }
-

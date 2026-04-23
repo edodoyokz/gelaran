@@ -36,7 +36,6 @@ test("key shell components consume the shared MaterialSymbol wrapper", () => {
     "components/organizer/OrganizerLayoutWrapper.tsx",
     "components/organizer/OrganizerSidebar.tsx",
     "components/organizer/organizer-workspace-primitives.tsx",
-    "components/shared/phase-two-shells.tsx",
   ];
 
   for (const relativePath of files) {

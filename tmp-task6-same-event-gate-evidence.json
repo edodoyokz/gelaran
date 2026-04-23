@@ -1,0 +1,23 @@
+{
+  "organizerGateBefore": {
+    "url": "http://localhost:3000/organizer/events/e3eb13a2-12a4-4a75-b8ff-031439be0dac/gate",
+    "body": "Solo Nightlife Events\n\nPROFESSIONAL SUITE\n\ndashboard\nDashboard\nevent\nEvents\nconfirmation_number\nGate & POS\npayments\nFinances\ngroup\nTeam\nsettings\nSettings\nadd_circle\nCreate Event\nDark Mode\nDokumentasi\nKeluar\nsearch\nnotifications\n\nSolo Nightlife Events\n\nVerified Organizer\n\nS"
+  },
+  "organizerGateAfter": {
+    "url": "http://localhost:3000/organizer/events/e3eb13a2-12a4-4a75-b8ff-031439be0dac/gate",
+    "body": "Solo Nightlife Events\n\nPROFESSIONAL SUITE\n\ndashboard\nDashboard\nevent\nEvents\nconfirmation_number\nGate & POS\npayments\nFinances\ngroup\nTeam\nsettings\nSettings\nadd_circle\nCreate Event\nDark Mode\nDokumentasi\nKeluar\nsearch\nnotifications\n\nSolo Nightlife Events\n\nVerified Organizer\n\nS\nManajemen Gate & POS\n\nKelola akses masuk dan penjualan on-site\n\nNew Year Party 2026: Sky Lounge Edition\n\n31 Desember 2026 pukul 07.00\n\nTotal Tiket\n\n3\n\nCheck-in\n\n0\n\n(0%)\nBelum Masuk\n\n3\n\nSales On-site\n\n0\n\nGate Scanner\n\nAkses untuk check-in peserta\n\nAktif\nBatas Perangkat\n0/3\nRegenerate PIN\nCabut Akses\nPOS Kasir\n\nAkses untuk penjualan on-site\n\nBatas Perangkat\n0/2\nGenerate PIN\n\nMode Organizer\n\nBuka Gate/POS tanpa login PIN\n\nGate Scanner\nPOS Kasir\nPIN Gate Scanner berhasil dibuat\nKredensial Gate Scanner\n\nBagikan ke staff yang bertugas\n\nNew Year Party 2026: Sky Lounge Edition\n\nKODE EVENT\nnew-year-party-2026-sky-lounge\nPIN AKSES\n9488-8564\nURL AKSES\nhttp://localhost:3000/gate/access\nSalin Kredensial\n\n⚠️ PIN hanya ditampilkan sekali. Pastikan sudah disalin."
+  },
+  "credentials": {
+    "eventSlug": "new-year-party-2026-sky-lounge",
+    "pin": "94888564",
+    "body": "Solo Nightlife Events\n\nPROFESSIONAL SUITE\n\ndashboard\nDashboard\nevent\nEvents\nconfirmation_number\nGate & POS\npayments\nFinances\ngroup\nTeam\nsettings\nSettings\nadd_circle\nCreate Event\nDark Mode\nDokumentasi\nKeluar\nsearch\nnotifications\n\nSolo Nightlife Events\n\nVerified Organizer\n\nS\nManajemen Gate & POS\n\nKelola akses masuk dan penjualan on-site\n\nNew Year Party 2026: Sky Lounge Edition\n\n31 Desember 2026 pukul 07.00\n\nTotal Tiket\n\n3\n\nCheck-in\n\n0\n\n(0%)\nBelum Masuk\n\n3\n\nSales On-site\n\n0\n\nGate Scanner\n\nAkses untuk check-in peserta\n\nAktif\nBatas Perangkat\n0/3\nRegenerate PIN\nCabut Akses\nPOS Kasir\n\nAkses untuk penjualan on-site\n\nBatas Perangkat\n0/2\nGenerate PIN\n\nMode Organizer\n\nBuka Gate/POS tanpa login PIN\n\nGate Scanner\nPOS Kasir\nPIN Gate Scanner berhasil dibuat\nKredensial Gate Scanner\n\nBagikan ke staff yang bertugas\n\nNew Year Party 2026: Sky Lounge Edition\n\nKODE EVENT\nnew-year-party-2026-sky-lounge\nPIN AKSES\n9488-8564\nURL AKSES\nhttp://localhost:3000/gate/access\nSalin Kredensial\n\n⚠️ PIN hanya ditampilkan sekali. Pastikan sudah disalin."
+  },
+  "gateAccess": {
+    "url": "http://localhost:3000/gate",
+    "body": "New Year Party 2026: Sky Lounge Edition\n\nStaff: Task6 Gate Rerun\n\nTOTAL TIKET\n\n3\n\nCHECKED IN\n\n0\n\nBELUM MASUK\n\n3\n\nCheck-in progress\n0%\nMulai Scan\n\nKamera tidak aktif\n\nKlik \"Mulai Scan\" untuk mengaktifkan kamera\n\natau\nInput Manual\nCheck In"
+  },
+  "gateResult": {
+    "url": "http://localhost:3000/gate",
+    "body": "New Year Party 2026: Sky Lounge Edition\n\nStaff: Task6 Gate Rerun\n\nTOTAL TIKET\n\n3\n\nCHECKED IN\n\n1\n\nBELUM MASUK\n\n2\n\nCheck-in progress\n33%\nMulai Scan\n\nKamera tidak aktif\n\nKlik \"Mulai Scan\" untuk mengaktifkan kamera\n\natau\nInput Manual\nCheck In\nCheck-in Berhasil!\n\nTiket valid dan berhasil dicatat sebagai check-in.\n\nNama: Guest\n\nTiket: Regular Pass\n\nBooking: BSC-4O1QUFNE\n\nEvent: New Year Party 2026: Sky Lounge Edition\n\nCheck-in pada: 8/4/2026, 19.22.06"
+  }
+}

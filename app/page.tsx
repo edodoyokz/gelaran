@@ -16,15 +16,21 @@ import {
     TrendingUp,
     Zap,
 } from "lucide-react";
-import { CategoryPill } from "@/components/features/home/CategoryPill";
+import { CategoryPill, Hero } from "@/components/features/home";
 import { EventCard } from "@/components/features/events/EventCard";
 import {
     EditorialPanel,
-    MarketingHero,
     PublicPageShell,
     PublicSection,
 } from "@/components/shared/public-marketing";
 import { EmptyState } from "@/components/shared/phase-two-shells";
+import {
+    formatLandingEventDate,
+    formatLandingEventPrice,
+    formatLandingEventTime,
+} from "@/lib/home/landing-page";
+
+const EVENT_GRID_ID = "home-event-results";
 
 interface Category {
     id: string;
@@ -102,40 +108,26 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
     sport: <Zap size={18} />,
 };
 
-function formatEventDate(schedule: EventSchedule | null): string {
-    if (!schedule) return "Segera";
-
-    return new Date(schedule.scheduleDate).toLocaleDateString("id-ID", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    });
-}
-
-function formatEventTime(schedule: EventSchedule | null): string {
-    if (!schedule) return "";
-
-    return `${new Date(schedule.startTime).toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-    })} WIB`;
-}
-
 function formatLocation(event: PublicEvent): string {
     if (event.eventType === "ONLINE") return "Online (Virtual)";
     if (event.venue) return `${event.venue.name}, ${event.venue.city}`;
     return "Lokasi akan diumumkan";
 }
 
-function formatPrice(price: number | null): string {
-    if (!price || price <= 0) return "Gratis";
+function isSuccessfulResponse(response: Response): boolean {
+    return response.ok;
+}
 
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0,
-    }).format(price);
+async function parseSuccessfulJson<T>(response: Response): Promise<T | null> {
+    if (!isSuccessfulResponse(response)) {
+        return null;
+    }
+
+    try {
+        return (await response.json()) as T;
+    } catch {
+        return null;
+    }
 }
 
 export default function HomePage() {
@@ -148,39 +140,65 @@ export default function HomePage() {
     const [selectedCategory, setSelectedCategory] = useState("all");
 
     useEffect(() => {
+        const abortController = new AbortController();
+
         const loadData = async () => {
             try {
                 setIsLoading(true);
 
                 const [categoriesRes, eventsRes, onlineRes, topEventsRes, reviewHighlightsRes] = await Promise.all([
-                    fetch("/api/categories"),
-                    fetch("/api/events?limit=8&status=PUBLISHED"),
-                    fetch("/api/events?limit=4&status=PUBLISHED&eventType=ONLINE"),
-                    fetch("/api/home/top-events"),
-                    fetch("/api/home/review-highlights"),
+                    fetch("/api/categories", { signal: abortController.signal }),
+                    fetch("/api/events?limit=8&status=PUBLISHED", { signal: abortController.signal }),
+                    fetch("/api/events?limit=4&status=PUBLISHED&eventType=ONLINE", { signal: abortController.signal }),
+                    fetch("/api/home/top-events", { signal: abortController.signal }),
+                    fetch("/api/home/review-highlights", { signal: abortController.signal }),
                 ]);
 
                 const [categoriesData, eventsData, onlineData, topEventsData, reviewHighlightsData] = await Promise.all([
-                    categoriesRes.json(),
-                    eventsRes.json(),
-                    onlineRes.json(),
-                    topEventsRes.json(),
-                    reviewHighlightsRes.json(),
+                    parseSuccessfulJson<{ success?: boolean; data?: Category[] }>(categoriesRes),
+                    parseSuccessfulJson<{ success?: boolean; data?: PublicEvent[] }>(eventsRes),
+                    parseSuccessfulJson<{ success?: boolean; data?: PublicEvent[] }>(onlineRes),
+                    parseSuccessfulJson<{ success?: boolean; data?: PublicEvent[] }>(topEventsRes),
+                    parseSuccessfulJson<{ success?: boolean; data?: ReviewHighlight[] }>(reviewHighlightsRes),
                 ]);
 
-                if (categoriesData.success) setCategories(categoriesData.data);
-                if (eventsData.success) setEvents(eventsData.data);
-                if (onlineData.success) setOnlineEvents(onlineData.data);
-                if (topEventsData.success) setTopEvents(topEventsData.data);
-                if (reviewHighlightsData.success) setReviewHighlights(reviewHighlightsData.data);
-            } catch {
+                if (abortController.signal.aborted) {
+                    return;
+                }
+
+                setCategories(categoriesData?.success && categoriesData.data ? categoriesData.data : []);
+                setEvents(eventsData?.success && eventsData.data ? eventsData.data : []);
+                setOnlineEvents(onlineData?.success && onlineData.data ? onlineData.data : []);
+                setTopEvents(topEventsData?.success && topEventsData.data ? topEventsData.data : []);
+                setReviewHighlights(reviewHighlightsData?.success && reviewHighlightsData.data ? reviewHighlightsData.data : []);
+            } catch (error) {
+                if (abortController.signal.aborted) {
+                    return;
+                }
+
+                setCategories([]);
+                setEvents([]);
+                setOnlineEvents([]);
+                setTopEvents([]);
+                setReviewHighlights([]);
+
+                if (error instanceof Error && error.name === "AbortError") {
+                    return;
+                }
+
                 console.error("Data load failed");
             } finally {
-                setIsLoading(false);
+                if (!abortController.signal.aborted) {
+                    setIsLoading(false);
+                }
             }
         };
 
         loadData();
+
+        return () => {
+            abortController.abort();
+        };
     }, []);
 
     const featuredEvents = useMemo(() => events.filter((event) => event.isFeatured).slice(0, 3), [events]);
@@ -197,65 +215,37 @@ export default function HomePage() {
         [categories, events.length],
     );
 
+    const heroFeaturedEvent = featuredEvents[0] ?? events[0] ?? null;
+
+    const heroSupportEvents = (featuredEvents.length > 1 ? featuredEvents.slice(1, 3) : events.slice(0, 2))
+        .filter((event) => event.id !== heroFeaturedEvent?.id)
+        .slice(0, 2)
+        .map((event) => ({
+            id: event.id,
+            title: event.title,
+            href: `/events/${event.slug}`,
+            location: formatLocation(event),
+        }));
+
     return (
         <PublicPageShell
             hero={
-                <MarketingHero
-                    eyebrow="Gelaran editorial selection"
-                    title={<>Temukan event yang terasa <em className="text-(--accent-secondary) not-italic">terkurasi</em>, bukan sekadar terdaftar.</>}
-                    description={
-                        <p>
-                            Gelaran menghadirkan pengalaman penemuan event yang lebih terang, terarah, dan kaya konteks—
-                            dari pertunjukan budaya hingga kelas kreatif, semua dirangkum dalam bahasa visual editorial yang konsisten.
-                        </p>
-                    }
-                    primaryCta={{ href: "/events", label: "Jelajahi event" }}
-                    secondaryCta={{ href: "/become-organizer", label: "Jadi organizer" }}
+                <Hero
+                    featuredEvent={heroFeaturedEvent ? {
+                        title: heroFeaturedEvent.title,
+                        href: `/events/${heroFeaturedEvent.slug}`,
+                        location: formatLocation(heroFeaturedEvent),
+                        date: formatLandingEventDate(heroFeaturedEvent.schedule),
+                        price: formatLandingEventPrice(heroFeaturedEvent.startingPrice),
+                        image: heroFeaturedEvent.posterImage || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+                        category: heroFeaturedEvent.category?.name || "Featured event",
+                    } : null}
+                    supportEvents={heroSupportEvents}
                     stats={[
-                        { label: "Kategori aktif", value: `${categories.length || 0}+`, tone: "accent" },
-                        { label: "Event tayang", value: `${events.length || 0}`, tone: "default" },
-                        { label: "Review unggulan", value: `${reviewHighlights.length || 0}`, tone: "warning" },
+                        { label: "Kategori aktif", value: `${categories.length || 0}+` },
+                        { label: "Event tayang", value: `${events.length || 0}` },
+                        { label: "Review unggulan", value: `${reviewHighlights.length || 0}` },
                     ]}
-                    aside={
-                        <EditorialPanel className="max-w-xl space-y-5">
-                            <div className="space-y-3">
-                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-(--text-muted)">
-                                    Pilihan pekan ini
-                                </p>
-                                {featuredEvents.length > 0 ? (
-                                    <div className="space-y-4">
-                                        {featuredEvents.slice(0, 2).map((event, index) => (
-                                            <Link
-                                                key={event.id}
-                                                href={`/events/${event.slug}`}
-                                                className="group flex items-center gap-4 rounded-2xl border border-(--border) bg-(--surface) px-4 py-4 transition-transform duration-200 hover:-translate-y-0.5"
-                                            >
-                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-sm font-semibold text-(--accent-primary)">
-                                                    0{index + 1}
-                                                </div>
-                                                <div className="min-w-0 flex-1">
-                                                    <p className="truncate text-sm font-semibold text-foreground">
-                                                        {event.title}
-                                                    </p>
-                                                    <p className="truncate text-sm text-(--text-secondary)">
-                                                        {formatLocation(event)}
-                                                    </p>
-                                                </div>
-                                                <ArrowRight className="h-4 w-4 text-(--accent-secondary) transition-transform duration-200 group-hover:translate-x-1" />
-                                            </Link>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="rounded-2xl border border-dashed border-(--border) bg-(--surface) px-5 py-8 text-center text-sm text-(--text-secondary)">
-                                        Highlight event akan muncul setelah data publik dimuat.
-                                    </div>
-                                )}
-                            </div>
-                            <div className="rounded-2xl bg-(--surface-brand-soft) px-5 py-4 text-sm leading-7 text-(--text-secondary)">
-                                Gunakan filter kategori di bawah untuk berpindah dari event populer, agenda online, hingga rekomendasi komunitas tanpa kehilangan konteks brand Gelaran.
-                            </div>
-                        </EditorialPanel>
-                    }
                 />
             }
         >
@@ -266,17 +256,21 @@ export default function HomePage() {
                 className="pt-0"
             >
                 <EditorialPanel className="p-4 sm:p-5">
-                    <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+                    <fieldset className="min-w-0">
+                        <legend className="sr-only">Filter kategori event</legend>
+                        <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
                         {displayCategories.map((category) => (
                             <CategoryPill
                                 key={category.id}
                                 icon={CATEGORY_ICONS[category.slug] || <TrendingUp size={18} />}
                                 name={category.name}
                                 isActive={selectedCategory === category.slug}
+                                controlsId={EVENT_GRID_ID}
                                 onClick={() => setSelectedCategory(category.slug)}
                             />
                         ))}
-                    </div>
+                        </div>
+                    </fieldset>
                 </EditorialPanel>
             </PublicSection>
 
@@ -296,8 +290,15 @@ export default function HomePage() {
                 className="pt-0"
             >
                 {isLoading ? (
-                    <div className="flex items-center justify-center py-24">
+                    <div
+                        aria-live="polite"
+                        aria-busy="true"
+                        className="flex flex-col items-center justify-center gap-3 py-24 text-center"
+                    >
                         <Loader2 className="h-10 w-10 animate-spin text-(--accent-primary)" />
+                        <p className="text-sm font-medium text-(--text-secondary)">
+                            Memuat kurasi event publik Gelaran.
+                        </p>
                     </div>
                 ) : filteredEvents.length === 0 ? (
                     <EmptyState
@@ -315,15 +316,15 @@ export default function HomePage() {
                         }
                     />
                 ) : (
-                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                    <div id={EVENT_GRID_ID} className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                         {filteredEvents.map((event) => (
                             <EventCard
                                 key={event.id}
                                 id={event.id}
                                 slug={event.slug}
                                 title={event.title}
-                                date={formatEventDate(event.schedule)}
-                                time={formatEventTime(event.schedule)}
+                                date={formatLandingEventDate(event.schedule)}
+                                time={formatLandingEventTime(event.schedule)}
                                 location={formatLocation(event)}
                                 price={event.startingPrice ?? 0}
                                 image={event.posterImage || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
@@ -368,7 +369,7 @@ export default function HomePage() {
                                         </h3>
                                         <p className="text-sm text-white/82">{formatLocation(event)}</p>
                                         <p className="text-sm text-white/72">
-                                            {formatEventDate(event.schedule)} · {formatPrice(event.startingPrice)}
+                                            {formatLandingEventDate(event.schedule)} · {formatLandingEventPrice(event.startingPrice)}
                                         </p>
                                     </div>
                                 </div>
@@ -404,8 +405,8 @@ export default function HomePage() {
                                     id={event.id}
                                     slug={event.slug}
                                     title={event.title}
-                                    date={formatEventDate(event.schedule)}
-                                    time={formatEventTime(event.schedule)}
+                                    date={formatLandingEventDate(event.schedule)}
+                                    time={formatLandingEventTime(event.schedule)}
                                     location={formatLocation(event)}
                                     price={event.startingPrice ?? 0}
                                     image={event.posterImage || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}
@@ -443,8 +444,8 @@ export default function HomePage() {
                                 id={event.id}
                                 slug={event.slug}
                                 title={event.title}
-                                date={formatEventDate(event.schedule)}
-                                time={formatEventTime(event.schedule)}
+                                date={formatLandingEventDate(event.schedule)}
+                                time={formatLandingEventTime(event.schedule)}
                                 location={formatLocation(event)}
                                 price={event.startingPrice ?? 0}
                                 image={event.posterImage || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"}

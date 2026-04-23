@@ -403,6 +403,12 @@ model Transaction {
   gatewayResponse      Json?             @map("gateway_response")
   gatewayTransactionId String?           @map("gateway_transaction_id")
   failureReason        String?           @map("failure_reason")
+  paymentProofUrl        String?           @map("payment_proof_url")
+  paymentProofUploadedAt DateTime?         @map("payment_proof_uploaded_at")
+  verificationStatus     PaymentVerificationStatus? @map("verification_status")
+  verifiedBy             String?           @map("verified_by") @db.Uuid
+  verifiedAt             DateTime?         @map("verified_at")
+  verificationNotes      String?           @map("verification_notes")
   paidAt               DateTime?         @map("paid_at")
   expiresAt            DateTime?         @map("expires_at")
   createdAt            DateTime          @default(now()) @map("created_at")
@@ -411,6 +417,13 @@ model Transaction {
   booking              Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
+}
+
+enum PaymentVerificationStatus {
+  PENDING_PROOF
+  PROOF_UPLOADED
+  VERIFIED
+  REJECTED
 }
 
 model CheckInLog {

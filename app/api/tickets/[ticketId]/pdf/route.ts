@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
 import { generateTicketPdfData } from "@/lib/pdf/ticket-template";
 import { EVoucherTemplate } from "@/lib/pdf/evoucher-template";
 import { getTemplate, mergeVoucherConfig } from "@/lib/pdf/templates/registry";
 import type { VoucherConfig } from "@/lib/pdf/types";
 import QRCode from "qrcode";
+import { getOptionalAuthenticatedAppUser } from "@/lib/auth/route-auth";
 
 const DEFAULT_VOUCHER_CONFIG: VoucherConfig = {
   colors: {
@@ -33,10 +33,14 @@ export async function GET(
   try {
     const { ticketId } = await params;
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await getOptionalAuthenticatedAppUser();
+
+    if (authContext && "error" in authContext) {
+      return NextResponse.json(
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
+      );
+    }
 
     const ticket = await prisma.bookedTicket.findUnique({
       where: { id: ticketId },
@@ -45,6 +49,12 @@ export async function GET(
         booking: {
           include: {
             user: { select: { id: true, name: true, email: true } },
+            eventSchedule: {
+              select: {
+                scheduleDate: true,
+                startTime: true,
+              },
+            },
             event: {
               include: {
                 venue: { select: { name: true, city: true } },
@@ -72,8 +82,8 @@ export async function GET(
     }
 
     const isOwner =
-      (user && ticket.booking.userId === user.id) ||
-      (!user && !ticket.booking.userId);
+      (authContext && ticket.booking.userId === authContext.dbUserId) ||
+      (!authContext && !ticket.booking.userId);
 
     if (!isOwner && ticket.booking.userId) {
       return NextResponse.json(

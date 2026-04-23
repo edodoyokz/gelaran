@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
     Eye,
     EyeOff,
@@ -12,15 +12,17 @@ import {
     AlertCircle,
     ArrowLeft,
     ShieldCheck,
+    Circle,
 } from "lucide-react";
 import {
+    AuthEditorialPanel,
     AuthField,
     AuthFormShell,
     AuthIconButton,
-    AuthInputShell,
     AuthMessage,
     AuthMetaList,
     AuthPageIntro,
+    AuthPasswordShell,
     AuthPrimaryButton,
     AuthSecondaryLink,
     AuthSectionCard,
@@ -29,7 +31,6 @@ import { createClient } from "@/lib/supabase/client";
 
 function ResetPasswordForm() {
     const router = useRouter();
-    const searchParams = useSearchParams();
 
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,20 +40,16 @@ function ResetPasswordForm() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     const [isValidSession, setIsValidSession] = useState<boolean | null>(null);
+    const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         const checkSession = async () => {
             const supabase = createClient();
             const {
-                data: { session },
-            } = await supabase.auth.getSession();
+                data: { user },
+            } = await supabase.auth.getUser();
 
-            const hasRecoveryParams =
-                searchParams.get("type") === "recovery" ||
-                searchParams.get("code") ||
-                window.location.hash.includes("type=recovery");
-
-            if (session || hasRecoveryParams) {
+            if (user) {
                 setIsValidSession(true);
             } else {
                 setIsValidSession(false);
@@ -60,7 +57,15 @@ function ResetPasswordForm() {
         };
 
         checkSession();
-    }, [searchParams]);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (redirectTimeoutRef.current) {
+                clearTimeout(redirectTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const validatePassword = (pwd: string): string | null => {
         if (pwd.length < 8) {
@@ -111,7 +116,11 @@ function ResetPasswordForm() {
             }
 
             setSuccess(true);
-            setTimeout(() => {
+            if (redirectTimeoutRef.current) {
+                clearTimeout(redirectTimeoutRef.current);
+            }
+
+            redirectTimeoutRef.current = setTimeout(() => {
                 router.push("/login");
             }, 3000);
         } catch {
@@ -127,7 +136,7 @@ function ResetPasswordForm() {
                 strength: 0,
                 label: "Belum diisi",
                 barClassName: "bg-transparent",
-                textClassName: "text-(--text-muted)",
+                textClassName: "text-[#6f7978]",
             };
         }
 
@@ -175,7 +184,7 @@ function ResetPasswordForm() {
     if (isValidSession === null) {
         return (
             <div className="flex flex-col h-full items-center justify-center rounded-3xl border border-[#bec8c8]/20 bg-[#faf9f7] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
-                <Loader2 className="h-8 w-8 animate-spin text-[#015959]" />
+                <Loader2 aria-hidden="true" className="h-8 w-8 animate-spin text-[#015959]" />
             </div>
         );
     }
@@ -184,6 +193,7 @@ function ResetPasswordForm() {
         return (
             <div className="flex flex-col h-full">
                 <AuthPageIntro
+                    eyebrow="Recovery link expired"
                     title="Link tidak valid"
                     description="Link reset password tidak valid atau sudah kadaluarsa. Minta email reset baru untuk melanjutkan dengan aman."
                     align="center"
@@ -191,7 +201,7 @@ function ResetPasswordForm() {
 
                 <AuthSectionCard tone="danger" className="space-y-6 text-center">
                     <div className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-full bg-white text-[#b3261e] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
-                        <AlertCircle className="h-9 w-9" />
+                        <AlertCircle aria-hidden="true" className="h-9 w-9" />
                     </div>
                     <p className="text-sm leading-7 text-[#8c1d18]">
                         Token pemulihan mungkin sudah digunakan atau masa aktifnya habis. Gunakan link terbaru agar proses reset tetap aman.
@@ -206,7 +216,7 @@ function ResetPasswordForm() {
                     </div>
                     <div className="flex justify-center mt-4">
                         <AuthSecondaryLink href="/login" className="gap-2">
-                            <ArrowLeft className="h-4 w-4 text-[#1a1c1b]" />
+                            <ArrowLeft aria-hidden="true" className="h-4 w-4 text-[#1a1c1b]" />
                             Kembali ke login
                         </AuthSecondaryLink>
                     </div>
@@ -219,6 +229,7 @@ function ResetPasswordForm() {
         return (
             <div className="flex flex-col h-full">
                 <AuthPageIntro
+                    eyebrow="Password updated"
                     title="Password berhasil diubah"
                     description="Password akun kamu sudah diperbarui. Kamu akan dialihkan ke halaman login dalam beberapa detik."
                     align="center"
@@ -226,14 +237,14 @@ function ResetPasswordForm() {
 
                 <AuthSectionCard tone="success" className="space-y-6 text-center">
                     <div className="mx-auto inline-flex h-18 w-18 items-center justify-center rounded-full bg-white text-[#13876c] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
-                        <CheckCircle className="h-9 w-9" />
+                        <CheckCircle aria-hidden="true" className="h-9 w-9" />
                     </div>
                     <p className="text-sm leading-7 text-[#0e5d4a]">
                         Gunakan password baru saat login berikutnya dan simpan di password manager tepercaya untuk keamanan yang lebih baik.
                     </p>
                     <div className="flex justify-center mt-8">
                         <AuthSecondaryLink href="/login" className="gap-2">
-                            <ArrowLeft className="h-4 w-4 text-[#1a1c1b]" />
+                            <ArrowLeft aria-hidden="true" className="h-4 w-4 text-[#1a1c1b]" />
                             Masuk sekarang
                         </AuthSecondaryLink>
                     </div>
@@ -245,15 +256,34 @@ function ResetPasswordForm() {
     return (
         <div className="flex flex-col h-full">
             <AuthPageIntro
+                eyebrow="Security reset"
                 title="Reset password"
                 description="Buat password baru yang lebih kuat untuk akun kamu. Setelah tersimpan, password lama tidak akan bisa digunakan lagi."
             />
 
+            <AuthEditorialPanel
+                kicker="Security reset"
+                title={<>Secure password <span className="italic text-[#1e6868]">renewal</span> for your archive.</>}
+                description="Ikuti checklist keamanan saat membuat password baru. Tautan recovery dan sesi akun tetap dipertahankan seperti alur sebelumnya, jadi fokus perubahan tetap hanya pada tampilan dan panduan visual."
+                badge={
+                    <>
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#eef6f5] text-[#015959]">
+                            <ShieldCheck aria-hidden="true" className="h-5 w-5" />
+                        </span>
+                        <div className="space-y-1">
+                            <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#6f7978]">Security checklist</p>
+                            <p className="text-sm text-[#3f4948]">Password lama langsung tidak berlaku setelah pembaruan berhasil.</p>
+                        </div>
+                    </>
+                }
+                className="mb-8"
+            />
+
             <AuthFormShell>
-                <AuthSectionCard className="space-y-4">
+                <AuthSectionCard className="space-y-4 rounded-[1.35rem] border-[rgba(190,200,200,0.22)] bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(244,243,241,0.84))] p-5 sm:p-6">
                     <div className="flex items-start gap-4">
                         <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[#015959] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
-                            <ShieldCheck className="h-5 w-5" />
+                            <ShieldCheck aria-hidden="true" className="h-5 w-5" />
                         </span>
                         <div className="space-y-3">
                             <p className="text-sm font-semibold text-[#1a1c1b]">Rekomendasi keamanan</p>
@@ -272,30 +302,32 @@ function ResetPasswordForm() {
                     <AuthMessage tone="danger" title="Password belum diperbarui" description={error} />
                 ) : null}
 
-                <form className="space-y-5" onSubmit={handleSubmit}>
-                    <AuthField label="Password baru" helper="Minimal 8 karakter dengan huruf besar, kecil, dan angka">
-                        <AuthInputShell
-                            id="password"
-                            name="password"
-                            type={showPassword ? "text" : "password"}
-                            autoComplete="new-password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Masukkan password baru"
-                            inputClassName="pr-12"
-                        />
-                        <div className="-mt-[3.35rem] flex justify-end pr-3">
-                            <AuthIconButton
-                                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                            </AuthIconButton>
-                        </div>
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div className="space-y-5">
+                        <AuthField htmlFor="password" label="Password baru" helper="Minimal 8 karakter dengan huruf besar, kecil, dan angka">
+                            <AuthPasswordShell
+                                id="password"
+                                name="password"
+                                type={showPassword ? "text" : "password"}
+                                autoComplete="new-password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                icon={Lock}
+                                endAdornment={
+                                    <AuthIconButton
+                                        aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <EyeOff aria-hidden="true" className="h-5 w-5" /> : <Eye aria-hidden="true" className="h-5 w-5" />}
+                                    </AuthIconButton>
+                                }
+                            />
+                        </AuthField>
 
-                        <div className="space-y-3 rounded-2xl border border-[#bec8c8]/20 bg-[#f4f3f1] p-4 mt-8">
-                            <div className="flex items-center justify-between gap-3 text-xs uppercase tracking-[0.16em] text-[#6f7978]">
+                        <div className="space-y-4 rounded-[1.35rem] border border-[#bec8c8]/18 bg-[linear-gradient(180deg,rgba(244,243,241,0.92),rgba(255,255,255,0.96))] p-4 sm:p-5">
+                            <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.2em] text-[#6f7978]">
                                 <span>Kekuatan password</span>
                                 <span className={`font-semibold ${passwordStrength.textClassName}`}>{passwordStrength.label}</span>
                             </div>
@@ -307,22 +339,32 @@ function ResetPasswordForm() {
                             </div>
                             <AuthMetaList
                                 items={[
-                                    `Minimal 8 karakter${password.length >= 8 ? " — terpenuhi" : ""}`,
-                                    `Mengandung huruf besar${/[A-Z]/.test(password) ? " — terpenuhi" : ""}`,
-                                    `Mengandung huruf kecil${/[a-z]/.test(password) ? " — terpenuhi" : ""}`,
-                                    `Mengandung angka${/[0-9]/.test(password) ? " — terpenuhi" : ""}`,
+                                    `Minimal 8 karakter${password.length >= 8 ? " - terpenuhi" : ""}`,
+                                    `Mengandung huruf besar${/[A-Z]/.test(password) ? " - terpenuhi" : ""}`,
+                                    `Mengandung huruf kecil${/[a-z]/.test(password) ? " - terpenuhi" : ""}`,
+                                    `Mengandung angka${/[0-9]/.test(password) ? " - terpenuhi" : ""}`,
                                 ]}
                                 className="gap-2 text-xs"
+                                renderBullet={(item) => {
+                                    const met = item.includes("- terpenuhi");
+
+                                    return met ? (
+                                        <CheckCircle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[#13876c]" />
+                                    ) : (
+                                        <Circle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[#b8c0bf]" />
+                                    );
+                                }}
                             />
                         </div>
-                    </AuthField>
+                    </div>
 
                     <AuthField
+                        htmlFor="confirmPassword"
                         label="Konfirmasi password"
                         error={confirmPassword && password !== confirmPassword ? "Password tidak cocok" : undefined}
                         helper={confirmPassword && password === confirmPassword ? "Password cocok" : undefined}
                     >
-                        <AuthInputShell
+                        <AuthPasswordShell
                             id="confirmPassword"
                             name="confirmPassword"
                             type={showConfirmPassword ? "text" : "password"}
@@ -330,29 +372,29 @@ function ResetPasswordForm() {
                             required
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Ulangi password baru"
-                            inputClassName="pr-12"
+                            placeholder="••••••••"
+                            icon={Lock}
                             className={confirmPassword
                                 ? password === confirmPassword
                                     ? "border-[rgba(19,135,108,0.32)]"
                                     : "border-[rgba(217,79,61,0.32)]"
                                 : undefined}
+                            endAdornment={
+                                <AuthIconButton
+                                    aria-label={showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"}
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    {showConfirmPassword ? <EyeOff aria-hidden="true" className="h-5 w-5" /> : <Eye aria-hidden="true" className="h-5 w-5" />}
+                                </AuthIconButton>
+                            }
                         />
-                        <div className="-mt-[3.35rem] flex justify-end pr-3">
-                            <AuthIconButton
-                                aria-label={showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"}
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                            </AuthIconButton>
-                        </div>
                     </AuthField>
 
                     <AuthPrimaryButton type="submit" disabled={isLoading || !password || !confirmPassword}>
                         {isLoading ? (
                             <>
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                                Menyimpan...
+                                <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
+                                Menyimpan…
                             </>
                         ) : (
                             "Simpan password baru"
@@ -362,7 +404,7 @@ function ResetPasswordForm() {
 
                 <div className="flex justify-center mt-8">
                     <AuthSecondaryLink href="/login" className="gap-2">
-                        <ArrowLeft className="h-4 w-4 text-[#1a1c1b]" />
+                        <ArrowLeft aria-hidden="true" className="h-4 w-4 text-[#1a1c1b]" />
                         Kembali ke login
                     </AuthSecondaryLink>
                 </div>
@@ -376,7 +418,7 @@ export default function ResetPasswordPage() {
         <Suspense
             fallback={
                 <div className="flex flex-col h-full items-center justify-center rounded-3xl border border-[#bec8c8]/20 bg-[#faf9f7] shadow-[0px_4px_12px_rgba(0,32,32,0.02)]">
-                    <Loader2 className="h-8 w-8 animate-spin text-[#015959]" />
+                    <Loader2 aria-hidden="true" className="h-8 w-8 animate-spin text-[#015959]" />
                 </div>
             }
         >

@@ -1,0 +1,55 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e15]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - img [ref=e20]
+            - heading "Pertunjukan Wayang Orang Sriwedari - Rama Tambak" [level=1] [ref=e23]
+          - paragraph [ref=e24]: "Staff: Ibe"
+        - generic [ref=e25]:
+          - button "Refresh" [ref=e26]:
+            - img [ref=e27]
+          - link "Pengaturan" [ref=e32] [cursor=pointer]:
+            - /url: /organizer/events/12bde9e9-96d0-40da-ac2d-20a9e2768ec8/gate
+            - img [ref=e33]
+          - button "Logout" [ref=e36]:
+            - img [ref=e37]
+    - main [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - article [ref=e43]:
+            - paragraph [ref=e44]: Total tiket
+            - paragraph [ref=e45]: "5"
+          - article [ref=e46]:
+            - paragraph [ref=e47]: Checked in
+            - paragraph [ref=e48]: "1"
+          - article [ref=e49]:
+            - paragraph [ref=e50]: Belum masuk
+            - paragraph [ref=e51]: "4"
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - img [ref=e54]
+            - text: Check-in progress
+          - generic [ref=e59]: 20%
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]:
+            - button "Suara aktif" [ref=e66]
+            - button "Mulai Scan" [ref=e71]
+          - generic [ref=e76]:
+            - img [ref=e78]
+            - paragraph [ref=e81]: Kamera tidak aktif
+            - paragraph [ref=e82]: Klik "Mulai Scan" untuk mengaktifkan kamera
+        - generic [ref=e87]: atau
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - img [ref=e90]
+            - generic [ref=e92]: Input Manual
+          - textbox "Masukkan kode tiket..." [ref=e93]
+          - button "Check In" [disabled] [ref=e94]:
+            - img [ref=e95]
+            - text: Check In
+  - button "Open Next.js Dev Tools" [ref=e10] [cursor=pointer]:
+    - img [ref=e11]
+  - alert [ref=e14]

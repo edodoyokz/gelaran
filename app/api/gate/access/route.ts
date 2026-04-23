@@ -2,6 +2,7 @@ import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
 import crypto from "crypto";
+import { rateLimiters, getClientIdentifier, getRateLimitHeaders } from "@/lib/rate-limit";
 
 function hashPin(pin: string): string {
     return crypto.createHash("sha256").update(pin).digest("hex");
@@ -13,6 +14,20 @@ function generateDeviceToken(): string {
 
 export async function POST(request: NextRequest) {
     try {
+        const clientId = getClientIdentifier(request.headers);
+        const rateLimit = rateLimiters.accessCredential.check(clientId);
+
+        if (!rateLimit.success) {
+            const rateLimitHeaders = getRateLimitHeaders(rateLimit);
+            return new Response(JSON.stringify({ error: "Too many access attempts. Please try again later." }), {
+                status: 429,
+                headers: {
+                    "Content-Type": "application/json",
+                    ...Object.fromEntries(rateLimitHeaders.entries()),
+                },
+            });
+        }
+
         const body = await request.json();
         const { eventSlug, pin, staffName, deviceFingerprint } = body;
 

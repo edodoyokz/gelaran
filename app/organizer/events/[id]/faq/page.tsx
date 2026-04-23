@@ -59,7 +59,7 @@ export default function EventFaqManagementPage() {
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-8">Manage Event FAQs</h1>
 
-      <div className="bg-[var(--surface)] border rounded-lg p-6 mb-8">
+      <div className="bg-(--surface) border rounded-lg p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Add New FAQ</h2>
 
         <form onSubmit={handleAddFaq} className="space-y-4">
@@ -105,7 +105,7 @@ export default function EventFaqManagementPage() {
             <h3 className="font-semibold mb-2">
               {index + 1}. {faq.question}
             </h3>
-            <p className="text-[var(--text-secondary)] whitespace-pre-wrap">{faq.answer}</p>
+            <p className="text-(--text-secondary) whitespace-pre-wrap">{faq.answer}</p>
           </div>
         ))}
       </div>

@@ -1,0 +1,100 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - img [ref=e21]
+  - alert [ref=e24]
+  - generic [ref=e25]:
+    - banner [ref=e26]:
+      - generic [ref=e27]:
+        - link "Gelaran" [ref=e28] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=e29]:
+          - generic [ref=e30]: Cari event, organizer, atau kota
+          - generic [ref=e31]: search
+          - textbox "Cari event, organizer, atau kota" [ref=e32]:
+            - /placeholder: Cari event, organizer, atau kota...
+      - navigation [ref=e33]:
+        - link "Explore" [ref=e34] [cursor=pointer]:
+          - /url: /events
+        - link "Help" [ref=e35] [cursor=pointer]:
+          - /url: /docs/customer
+        - link "Partner" [ref=e36] [cursor=pointer]:
+          - /url: /partner
+      - generic [ref=e37]:
+        - button "Aktifkan tema gelap" [ref=e38]:
+          - generic [ref=e39]: dark_mode
+        - link "Buka notifikasi" [ref=e40] [cursor=pointer]:
+          - /url: /notifications
+          - generic [ref=e41]: notifications
+        - button "Buka menu profil" [ref=e43]:
+          - generic [ref=e45]: B
+          - paragraph [ref=e47]: Budi Santoso
+          - generic [ref=e48]: expand_more
+    - generic [ref=e49]:
+      - complementary [ref=e50]:
+        - generic [ref=e51]:
+          - paragraph [ref=e52]: Budi Santoso
+          - paragraph [ref=e53]: Cultural Curator
+        - navigation [ref=e54]:
+          - link "Overview" [ref=e55] [cursor=pointer]:
+            - /url: /dashboard
+            - generic [ref=e56]: dashboard
+            - generic [ref=e57]: Overview
+          - link "My Tickets" [ref=e58] [cursor=pointer]:
+            - /url: /my-bookings
+            - generic [ref=e59]: confirmation_number
+            - generic [ref=e60]: My Tickets
+          - link "Wishlist" [ref=e61] [cursor=pointer]:
+            - /url: /wishlist
+            - generic [ref=e62]: favorite
+            - generic [ref=e63]: Wishlist
+          - link "Following" [ref=e64] [cursor=pointer]:
+            - /url: /following
+            - generic [ref=e65]: group
+            - generic [ref=e66]: Following
+          - link "Notifications" [ref=e67] [cursor=pointer]:
+            - /url: /notifications
+            - generic [ref=e68]: notifications
+            - generic [ref=e69]: Notifications
+          - link "Settings" [ref=e70] [cursor=pointer]:
+            - /url: /profile
+            - generic [ref=e71]: settings
+            - generic [ref=e72]: Settings
+        - link "Book New Event" [ref=e73] [cursor=pointer]:
+          - /url: /events
+        - button "Logout" [ref=e75]:
+          - generic [ref=e76]: logout
+          - generic [ref=e77]: Logout
+      - main [ref=e78]:
+        - generic [ref=e80]:
+          - generic [ref=e83]:
+            - generic [ref=e84]: Inbox
+            - generic [ref=e85]:
+              - heading "Notifikasi" [level=1] [ref=e86]
+              - generic [ref=e87]: Lihat update booking, pengingat event, dan pemberitahuan sistem dalam daftar yang lebih rapi dan mudah dipindai.
+            - generic [ref=e88]:
+              - generic [ref=e89]:
+                - img [ref=e90]
+                - text: 0 total notifikasi
+              - generic [ref=e93]:
+                - img [ref=e94]
+                - text: 0 belum dibaca
+          - generic [ref=e96]:
+            - generic [ref=e98]:
+              - heading "Filter notifikasi" [level=2] [ref=e99]
+              - paragraph [ref=e100]: Fokuskan tampilan ke semua notifikasi atau hanya item yang belum dibaca.
+            - generic [ref=e101]:
+              - button "Semua (0)" [ref=e102]
+              - button "Belum dibaca (0)" [ref=e103]
+          - generic [ref=e104]:
+            - generic [ref=e106]:
+              - heading "Daftar notifikasi" [level=2] [ref=e107]
+              - paragraph [ref=e108]: Setiap item menampilkan konteks singkat, status baca, dan tautan cepat bila terkait event tertentu.
+            - generic [ref=e110]:
+              - img [ref=e112]
+              - generic [ref=e115]:
+                - heading "Belum ada notifikasi" [level=3] [ref=e116]
+                - paragraph [ref=e117]: Kamu belum memiliki notifikasi. Aktivitas seperti booking, pengingat event, dan pembaruan sistem akan muncul di sini.
+              - link "Jelajahi event" [ref=e119] [cursor=pointer]:
+                - /url: /events
+                - text: Jelajahi event
+                - img [ref=e120]

@@ -41,22 +41,23 @@ export function CustomerHero({
     return (
         <section
             className={cn(
-                "relative overflow-hidden rounded-4xl border border-(--border) bg-(--surface)/92 p-6 shadow-(--shadow-md) backdrop-blur sm:p-8",
+                "relative overflow-hidden rounded-[2rem] border border-[rgba(1,89,89,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,249,248,0.92))] p-6 shadow-[0_20px_60px_rgba(1,89,89,0.08)] backdrop-blur sm:p-8 lg:p-10 dark:border-[rgba(78,222,225,0.12)] dark:bg-[linear-gradient(180deg,rgba(22,22,29,0.96),rgba(16,28,29,0.94))]",
                 className,
             )}
         >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(41,179,182,0.18),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(249,93,0,0.12),transparent_24%)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(1,89,89,0.16),transparent)] dark:bg-[linear-gradient(90deg,transparent,rgba(78,222,225,0.18),transparent)]" />
             <div className="pointer-events-none absolute right-0 top-0 h-36 w-36 translate-x-1/4 -translate-y-1/4 rounded-full bg-(--surface-brand-soft) blur-3xl" />
 
             <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-3xl space-y-4">
                     {eyebrow ? (
-                        <span className="inline-flex rounded-full border border-(--border) bg-(--surface-elevated) px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-(--accent-primary)">
+                        <span className="inline-flex rounded-full border border-(--border) bg-(--surface-elevated) px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-(--accent-primary) shadow-(--shadow-xs)">
                             {eyebrow}
                         </span>
                     ) : null}
                     <div className="space-y-3">
-                        <h1 className="text-3xl font-semibold tracking-(--tracking-heading) text-foreground sm:text-4xl">
+                        <h1 className="font-(--font-editorial) text-3xl tracking-(--tracking-display) text-foreground sm:text-4xl">
                             {title}
                         </h1>
                         {description ? (
@@ -65,10 +66,10 @@ export function CustomerHero({
                             </div>
                         ) : null}
                     </div>
-                    {meta ? <div className="flex flex-wrap gap-2">{meta}</div> : null}
+                    {meta ? <div className="flex flex-wrap gap-2.5">{meta}</div> : null}
                 </div>
                 {actions ? (
-                    <div className="flex flex-wrap items-center gap-3">{actions}</div>
+                    <div className="flex flex-wrap items-center gap-3 lg:max-w-sm lg:justify-end">{actions}</div>
                 ) : null}
             </div>
         </section>
@@ -82,7 +83,7 @@ interface CustomerMetricGridProps {
 
 export function CustomerMetricGrid({ children, className }: CustomerMetricGridProps) {
     return (
-        <div className={cn("grid gap-4 sm:grid-cols-2 xl:grid-cols-4", className)}>
+        <div className={cn("grid gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5", className)}>
             {children}
         </div>
     );
@@ -96,8 +97,8 @@ interface CustomerStatusBadgeProps {
 }
 
 const badgeToneClasses: Record<NonNullable<CustomerStatusBadgeProps["tone"]>, string> = {
-    neutral: "border-(--border) bg-(--surface-elevated) text-(--text-secondary)",
-    accent: "border-[rgba(41,179,182,0.2)] bg-(--surface-brand-soft) text-(--accent-primary)",
+    neutral: "border-(--border) bg-white/82 text-(--text-secondary) dark:bg-(--surface-elevated)",
+    accent: "border-[rgba(41,179,182,0.16)] bg-[rgba(41,179,182,0.08)] text-(--accent-primary)",
     success: "border-[rgba(19,135,108,0.18)] bg-(--success-bg) text-(--success-text)",
     warning: "border-[rgba(251,193,23,0.24)] bg-(--warning-bg) text-(--warning-text)",
     danger: "border-[rgba(198,40,40,0.16)] bg-(--error-bg) text-(--error-text)",
@@ -112,7 +113,7 @@ export function CustomerStatusBadge({
     return (
         <span
             className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold tracking-[0.02em] shadow-[0px_6px_18px_rgba(0,32,32,0.03)]",
                 badgeToneClasses[tone],
                 className,
             )}
@@ -149,7 +150,7 @@ export function CustomerInfoList({
             {items.map(({ icon: Icon, label, value }) => (
                 <div
                     key={label}
-                    className="flex items-start gap-3 rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4"
+                    className="flex items-start gap-3 rounded-[1.5rem] border border-(--border-light) bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,250,249,0.9))] p-4 shadow-[0px_10px_30px_rgba(1,89,89,0.04)] dark:bg-(--surface-elevated)"
                 >
                     {Icon ? (
                         <span className="mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-(--surface-brand-soft) text-(--accent-primary)">
@@ -189,7 +190,7 @@ export function CustomerActionCard({
         <Link
             href={href}
             className={cn(
-                "group flex h-full flex-col justify-between rounded-3xl border border-(--border) bg-(--surface)/94 p-5 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)",
+                "group flex h-full flex-col justify-between rounded-[1.85rem] border border-(--border) bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,249,248,0.94))] p-5 shadow-[0_18px_42px_rgba(1,89,89,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(1,89,89,0.1)] dark:bg-[linear-gradient(180deg,rgba(26,26,36,0.96),rgba(18,30,31,0.92))]",
                 className,
             )}
         >

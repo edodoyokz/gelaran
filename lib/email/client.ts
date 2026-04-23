@@ -2,9 +2,9 @@
 // Email service using Resend
 
 import { Resend } from "resend";
-import { getServerEnv } from "@/lib/env";
+import { getEmailEnv } from "@/lib/env";
 
-const env = getServerEnv();
+const env = getEmailEnv();
 
 export const resend = new Resend(env.RESEND_API_KEY);
 

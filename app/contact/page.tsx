@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-    CheckCircle,
     Clock,
     Facebook,
     Instagram,
@@ -97,13 +96,13 @@ export default function ContactPage() {
         message: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+    const [submissionAttempted, setSubmissionAttempted] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsSubmitting(true);
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        setSubmitted(true);
+        setSubmissionAttempted(true);
         setIsSubmitting(false);
     };
 
@@ -176,117 +175,104 @@ export default function ContactPage() {
                                 </div>
                             </div>
 
-                            {submitted ? (
-                                <div className="rounded-3xl border border-[rgba(19,135,108,0.24)] bg-(--success-bg) p-8 text-center">
-                                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white text-(--success) shadow-(--shadow-xs)">
-                                        <CheckCircle className="h-8 w-8" />
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                {submissionAttempted ? (
+                                    <div className="rounded-3xl border border-[rgba(251,193,23,0.28)] bg-(--warning-bg) p-5 text-sm text-(--warning-text) sm:p-6">
+                                        <h3 className="text-base font-semibold tracking-(--tracking-heading) text-foreground sm:text-lg">
+                                            Formulir belum terhubung ke pengiriman pesan otomatis
+                                        </h3>
+                                        <p className="mt-2 leading-7">
+                                            Pesan Anda belum dikirim ke backend karena endpoint kontak publik belum tersedia pada project saat ini. Untuk kebutuhan yang benar-benar perlu ditindaklanjuti, gunakan email atau telepon resmi Gelaran di panel kontak.
+                                        </p>
                                     </div>
-                                    <h3 className="mt-5 text-2xl font-semibold tracking-(--tracking-heading) text-foreground">
-                                        Pesan terkirim
-                                    </h3>
-                                    <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-(--text-secondary) sm:text-base">
-                                        Terima kasih telah menghubungi kami. Tim Gelaran akan membalas dalam 1×24 jam kerja melalui email yang Anda cantumkan.
-                                    </p>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSubmitted(false);
-                                            setFormData({ name: "", email: "", subject: "", message: "" });
-                                        }}
-                                        className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full border border-(--border) bg-white px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-(--surface-hover)"
-                                    >
-                                        Kirim pesan lainnya
-                                    </button>
-                                </div>
-                            ) : (
-                                <form onSubmit={handleSubmit} className="space-y-5">
-                                    <div className="grid gap-5 md:grid-cols-2">
-                                        <div className="space-y-2">
-                                            <label htmlFor="name" className="text-sm font-semibold text-foreground">
-                                                Nama lengkap
-                                            </label>
-                                            <input
-                                                id="name"
-                                                type="text"
-                                                required
-                                                value={formData.name}
-                                                onChange={(e) => handleInputChange("name", e.target.value)}
-                                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
-                                                placeholder="Nama Anda"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="email" className="text-sm font-semibold text-foreground">
-                                                Email
-                                            </label>
-                                            <input
-                                                id="email"
-                                                type="email"
-                                                required
-                                                value={formData.email}
-                                                onChange={(e) => handleInputChange("email", e.target.value)}
-                                                className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
-                                                placeholder="nama@email.com"
-                                            />
-                                        </div>
-                                    </div>
+                                ) : null}
 
+                                <div className="grid gap-5 md:grid-cols-2">
                                     <div className="space-y-2">
-                                        <label htmlFor="subject" className="text-sm font-semibold text-foreground">
-                                            Subjek
+                                        <label htmlFor="name" className="text-sm font-semibold text-foreground">
+                                            Nama lengkap
                                         </label>
-                                        <select
-                                            id="subject"
+                                        <input
+                                            id="name"
+                                            type="text"
                                             required
-                                            value={formData.subject}
-                                            onChange={(e) => handleInputChange("subject", e.target.value)}
+                                            value={formData.name}
+                                            onChange={(e) => handleInputChange("name", e.target.value)}
                                             className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
-                                        >
-                                            <option value="">Pilih subjek</option>
-                                            <option value="general">Pertanyaan umum</option>
-                                            <option value="booking">Masalah booking</option>
-                                            <option value="payment">Masalah pembayaran</option>
-                                            <option value="refund">Pengajuan refund</option>
-                                            <option value="organizer">Menjadi organizer</option>
-                                            <option value="partnership">Kerja sama</option>
-                                            <option value="other">Lainnya</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label htmlFor="message" className="text-sm font-semibold text-foreground">
-                                            Pesan
-                                        </label>
-                                        <textarea
-                                            id="message"
-                                            required
-                                            rows={6}
-                                            value={formData.message}
-                                            onChange={(e) => handleInputChange("message", e.target.value)}
-                                            className="w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
-                                            placeholder="Tuliskan konteks, pertanyaan, atau kebutuhan Anda di sini..."
+                                            placeholder="Nama Anda"
                                         />
                                     </div>
+                                    <div className="space-y-2">
+                                        <label htmlFor="email" className="text-sm font-semibold text-foreground">
+                                            Email
+                                        </label>
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            required
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange("email", e.target.value)}
+                                            className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
+                                            placeholder="nama@email.com"
+                                        />
+                                    </div>
+                                </div>
 
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white shadow-(--shadow-md) transition-colors duration-200 hover:bg-(--accent-secondary-hover) disabled:cursor-not-allowed disabled:opacity-60"
+                                <div className="space-y-2">
+                                    <label htmlFor="subject" className="text-sm font-semibold text-foreground">
+                                        Subjek
+                                    </label>
+                                    <select
+                                        id="subject"
+                                        required
+                                        value={formData.subject}
+                                        onChange={(e) => handleInputChange("subject", e.target.value)}
+                                        className="min-h-12 w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
                                     >
-                                        {isSubmitting ? (
-                                            <>
-                                                <Clock className="h-5 w-5 animate-spin" />
-                                                Mengirim pesan...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Send className="h-5 w-5" />
-                                                Kirim pesan
-                                            </>
-                                        )}
-                                    </button>
-                                </form>
-                            )}
+                                        <option value="">Pilih subjek</option>
+                                        <option value="general">Pertanyaan umum</option>
+                                        <option value="booking">Masalah booking</option>
+                                        <option value="payment">Masalah pembayaran</option>
+                                        <option value="refund">Pengajuan refund</option>
+                                        <option value="organizer">Menjadi organizer</option>
+                                        <option value="partnership">Kerja sama</option>
+                                        <option value="other">Lainnya</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label htmlFor="message" className="text-sm font-semibold text-foreground">
+                                        Pesan
+                                    </label>
+                                    <textarea
+                                        id="message"
+                                        required
+                                        rows={6}
+                                        value={formData.message}
+                                        onChange={(e) => handleInputChange("message", e.target.value)}
+                                        className="w-full rounded-2xl border border-(--border) bg-(--surface) px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 focus:border-(--border-focus) focus:ring-4 focus:ring-(--info-bg)"
+                                        placeholder="Tuliskan konteks, pertanyaan, atau kebutuhan Anda di sini..."
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-(--accent-secondary) px-6 py-3 text-sm font-semibold text-white shadow-(--shadow-md) transition-colors duration-200 hover:bg-(--accent-secondary-hover) disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <Clock className="h-5 w-5 animate-spin" />
+                                            Memeriksa formulir...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="h-5 w-5" />
+                                            Tinjau opsi kontak
+                                        </>
+                                    )}
+                                </button>
+                            </form>
                         </div>
                     </EditorialPanel>
 

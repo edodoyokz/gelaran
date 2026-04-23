@@ -77,14 +77,14 @@ interface EventData {
 const STATUS_COLORS = {
     AVAILABLE: "bg-emerald-100 border-emerald-300 text-emerald-700 hover:bg-emerald-200",
     LOCKED: "bg-amber-100 border-amber-300 text-amber-700",
-    BOOKED: "bg-[var(--border)] border-[var(--border)] text-[var(--text-muted)] cursor-not-allowed",
+    BOOKED: "bg-(--border) border-(--border) text-(--text-muted) cursor-not-allowed",
     BLOCKED: "bg-red-500/10 border-red-300 text-red-700 hover:bg-red-200",
 };
 
 const STATUS_LEGEND = [
     { label: "Tersedia", color: "bg-emerald-100 border-emerald-300" },
     { label: "Terkunci", color: "bg-amber-100 border-amber-300" },
-    { label: "Terjual", color: "bg-[var(--border)] border-[var(--border)]" },
+    { label: "Terjual", color: "bg-(--border) border-(--border)" },
     { label: "Diblokir", color: "bg-red-500/10 border-red-300" },
 ];
 
@@ -372,20 +372,20 @@ export default function SeatingChartPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
-                <Loader2 className="h-10 w-10 text-[var(--accent-primary)] animate-spin" />
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
+                <Loader2 className="h-10 w-10 text-(--accent-primary) animate-spin" />
             </div>
         );
     }
 
     if (error || !event) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center text-center p-4">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center text-center p-4">
                 <div>
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">Terjadi Kesalahan</h1>
-                    <p className="text-[var(--text-muted)] mb-6">{error || "Event tidak ditemukan"}</p>
-                    <Link href="/organizer/events" className="text-[var(--accent-primary)] hover:text-[var(--accent-primary)] font-medium">
+                    <h1 className="text-xl font-bold text-foreground mb-2">Terjadi Kesalahan</h1>
+                    <p className="text-(--text-muted) mb-6">{error || "Event tidak ditemukan"}</p>
+                    <Link href="/organizer/events" className="text-(--accent-primary) hover:text-(--accent-primary) font-medium">
                         Kembali ke Daftar Event
                     </Link>
                 </div>
@@ -394,28 +394,28 @@ export default function SeatingChartPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--bg-secondary)] flex flex-col h-screen overflow-hidden">
-            <header className="bg-[var(--surface)] border-b px-6 py-4 flex-none z-10">
+        <div className="min-h-screen bg-(--bg-secondary) flex flex-col h-screen overflow-hidden">
+            <header className="bg-(--surface) border-b px-6 py-4 flex-none z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Link href={`/organizer/events/${eventId}`} className="p-2 hover:bg-[var(--surface-hover)] rounded-full transition-colors">
-                            <ArrowLeft className="h-5 w-5 text-[var(--text-secondary)]" />
+                        <Link href={`/organizer/events/${eventId}`} className="p-2 hover:bg-(--surface-hover) rounded-full transition-colors">
+                            <ArrowLeft className="h-5 w-5 text-(--text-secondary)" />
                         </Link>
                         <div>
-                            <h1 className="text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                            <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
                                 {event.title}
-                                <span className="text-sm font-normal text-[var(--text-muted)] px-2 py-0.5 bg-[var(--bg-secondary)] rounded-full">Seating Chart</span>
+                                <span className="text-sm font-normal text-(--text-muted) px-2 py-0.5 bg-(--bg-secondary) rounded-full">Seating Chart</span>
                             </h1>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Editor Mode Toggle */}
-                        <div className="flex items-center gap-1 bg-[var(--bg-secondary)] p-1 rounded-lg">
+                        <div className="flex items-center gap-1 bg-(--bg-secondary) p-1 rounded-lg">
                             <button
                                 onClick={() => setEditorMode("list")}
                                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${editorMode === "list"
-                                    ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-sm"
-                                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                    ? "bg-(--surface) text-foreground shadow-sm"
+                                    : "text-(--text-muted) hover:text-(--text-secondary)"
                                     }`}
                             >
                                 <LayoutGrid className="h-4 w-4 inline mr-1" />
@@ -424,8 +424,8 @@ export default function SeatingChartPage() {
                             <button
                                 onClick={() => setEditorMode("visual")}
                                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${editorMode === "visual"
-                                    ? "bg-[var(--surface)] text-[var(--text-primary)] shadow-sm"
-                                    : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                    ? "bg-(--surface) text-foreground shadow-sm"
+                                    : "text-(--text-muted) hover:text-(--text-secondary)"
                                     }`}
                             >
                                 <Move className="h-4 w-4 inline mr-1" />
@@ -433,19 +433,19 @@ export default function SeatingChartPage() {
                             </button>
                         </div>
 
-                        <div className="flex items-center gap-2 bg-[var(--surface-hover)] p-1 rounded-lg border">
+                        <div className="flex items-center gap-2 bg-(--surface-hover) p-1 rounded-lg border">
                             <button
                                 onClick={() => setZoomLevel(Math.max(0.5, zoomLevel - 0.1))}
-                                className="p-1.5 hover:bg-[var(--surface)] rounded-md shadow-sm transition-all"
+                                className="p-1.5 hover:bg-(--surface) rounded-md shadow-sm transition-all"
                             >
-                                <Minimize2 className="h-4 w-4 text-[var(--text-secondary)]" />
+                                <Minimize2 className="h-4 w-4 text-(--text-secondary)" />
                             </button>
                             <span className="text-xs font-medium w-12 text-center">{Math.round(zoomLevel * 100)}%</span>
                             <button
                                 onClick={() => setZoomLevel(Math.min(2, zoomLevel + 0.1))}
-                                className="p-1.5 hover:bg-[var(--surface)] rounded-md shadow-sm transition-all"
+                                className="p-1.5 hover:bg-(--surface) rounded-md shadow-sm transition-all"
                             >
-                                <Maximize2 className="h-4 w-4 text-[var(--text-secondary)]" />
+                                <Maximize2 className="h-4 w-4 text-(--text-secondary)" />
                             </button>
                         </div>
                         <button
@@ -453,7 +453,7 @@ export default function SeatingChartPage() {
                                 setEditingItem(null);
                                 setModalMode("SECTION");
                             }}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 shadow-sm transition-all"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 shadow-sm transition-all"
                         >
                             <Plus className="h-4 w-4" />
                             Tambah Section
@@ -463,63 +463,63 @@ export default function SeatingChartPage() {
             </header>
 
             <div className="flex flex-1 overflow-hidden">
-                <aside className="w-80 bg-[var(--surface)] border-r flex flex-col overflow-hidden z-10">
-                    <div className="p-4 border-b bg-[var(--surface-hover)]/50">
-                        <h2 className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
-                            <LayoutGrid className="h-4 w-4 text-[var(--accent-primary)]" />
+                <aside className="w-80 bg-(--surface) border-r flex flex-col overflow-hidden z-10">
+                    <div className="p-4 border-b bg-(--surface-hover)/50">
+                        <h2 className="font-semibold text-foreground flex items-center gap-2">
+                            <LayoutGrid className="h-4 w-4 text-(--accent-primary)" />
                             Struktur Denah
                         </h2>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                         {sections.length === 0 ? (
-                            <div className="text-center py-8 text-[var(--text-muted)]">
-                                <Armchair className="h-12 w-12 mx-auto mb-3 text-[var(--text-muted)]" />
+                            <div className="text-center py-8 text-(--text-muted)">
+                                <Armchair className="h-12 w-12 mx-auto mb-3 text-(--text-muted)" />
                                 <p className="text-sm">Belum ada section.</p>
                                 <button
                                     onClick={() => setModalMode("SECTION")}
-                                    className="mt-2 text-[var(--accent-primary)] text-sm font-medium hover:underline"
+                                    className="mt-2 text-(--accent-primary) text-sm font-medium hover:underline"
                                 >
                                     Buat Section Baru
                                 </button>
                             </div>
                         ) : (
                             sections.sort((a, b) => a.sortOrder - b.sortOrder).map(section => (
-                                <div key={section.id} className="border rounded-lg overflow-hidden bg-[var(--surface)] shadow-sm group">
+                                <div key={section.id} className="border rounded-lg overflow-hidden bg-(--surface) shadow-sm group">
                                     <div
-                                        className="flex items-center justify-between p-3 bg-[var(--surface-hover)] cursor-pointer hover:bg-[var(--surface-hover)] transition-colors"
+                                        className="flex items-center justify-between p-3 bg-(--surface-hover) cursor-pointer hover:bg-(--surface-hover) transition-colors"
                                         onClick={() => toggleSection(section.id)}
                                     >
                                         <div className="flex items-center gap-2">
                                             {expandedSections[section.id] ?
-                                                <ChevronDown className="h-4 w-4 text-[var(--text-muted)]" /> :
-                                                <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" />
+                                                <ChevronDown className="h-4 w-4 text-(--text-muted)" /> :
+                                                <ChevronRight className="h-4 w-4 text-(--text-muted)" />
                                             }
                                             <span
                                                 className="w-3 h-3 rounded-full border border-black/10 shadow-sm"
                                                 style={{ backgroundColor: section.colorHex || "#4F46E5" }}
                                             />
-                                            <span className="font-medium text-sm text-[var(--text-primary)]">{section.name}</span>
-                                            <span className="text-xs text-[var(--text-muted)]">({section.rows.length} rows)</span>
+                                            <span className="font-medium text-sm text-foreground">{section.name}</span>
+                                            <span className="text-xs text-(--text-muted)">({section.rows.length} rows)</span>
                                         </div>
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); setEditingItem(section); setModalMode("SECTION"); }}
-                                                className="p-1.5 hover:bg-[var(--surface)] rounded text-[var(--text-muted)] hover:text-[var(--accent-primary)]"
+                                                className="p-1.5 hover:bg-(--surface) rounded text-(--text-muted) hover:text-(--accent-primary)"
                                                 title="Edit Section"
                                             >
                                                 <Edit2 className="h-3.5 w-3.5" />
                                             </button>
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); setActiveSectionId(section.id); setModalMode("ROW"); }}
-                                                className="p-1.5 hover:bg-[var(--surface)] rounded text-[var(--text-muted)] hover:text-green-600"
+                                                className="p-1.5 hover:bg-(--surface) rounded text-(--text-muted) hover:text-green-600"
                                                 title="Tambah Row"
                                             >
                                                 <Plus className="h-3.5 w-3.5" />
                                             </button>
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); handleDeleteSection(section.id); }}
-                                                className="p-1.5 hover:bg-[var(--surface)] rounded text-[var(--text-muted)] hover:text-red-600"
+                                                className="p-1.5 hover:bg-(--surface) rounded text-(--text-muted) hover:text-red-600"
                                                 title="Hapus Section"
                                             >
                                                 <Trash2 className="h-3.5 w-3.5" />
@@ -530,28 +530,28 @@ export default function SeatingChartPage() {
                                     {expandedSections[section.id] && (
                                         <div className="border-t divide-y">
                                             {section.rows.length === 0 ? (
-                                                <div className="p-3 text-center text-xs text-[var(--text-muted)] bg-[var(--surface-hover)]/30">
+                                                <div className="p-3 text-center text-xs text-(--text-muted) bg-(--surface-hover)/30">
                                                     Belum ada baris kursi
                                                 </div>
                                             ) : (
                                                 section.rows.sort((a, b) => a.sortOrder - b.sortOrder).map(row => (
-                                                    <div key={row.id} className="p-2 pl-8 hover:bg-[var(--surface-hover)] flex items-center justify-between group/row">
+                                                    <div key={row.id} className="p-2 pl-8 hover:bg-(--surface-hover) flex items-center justify-between group/row">
                                                         <div className="flex items-center gap-2">
-                                                            <span className="text-xs font-mono font-bold bg-[var(--bg-secondary)] px-1.5 py-0.5 rounded text-[var(--text-secondary)]">
+                                                            <span className="text-xs font-mono font-bold bg-(--bg-secondary) px-1.5 py-0.5 rounded text-(--text-secondary)">
                                                                 {row.rowLabel}
                                                             </span>
-                                                            <span className="text-xs text-[var(--text-muted)]">{row.seats.length} Kursi</span>
+                                                            <span className="text-xs text-(--text-muted)">{row.seats.length} Kursi</span>
                                                         </div>
                                                         <div className="flex items-center gap-1 opacity-0 group-hover/row:opacity-100 transition-opacity">
                                                             <button
                                                                 onClick={() => { setEditingItem(row); setActiveSectionId(section.id); setModalMode("ROW"); }}
-                                                                className="p-1 hover:bg-[var(--surface)] rounded text-[var(--text-muted)] hover:text-[var(--accent-primary)]"
+                                                                className="p-1 hover:bg-(--surface) rounded text-(--text-muted) hover:text-(--accent-primary)"
                                                             >
                                                                 <Edit2 className="h-3 w-3" />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDeleteRow(row.id)}
-                                                                className="p-1 hover:bg-[var(--surface)] rounded text-[var(--text-muted)] hover:text-red-600"
+                                                                className="p-1 hover:bg-(--surface) rounded text-(--text-muted) hover:text-red-600"
                                                             >
                                                                 <Trash2 className="h-3 w-3" />
                                                             </button>
@@ -567,15 +567,15 @@ export default function SeatingChartPage() {
                     </div>
                 </aside>
 
-                <main className="flex-1 overflow-auto bg-[var(--bg-secondary)]/50 p-8 relative">
+                <main className="flex-1 overflow-auto bg-(--bg-secondary)/50 p-8 relative">
 
                     {editorMode === "visual" ? (
                         /* Visual Editor Mode */
                         <div className="max-w-6xl mx-auto">
                             <div className="mb-4 flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-semibold text-[var(--text-primary)]">Visual Editor</h3>
-                                    <p className="text-sm text-[var(--text-muted)]">Drag sections untuk mengatur posisi</p>
+                                    <h3 className="font-semibold text-foreground">Visual Editor</h3>
+                                    <p className="text-sm text-(--text-muted)">Drag sections untuk mengatur posisi</p>
                                 </div>
                                 <ImageTracer
                                     eventId={eventId}
@@ -629,21 +629,21 @@ export default function SeatingChartPage() {
                                 style={{ transform: `scale(${zoomLevel})` }}
                             >
                                 {sections.length === 0 && (
-                                    <div className="flex flex-col items-center justify-center py-20 text-[var(--text-muted)] border-2 border-dashed border-[var(--border)] rounded-3xl bg-[var(--surface)]/50">
+                                    <div className="flex flex-col items-center justify-center py-20 text-(--text-muted) border-2 border-dashed border-(--border) rounded-3xl bg-(--surface)/50">
                                         <MousePointer2 className="h-12 w-12 mb-4 opacity-50" />
-                                        <h3 className="text-lg font-medium text-[var(--text-primary)]">Area Kosong</h3>
+                                        <h3 className="text-lg font-medium text-foreground">Area Kosong</h3>
                                         <p className="mb-6 max-w-sm text-center">Mulai dengan menambahkan Section baru dari panel sebelah kiri.</p>
                                     </div>
                                 )}
 
                                 {sections.sort((a, b) => a.sortOrder - b.sortOrder).map(section => (
-                                    <div key={section.id} className="bg-[var(--surface)] rounded-2xl shadow-sm p-6 relative group border border-[var(--border)]">
+                                    <div key={section.id} className="bg-(--surface) rounded-2xl shadow-sm p-6 relative group border border-(--border)">
                                         <div className="absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl" style={{ backgroundColor: section.colorHex || "#4F46E5" }} />
 
                                         <div className="flex items-center justify-between mb-6">
-                                            <h3 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+                                            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                                                 {section.name}
-                                                <span className="text-xs font-normal text-[var(--text-muted)] px-2 py-1 bg-[var(--bg-secondary)] rounded-full">
+                                                <span className="text-xs font-normal text-(--text-muted) px-2 py-1 bg-(--bg-secondary) rounded-full">
                                                     {section.capacity ? `Kap. ${section.capacity}` : 'Auto'}
                                                 </span>
                                             </h3>
@@ -652,7 +652,7 @@ export default function SeatingChartPage() {
                                         <div className="space-y-3">
                                             {section.rows.sort((a, b) => a.sortOrder - b.sortOrder).map(row => (
                                                 <div key={row.id} className="flex items-center gap-4">
-                                                    <div className="w-8 flex-none text-right font-mono font-bold text-[var(--text-muted)] text-sm">
+                                                    <div className="w-8 flex-none text-right font-mono font-bold text-(--text-muted) text-sm">
                                                         {row.rowLabel}
                                                     </div>
                                                     <div className="flex flex-wrap gap-2 flex-1">
@@ -675,13 +675,13 @@ export default function SeatingChartPage() {
 
                                                         <button
                                                             onClick={() => { setEditingItem(row); setActiveSectionId(section.id); setModalMode("ROW"); }}
-                                                            className="w-8 h-8 rounded-md border-2 border-dashed border-[var(--border)] text-[var(--text-muted)] flex items-center justify-center hover:border-indigo-300 hover:text-indigo-400 transition-colors"
+                                                            className="w-8 h-8 rounded-md border-2 border-dashed border-(--border) text-(--text-muted) flex items-center justify-center hover:border-indigo-300 hover:text-indigo-400 transition-colors"
                                                             title="Tambah/Edit Row"
                                                         >
                                                             <Plus className="h-3 w-3" />
                                                         </button>
                                                     </div>
-                                                    <div className="w-8 flex-none text-left font-mono font-bold text-[var(--text-muted)] text-sm">
+                                                    <div className="w-8 flex-none text-left font-mono font-bold text-(--text-muted) text-sm">
                                                         {row.rowLabel}
                                                     </div>
                                                 </div>
@@ -689,11 +689,11 @@ export default function SeatingChartPage() {
                                         </div>
 
                                         {section.rows.length === 0 && (
-                                            <div className="text-center py-8 bg-[var(--surface-hover)] rounded-xl border border-dashed border-[var(--border)]">
-                                                <p className="text-sm text-[var(--text-muted)] mb-2">Section ini belum memiliki kursi</p>
+                                            <div className="text-center py-8 bg-(--surface-hover) rounded-xl border border-dashed border-(--border)">
+                                                <p className="text-sm text-(--text-muted) mb-2">Section ini belum memiliki kursi</p>
                                                 <button
                                                     onClick={() => { setActiveSectionId(section.id); setModalMode("ROW"); }}
-                                                    className="text-[var(--accent-primary)] font-medium text-sm hover:underline"
+                                                    className="text-(--accent-primary) font-medium text-sm hover:underline"
                                                 >
                                                     + Tambah Baris Kursi
                                                 </button>
@@ -703,18 +703,18 @@ export default function SeatingChartPage() {
                                 ))}
                             </div>
 
-                            <div className="fixed bottom-8 right-8 bg-[var(--surface)] p-4 rounded-xl shadow-lg border border-[var(--border)] max-w-xs z-20">
-                                <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">Keterangan</h4>
+                            <div className="fixed bottom-8 right-8 bg-(--surface) p-4 rounded-xl shadow-lg border border-(--border) max-w-xs z-20">
+                                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider mb-3">Keterangan</h4>
                                 <div className="grid grid-cols-2 gap-3">
                                     {STATUS_LEGEND.map((item) => (
                                         <div key={item.label} className="flex items-center gap-2">
                                             <div className={`w-3 h-3 rounded-sm border ${item.color}`} />
-                                            <span className="text-xs text-[var(--text-secondary)]">{item.label}</span>
+                                            <span className="text-xs text-(--text-secondary)">{item.label}</span>
                                         </div>
                                     ))}
                                     <div className="flex items-center gap-2 col-span-2">
-                                        <div className="w-3 h-3 rounded-sm border ring-2 ring-blue-400 ring-offset-1 bg-[var(--surface)] border-[var(--border)]" />
-                                        <span className="text-xs text-[var(--text-secondary)]">Aksesibel (Kursi Roda)</span>
+                                        <div className="w-3 h-3 rounded-sm border ring-2 ring-blue-400 ring-offset-1 bg-(--surface) border-(--border)" />
+                                        <span className="text-xs text-(--text-secondary)">Aksesibel (Kursi Roda)</span>
                                     </div>
                                 </div>
                             </div>
@@ -725,29 +725,29 @@ export default function SeatingChartPage() {
 
             {modalMode === "SECTION" && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--surface)] rounded-2xl max-w-md w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-(--surface) rounded-2xl max-w-md w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                         <div className="px-6 py-4 border-b flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                            <h3 className="text-lg font-bold text-foreground">
                                 {editingItem ? "Edit Section" : "Tambah Section Baru"}
                             </h3>
-                            <button onClick={() => setModalMode(null)} className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
+                            <button onClick={() => setModalMode(null)} className="text-(--text-muted) hover:text-(--text-secondary)">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <form onSubmit={handleSaveSection} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Nama Section</label>
+                                <label className="block text-sm font-medium text-(--text-secondary) mb-1">Nama Section</label>
                                 <input
                                     name="name"
                                     defaultValue={editingSection?.name}
                                     placeholder="Contoh: VIP, Tribun A, Festival"
                                     required
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]"
+                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-(--accent-primary) focus:border-(--accent-primary)"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Warna Label</label>
+                                    <label className="block text-sm font-medium text-(--text-secondary) mb-1">Warna Label</label>
                                     <div className="flex gap-2">
                                         <input
                                             type="color"
@@ -758,13 +758,13 @@ export default function SeatingChartPage() {
                                         <input
                                             type="text"
                                             defaultValue={editingSection?.colorHex || "#4F46E5"}
-                                            className="flex-1 px-3 py-2 border rounded-lg text-sm uppercase text-[var(--text-secondary)]"
+                                            className="flex-1 px-3 py-2 border rounded-lg text-sm uppercase text-(--text-secondary)"
                                             readOnly
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Urutan</label>
+                                    <label className="block text-sm font-medium text-(--text-secondary) mb-1">Urutan</label>
                                     <input
                                         type="number"
                                         name="sortOrder"
@@ -774,7 +774,7 @@ export default function SeatingChartPage() {
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Kapasitas (Opsional)</label>
+                                <label className="block text-sm font-medium text-(--text-secondary) mb-1">Kapasitas (Opsional)</label>
                                 <input
                                     type="number"
                                     name="capacity"
@@ -782,7 +782,7 @@ export default function SeatingChartPage() {
                                     placeholder="Biarkan kosong untuk otomatis"
                                     className="w-full px-3 py-2 border rounded-lg"
                                 />
-                                <p className="text-xs text-[var(--text-muted)] mt-1">Jika kosong, kapasitas dihitung dari jumlah kursi yang dibuat.</p>
+                                <p className="text-xs text-(--text-muted) mt-1">Jika kosong, kapasitas dihitung dari jumlah kursi yang dibuat.</p>
                             </div>
                             <div className="flex items-center gap-2 pt-2">
                                 <input
@@ -790,13 +790,13 @@ export default function SeatingChartPage() {
                                     name="isActive"
                                     id="isActiveSec"
                                     defaultChecked={editingSection ? editingSection.isActive : true}
-                                    className="rounded text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]"
+                                    className="rounded text-(--accent-primary) focus:ring-(--accent-primary)"
                                 />
-                                <label htmlFor="isActiveSec" className="text-sm text-[var(--text-secondary)]">Section Aktif</label>
+                                <label htmlFor="isActiveSec" className="text-sm text-(--text-secondary)">Section Aktif</label>
                             </div>
                             <div className="pt-4 flex gap-3">
-                                <button type="button" onClick={() => setModalMode(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)] font-medium">Batal</button>
-                                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50">
+                                <button type="button" onClick={() => setModalMode(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-(--surface-hover) font-medium">Batal</button>
+                                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50">
                                     {isSubmitting ? "Menyimpan..." : "Simpan"}
                                 </button>
                             </div>
@@ -807,19 +807,19 @@ export default function SeatingChartPage() {
 
             {modalMode === "ROW" && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--surface)] rounded-2xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-(--surface) rounded-2xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                         <div className="px-6 py-4 border-b flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                            <h3 className="text-lg font-bold text-foreground">
                                 {editingItem ? "Edit Row" : "Tambah Row Baru"}
                             </h3>
-                            <button onClick={() => setModalMode(null)} className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
+                            <button onClick={() => setModalMode(null)} className="text-(--text-muted) hover:text-(--text-secondary)">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <form onSubmit={handleSaveRow} className="p-6 space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Label Baris</label>
+                                    <label className="block text-sm font-medium text-(--text-secondary) mb-1">Label Baris</label>
                                     <input
                                         name="rowLabel"
                                         defaultValue={editingRow?.rowLabel}
@@ -829,7 +829,7 @@ export default function SeatingChartPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Urutan</label>
+                                    <label className="block text-sm font-medium text-(--text-secondary) mb-1">Urutan</label>
                                     <input
                                         type="number"
                                         name="sortOrder"
@@ -840,24 +840,24 @@ export default function SeatingChartPage() {
                             </div>
 
                             {!editingRow && (
-                                <div className="bg-[var(--accent-primary)]/10 p-4 rounded-xl border border-indigo-100 space-y-3">
+                                <div className="bg-(--accent-primary)/10 p-4 rounded-xl border border-indigo-100 space-y-3">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <input type="checkbox" name="generateSeats" id="genSeats" defaultChecked={true} className="rounded text-[var(--accent-primary)]" />
+                                        <input type="checkbox" name="generateSeats" id="genSeats" defaultChecked={true} className="rounded text-(--accent-primary)" />
                                         <label htmlFor="genSeats" className="font-medium text-indigo-900">Generate Kursi Otomatis</label>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="block text-xs font-medium text-[var(--accent-primary)] mb-1">Jumlah Kursi</label>
+                                            <label className="block text-xs font-medium text-(--accent-primary) mb-1">Jumlah Kursi</label>
                                             <input type="number" name="seatCount" defaultValue={10} min={1} className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm" />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-medium text-[var(--accent-primary)] mb-1">Format Label Kursi</label>
+                                            <label className="block text-xs font-medium text-(--accent-primary) mb-1">Format Label Kursi</label>
                                             <input type="text" name="seatPrefix" placeholder="Otomatis (A-1, A-2...)" className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm" />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-medium text-[var(--accent-primary)] mb-1">Default Tipe Tiket</label>
-                                        <select name="ticketTypeId" className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm bg-[var(--surface)]">
+                                        <label className="block text-xs font-medium text-(--accent-primary) mb-1">Default Tipe Tiket</label>
+                                        <select name="ticketTypeId" className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm bg-(--surface)">
                                             <option value="">Pilih Tipe Tiket...</option>
                                             {ticketTypes.map(t => (
                                                 <option key={t.id} value={t.id}>{t.name} ({formatCurrency(t.basePrice)})</option>
@@ -873,14 +873,14 @@ export default function SeatingChartPage() {
                                     name="isActive"
                                     id="isActiveRow"
                                     defaultChecked={editingRow ? editingRow.isActive : true}
-                                    className="rounded text-[var(--accent-primary)]"
+                                    className="rounded text-(--accent-primary)"
                                 />
-                                <label htmlFor="isActiveRow" className="text-sm text-[var(--text-secondary)]">Row Aktif</label>
+                                <label htmlFor="isActiveRow" className="text-sm text-(--text-secondary)">Row Aktif</label>
                             </div>
 
                             <div className="pt-4 flex gap-3">
-                                <button type="button" onClick={() => setModalMode(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)] font-medium">Batal</button>
-                                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50">
+                                <button type="button" onClick={() => setModalMode(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-(--surface-hover) font-medium">Batal</button>
+                                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50">
                                     {isSubmitting ? "Menyimpan..." : "Simpan"}
                                 </button>
                             </div>
@@ -891,18 +891,18 @@ export default function SeatingChartPage() {
 
             {modalMode === "SEAT" && editingSeat && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-[var(--surface)] rounded-2xl max-w-md w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-(--surface) rounded-2xl max-w-md w-full shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                         <div className="px-6 py-4 border-b flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                            <h3 className="text-lg font-bold text-foreground">
                                 Edit Kursi: {editingSeat.seatLabel}
                             </h3>
-                            <button onClick={() => setModalMode(null)} className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
+                            <button onClick={() => setModalMode(null)} className="text-(--text-muted) hover:text-(--text-secondary)">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
                         <form onSubmit={handleSaveSeat} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Label Kursi</label>
+                                <label className="block text-sm font-medium text-(--text-secondary) mb-1">Label Kursi</label>
                                 <input
                                     name="seatLabel"
                                     defaultValue={editingSeat.seatLabel}
@@ -912,11 +912,11 @@ export default function SeatingChartPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Tipe Tiket</label>
+                                <label className="block text-sm font-medium text-(--text-secondary) mb-1">Tipe Tiket</label>
                                 <select
                                     name="ticketTypeId"
                                     defaultValue={editingSeat.ticketTypeId || ""}
-                                    className="w-full px-3 py-2 border rounded-lg bg-[var(--surface)]"
+                                    className="w-full px-3 py-2 border rounded-lg bg-(--surface)"
                                 >
                                     <option value="">-- Tidak ada tiket --</option>
                                     {ticketTypes.map(t => (
@@ -926,11 +926,11 @@ export default function SeatingChartPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Status</label>
+                                <label className="block text-sm font-medium text-(--text-secondary) mb-1">Status</label>
                                 <select
                                     name="status"
                                     defaultValue={editingSeat.status}
-                                    className="w-full px-3 py-2 border rounded-lg bg-[var(--surface)]"
+                                    className="w-full px-3 py-2 border rounded-lg bg-(--surface)"
                                 >
                                     <option value="AVAILABLE">Available (Tersedia)</option>
                                     <option value="LOCKED">Locked (Terkunci)</option>
@@ -940,7 +940,7 @@ export default function SeatingChartPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Override Harga (Opsional)</label>
+                                <label className="block text-sm font-medium text-(--text-secondary) mb-1">Override Harga (Opsional)</label>
                                 <input
                                     type="number"
                                     name="priceOverride"
@@ -956,18 +956,18 @@ export default function SeatingChartPage() {
                                         type="checkbox"
                                         name="isAccessible"
                                         defaultChecked={editingSeat.isAccessible}
-                                        className="rounded text-[var(--accent-primary)]"
+                                        className="rounded text-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Aksesibel (Kursi Roda)</span>
+                                    <span className="text-sm text-(--text-secondary)">Aksesibel (Kursi Roda)</span>
                                 </label>
                                 <label className="flex items-center gap-2">
                                     <input
                                         type="checkbox"
                                         name="isActive"
                                         defaultChecked={editingSeat.isActive}
-                                        className="rounded text-[var(--accent-primary)]"
+                                        className="rounded text-(--accent-primary)"
                                     />
-                                    <span className="text-sm text-[var(--text-secondary)]">Aktif</span>
+                                    <span className="text-sm text-(--text-secondary)">Aktif</span>
                                 </label>
                             </div>
 
@@ -979,8 +979,8 @@ export default function SeatingChartPage() {
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </button>
-                                <button type="button" onClick={() => setModalMode(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-[var(--surface-hover)] font-medium">Batal</button>
-                                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50">
+                                <button type="button" onClick={() => setModalMode(null)} className="flex-1 px-4 py-2 border rounded-lg hover:bg-(--surface-hover) font-medium">Batal</button>
+                                <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2 bg-(--accent-primary) text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50">
                                     Simpan
                                 </button>
                             </div>

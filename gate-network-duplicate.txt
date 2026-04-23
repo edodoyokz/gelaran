@@ -1,0 +1,4 @@
+[POST] http://localhost:3000/api/gate/check-in => [200] OK
+  Request body: {"ticketCode":"TICK-WAY-001-01"}
+[POST] http://localhost:3000/api/gate/check-in => [400] Bad Request
+  Request body: {"ticketCode":"TICK-WAY-001-01"}

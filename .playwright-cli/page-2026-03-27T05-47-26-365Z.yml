@@ -1,0 +1,133 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Gelaran Cultural Curator" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e6]: Gelaran
+          - generic [ref=e7]: Cultural Curator
+        - generic [ref=e9]:
+          - textbox "Cari konser, seminar..." [ref=e10]
+          - img [ref=e11]
+        - generic [ref=e14]:
+          - link "Buat Event" [ref=e15] [cursor=pointer]:
+            - /url: /organizer
+            - img [ref=e16]
+            - generic [ref=e21]: Buat Event
+          - link "Bantuan" [ref=e22] [cursor=pointer]:
+            - /url: /docs
+            - img [ref=e23]
+            - generic [ref=e25]: Bantuan
+    - main [ref=e27]:
+      - generic [ref=e30]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - generic [ref=e35]: The cultural curator
+              - generic [ref=e36]:
+                - heading "Discover the soul of Solo." [level=1] [ref=e37]
+                - paragraph [ref=e38]: Dari panggung tradisi hingga workshop kontemporer, Gelaran merangkai event budaya Surakarta dalam halaman depan yang terasa kuratorial, terang, dan mudah dipindai.
+            - generic [ref=e39]:
+              - link "Explore now" [ref=e40] [cursor=pointer]:
+                - /url: /events
+                - text: Explore now
+                - img [ref=e41]
+              - link "Become organizer" [ref=e43] [cursor=pointer]:
+                - /url: /become-organizer
+            - generic [ref=e44]:
+              - article [ref=e45]:
+                - paragraph [ref=e46]: Kategori aktif
+                - paragraph [ref=e47]: 0+
+              - article [ref=e48]:
+                - paragraph [ref=e49]: Event tayang
+                - paragraph [ref=e50]: "0"
+              - article [ref=e51]:
+                - paragraph [ref=e52]: Review unggulan
+                - paragraph [ref=e53]: "0"
+          - generic [ref=e54]:
+            - paragraph [ref=e55]: This week in Solo
+            - generic [ref=e56]: Featured event akan muncul setelah data publik dimuat.
+        - generic [ref=e58]:
+          - generic [ref=e60]:
+            - generic [ref=e61]: Browse by interest
+            - generic [ref=e62]:
+              - heading "Pilih ritme event yang ingin kamu ikuti" [level=2] [ref=e63]
+              - paragraph [ref=e64]: Kategori utama dirancang seperti rak editorial—mudah dipindai, ringan di mobile, dan langsung mengarahkan ke kumpulan event yang relevan.
+          - button "Semua" [ref=e68]:
+            - img [ref=e70]
+            - generic [ref=e73]: Semua
+        - generic [ref=e75]:
+          - generic [ref=e76]:
+            - generic [ref=e77]:
+              - generic [ref=e78]: Popular now
+              - generic [ref=e79]:
+                - heading "Event populer pilihan Gelaran" [level=2] [ref=e80]
+                - paragraph [ref=e81]: Koleksi utama ini memadukan event yang banyak dicari dengan presentasi kartu yang lebih konsisten, lapang, dan nyaman di berbagai ukuran layar.
+            - link "Lihat semua event" [ref=e83] [cursor=pointer]:
+              - /url: /events
+              - text: Lihat semua event
+              - img [ref=e84]
+          - img [ref=e88]
+    - contentinfo [ref=e90]:
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - generic [ref=e96]: Cultural Ticketing
+            - heading "Gelaran ID" [level=3] [ref=e97]:
+              - text: Gelaran
+              - generic [ref=e98]: ID
+            - paragraph [ref=e99]: Platform manajemen event dan penjualan tiket terpercaya untuk pengalaman terbaik Anda.
+            - generic [ref=e100]:
+              - link [ref=e101] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e102]
+              - link [ref=e105] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e106]
+              - link [ref=e108] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e109]
+          - generic [ref=e113]:
+            - heading "Perusahaan" [level=4] [ref=e114]
+            - list [ref=e115]:
+              - listitem [ref=e116]:
+                - link "Tentang Kami" [ref=e117] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e118]:
+                - link "Hubungi Kami" [ref=e119] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e120]:
+                - link "Syarat & Ketentuan" [ref=e121] [cursor=pointer]:
+                  - /url: /terms
+          - generic [ref=e122]:
+            - heading "Dukungan" [level=4] [ref=e123]
+            - list [ref=e124]:
+              - listitem [ref=e125]:
+                - link "Kebijakan Privasi" [ref=e126] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e127]:
+                - link "Bantuan" [ref=e128] [cursor=pointer]:
+                  - /url: /help
+          - generic [ref=e129]:
+            - heading "Hubungi Kami" [level=4] [ref=e130]
+            - list [ref=e131]:
+              - listitem [ref=e132]:
+                - img [ref=e133]
+                - generic [ref=e136]: Jl. Jendral Sudirman No. 1, Jakarta Pusat
+              - listitem [ref=e137]:
+                - img [ref=e138]
+                - generic [ref=e141]: support@bsctickets.com
+              - listitem [ref=e142]:
+                - img [ref=e143]
+                - generic [ref=e145]: +62 21 5555 8888
+        - generic [ref=e146]:
+          - paragraph [ref=e147]: © 2026 Gelaran. All rights reserved.
+          - generic [ref=e148]:
+            - link "Privacy" [ref=e149] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e150] [cursor=pointer]:
+              - /url: /terms
+            - link "Sitemap" [ref=e151] [cursor=pointer]:
+              - /url: /sitemap
+  - button "Open Next.js Dev Tools" [ref=e157] [cursor=pointer]:
+    - img [ref=e158]

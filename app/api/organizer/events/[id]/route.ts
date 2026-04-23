@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { successResponse, errorResponse } from "@/lib/api/response";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedAppUser, requireOrganizerContext } from "@/lib/auth/route-auth";
 import { updateEventSchema } from "@/lib/validators";
 
 export async function GET(
@@ -10,19 +10,10 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authContext = await requireAuthenticatedAppUser();
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const organizer = await prisma.user.findUnique({
-            where: { email: user.email! },
-        });
-
-        if (!organizer) {
-            return errorResponse("User not found", 404);
+        if ("error" in authContext) {
+            return errorResponse(authContext.error, authContext.status);
         }
 
         const event = await prisma.event.findUnique({
@@ -53,7 +44,11 @@ export async function GET(
             return errorResponse("Event not found", 404);
         }
 
-        if (event.organizerId !== organizer.id && organizer.role !== "ADMIN" && organizer.role !== "SUPER_ADMIN") {
+        if (
+            event.organizerId !== authContext.dbUserId &&
+            authContext.dbUser.role !== "ADMIN" &&
+            authContext.dbUser.role !== "SUPER_ADMIN"
+        ) {
             return errorResponse("Not authorized to view this event", 403);
         }
 
@@ -109,19 +104,10 @@ export async function PUT(
 ) {
     try {
         const { id } = await params;
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authContext = await requireOrganizerContext();
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const organizer = await prisma.user.findUnique({
-            where: { email: user.email! },
-        });
-
-        if (!organizer || organizer.role !== "ORGANIZER") {
-            return errorResponse("Only organizers can update events", 403);
+        if ("error" in authContext) {
+            return errorResponse(authContext.error, authContext.status);
         }
 
         const event = await prisma.event.findUnique({
@@ -132,7 +118,7 @@ export async function PUT(
             return errorResponse("Event not found", 404);
         }
 
-        if (event.organizerId !== organizer.id) {
+        if (event.organizerId !== authContext.dbUserId) {
             return errorResponse("Not authorized to update this event", 403);
         }
 
@@ -191,19 +177,10 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const authContext = await requireOrganizerContext();
 
-        if (!user) {
-            return errorResponse("Unauthorized", 401);
-        }
-
-        const organizer = await prisma.user.findUnique({
-            where: { email: user.email! },
-        });
-
-        if (!organizer || organizer.role !== "ORGANIZER") {
-            return errorResponse("Only organizers can delete events", 403);
+        if ("error" in authContext) {
+            return errorResponse(authContext.error, authContext.status);
         }
 
         const event = await prisma.event.findUnique({
@@ -215,7 +192,7 @@ export async function DELETE(
             return errorResponse("Event not found", 404);
         }
 
-        if (event.organizerId !== organizer.id) {
+        if (event.organizerId !== authContext.dbUserId) {
             return errorResponse("Not authorized to delete this event", 403);
         }
 

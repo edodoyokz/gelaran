@@ -8,6 +8,7 @@ import { attachRequestIdHeader, createRequestContext } from "@/lib/logging/reque
 import { createClient } from "@/lib/supabase/server";
 import { getComplimentaryApprovalError, getComplimentaryReviewTransitionError } from "@/lib/complimentary-flow";
 import { generateBookingCode } from "@/lib/utils";
+import { sendComplimentaryApprovedEmail, sendComplimentaryRejectedEmail } from "@/lib/email/send";
 
 class ComplimentaryFlowConflictError extends Error {
     constructor(message: string) {
@@ -173,6 +174,11 @@ export async function PUT(
 
             logger.info("complimentary.review.rejected", "Complimentary request rejected", {
                 requestId,
+            });
+
+            // Send rejection email (fire-and-forget)
+            sendComplimentaryRejectedEmail(requestId).catch((err) => {
+                logger.error("complimentary.email.failed", "Failed to send rejection email", err);
             });
 
             return ok(rejected);
@@ -342,6 +348,11 @@ export async function PUT(
         logger.info("complimentary.review.approved", "Complimentary request approved", {
             requestId,
             bookingCode: approved.booking.bookingCode,
+        });
+
+        // Send approval email (fire-and-forget)
+        sendComplimentaryApprovedEmail(requestId).catch((err) => {
+            logger.error("complimentary.email.failed", "Failed to send approval email", err);
         });
 
         return ok({

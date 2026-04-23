@@ -2,6 +2,51 @@
 
 This document defines operational roles, responsibilities, and ownership for the Gelaran platform.
 
+## Repo-Visible Owner Roster Contract
+
+This repository keeps the operational ownership contract visible without storing personal roster data.
+
+### Kept in repo: role requirements
+
+- Required operational roles such as on-call owner, backup owner, deployment owner, rollback decision owner, watch-window owner, and launch decision owner
+- Required access, responsibility, and escalation expectations for each role
+- The workstream or checkpoint that each role must cover
+
+### Kept in repo: confirmation checkpoints
+
+For launch-readiness and follow-up evidence, the repo-visible confirmation contract uses these fields only:
+
+| Field | Meaning |
+|-------|---------|
+| `checkpoint_id` | Stable identifier for the confirmation point, such as `deployment-owner-confirmed` |
+| `required_role` | Role that must be covered in the external roster |
+| `coverage_window` | Window or handoff period that must be covered, such as `launch window` or `watch window` |
+| `roster_status` | Repo-visible status: `pending`, `confirmed`, or `blocked` |
+| `evidence_ref` | Link or reference to the repo document recording the checkpoint outcome |
+| `last_confirmed_at` | Timestamp of the latest repo-visible confirmation |
+| `notes` | Non-sensitive notes about gaps, caveats, or follow-up |
+
+Minimum confirmation checkpoints are:
+
+| `checkpoint_id` | `required_role` | `coverage_window` |
+|-----------------|-----------------|-------------------|
+| `deployment-owner-confirmed` | Deployment owner | Launch window |
+| `rollback-owner-confirmed` | Rollback decision owner | Launch window |
+| `primary-oncall-confirmed` | Primary on-call owner | Launch window |
+| `backup-oncall-confirmed` | Backup on-call owner | Launch window |
+| `watch-window-owner-confirmed` | Watch-window owner | Watch window |
+| `decision-owner-confirmed` | Launch decision owner | Readiness review and sign-off |
+
+### Stored externally only: actual owner roster
+
+- Personal names
+- Personal email addresses
+- Phone numbers
+- Shift tables or rotation assignments for a specific date
+- Full active roster entries or contact sheets
+
+The secure ops roster remains the source of truth for actual assignees.
+
 ## Operational Roles
 
 ### On-Call Engineer

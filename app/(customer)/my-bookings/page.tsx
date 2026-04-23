@@ -18,6 +18,7 @@ import {
     Download,
     Search,
     Sparkles,
+    Gift,
 } from "lucide-react";
 import {
     CustomerEmptyState,
@@ -73,6 +74,7 @@ interface Booking {
     totalAmount: string;
     createdAt: string;
     expiresAt: string | null;
+    isComplimentary: boolean;
     event: BookingEvent;
     eventSchedule: EventSchedule | null;
     bookedTickets: BookedTicket[];
@@ -239,7 +241,7 @@ export default function MyBookingsPage() {
     }
 
     return (
-        <div className="space-y-6 lg:space-y-8">
+        <div className="space-y-7 lg:space-y-9">
             <CustomerHero
                 eyebrow="Order history"
                 title="Pesanan saya"
@@ -366,7 +368,7 @@ export default function MyBookingsPage() {
                         className="border-none bg-transparent p-0 shadow-none"
                     />
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         {filteredBookings.map((booking) => {
                             const statusConfig =
                                 STATUS_CONFIG[booking.status] || STATUS_CONFIG.PENDING;
@@ -374,7 +376,7 @@ export default function MyBookingsPage() {
                             return (
                                 <article
                                     key={booking.id}
-                                    className="overflow-hidden rounded-[1.75rem] border border-(--border) bg-(--surface)/96 shadow-(--shadow-sm) transition-all duration-200 hover:-translate-y-0.5 hover:shadow-(--shadow-md)"
+                                    className="overflow-hidden rounded-[1.9rem] border border-[rgba(1,89,89,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,250,249,0.95))] shadow-[0_18px_44px_rgba(1,89,89,0.07)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(1,89,89,0.11)] dark:border-[rgba(78,222,225,0.12)] dark:bg-[linear-gradient(180deg,rgba(26,26,36,0.96),rgba(18,30,31,0.92))]"
                                 >
                                     <div className="flex flex-col lg:flex-row">
                                         <div className="relative aspect-16/10 w-full shrink-0 overflow-hidden bg-(--surface-brand-soft) lg:h-auto lg:w-64 lg:aspect-auto">
@@ -386,13 +388,21 @@ export default function MyBookingsPage() {
                                                 sizes="(max-width: 1024px) 100vw, 256px"
                                             />
                                             <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/20 to-transparent lg:bg-linear-to-r" />
-                                            <div className="absolute left-4 top-4">
+                                            <div className="absolute left-4 top-4 flex flex-wrap gap-2">
                                                 <CustomerStatusBadge
                                                     label={statusConfig.label}
                                                     tone={statusConfig.tone}
                                                     icon={statusConfig.icon}
                                                     className="border-white/10 bg-black/35 text-white backdrop-blur"
                                                 />
+                                                {booking.isComplimentary ? (
+                                                    <CustomerStatusBadge
+                                                        label="Gratis"
+                                                        tone="success"
+                                                        icon={Gift}
+                                                        className="border-white/10 bg-black/35 text-white backdrop-blur"
+                                                    />
+                                                ) : null}
                                             </div>
                                             <div className="absolute bottom-4 left-4 right-4 lg:hidden">
                                                 <h2 className="line-clamp-2 text-lg font-semibold text-white">
@@ -477,16 +487,32 @@ export default function MyBookingsPage() {
                                                     </div>
                                                 </div>
 
-                                                <aside className="rounded-2xl border border-(--border-light) bg-(--surface-elevated) p-4 xl:w-64">
+                                                <aside className="rounded-[1.5rem] border border-(--border-light) bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(247,250,249,0.86))] p-4 shadow-[0_10px_28px_rgba(1,89,89,0.04)] dark:bg-(--surface-elevated) xl:w-64">
                                                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-(--text-muted)">
                                                         Ringkasan pembayaran
                                                     </p>
-                                                    <p className="mt-2 text-2xl font-semibold text-foreground">
-                                                        {formatCurrency(booking.totalAmount)}
-                                                    </p>
-                                                    <p className="mt-1 text-sm text-(--text-secondary)">
-                                                        Dibuat {formatDate(booking.createdAt)}
-                                                    </p>
+                                                    {booking.isComplimentary ? (
+                                                        <>
+                                                            <div className="mt-2 flex items-center gap-2">
+                                                                <Gift className="h-5 w-5 text-(--success-text)" />
+                                                                <p className="text-2xl font-semibold text-(--success-text)">
+                                                                    GRATIS
+                                                                </p>
+                                                            </div>
+                                                            <p className="mt-1 text-sm text-(--text-secondary)">
+                                                                Tiket complimentary
+                                                            </p>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <p className="mt-2 text-2xl font-semibold text-foreground">
+                                                                {formatCurrency(booking.totalAmount)}
+                                                            </p>
+                                                            <p className="mt-1 text-sm text-(--text-secondary)">
+                                                                Dibuat {formatDate(booking.createdAt)}
+                                                            </p>
+                                                        </>
+                                                    )}
 
                                                     <div className="mt-4 flex flex-col gap-3">
                                                         {booking.status === "CONFIRMED" ? (
@@ -499,7 +525,7 @@ export default function MyBookingsPage() {
                                                             </Link>
                                                         ) : null}
 
-                                                        {booking.status === "AWAITING_PAYMENT" ? (
+                                                        {booking.status === "AWAITING_PAYMENT" && !booking.isComplimentary ? (
                                                             <Link
                                                                 href={`/checkout/payment/${booking.id}`}
                                                                 className="inline-flex items-center justify-center gap-2 rounded-full bg-(--accent-gradient) px-4 py-3 text-sm font-semibold text-white shadow-(--shadow-glow)"

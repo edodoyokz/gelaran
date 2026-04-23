@@ -1,33 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
-import { createClient } from "@/lib/supabase/server";
-
-async function isAdmin(userId: string): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { role: true },
-  });
-  return user?.role === "SUPER_ADMIN" || user?.role === "ADMIN";
-}
+import { requireAdminContext } from "@/lib/auth/route-auth";
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAdminContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
-      );
-    }
-
-    if (!(await isAdmin(user.id))) {
-      return NextResponse.json(
-        { success: false, error: { message: "Admin access required" } },
-        { status: 403 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -88,22 +70,12 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAdminContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
-      );
-    }
-
-    if (!(await isAdmin(user.id))) {
-      return NextResponse.json(
-        { success: false, error: { message: "Admin access required" } },
-        { status: 403 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -150,7 +122,7 @@ export async function PUT(request: NextRequest) {
 
     await prisma.auditLog.create({
       data: {
-        userId: user.id,
+        userId: authContext.dbUserId,
         action: "REVIEW_MODERATION",
         entityType: "Review",
         entityId: reviewId,
@@ -174,22 +146,12 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authContext = await requireAdminContext();
 
-    if (!user) {
+    if ("error" in authContext) {
       return NextResponse.json(
-        { success: false, error: { message: "Authentication required" } },
-        { status: 401 }
-      );
-    }
-
-    if (!(await isAdmin(user.id))) {
-      return NextResponse.json(
-        { success: false, error: { message: "Admin access required" } },
-        { status: 403 }
+        { success: false, error: { message: authContext.error } },
+        { status: authContext.status }
       );
     }
 
@@ -220,7 +182,7 @@ export async function DELETE(request: NextRequest) {
 
     await prisma.auditLog.create({
       data: {
-        userId: user.id,
+        userId: authContext.dbUserId,
         action: "REVIEW_DELETE",
         entityType: "Review",
         entityId: reviewId,

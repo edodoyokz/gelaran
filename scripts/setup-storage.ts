@@ -45,6 +45,12 @@ const BUCKETS: BucketConfig[] = [
         fileSizeLimit: 1 * 1024 * 1024,
         allowedMimeTypes: ["image/png", "image/jpeg", "application/pdf"],
     },
+    {
+        name: "payment-proofs",
+        public: false,
+        fileSizeLimit: 5 * 1024 * 1024,
+        allowedMimeTypes: ["image/jpeg", "image/png", "application/pdf"],
+    },
 ];
 
 async function createBucket(config: BucketConfig) {
@@ -137,6 +143,27 @@ TICKETS BUCKET (Private):
 │   - Allowed operation: INSERT                                   │
 │   - Target roles: authenticated                                 │
 │   - Policy: true                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+PAYMENT-PROOFS BUCKET (Private):
+┌─────────────────────────────────────────────────────────────────┐
+│ Policy 1: "Allow users to upload to their booking folder"       │
+│   - Allowed operation: INSERT                                   │
+│   - Target roles: authenticated                                 │
+│   - Policy: (bucket_id = 'payment-proofs' AND                   │
+│              (storage.foldername(name))[1] = auth.uid()::text)  │
+├─────────────────────────────────────────────────────────────────┤
+│ Policy 2: "Allow users to read their own payment proofs"        │
+│   - Allowed operation: SELECT                                   │
+│   - Target roles: authenticated                                 │
+│   - Policy: (bucket_id = 'payment-proofs' AND                   │
+│              (storage.foldername(name))[1] = auth.uid()::text)  │
+├─────────────────────────────────────────────────────────────────┤
+│ Policy 3: "Allow admins to read all payment proofs"             │
+│   - Allowed operation: SELECT                                   │
+│   - Target roles: authenticated                                 │
+│   - Policy: (bucket_id = 'payment-proofs' AND                   │
+│              auth.jwt()->>'role' = 'admin')                     │
 └─────────────────────────────────────────────────────────────────┘
 `);
 }

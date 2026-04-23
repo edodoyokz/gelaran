@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma/client";
 import { requireOrganizer } from "@/lib/auth/route-auth";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { resend, FROM_EMAIL } from "@/lib/email/client";
 
 interface TeamMember {
   id: string;
@@ -168,7 +166,7 @@ export async function POST(request: NextRequest) {
 
     try {
       await resend.emails.send({
-        from: `Gelaran <${process.env.RESEND_FROM_EMAIL || "noreply@gelaran.id"}>`,
+        from: FROM_EMAIL,
         to: invitedUser.email,
         subject: `Anda ditambahkan ke tim ${organizerProfile.organizationName}`,
         html: `

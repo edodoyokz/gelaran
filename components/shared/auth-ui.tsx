@@ -1,7 +1,8 @@
-import type { ComponentProps, ReactNode } from "react";
+import { cloneElement, isValidElement, type ComponentProps, type ReactNode } from "react";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 
+import { publicAuthSurface, publicAuthToneMessages, publicAuthTonePanels } from "@/components/shared/public-auth-tokens";
 import { cn } from "@/lib/utils";
 
 export function AuthPageIntro({
@@ -22,22 +23,41 @@ export function AuthPageIntro({
     const centered = align === "center";
 
     return (
-        <header className={cn("mb-12", centered && "text-center", className)}>
+        <header className={cn("mb-10 space-y-4 sm:mb-12", centered && "text-center", className)}>
             {eyebrow ? (
-                <span className="inline-block px-3 py-1 bg-[#ffdf9a] text-[#654b00] text-xs font-bold tracking-widest uppercase mb-6 rounded-sm">
+                <span className={cn(publicAuthSurface.eyebrow, "rounded-md bg-[var(--surface-highlight)] text-[var(--auth-shell-chip-text)] shadow-none")}>
                     {eyebrow}
                 </span>
             ) : null}
-            <h2 className="font-headline text-4xl font-bold text-[#015959] mb-3 leading-tight">
+            <h2 className="font-(--font-editorial) text-[2rem] font-bold leading-[1.08] tracking-(--tracking-display) text-(--accent-primary) sm:text-[2.45rem]">
                 {title}
             </h2>
             {description ? (
-                <p className="text-[#3f4948] text-sm leading-relaxed">
+                <p className={cn("max-w-[38rem] text-(--text-secondary) text-sm leading-7 sm:text-[0.95rem]", centered && "mx-auto")}>
                     {description}
                 </p>
             ) : null}
-            {footer ? <div className="mt-4 text-sm text-[#3f4948]">{footer}</div> : null}
+            {footer ? <div className="mt-4 text-sm text-(--text-secondary)">{footer}</div> : null}
         </header>
+    );
+}
+
+export function AuthKicker({
+    children,
+    className,
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <span
+            className={cn(
+                "inline-flex items-center rounded-sm bg-[var(--surface-highlight)] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.26em] text-[var(--auth-shell-chip-text)]",
+                className,
+            )}
+        >
+            {children}
+        </span>
     );
 }
 
@@ -49,9 +69,51 @@ export function AuthFormShell({
     className?: string;
 }) {
     return (
-        <div className={cn("space-y-8", className)}>
+        <div className={cn("space-y-8 sm:space-y-9", className)}>
             {children}
         </div>
+    );
+}
+
+export function AuthEditorialPanel({
+    kicker,
+    title,
+    description,
+    badge,
+    className,
+}: {
+    kicker?: ReactNode;
+    title: ReactNode;
+    description: ReactNode;
+    badge?: ReactNode;
+    className?: string;
+}) {
+    return (
+        <section
+            className={cn(
+                "rounded-[1.7rem] border border-[rgba(190,200,200,0.22)] bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(244,243,241,0.84))] p-6 shadow-(--shadow-sm) sm:p-7",
+                className,
+            )}
+        >
+            <div className="space-y-4">
+                {kicker ? (
+                    <div className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#9d7400]">
+                        {kicker}
+                    </div>
+                ) : null}
+                <div className="space-y-3">
+                    <h3 className="font-(--font-editorial) text-[1.75rem] leading-[1.1] tracking-(--tracking-display) text-(--accent-primary) sm:text-[2.15rem]">
+                        {title}
+                    </h3>
+                    <div className="max-w-xl text-sm leading-7 text-(--text-secondary) sm:text-[0.95rem]">{description}</div>
+                </div>
+                {badge ? (
+                    <div className="flex items-center gap-3 rounded-[1.1rem] border border-white/70 bg-white/88 px-4 py-3 text-sm font-semibold text-(--text-secondary) shadow-(--shadow-xs)">
+                        {badge}
+                    </div>
+                ) : null}
+            </div>
+        </section>
     );
 }
 
@@ -65,14 +127,14 @@ export function AuthSectionCard({
     tone?: "default" | "success" | "warning" | "danger";
 }) {
     const toneClassName = {
-        default: "border-[#bec8c8]/20 bg-[#faf9f7]",
-        success: "border-[#13876c]/20 bg-[#13876c]/10",
-        warning: "border-[#d89d00]/20 bg-[#d89d00]/10",
-        danger: "border-[#d94f3d]/20 bg-[#d94f3d]/10",
+        default: publicAuthTonePanels.default,
+        success: publicAuthTonePanels.success,
+        warning: publicAuthTonePanels.warning,
+        danger: publicAuthTonePanels.danger,
     }[tone];
 
     return (
-        <div className={cn("rounded-xl border p-5 shadow-[0px_10px_30px_rgba(0,32,32,0.03)] sm:p-6", toneClassName, className)}>
+        <div className={cn("rounded-[1.45rem] border p-5 shadow-(--shadow-md) sm:rounded-[1.6rem] sm:p-6", toneClassName, className)}>
             {children}
         </div>
     );
@@ -92,17 +154,24 @@ export function AuthMessage({
     className?: string;
 }) {
     const palette = {
-        default: "border-[#bec8c8]/20 bg-[#faf9f7] text-[#3f4948]",
-        success: "border-[#13876c]/20 bg-[#13876c]/10 text-[#0e5d4a]",
-        warning: "border-[#d89d00]/20 bg-[#d89d00]/10 text-[#7a5b00]",
-        danger: "border-[#d94f3d]/20 bg-[#d94f3d]/10 text-[#8f2f22]",
+        default: publicAuthToneMessages.default,
+        success: publicAuthToneMessages.success,
+        warning: publicAuthToneMessages.warning,
+        danger: publicAuthToneMessages.danger,
     }[tone];
+    const liveRegionRole = tone === "danger" ? "alert" : "status";
+    const liveRegionMode = tone === "danger" ? "assertive" : "polite";
 
     return (
-        <div className={cn("flex gap-3 rounded-lg border px-4 py-3 text-sm leading-6", palette, className)}>
+        <div
+            role={liveRegionRole}
+            aria-live={liveRegionMode}
+            aria-atomic="true"
+            className={cn("flex gap-3 rounded-[1.25rem] border px-4 py-3.5 text-sm leading-6 shadow-(--shadow-sm)", palette, className)}
+        >
             {Icon ? (
-                <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/80 shadow-[0px_4px_12px_rgba(0,32,32,0.04)]">
-                    <Icon className="h-4 w-4" />
+                <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/80 shadow-(--shadow-xs)">
+                    <Icon aria-hidden="true" className="h-4 w-4" />
                 </span>
             ) : null}
             <div className="space-y-1">
@@ -114,29 +183,43 @@ export function AuthMessage({
 }
 
 export function AuthField({
+    htmlFor,
     label,
     helper,
     error,
     children,
 }: {
+    htmlFor: string;
     label: string;
     helper?: ReactNode;
     error?: ReactNode;
     children: ReactNode;
 }) {
+    const helperId = helper ? `${htmlFor}-helper` : undefined;
+    const errorId = error ? `${htmlFor}-error` : undefined;
+    const describedBy = [helperId, errorId].filter(Boolean).join(" ") || undefined;
+
+    const enhancedChild = isValidElement(children)
+        ? cloneElement(children, {
+            "aria-describedby": describedBy,
+            "aria-invalid": error ? true : undefined,
+        } as Record<string, unknown>)
+        : children;
+
     return (
-        <div className="relative group">
-            <label className="block text-[11px] font-bold uppercase tracking-widest text-[#3f4948] mb-2">
+        <div className="relative group min-w-0">
+            <label htmlFor={htmlFor} className="mb-2.5 block text-[11px] font-bold uppercase tracking-[0.28em] text-(--text-secondary)">
                 {label}
             </label>
-            {children}
-            {helper ? <div className="mt-3 flex justify-end text-[11px] font-semibold text-[#29B3B6]">{helper}</div> : null}
-            {error ? <p className="mt-1 text-xs font-medium text-[#ba1a1a]">{error}</p> : null}
+            {enhancedChild}
+            {helper ? <div id={helperId} className="mt-3 flex justify-end text-[11px] font-semibold text-(--text-link)">{helper}</div> : null}
+            {error ? <p id={errorId} className="mt-1 text-xs font-medium text-(--error-text)">{error}</p> : null}
         </div>
     );
 }
 
 export function AuthInputShell({
+    icon: Icon,
     className,
     inputClassName,
     ...props
@@ -146,11 +229,17 @@ export function AuthInputShell({
     inputClassName?: string;
 }) {
     return (
-        <div className={cn("relative flex items-center", className)}>
+        <div className={cn(publicAuthSurface.fieldShell, className)}>
+            {Icon ? (
+                <span aria-hidden="true" className="mr-3 inline-flex h-5 w-5 shrink-0 items-center justify-center text-(--text-secondary)">
+                    <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
+                </span>
+            ) : null}
             <input
                 {...props}
                 className={cn(
-                    "w-full bg-[#f4f3f1] border-b-2 border-[#bec8c8] focus:border-[#1e6868] focus:ring-0 transition-all duration-300 py-3 px-0 placeholder:text-[#6f7978]/40 outline-none appearance-none rounded-none text-[#1a1c1b]",
+                    publicAuthSurface.fieldInput,
+                    "placeholder:text-(--text-muted)/60",
                     inputClassName,
                 )}
             />
@@ -159,26 +248,33 @@ export function AuthInputShell({
 }
 
 export function AuthPasswordShell({
+    icon: Icon,
     endAdornment,
     className,
     inputClassName,
     ...props
 }: ComponentProps<"input"> & {
+    icon?: LucideIcon;
     endAdornment?: ReactNode;
     className?: string;
     inputClassName?: string;
 }) {
     return (
-        <div className={cn("relative flex items-center", className)}>
+        <div className={cn(publicAuthSurface.fieldShell, className)}>
+            {Icon ? (
+                <span aria-hidden="true" className="mr-3 inline-flex h-5 w-5 shrink-0 items-center justify-center text-(--text-secondary)">
+                    <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
+                </span>
+            ) : null}
             <input
                 {...props}
                 className={cn(
-                    "w-full bg-[#f4f3f1] border-b-2 border-[#bec8c8] focus:border-[#1e6868] focus:ring-0 transition-all duration-300 py-3 px-0 outline-none appearance-none rounded-none text-[#1a1c1b]",
+                    publicAuthSurface.fieldInput,
                     endAdornment ? "pr-10" : "",
                     inputClassName,
                 )}
             />
-            {endAdornment ? <div className="absolute right-0 top-1/2 -translate-y-1/2">{endAdornment}</div> : null}
+            {endAdornment ? <div className="absolute right-3 top-1/2 -translate-y-1/2">{endAdornment}</div> : null}
         </div>
     );
 }
@@ -193,7 +289,7 @@ export function AuthIconButton({
             type="button"
             {...props}
             className={cn(
-                "inline-flex h-9 w-9 items-center justify-center rounded-full text-[#6f7978] transition-colors duration-200 hover:bg-[#efeeec] hover:text-[#015959] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#29B3B6]",
+                publicAuthSurface.iconButton,
                 className,
             )}
         >
@@ -211,7 +307,7 @@ export function AuthPrimaryButton({
         <button
             {...props}
             className={cn(
-                "bg-linear-to-t from-[#672200] to-[#8d3100] w-full py-5 rounded-lg text-white font-bold text-sm uppercase tracking-widest shadow-xl shadow-[#672200]/10 hover:opacity-90 active:scale-[0.98] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60",
+                publicAuthSurface.primaryButton,
                 className,
             )}
         >
@@ -233,7 +329,7 @@ export function AuthSecondaryLink({
         <Link
             href={href}
             className={cn(
-                "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#bec8c8] bg-white px-5 py-3 text-sm font-semibold text-[#1a1c1b] shadow-[0px_4px_12px_rgba(0,32,32,0.02)] transition-colors duration-200 hover:border-[#6f908e] hover:bg-[#faf9f7]",
+                publicAuthSurface.secondaryButton,
                 className,
             )}
         >
@@ -255,7 +351,8 @@ export function AuthTextLink({
         <Link
             href={href}
             className={cn(
-                "text-[#29B3B6] font-bold hover:underline underline-offset-4 transition-all ml-1",
+                publicAuthSurface.textLink,
+                "ml-1",
                 className,
             )}
         >
@@ -266,20 +363,74 @@ export function AuthTextLink({
 
 export function AuthMetaList({
     items,
+    renderBullet,
     className,
 }: {
     items: string[];
+    renderBullet?: (item: string, index: number) => ReactNode;
     className?: string;
 }) {
     return (
-        <ul className={cn("grid gap-2 text-sm text-[#3f4948]", className)}>
-            {items.map((item) => (
-                <li key={item} className="flex items-start gap-3 rounded-xl border border-[#bec8c8] bg-white/88 px-4 py-3">
-                    <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#015959]" />
+        <ul className={cn("grid gap-2 text-sm text-(--text-secondary)", className)}>
+            {items.map((item, index) => (
+                <li key={item} className={cn("flex items-start gap-3 px-4 py-3", publicAuthSurface.panelSoft)}>
+                    {renderBullet ? renderBullet(item, index) : <span aria-hidden="true" className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-(--accent-primary)" />}
                     <span className="leading-6">{item}</span>
                 </li>
             ))}
         </ul>
+    );
+}
+
+export function AuthFeatureGrid({
+    items,
+    columns = 1,
+    className,
+}: {
+    items: Array<{
+        title: string;
+        description: string;
+        icon?: LucideIcon;
+    }>;
+    columns?: 1 | 2 | 3;
+    className?: string;
+}) {
+    const columnClassName = columns === 3
+        ? "md:grid-cols-3"
+        : columns === 2
+            ? "md:grid-cols-2"
+            : "grid-cols-1";
+
+    return (
+        <div className={cn("grid gap-3", columnClassName, className)}>
+            {items.map(({ title, description, icon: Icon }) => (
+                <article key={title} className="rounded-[1.2rem] border border-(--border-light) bg-white/72 px-4 py-4 shadow-(--shadow-xs)">
+                    {Icon ? (
+                        <span aria-hidden="true" className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface-highlight)] text-[var(--accent-primary)]">
+                            <Icon aria-hidden="true" className="h-[18px] w-[18px]" />
+                        </span>
+                    ) : null}
+                    <div className="space-y-1.5">
+                        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+                        <p className="text-sm leading-6 text-(--text-secondary)">{description}</p>
+                    </div>
+                </article>
+            ))}
+        </div>
+    );
+}
+
+export function AuthLegalNote({
+    children,
+    className,
+}: {
+    children: ReactNode;
+    className?: string;
+}) {
+    return (
+        <p className={cn("text-sm leading-6 text-(--text-secondary)", className)}>
+            {children}
+        </p>
     );
 }
 
@@ -291,7 +442,7 @@ export function AuthFinePrint({
     className?: string;
 }) {
     return (
-        <p className={cn("text-center text-sm text-[#3f4948]", className)}>
+        <p className={cn("text-center text-sm text-(--text-secondary)", className)}>
             {children}
         </p>
     );

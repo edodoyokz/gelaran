@@ -1,0 +1,161 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - navigation [ref=e4]:
+        - link "Gelaran" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e6]:
+          - link "Need help?" [ref=e7] [cursor=pointer]:
+            - /url: /contact
+            - img [ref=e8]
+            - generic [ref=e11]: Need help?
+          - button "Theme toggle unavailable" [disabled] [ref=e12]:
+            - img [ref=e13]
+    - main [ref=e15]:
+      - generic [ref=e16]:
+        - img "Gelaran visual" [ref=e18]
+        - generic [ref=e20]:
+          - heading "Rediscover Solo's Heritage" [level=1] [ref=e21]
+          - generic [ref=e22]:
+            - img [ref=e23]
+            - paragraph [ref=e26]: Preserving culture for future generations.
+      - generic [ref=e27]:
+        - generic [ref=e29]:
+          - img [ref=e30]
+          - generic [ref=e33]: Secure Access
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - generic [ref=e37]: Archive access
+            - heading "Welcome Back" [level=2] [ref=e38]
+            - paragraph [ref=e39]: Enter your credentials to access the digital archives of the royal city. Preserve continuity across tickets, event workspaces, and cultural collections from one secure sign in.
+          - generic [ref=e40]:
+            - generic [ref=e41]: Editorial entry
+            - generic [ref=e42]:
+              - article [ref=e43]:
+                - img [ref=e45]
+                - generic [ref=e47]:
+                  - heading "Secure access" [level=3] [ref=e48]
+                  - paragraph [ref=e49]: Protected sign-in flow with the same return-url routing used across the current customer journey.
+              - article [ref=e50]:
+                - img [ref=e52]
+                - generic [ref=e55]:
+                  - heading "Fast review path" [level=3] [ref=e56]
+                  - paragraph [ref=e57]: Use demo shortcuts to inspect admin, organizer, and customer experiences without creating a new account.
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - generic [ref=e60]:
+                - img [ref=e62]
+                - generic [ref=e65]:
+                  - generic [ref=e66]:
+                    - paragraph [ref=e67]: Demo mode tersedia
+                    - paragraph [ref=e68]: Gunakan akun siap pakai untuk meninjau dashboard customer, organizer, atau admin tanpa membuat kredensial baru.
+                  - paragraph [ref=e69]: "Password default: password123"
+                  - button "Sembunyikan akun demo" [ref=e70]:
+                    - text: Sembunyikan akun demo
+                    - img [ref=e71]
+              - generic [ref=e73]:
+                - generic [ref=e74]:
+                  - generic [ref=e75]:
+                    - img [ref=e77]
+                    - generic [ref=e79]:
+                      - paragraph [ref=e80]: Admin
+                      - paragraph [ref=e81]: Login cepat untuk alur admin.
+                  - button "Admin Gelaran Solo admin@gelaran.id SUPER_ADMIN" [ref=e83]:
+                    - generic [ref=e84]:
+                      - generic [ref=e85]:
+                        - paragraph [ref=e86]: Admin Gelaran Solo
+                        - paragraph [ref=e87]: admin@gelaran.id
+                      - generic [ref=e88]: SUPER_ADMIN
+                - generic [ref=e89]:
+                  - generic [ref=e90]:
+                    - img [ref=e92]
+                    - generic [ref=e95]:
+                      - paragraph [ref=e96]: Organizers
+                      - paragraph [ref=e97]: Login cepat untuk alur organizers.
+                  - generic [ref=e98]:
+                    - button "Taman Sriwedari info@sriwedari.solo.go.id ORGANIZER" [ref=e99]:
+                      - generic [ref=e100]:
+                        - generic [ref=e101]:
+                          - paragraph [ref=e102]: Taman Sriwedari
+                          - paragraph [ref=e103]: info@sriwedari.solo.go.id
+                        - generic [ref=e104]: ORGANIZER
+                    - button "GOR Manahan info@gormanahan.solo.go.id ORGANIZER" [ref=e105]:
+                      - generic [ref=e106]:
+                        - generic [ref=e107]:
+                          - paragraph [ref=e108]: GOR Manahan
+                          - paragraph [ref=e109]: info@gormanahan.solo.go.id
+                        - generic [ref=e110]: ORGANIZER
+                    - button "Solo Creative Hub hello@solocreativehub.id ORGANIZER" [ref=e111]:
+                      - generic [ref=e112]:
+                        - generic [ref=e113]:
+                          - paragraph [ref=e114]: Solo Creative Hub
+                          - paragraph [ref=e115]: hello@solocreativehub.id
+                        - generic [ref=e116]: ORGANIZER
+                    - button "Solo Music Fest contact@solomusicfest.id ORGANIZER" [ref=e117]:
+                      - generic [ref=e118]:
+                        - generic [ref=e119]:
+                          - paragraph [ref=e120]: Solo Music Fest
+                          - paragraph [ref=e121]: contact@solomusicfest.id
+                        - generic [ref=e122]: ORGANIZER
+                    - button "Solo Nightlife party@solonightlife.id ORGANIZER" [ref=e123]:
+                      - generic [ref=e124]:
+                        - generic [ref=e125]:
+                          - paragraph [ref=e126]: Solo Nightlife
+                          - paragraph [ref=e127]: party@solonightlife.id
+                        - generic [ref=e128]: ORGANIZER
+                - generic [ref=e129]:
+                  - generic [ref=e130]:
+                    - img [ref=e132]
+                    - generic [ref=e135]:
+                      - paragraph [ref=e136]: Customers
+                      - paragraph [ref=e137]: Login cepat untuk alur customers.
+                  - generic [ref=e138]:
+                    - button "Budi Santoso budi.santoso@email.com CUSTOMER" [ref=e139]:
+                      - generic [ref=e140]:
+                        - generic [ref=e141]:
+                          - paragraph [ref=e142]: Budi Santoso
+                          - paragraph [ref=e143]: budi.santoso@email.com
+                        - generic [ref=e144]: CUSTOMER
+                    - button "Siti Nurhaliza siti.nur@email.com CUSTOMER" [ref=e145]:
+                      - generic [ref=e146]:
+                        - generic [ref=e147]:
+                          - paragraph [ref=e148]: Siti Nurhaliza
+                          - paragraph [ref=e149]: siti.nur@email.com
+                        - generic [ref=e150]: CUSTOMER
+                    - button "Ahmad Rizki ahmad.rizki@email.com CUSTOMER" [ref=e151]:
+                      - generic [ref=e152]:
+                        - generic [ref=e153]:
+                          - paragraph [ref=e154]: Ahmad Rizki
+                          - paragraph [ref=e155]: ahmad.rizki@email.com
+                        - generic [ref=e156]: CUSTOMER
+            - generic [ref=e157]:
+              - generic [ref=e158]:
+                - generic [ref=e159]: Email address
+                - generic [ref=e160]:
+                  - img [ref=e162]
+                  - textbox "Email address" [ref=e165]:
+                    - /placeholder: archivist@gelaran.com
+              - generic [ref=e166]:
+                - generic [ref=e167]: Password
+                - generic [ref=e168]:
+                  - img [ref=e170]
+                  - textbox "Password" [ref=e173]:
+                    - /placeholder: ••••••••
+                  - button "Tampilkan password" [ref=e175]:
+                    - img [ref=e176]
+                - link "Lupa password?" [ref=e180] [cursor=pointer]:
+                  - /url: /forgot-password
+              - button "Sign In" [ref=e181]
+            - paragraph [ref=e182]: By signing in, you continue into your Gelaran tickets, archives, and workspace journey.
+          - paragraph [ref=e184]:
+            - text: New to the archive?
+            - link "Create an account" [ref=e185] [cursor=pointer]:
+              - /url: /register
+        - generic [ref=e186]:
+          - link "Privacy Policy" [ref=e187] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms of Service" [ref=e188] [cursor=pointer]:
+            - /url: /terms
+          - generic [ref=e189]: © 2026 Gelaran
+  - button "Open Next.js Dev Tools" [ref=e195] [cursor=pointer]:
+    - img [ref=e196]

@@ -1,0 +1,114 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e195] [cursor=pointer]:
+    - img [ref=e196]
+  - alert [ref=e207]
+  - generic [ref=e209]:
+    - complementary [ref=e210]:
+      - generic [ref=e211]:
+        - heading "Taman Sriwedari Solo" [level=1] [ref=e212]
+        - paragraph [ref=e213]: Professional Suite
+      - navigation [ref=e214]:
+        - link "Dashboard" [ref=e215] [cursor=pointer]:
+          - /url: /organizer
+          - generic [ref=e216]: dashboard
+          - generic [ref=e217]: Dashboard
+        - link "Events" [ref=e218] [cursor=pointer]:
+          - /url: /organizer/events
+          - generic [ref=e219]: event
+          - generic [ref=e220]: Events
+        - link "Gate & POS" [ref=e221] [cursor=pointer]:
+          - /url: /organizer/gate
+          - generic [ref=e222]: confirmation_number
+          - generic [ref=e223]: Gate & POS
+        - generic [ref=e225]:
+          - link "Finances" [ref=e226] [cursor=pointer]:
+            - /url: /organizer/wallet
+            - generic [ref=e227]: payments
+            - generic [ref=e228]: Finances
+          - button [ref=e229]:
+            - img [ref=e230]
+        - link "Team" [ref=e232] [cursor=pointer]:
+          - /url: /organizer/team
+          - generic [ref=e233]: group
+          - generic [ref=e234]: Team
+        - link "Settings" [ref=e235] [cursor=pointer]:
+          - /url: /organizer/settings
+          - generic [ref=e236]: settings
+          - generic [ref=e237]: Settings
+      - generic [ref=e238]:
+        - button "Create Event" [ref=e239]:
+          - generic [ref=e240]: add_circle
+          - text: Create Event
+        - generic [ref=e241]:
+          - button "Dark Mode" [ref=e242]:
+            - img [ref=e243]
+            - generic [ref=e245]: Dark Mode
+          - link "Dokumentasi" [ref=e246] [cursor=pointer]:
+            - /url: /docs/organizer
+            - img [ref=e247]
+            - generic [ref=e249]: Dokumentasi
+          - button "Keluar" [ref=e250]:
+            - img [ref=e251]
+            - generic [ref=e254]: Keluar
+      - button [ref=e255]:
+        - img [ref=e256]
+    - main [ref=e258]:
+      - generic [ref=e259]:
+        - generic [ref=e260]:
+          - generic [ref=e261]: search
+          - textbox "Search events, orders, or curators..." [ref=e262]
+        - generic [ref=e263]:
+          - button [ref=e264]:
+            - img [ref=e265]
+          - button [ref=e268]: notifications
+          - generic [ref=e270]:
+            - generic [ref=e271]:
+              - paragraph [ref=e272]: Taman Sriwedari Solo
+              - paragraph [ref=e273]: Verified Organizer
+            - generic [ref=e274]: T
+      - generic [ref=e276]:
+        - generic [ref=e277]:
+          - heading "Gate & POS" [level=1] [ref=e278]
+          - paragraph [ref=e279]: Kelola akses gate dan penjualan tiket on-site untuk event Anda
+        - generic [ref=e281]:
+          - generic [ref=e282]:
+            - heading "Fitur Gate & Point of Sale" [level=2] [ref=e283]:
+              - img [ref=e284]
+              - text: Fitur Gate & Point of Sale
+            - paragraph [ref=e290]: Gunakan fitur ini untuk memindai tiket pengunjung saat check-in atau menjual tiket secara langsung di lokasi (On-The-Spot).
+          - generic [ref=e292]:
+            - img [ref=e294]
+            - generic [ref=e299]:
+              - paragraph [ref=e300]: Scanner Cepat
+              - paragraph [ref=e301]: QR Code & Barcode
+        - generic [ref=e302]:
+          - generic [ref=e303]:
+            - heading "Event Aktif" [level=3] [ref=e304]:
+              - img [ref=e305]
+              - text: Event Aktif
+            - generic [ref=e307]:
+              - img [ref=e309]
+              - heading "Belum Ada Event Aktif" [level=3] [ref=e311]
+              - paragraph [ref=e312]: Anda belum memiliki event yang dipublikasikan. Buat event terlebih dahulu untuk menggunakan fitur Gate & POS.
+              - button "Buat Event Baru" [ref=e313]
+          - generic [ref=e314]:
+            - heading "Cara Menggunakan" [level=3] [ref=e315]:
+              - img [ref=e316]
+              - text: Cara Menggunakan
+            - list [ref=e319]:
+              - listitem [ref=e320]:
+                - generic [ref=e322]: "1"
+                - heading "Pilih Event" [level=4] [ref=e323]
+                - paragraph [ref=e324]: Pilih event aktif dan generate PIN akses gate.
+              - listitem [ref=e325]:
+                - generic [ref=e327]: "2"
+                - heading "Bagikan PIN" [level=4] [ref=e328]
+                - paragraph [ref=e329]: Berikan PIN kepada staff yang bertugas di pintu masuk.
+              - listitem [ref=e330]:
+                - generic [ref=e332]: "3"
+                - heading "Akses Gate" [level=4] [ref=e333]
+                - paragraph [ref=e334]: Staff mengakses /gate/access dan login dengan PIN.
+              - listitem [ref=e335]:
+                - generic [ref=e337]: "4"
+                - heading "Scan & Jual" [level=4] [ref=e338]
+                - paragraph [ref=e339]: Mulai scan tiket pengunjung atau jual tiket on-the-spot.

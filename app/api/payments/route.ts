@@ -9,9 +9,10 @@ import { attachRequestIdHeader, createRequestContext } from "@/lib/logging/reque
 import { decidePaymentIntentAction } from "@/lib/payments/idempotency";
 import { createPaymentProvider } from "@/lib/payments/provider";
 import { generateOrderId } from "@/lib/midtrans/client";
-import { createClient } from "@/lib/supabase/server";
 import { rateLimiters, getClientIdentifier, getRateLimitHeaders } from "@/lib/rate-limit";
 import type { Decimal } from "@prisma/client/runtime/library";
+import { getOptionalAuthenticatedAppUser } from "@/lib/auth/route-auth";
+import { getBookingAccessError } from "@/lib/auth/local-identity";
 
 const env = getServerEnv();
 const paymentProvider = createPaymentProvider();
@@ -117,31 +118,24 @@ export async function POST(request: NextRequest) {
             return fail("Booking not found", 404);
         }
 
-        const supabase = await createClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
+        const authContext = await getOptionalAuthenticatedAppUser();
+        if (authContext && "error" in authContext) {
+            return fail(authContext.error, authContext.status);
+        }
         const auditLogger = createAuditLogger(prisma);
         const ipAddress = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip");
         const userAgent = request.headers.get("user-agent");
 
-        if (booking.userId) {
-            if (user) {
-                const dbUser = await prisma.user.findUnique({
-                    where: { email: user.email! },
-                    select: { id: true },
-                });
+        const bookingAccessError = getBookingAccessError(
+            {
+                userId: booking.userId,
+                guestEmail: booking.guestEmail,
+            },
+            authContext
+        );
 
-                if (!dbUser || booking.userId !== dbUser.id) {
-                    return fail("Unauthorized - you don't own this booking", 403);
-                }
-            } else {
-                return fail("Unauthorized", 403);
-            }
-        } else if (booking.guestEmail) {
-            if (user && user.email !== booking.guestEmail) {
-                return fail("Unauthorized - booking email mismatch", 403);
-            }
+        if (bookingAccessError) {
+            return fail(bookingAccessError.message, bookingAccessError.status);
         }
 
         if (booking.paymentStatus === "PAID") {
@@ -154,7 +148,7 @@ export async function POST(request: NextRequest) {
 
         const customerDetails = {
             first_name: booking.guestName || booking.user?.name || "Guest",
-            email: booking.guestEmail || booking.user?.email || user?.email || "",
+            email: booking.guestEmail || booking.user?.email || authContext?.email || "",
             phone: booking.guestPhone || booking.user?.phone || "",
         };
 

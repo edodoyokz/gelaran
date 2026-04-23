@@ -125,10 +125,10 @@ export default function EventAnalyticsPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 text-[var(--accent-primary)] animate-spin mx-auto mb-4" />
-                    <p className="text-[var(--text-muted)]">Memuat analitik...</p>
+                    <Loader2 className="h-12 w-12 text-(--accent-primary) animate-spin mx-auto mb-4" />
+                    <p className="text-(--text-muted)">Memuat analitik...</p>
                 </div>
             </div>
         );
@@ -136,11 +136,11 @@ export default function EventAnalyticsPage() {
 
     if (error || !analytics) {
         return (
-            <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
+            <div className="min-h-screen bg-(--bg-secondary) flex items-center justify-center">
                 <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-[var(--text-primary)] font-medium mb-2">{error || "Data tidak tersedia"}</p>
-                    <Link href={`/organizer/events/${eventId}`} className="text-[var(--accent-primary)] hover:text-indigo-500">
+                    <p className="text-foreground font-medium mb-2">{error || "Data tidak tersedia"}</p>
+                    <Link href={`/organizer/events/${eventId}`} className="text-(--accent-primary) hover:text-indigo-500">
                         Kembali ke Event
                     </Link>
                 </div>
@@ -149,25 +149,25 @@ export default function EventAnalyticsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--bg-secondary)]">
-            <header className="bg-[var(--surface)] border-b">
+        <div className="min-h-screen bg-(--bg-secondary)">
+            <header className="bg-(--surface) border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <Link
                                 href={`/organizer/events/${eventId}`}
-                                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+                                className="text-(--text-muted) hover:text-(--text-secondary)"
                             >
                                 <ArrowLeft className="h-5 w-5" />
                             </Link>
                             <div>
-                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">Analitik Event</h1>
-                                <p className="text-sm text-[var(--text-muted)] mt-1">{event?.title || "Event"}</p>
+                                <h1 className="text-2xl font-bold text-foreground">Analitik Event</h1>
+                                <p className="text-sm text-(--text-muted) mt-1">{event?.title || "Event"}</p>
                             </div>
                         </div>
                         <button
                             type="button"
-                            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--border)] text-[var(--text-secondary)] rounded-lg font-medium hover:bg-[var(--surface-hover)]"
+                            className="inline-flex items-center gap-2 px-4 py-2 border border-(--border) text-(--text-secondary) rounded-lg font-medium hover:bg-(--surface-hover)"
                         >
                             <Download className="h-4 w-4" />
                             Export
@@ -216,111 +216,111 @@ export default function EventAnalyticsPage() {
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-6 mb-8">
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Statistik Tiket</h2>
+                    <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                        <h2 className="text-lg font-semibold text-foreground mb-4">Statistik Tiket</h2>
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between p-3 bg-[var(--surface-hover)] rounded-lg">
+                            <div className="flex items-center justify-between p-3 bg-(--surface-hover) rounded-lg">
                                 <div className="flex items-center gap-2">
-                                    <Ticket className="h-5 w-5 text-[var(--accent-primary)]" />
-                                    <span className="text-[var(--text-secondary)]">Total Tiket</span>
+                                    <Ticket className="h-5 w-5 text-(--accent-primary)" />
+                                    <span className="text-(--text-secondary)">Total Tiket</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">{analytics.totalTickets}</span>
+                                <span className="font-semibold text-foreground">{analytics.totalTickets}</span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-green-500/10 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <TrendingUp className="h-5 w-5 text-green-600" />
-                                    <span className="text-[var(--text-secondary)]">Terjual</span>
+                                    <span className="text-(--text-secondary)">Terjual</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">{analytics.soldTickets}</span>
+                                <span className="font-semibold text-foreground">{analytics.soldTickets}</span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-yellow-500/10 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-5 w-5 text-yellow-600" />
-                                    <span className="text-[var(--text-secondary)]">Reserved</span>
+                                    <span className="text-(--text-secondary)">Reserved</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">{analytics.reservedTickets}</span>
+                                <span className="font-semibold text-foreground">{analytics.reservedTickets}</span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-blue-500/10 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <Users className="h-5 w-5 text-blue-600" />
-                                    <span className="text-[var(--text-secondary)]">Tersedia</span>
+                                    <span className="text-(--text-secondary)">Tersedia</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">{analytics.availableTickets}</span>
+                                <span className="font-semibold text-foreground">{analytics.availableTickets}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-[var(--surface)] rounded-xl shadow-sm p-6">
-                        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Ringkasan Pendapatan</h2>
+                    <div className="bg-(--surface) rounded-xl shadow-sm p-6">
+                        <h2 className="text-lg font-semibold text-foreground mb-4">Ringkasan Pendapatan</h2>
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between p-3 bg-[var(--accent-primary)]/10 rounded-lg">
+                            <div className="flex items-center justify-between p-3 bg-(--accent-primary)/10 rounded-lg">
                                 <div className="flex items-center gap-2">
-                                    <DollarSign className="h-5 w-5 text-[var(--accent-primary)]" />
-                                    <span className="text-[var(--text-secondary)]">Total Pendapatan</span>
+                                    <DollarSign className="h-5 w-5 text-(--accent-primary)" />
+                                    <span className="text-(--text-secondary)">Total Pendapatan</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">
+                                <span className="font-semibold text-foreground">
                                     {formatCurrency(analytics.totalRevenue)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-green-500/10 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <DollarSign className="h-5 w-5 text-green-600" />
-                                    <span className="text-[var(--text-secondary)]">Pendapatan Organizer</span>
+                                    <span className="text-(--text-secondary)">Pendapatan Organizer</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">
+                                <span className="font-semibold text-foreground">
                                     {formatCurrency(analytics.organizerRevenue)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-red-500/10 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <TrendingUp className="h-5 w-5 text-red-600" />
-                                    <span className="text-[var(--text-secondary)]">Biaya Platform</span>
+                                    <span className="text-(--text-secondary)">Biaya Platform</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">
+                                <span className="font-semibold text-foreground">
                                     {formatCurrency(analytics.totalRevenue - analytics.organizerRevenue)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-purple-500/10 rounded-lg">
                                 <div className="flex items-center gap-2">
                                     <BarChart3 className="h-5 w-5 text-purple-600" />
-                                    <span className="text-[var(--text-secondary)]">Konversi Tiket</span>
+                                    <span className="text-(--text-secondary)">Konversi Tiket</span>
                                 </div>
-                                <span className="font-semibold text-[var(--text-primary)]">{analytics.conversionRate}%</span>
+                                <span className="font-semibold text-foreground">{analytics.conversionRate}%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-[var(--surface)] rounded-xl shadow-sm overflow-hidden">
+                <div className="bg-(--surface) rounded-xl shadow-sm overflow-hidden">
                     <div className="p-6 border-b flex items-center justify-between">
                         <h2 className="text-lg font-semibold">Penjualan per Tipe Tiket</h2>
                     </div>
                     {ticketStats.length === 0 ? (
-                        <div className="p-12 text-center text-[var(--text-muted)]">
+                        <div className="p-12 text-center text-(--text-muted)">
                             <Ticket className="h-12 w-12 mx-auto mb-4 opacity-50" />
                             <p>Belum ada tipe tiket</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-[var(--surface-hover)] border-b">
+                                <thead className="bg-(--surface-hover) border-b">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase">
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-(--text-muted) uppercase">
                                             Tipe Tiket
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-muted)] uppercase">
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-(--text-muted) uppercase">
                                             Total
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-muted)] uppercase">
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-(--text-muted) uppercase">
                                             Terjual
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-muted)] uppercase">
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-(--text-muted) uppercase">
                                             Tersisa
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-muted)] uppercase">
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-(--text-muted) uppercase">
                                             Pendapatan
                                         </th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-muted)] uppercase">
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-(--text-muted) uppercase">
                                             Harga Rata-rata
                                         </th>
                                     </tr>
@@ -332,28 +332,28 @@ export default function EventAnalyticsPage() {
                                             : 0;
 
                                         return (
-                                            <tr key={stat.id} className="hover:bg-[var(--surface-hover)]">
-                                                <td className="px-6 py-4 font-medium text-[var(--text-primary)]">
+                                            <tr key={stat.id} className="hover:bg-(--surface-hover)">
+                                                <td className="px-6 py-4 font-medium text-foreground">
                                                     {stat.name}
                                                 </td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-secondary)]">
+                                                <td className="px-6 py-4 text-right text-(--text-secondary)">
                                                     {stat.totalQuantity}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <span className="font-semibold text-[var(--text-primary)]">
+                                                    <span className="font-semibold text-foreground">
                                                         {stat.soldQuantity}
                                                     </span>
-                                                    <span className="text-xs text-[var(--text-muted)] ml-2">
+                                                    <span className="text-xs text-(--text-muted) ml-2">
                                                         ({soldPercent}%)
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-secondary)]">
+                                                <td className="px-6 py-4 text-right text-(--text-secondary)">
                                                     {stat.availableQuantity}
                                                 </td>
-                                                <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
+                                                <td className="px-6 py-4 text-right font-medium text-foreground">
                                                     {formatCurrency(stat.revenue)}
                                                 </td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-secondary)]">
+                                                <td className="px-6 py-4 text-right text-(--text-secondary)">
                                                     {formatCurrency(stat.averagePrice)}
                                                 </td>
                                             </tr>
@@ -381,7 +381,7 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, total, percent, icon: Icon, color, showProgress }: MetricCardProps) {
     const colorMap: Record<string, { bg: string; icon: string; progress: string }> = {
-        indigo: { bg: "bg-indigo-100", icon: "text-[var(--accent-primary)]", progress: "bg-[var(--accent-primary)]" },
+        indigo: { bg: "bg-indigo-100", icon: "text-(--accent-primary)", progress: "bg-(--accent-primary)" },
         green: { bg: "bg-green-500/10", icon: "text-green-600", progress: "bg-green-600" },
         purple: { bg: "bg-purple-500/10", icon: "text-purple-600", progress: "bg-purple-600" },
         blue: { bg: "bg-blue-500/10", icon: "text-blue-600", progress: "bg-blue-600" },
@@ -390,28 +390,28 @@ function MetricCard({ title, value, total, percent, icon: Icon, color, showProgr
     const colors = colorMap[color];
 
     return (
-        <div className="bg-[var(--surface)] rounded-xl p-6 shadow-sm">
+        <div className="bg-(--surface) rounded-xl p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
                 <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
                     <Icon className={`h-6 w-6 ${colors.icon}`} />
                 </div>
             </div>
-            <p className="text-2xl font-bold text-[var(--text-primary)]">
+            <p className="text-2xl font-bold text-foreground">
                 {value}
                 {total !== undefined && (
-                    <span className="text-sm font-normal text-[var(--text-muted)]"> / {total}</span>
+                    <span className="text-sm font-normal text-(--text-muted)"> / {total}</span>
                 )}
             </p>
-            <p className="text-sm text-[var(--text-muted)] mb-3">{title}</p>
+            <p className="text-sm text-(--text-muted) mb-3">{title}</p>
             {showProgress && percent !== undefined && (
                 <div>
-                    <div className="h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
+                    <div className="h-2 bg-(--bg-secondary) rounded-full overflow-hidden">
                         <div
                             className={`h-full ${colors.progress} rounded-full transition-all`}
                             style={{ width: `${Math.min(percent, 100)}%` }}
                         />
                     </div>
-                    <p className="text-xs text-[var(--text-muted)] mt-1">{percent}%</p>
+                    <p className="text-xs text-(--text-muted) mt-1">{percent}%</p>
                 </div>
             )}
         </div>
