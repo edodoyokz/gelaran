@@ -95,11 +95,8 @@ export async function GET(
             return errorResponse("Event not found", 404);
         }
 
-        // Increment view count
-        await prisma.event.update({
-            where: { id: event.id },
-            data: { viewCount: { increment: 1 } },
-        });
+        // Note: viewCount tracking removed to prevent row-level lock contention
+        // on hot event rows that was causing statement timeouts
 
         // Transform ticket types with availability
         const ticketTypes = event.ticketTypes.map((ticket: TicketTypeWithTiers) => ({
@@ -147,7 +144,7 @@ export async function GET(
             onlineMeetingUrl: event.status === "PUBLISHED" ? event.onlineMeetingUrl : null,
             termsAndConditions: event.termsAndConditions,
             refundPolicy: event.refundPolicy,
-            viewCount: event.viewCount + 1,
+            viewCount: event.viewCount,
             category: event.category,
             venue: event.venue,
             organizer: {

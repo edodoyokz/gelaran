@@ -107,24 +107,8 @@ async function getEvent(slug: string): Promise<EventData | null> {
                     where: { isActive: true },
                     orderBy: { sortOrder: "asc" },
                 },
-                venueSections: {
-                    where: { isActive: true },
-                    orderBy: { sortOrder: "asc" },
-                    include: {
-                        rows: {
-                            where: { isActive: true },
-                            orderBy: { sortOrder: "asc" },
-                            include: {
-                                seats: {
-                                    where: { isActive: true },
-                                    include: {
-                                        ticketType: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                // Note: venueSections removed from main query to reduce connection pool pressure
+                // Seating data should be loaded separately when needed via dedicated API route
             },
         });
 
@@ -132,10 +116,8 @@ async function getEvent(slug: string): Promise<EventData | null> {
             return null;
         }
 
-        prisma.event.update({
-            where: { id: event.id },
-            data: { viewCount: { increment: 1 } },
-        }).catch(() => { });
+        // Note: viewCount tracking removed to prevent row-level lock contention
+        // on hot event rows that was causing statement timeouts
 
         return {
             id: event.id,
