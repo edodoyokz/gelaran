@@ -258,7 +258,7 @@ export default function HomePage() {
                 <EditorialPanel className="p-4 sm:p-5">
                     <fieldset className="min-w-0">
                         <legend className="sr-only">Filter kategori event</legend>
-                        <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+                        <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-3 sm:overflow-x-auto sm:pb-1 sm:no-scrollbar">
                         {displayCategories.map((category) => (
                             <CategoryPill
                                 key={category.id}
